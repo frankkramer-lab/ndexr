@@ -1,0 +1,9 @@
+Package: ndexr
+Type: Package
+Title: NDEx R library
+Version: 1.0
+Date: 2014-06-05
+Author: Alex Ishkin <aleksandr.ishkin@thomsonreuters.com>
+Maintainer: Dexter Pratt <depratt@ucsc.edu>
+Description: More about what it does (maybe more than one line)
+License: TBD
