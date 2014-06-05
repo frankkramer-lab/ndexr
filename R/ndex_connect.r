@@ -1,4 +1,5 @@
-
+##Initialize internal environment to store package-specific stuff, of no value to user
+NDEx.env <- new.env(hash=T)
 
 #' Connect to NDEx REST API
 #' 
@@ -17,7 +18,7 @@ ndex.connect <- function(username, password, baseroute='http://dev.ndexbio.org:8
   if(is.list(auth_response)){
     ##Authentication successful (JSON with user data was returned)
     ndex.opts <- curlOptions(userpwd=paste0(username, ":", password), httpauth = 1L)
-    if(!exists('NDEx.env')) NDEx.env <<- new.env(hash=T, parent=globalenv())
+    ##Store RCurl options in the internal environment; reuse for other REST queries which require authentication
     assign('ndex.opts', value=ndex.opts, envir=NDEx.env)
     cat("Connected (user ID ", auth_response$id, ")\n",  sep='')
   } else{
