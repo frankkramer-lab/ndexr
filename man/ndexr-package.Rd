@@ -3,8 +3,7 @@
 \alias{ndexr}
 \docType{package}
 \title{
-What the package does (short line)
-~~ package title ~~
+NDEx R client library
 }
 \description{
 More about what it does (maybe more than one line)
@@ -16,25 +15,23 @@ Package: \tab ndexr\cr
 Type: \tab Package\cr
 Version: \tab 1.0\cr
 Date: \tab 2014-06-05\cr
-License: \tab What license is it under?\cr
+License: \tab TBD\cr
 }
 ~~ An overview of how to use the package, including the most important functions ~~
 }
 \author{
-Who wrote it
+Alex Ishkin <aleksandr.ishkin@thomsonreuters.com>
 
-Maintainer: Who to complain to <yourfault@somewhere.net>
-~~ The author and/or maintainer of the package ~~
+Maintainer: Dexter Pratt <depratt@ucsc.edu>
+
 }
 \references{
-~~ Literature or other references for background information ~~
+\link{http://www.ndexbio.org/}
 }
-~~ Optionally other standard keywords, one per line, from file KEYWORDS in the R documentation directory ~~
 \keyword{ package }
 \seealso{
-~~ Optional links to other man pages, e.g. ~~
-~~ \code{\link[<pkg>:<pkg>-package]{<pkg>}} ~~
+\code{\link[RCurl:RCurl-package]{RCurl}}, \code{\link[igraph:igraph-package]{igraph}}, \code{\link[RJSONIO:RJSONIO-package]{RJSONIO}}
 }
 \examples{
-~~ simple examples of the most important functions ~~
+
 }
