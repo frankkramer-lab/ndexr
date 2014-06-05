@@ -2,15 +2,15 @@
 \alias{ndex.connect}
 \title{Connect to NDEx REST API}
 \usage{
-  ndex.connect(username, password,
-    baseroute = "http://dev.ndexbio.org:8080/ndexbio-rest")
+  ndex.connect(username, password, host)
 }
 \arguments{
-  \item{baseroute}{URL of NDEx REST server}
-
   \item{username}{character username}
 
   \item{password}{character password}
+
+  \item{host}{(optional) URL of NDEx REST server to be
+  used}
 }
 \value{
   returns nothing; RCurl options object for authentication
@@ -19,5 +19,13 @@
 }
 \description{
   Connect to NDEx REST API
+}
+\note{
+  REST server location can also be set separately using
+  \code{\link{ndex.get.host}}. In this case, supplying host
+  here is not necessary
+}
+\seealso{
+  \code{\link{ndex.get.host}}
 }
 
