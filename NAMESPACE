@@ -1,1 +1,12 @@
-exportPattern("^[[:alpha:]]+")
+##Class(es)
+exportClasses(
+    "ndexgraph" 
+)
+
+##Connection, authentication and basic API communication
+export(
+  ndex.connect,
+  ndex.alive
+  )
+
+
