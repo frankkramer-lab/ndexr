@@ -6,6 +6,7 @@
 #' @param username character username
 #' @param password character password
 #' @return returns nothing; RCurl options object for authentication is stored in the special environment and reused with the queries
+#' @export
 ndex.connect <- function(username, password, baseroute='http://dev.ndexbio.org:8080/ndexbio-rest'){
   if(missing(username) || missing(password)) stop("ndex.connect: Username or password not supplied")
   if(grepl("/$", baseroute)) baseroute <- sub("/$", "", baseroute)
@@ -27,6 +28,7 @@ ndex.connect <- function(username, password, baseroute='http://dev.ndexbio.org:8
 
 #' Check status of connection to NDEx REST server
 #' @return logical (TRUE if connection is active, FALSE otherwise)
+#' @export
 ndex.alive <- function(){
   
 }
