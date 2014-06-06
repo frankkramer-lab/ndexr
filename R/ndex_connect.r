@@ -1,4 +1,5 @@
-##Author: Alex Ishkin [aleksandr.ishkin@thomsonreuters.com]
+##Authors:
+#   Alex Ishkin [aleksandr.ishkin@thomsonreuters.com]
 ##Created: 1 June 2014
 ## Basic functions to connect and query NDEX API
 
@@ -54,7 +55,7 @@ ndex.alive <- function(){
   }else{
     ##Try getting something from API again
     test <- NULL
-    try(test <- ndex_rest_GET(paste0("/users/", NDEx.env$current.user), auth=TRUE))
+    try(test <- getURL(paste0(ndex.get.host(), "/users/", NDEx.env$current.user), .opts=NDEx.env$ndex.opts))
     if(is.null(test)){
       return(FALSE)
     }else{
@@ -81,8 +82,8 @@ ndex.alive <- function(){
 ndex_rest_GET <- function(route, auth=TRUE){
   url <- paste0(ndex.get.host(), route)
   if(auth){
+    if(!ndex.alive()) stop("Authentication required!")
     auth.opts <- NDEx.env$ndex.opts
-    if(is.null(auth.opts)) stop("Authentication required!")
   } else{
     auth.opts <- curlOptions(httpauth = 1L)
   }
@@ -106,8 +107,8 @@ ndex_rest_PUT <- function(route, data, auth=TRUE){
   if(!isValidJSON(data, asText = TRUE)) stop(sprintf("Malformed JSON input for POST query: %s", data))
   url <- paste0(ndex.get.host(), route)
   if(auth){
+    if(!ndex.alive()) stop("Authentication required!")
     auth.opts <- NDEx.env$ndex.opts
-    if(is.null(auth.opts)) stop("Authentication required!")
   } else{
     auth.opts <- curlOptions(httpauth = 1L)
   }
@@ -147,8 +148,8 @@ ndex_rest_POST <- function(route, data, auth=TRUE){
   if(!isValidJSON(data, asText = TRUE)) stop(sprintf("Malformed JSON input for POST query: %s", data))
   url <- paste0(ndex.get.host(), route)
   if(auth){
+    if(!ndex.alive()) stop("Authentication required!")
     auth.opts <- NDEx.env$ndex.opts
-    if(is.null(auth.opts)) stop("Authentication required!")
   } else{
     auth.opts <- curlOptions(httpauth = 1L)
   }
@@ -198,3 +199,5 @@ ndex.set.host <- function(host){
 ndex.get.host <- function(){
   return(get('host', envir=NDEx.env))
 }
+
+

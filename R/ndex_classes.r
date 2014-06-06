@@ -1,4 +1,5 @@
-##Author: Alex Ishkin [aleksandr.ishkin@thomsonreuters.com]
+##Authors:
+#   Alex Ishkin [aleksandr.ishkin@thomsonreuters.com]
 ##Created: 6 June 2014
 # Contains class definitions for the graph objects
 
@@ -15,7 +16,7 @@ setOldClass('igraph') ##S3 class
 validate_ndexgraph <- function(object){
   nodes <- object@nodes
   edges <- object@edges
-  
+    
   errors <- character()
   ##Check presence of necessary attributes
   if(ncol(edges) < 1){
@@ -40,14 +41,20 @@ validate_ndexgraph <- function(object){
 #' 
 #' @slot nodes Data frame with node attributes
 #' @slot edges Data frame with edge attributes
+#' @slot node_annot Data frame with additional information on nodes (node aliases or IDs from other namespaces)
+#' @slot metadata Data frame containing general information about the network
 #' @slot name Name of the network
 #' @slot id Unique ID of the network
 #' @note So far ID and name are optional (by default will be NA upon initialization, and go unchecked by validator).
 #' @export
 setClass("ndexgraph",
-         representation(nodes = "data.frame", edges = "data.frame", name = "character", id = "character"),
-         prototype = list(nodes = data.frame(id=character()),
-                          edges = data.frame(id1=character(), id2=character()),
+         representation(nodes = "data.frame", edges = "data.frame",
+                        node_annot = "data.frame", metadata = "data.frame",
+                        name = "character", id = "character"),
+         prototype = list(nodes = data.frame(node_id=character()),
+                          edges = data.frame(node_id1=character(), node_id2=character()),
+                          node_annot = data.frame(node_id=character()),
+                          metadata = data.frame(id=character()),
                           name = NA_character_,
                           id = NA_character_
          ),
