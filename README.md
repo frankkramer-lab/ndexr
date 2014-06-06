@@ -42,6 +42,11 @@ Parsing and creation of JSON is done using [RJSONIO](http://cran.r-project.org/w
 Next steps
 ----------------
 
+Examples of working with NDEx using `ndexr` package can be found in this [Gist](https://gist.github.com/donshikin/6fb7a45c4aa7892673da) or in the `run_test.r` file in the root of repo.
+
+Next steps
+----------------
+
 The package is just a start and current implementation is far from perfect. Discussions are needed on the following points
 
 * Representation of network in R (probably changes will be needed to `ndexgraph` class)
