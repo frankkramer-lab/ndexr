@@ -132,8 +132,8 @@ NULL
 jsonlist2vector <- function(l){
   if(!is.list(l)) stop("list  expected")
   l <- lapply(l, function(x){if(is.null(x)) return('') else return(x)})
-  l <- l[!sapply(l, is.list)]
-  l <- l[sapply(l, length) == 1]
+  l[sapply(l, is.list)] <- ''
+  l[sapply(l, length) > 1] <- NULL
   cc <- unlist(l)
   return(cc)
 }
