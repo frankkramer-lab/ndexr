@@ -2,12 +2,13 @@
 \alias{ndex_rest_PUT}
 \title{Generic PUT query to API}
 \usage{
-  ndex_rest_PUT(route, ..., auth = TRUE)
+  ndex_rest_PUT(route, data, auth = TRUE)
 }
 \arguments{
   \item{route}{Character (route to specific REST query)}
 
-  \item{...}{Whatever data to be supplied with query}
+  \item{data}{Whatever data to be supplied with query.
+  Should be valid JSON}
 
   \item{auth}{Logical: is authentication required?}
 }

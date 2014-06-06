@@ -27,13 +27,15 @@ ndex.connect <- function(username, password, host){
   }
   
   ##Attempt authentication
-  auth_response <- getURL(paste0(host, "/users/authenticate/", username, "/", password))
-  try(auth_response <- fromJSON(auth_response), silent = TRUE)
-  if(is.list(auth_response)){
+  try(auth_response <- getURL(paste0(host, "/users/authenticate/", username, "/", password)))
+  if(isValidJSON(auth_response, asText=T)){
+    auth_response <- fromJSON(auth_response)
     ##Authentication successful (JSON with user data was returned)
     ndex.opts <- curlOptions(userpwd=paste0(username, ":", password), httpauth = 1L)
     ##Store RCurl options in the internal environment; reuse for other REST queries which require authentication
     assign('ndex.opts', value=ndex.opts, envir=NDEx.env)
+    assign('current.user', value=auth_response$id, envir=NDEx.env)
+    
     cat("Connected to REST server ", host, "\nWelcome, ", auth_response$username, "!\n",  sep='')
   } else{
     stop(paste("ndex.connect:", auth_response))
@@ -41,11 +43,25 @@ ndex.connect <- function(username, password, host){
   invisible(TRUE)
 }
 
-#' Check status of connection to NDEx REST server
-#' @return logical (TRUE if connection is active, FALSE otherwise)
+#' Check if user is authenticated to NDEx REST server
+#' @return logical (TRUE if user is authenticated and connection is active, FALSE otherwise)
 #' @export
 ndex.alive <- function(){
-  
+  if(!exists('NDEx.env')) return(FALSE) ##this shouldn't happen
+  if(!exists('current.user', envir = NDEx.env)) return(FALSE)
+  if(!exists('ndex.opts', envir=NDEx.env)) {
+    return(FALSE)
+  }else{
+    ##Try getting something from API again
+    test <- NULL
+    try(test <- ndex_rest_GET(paste0("/users/", NDEx.env$current.user), auth=TRUE))
+    if(is.null(test)){
+      return(FALSE)
+    }else{
+      if(isValidJSON(test, asText=T)) return(TRUE)
+      else return (FALSE)
+    }
+  }
 }
 
 
@@ -70,7 +86,6 @@ ndex_rest_GET <- function(route, auth=TRUE){
   } else{
     auth.opts <- curlOptions(httpauth = 1L)
   }
-  auth.opts$verbose <- TRUE
   content <- getURL(url, .opts=auth.opts)
   return(content)
 }
@@ -78,7 +93,7 @@ ndex_rest_GET <- function(route, auth=TRUE){
 #' Generic PUT query to API
 #' 
 #' @param route Character (route to specific REST query)
-#' @param ... Whatever data to be supplied with query
+#' @param data Whatever data to be supplied with query. Should be valid JSON
 #' @param auth Logical: is authentication required?
 #' @return JSON response from REST server (it will be handled downstream)
 #' @details Simply execute HTTP PUT on URL host/route and fetch whatever data REST server returns 
@@ -87,7 +102,8 @@ ndex_rest_GET <- function(route, auth=TRUE){
 #' @seealso \code{\link{_ndex_rest_GET}},  \code{\link{_ndex_rest_POST}},  \code{\link{_ndex_rest_DELETE}}
 #' @examples
 #' ##TBD
-ndex_rest_PUT <- function(route, ..., auth=TRUE){
+ndex_rest_PUT <- function(route, data, auth=TRUE){
+  if(!isValidJSON(data, asText = TRUE)) stop(sprintf("Malformed JSON input for POST query: %s", data))
   url <- paste0(ndex.get.host(), route)
   if(auth){
     auth.opts <- NDEx.env$ndex.opts
@@ -95,7 +111,6 @@ ndex_rest_PUT <- function(route, ..., auth=TRUE){
   } else{
     auth.opts <- curlOptions(httpauth = 1L)
   }
-  data <- list(...)[[1]]
   
   rdata <- charToRaw(data)
   
@@ -119,7 +134,7 @@ ndex_rest_PUT <- function(route, ..., auth=TRUE){
 #' Generic POST query to API
 #' 
 #' @param route Character (route to specific REST query)
-#' @param ... Whatever data to be supplied with query
+#' @param data Whatever data to be supplied with query. Should be valid JSON
 #' @param auth Logical: is authentication required?
 #' @return JSON response from REST server (it will be handled downstream)
 #' @details Simply execute HTTP PUT on URL host/route and fetch whatever data REST server returns 
@@ -128,7 +143,8 @@ ndex_rest_PUT <- function(route, ..., auth=TRUE){
 #' @seealso \code{\link{_ndex_rest_GET}},  \code{\link{_ndex_rest_PUT}},  \code{\link{_ndex_rest_DELETE}}
 #' @examples
 #' ##TBD
-ndex_rest_POST <- function(route, ..., auth=TRUE){
+ndex_rest_POST <- function(route, data, auth=TRUE){
+  if(!isValidJSON(data, asText = TRUE)) stop(sprintf("Malformed JSON input for POST query: %s", data))
   url <- paste0(ndex.get.host(), route)
   if(auth){
     auth.opts <- NDEx.env$ndex.opts
@@ -136,8 +152,6 @@ ndex_rest_POST <- function(route, ..., auth=TRUE){
   } else{
     auth.opts <- curlOptions(httpauth = 1L)
   }
-  dotargs <- list(...)
-  data <- dotargs[[1]]
   
   h = basicTextGatherer()
   h$reset()

@@ -1,13 +1,14 @@
 \name{ndex.alive}
 \alias{ndex.alive}
-\title{Check status of connection to NDEx REST server}
+\title{Check if user is authenticated to NDEx REST server}
 \usage{
   ndex.alive()
 }
 \value{
-  logical (TRUE if connection is active, FALSE otherwise)
+  logical (TRUE if user is authenticated and connection is
+  active, FALSE otherwise)
 }
 \description{
-  Check status of connection to NDEx REST server
+  Check if user is authenticated to NDEx REST server
 }
 
