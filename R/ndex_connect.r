@@ -34,7 +34,7 @@ ndex.connect <- function(username, password, host){
     ndex.opts <- curlOptions(userpwd=paste0(username, ":", password), httpauth = 1L)
     ##Store RCurl options in the internal environment; reuse for other REST queries which require authentication
     assign('ndex.opts', value=ndex.opts, envir=NDEx.env)
-    cat("Connected to", host, "(user ID ", auth_response$id, ")\n",  sep='')
+    cat("Connected to REST server ", host, "\nWelcome, ", auth_response$username, "!\n",  sep='')
   } else{
     stop(paste("ndex.connect:", auth_response))
   }
@@ -49,13 +49,110 @@ ndex.alive <- function(){
 }
 
 
+#################################################
+##Low-level REST-querying functions
+
 #' Generic GET query to API
 #' 
+#' @param route Character (route to specific REST query)
+#' @param auth Logical: is authentication required?
 #' @return JSON response from REST server (it will be handled downstream)
-#' 
-.ndex.GET <- function(){
-  
+#' @details Simply execute HTTP GET on URL host/route and fetch whatever data REST server returns 
+#' Making sure the route is well-formed is the job of calling function
+#' @seealso \code{\link{_ndex_rest_PUT}},  \code{\link{_ndex_rest_POST}},  \code{\link{_ndex_rest_DELETE}}
+#' @examples
+#' \dontrun{ndex_rest_GET("/networks/api")}
+ndex_rest_GET <- function(route, auth=TRUE){
+  url <- paste0(ndex.get.host(), route)
+  if(auth){
+    auth.opts <- NDEx.env$ndex.opts
+    if(is.null(auth.opts)) stop("Authentication required!")
+  } else{
+    auth.opts <- curlOptions(httpauth = 1L)
+  }
+  auth.opts$verbose <- TRUE
+  content <- getURL(url, .opts=auth.opts)
+  return(content)
 }
+
+#' Generic PUT query to API
+#' 
+#' @param route Character (route to specific REST query)
+#' @param ... Whatever data to be supplied with query
+#' @param auth Logical: is authentication required?
+#' @return JSON response from REST server (it will be handled downstream)
+#' @details Simply execute HTTP PUT on URL host/route and fetch whatever data REST server returns 
+#' Making sure the route is well-formed is the job of calling function
+#' Making sure the data is well-formed is also the job of calling function
+#' @seealso \code{\link{_ndex_rest_GET}},  \code{\link{_ndex_rest_POST}},  \code{\link{_ndex_rest_DELETE}}
+#' @examples
+#' ##TBD
+ndex_rest_PUT <- function(route, ..., auth=TRUE){
+  url <- paste0(ndex.get.host(), route)
+  if(auth){
+    auth.opts <- NDEx.env$ndex.opts
+    if(is.null(auth.opts)) stop("Authentication required!")
+  } else{
+    auth.opts <- curlOptions(httpauth = 1L)
+  }
+  data <- list(...)[[1]]
+  
+  rdata <- charToRaw(data)
+  
+  h = basicTextGatherer()
+  h$reset()
+  curlPerform(url = url,
+              httpheader=c('Content-Type' = "application/json"),
+              customrequest = "PUT",
+              readfunction=rdata,
+              infilesize = length(rdata), upload=TRUE,
+              writefunction = h$update,
+              .opts = auth.opts, verbose=TRUE)
+  
+  content = h$value()
+  
+  #content <- httpPUT(url, content=data , .opts=auth.opts)
+  return(content)
+}
+
+
+#' Generic POST query to API
+#' 
+#' @param route Character (route to specific REST query)
+#' @param ... Whatever data to be supplied with query
+#' @param auth Logical: is authentication required?
+#' @return JSON response from REST server (it will be handled downstream)
+#' @details Simply execute HTTP PUT on URL host/route and fetch whatever data REST server returns 
+#' Making sure the route is well-formed is the job of calling function
+#' Making sure the data is well-formed is also the job of calling function
+#' @seealso \code{\link{_ndex_rest_GET}},  \code{\link{_ndex_rest_PUT}},  \code{\link{_ndex_rest_DELETE}}
+#' @examples
+#' ##TBD
+ndex_rest_POST <- function(route, ..., auth=TRUE){
+  url <- paste0(ndex.get.host(), route)
+  if(auth){
+    auth.opts <- NDEx.env$ndex.opts
+    if(is.null(auth.opts)) stop("Authentication required!")
+  } else{
+    auth.opts <- curlOptions(httpauth = 1L)
+  }
+  dotargs <- list(...)
+  data <- dotargs[[1]]
+  
+  h = basicTextGatherer()
+  h$reset()
+  curlPerform(url = url,
+              postfields = data,
+              httpheader = c('Content-Type' = "application/json"),
+              writefunction = h$update,
+              .opts=auth.opts)
+  
+  content = h$value()
+  return(content)
+}
+
+#################################################
+##Get/set the REST server URL
 
 #' Set NDEx REST server URL
 #' 
@@ -71,7 +168,10 @@ ndex.set.host <- function(host){
   if(!is.character(host)) stop("ndex.set.host: string expected as an input")
   ##Clean up a little (to avoid malformed queries)
   if(grepl("/$", host)) host <- sub("/$", "", host)
-
+  
+  ##Check if host is alive
+  if(!url.exists(host)) stop(sprintf("Host %s does not exist"), host)
+  
   assign('host', host, envir=NDEx.env)
   invisible(TRUE)
 }

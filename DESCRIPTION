@@ -12,6 +12,4 @@ Depends:
     RJSONIO,
     igraph,
     methods
-Collate:
-    'ndex_classes.r'
-    'ndex_connect.r'
+
