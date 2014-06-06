@@ -1,5 +1,6 @@
 export(ndex.alive)
 export(ndex.connect)
+export(ndex.find.networks)
 export(ndex.get.host)
 export(ndex.set.host)
 exportClasses(ndexgraph)
