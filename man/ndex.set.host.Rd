@@ -1,0 +1,21 @@
+\name{ndex.set.host}
+\alias{ndex.set.host}
+\title{Set NDEx REST server URL}
+\usage{
+  ndex.set.host(host)
+}
+\arguments{
+  \item{host}{String with URL to NDEx REST server
+  (currently, default will be
+  \link{http://dev.ndexbio.org:8080/ndexbio-rest})}
+}
+\value{
+  returns TRUE invisibly
+}
+\description{
+  Set NDEx REST server URL
+}
+\seealso{
+  \code{\link{ndex.get.host}}
+}
+
