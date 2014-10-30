@@ -66,13 +66,11 @@ ndex.get.network.metadata <- function(network_id, json=FALSE){
 #' Mapping table for the nodes is retrieved ('alias' and 'related' terms) to facilitate conversions/data mapping
 #' @note Currently fetches all edges; may be suboptimal for huge networks
 #' @export
-ndex.get.network <- function(network_id, json=FALSE){
-  ##First get the metadata
-  m <- ndex.get.network.metadata(network_id)
-  count <- m$edge_count
+ndex.get.complete.network <- function(network_id, json=FALSE){
+
   
   ##For now, just fetch all edges
-  route <- paste0("/networks/", network_id, "/edges/0/", count)
+  route <- paste0("/network/", network_id, "/asNetwork")
   ejson <- ndex_rest_GET(route)
   
   nw <- fromJSON(ejson)
