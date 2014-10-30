@@ -1,0 +1,16 @@
+{
+    "contents" : "##Authors:\n#   Alex Ishkin [aleksandr.ishkin@thomsonreuters.com]\n##Created: 6 June 2014\n# Contains class definitions for the graph objects\n\nsetOldClass('igraph') ##S3 class\n\n##########################################\n##Generic network based on data frames with node and edge properties\n##########################################\n\n#' Validator for ndexgraph class\n#' @param object R object to be tested\n#' @return returns TRUE if the object is valid instance of \\code{ndexgraph} S4 class; otherwise returns vector with error messages\n#' @note Additional validations may be needed!\nvalidate_ndexgraph <- function(object){\n  nodes <- object@nodes\n  edges <- object@edges\n    \n  errors <- character()\n  ##Check presence of necessary attributes\n  if(ncol(edges) < 1){\n    errors <- c(errors, \"Node data frame should contain at least 1 column\")\n  }\n  if(ncol(edges) < 2){\n    errors <- c(errors, \"Edge data frame should contain at least 2 columns (interacting node IDs)\")\n  }\n\n  ##Finalize check\n  if(length(errors) == 0){\n    return(TRUE)\n  }else{\n    return(errors)\n  }\n}\n\n##Class definition\n##Additional slots? Owning user, publicness, namespaces?\n\n#' S4 class representing NDEx network\n#' \n#' @slot nodes Data frame with node attributes\n#' @slot edges Data frame with edge attributes\n#' @slot node_annot Data frame with additional information on nodes (node aliases or IDs from other namespaces)\n#' @slot metadata Data frame containing general information about the network\n#' @slot name Name of the network\n#' @slot id Unique ID of the network\n#' @note So far ID and name are optional (by default will be NA upon initialization, and go unchecked by validator).\n#' @export\nsetClass(\"ndexgraph\",\n         representation(nodes = \"data.frame\", edges = \"data.frame\",\n                        node_annot = \"data.frame\", metadata = \"data.frame\",\n                        name = \"character\", id = \"character\"),\n         prototype = list(nodes = data.frame(node_id=character()),\n                          edges = data.frame(node_id1=character(), node_id2=character()),\n                          node_annot = data.frame(node_id=character()),\n                          metadata = data.frame(id=character()),\n                          name = NA_character_,\n                          id = NA_character_\n         ),\n         validity = validate_ndexgraph)",
+    "created" : 1413676271670.000,
+    "dirty" : false,
+    "encoding" : "ISO8859-1",
+    "folds" : "",
+    "hash" : "3549082753",
+    "id" : "BE6DE602",
+    "lastKnownWriteTime" : 1413157634,
+    "path" : "~/Projects/ndex-r-client/R/ndex_classes.r",
+    "project_path" : "R/ndex_classes.r",
+    "properties" : {
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}

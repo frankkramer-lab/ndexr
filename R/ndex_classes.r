@@ -1,7 +1,8 @@
 ##Authors:
 #   Alex Ishkin [aleksandr.ishkin@thomsonreuters.com]
+#   Dexter Pratt [depratt@ucsd.edu]
 ##Created: 6 June 2014
-# Contains class definitions for the graph objects
+# Defines ndexgraph class based on igraph
 
 setOldClass('igraph') ##S3 class
 
@@ -48,9 +49,12 @@ validate_ndexgraph <- function(object){
 #' @note So far ID and name are optional (by default will be NA upon initialization, and go unchecked by validator).
 #' @export
 setClass("ndexgraph",
-         representation(nodes = "data.frame", edges = "data.frame",
-                        node_annot = "data.frame", metadata = "data.frame",
-                        name = "character", id = "character"),
+         representation(nodes = "data.frame", 
+                        edges = "data.frame",
+                        node_annot = "data.frame", 
+                        metadata = "data.frame",
+                        name = "character", 
+                        id = "character"),
          prototype = list(nodes = data.frame(node_id=character()),
                           edges = data.frame(node_id1=character(), node_id2=character()),
                           node_annot = data.frame(node_id=character()),

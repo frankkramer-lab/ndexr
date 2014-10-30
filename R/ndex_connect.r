@@ -1,7 +1,9 @@
 ##Authors:
 #   Alex Ishkin [aleksandr.ishkin@thomsonreuters.com]
-##Created: 1 June 2014
-## Basic functions to connect and query NDEX API
+#   Dexter Pratt [depratt@ucsd.edu]
+## Created: 1 June 2014
+## Base functions to perform HTTP transactions to an NDEX server via the NDEx REST API
+## Updated to NDEX v1.0 API 1 November 2014
 
 ##Initialize internal environment to store package-specific stuff, of no value to user
 NDEx.env <- new.env(hash=T)

@@ -1,26 +1,31 @@
 ##Authors:
 #   Alex Ishkin [aleksandr.ishkin@thomsonreuters.com]
+#   Dexter Pratt [depratt@ucsd.edu]
 ##Created: 6 June 2014
 # Contains functions to search and retrieve networks
 
 #' Search networks in NDEx (by description)
 #' 
 #' @param searchString string by which to search
-#' @param searchType string; type of search (should be one of "exact-match", "contains", "begins-with")
+#' @param accountName string; constrain search to networks administered by this account
 #' @param skip how many networks to skip
 #' @param top how many networks to show
 #' @return Data frame with network information: ID, name, whether it is public, edge and node count; source and format of network
 #' @note Search strings may be structured
 #' @examples \dontrun{ndex.find.networks("calmodulin")}
 #' @export
-ndex.find.networks <- function(searchString, searchType="contains", skip = 0, top = 10){
-  searchType <- match.arg(searchType, choices=c("exact-match", "contains", "begins-with"))
+ndex.find.networks <- function(searchString, accountName, skip = 0, top = 10){
+  # searchType was an NDEx Beta feature but is not supported in v1.0. 
+  # An equivalent functionality may return in future versions.
+  # Dexter 10/30/14
+  # #' @param searchType string; type of search (should be one of "exact-match", "contains", "begins-with")
+  # searchType <- match.arg(searchType, choices=c("exact-match", "contains", "begins-with"))
   
   ##Form JSON to post
-  query <- toJSON(list(searchString=searchString, skip=skip, top=top))
+  query <- toJSON(list(searchString=searchString, accountName=accountName skip=skip, top=top))
   
   ##Form route
-  route <- paste0("/networks/search/", searchType)
+  route <- "/networks/search"
   is.authorized <- exists('ndex.opts', envir=NDEx.env)
   
   ##Get stuff
