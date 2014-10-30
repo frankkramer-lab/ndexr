@@ -14,7 +14,7 @@
 #' @note Search strings may be structured
 #' @examples \dontrun{ndex.find.networks("calmodulin")}
 #' @export
-ndex.find.networks <- function(searchString, accountName, skip = 0, top = 10){
+ndex.find.networks <- function(searchString="", accountName=FALSE, skip = 0, top = 10){
   # searchType was an NDEx Beta feature but is not supported in v1.0. 
   # An equivalent functionality may return in future versions.
   # Dexter 10/30/14
@@ -22,14 +22,18 @@ ndex.find.networks <- function(searchString, accountName, skip = 0, top = 10){
   # searchType <- match.arg(searchType, choices=c("exact-match", "contains", "begins-with"))
   
   ##Form JSON to post
-  query <- toJSON(list(searchString=searchString, accountName=accountName skip=skip, top=top))
-  
+  if (accountName){
+    query <- toJSON(list(searchString=searchString, accountName=accountName, skip=skip, top=top))
+  } else {
+    query <- toJSON(list(searchString=searchString, skip=skip, top=top))
+  }
+ 
   ##Form route
   route <- "/networks/search"
-  is.authorized <- exists('ndex.opts', envir=NDEx.env)
+  #is.authorized <- exists('ndex.opts', envir=NDEx.env)
   
   ##Get stuff
-  response_json <- ndex_rest_POST(route=route, query, auth=is.authorized)
+  response_json <- ndex_rest_POST(route=route, query)
   
   response <- fromJSON(response_json)
   ##Retrieve necessary data fields

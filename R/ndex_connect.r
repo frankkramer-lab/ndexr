@@ -8,7 +8,7 @@
 ##Initialize internal environment to store package-specific stuff, of no value to user
 NDEx.env <- new.env(hash=T)
 ##Set default REST server
-assign('host', 'http://dev.ndexbio.org:8080/ndexbio-rest', envir=NDEx.env)
+assign('host', 'http://www.ndexbio.org/rest', envir=NDEx.env)
 
 #' Connect to NDEx REST API
 #' 
@@ -20,28 +20,44 @@ assign('host', 'http://dev.ndexbio.org:8080/ndexbio-rest', envir=NDEx.env)
 #' @seealso \code{\link{ndex.get.host}}
 #' @export
 ndex.connect <- function(username, password, host){
-  if(missing(username) || missing(password)) stop("ndex.connect: Username or password not supplied")
+  credentials = TRUE
+  if(missing(username) || missing(password)){
+    cat("\nndex.connect: Connecting anonymously - username or password not supplied")
+    credentials = FALSE
+  } 
   if(missing(host)){
     ##Use host URL stored in internal environment (it may be default)
+    cat("ndex.connect: host not specified, using default")
     host <- ndex.get.host()
   } else{
     ##Use supplied host and store it in internal env
+    cat("\nndex.connect: host = ", host)
     ndex.set.host(host)
   }
   
-  ##Attempt authentication
-  try(auth_response <- getURL(paste0(host, "/users/authenticate/", username, "/", password)))
-  if(isValidJSON(auth_response, asText=T)){
-    auth_response <- fromJSON(auth_response)
-    ##Authentication successful (JSON with user data was returned)
-    ndex.opts <- curlOptions(userpwd=paste0(username, ":", password), httpauth = 1L)
-    ##Store RCurl options in the internal environment; reuse for other REST queries which require authentication
-    assign('ndex.opts', value=ndex.opts, envir=NDEx.env)
-    assign('current.user', value=auth_response$id, envir=NDEx.env)
-    
-    cat("Connected to REST server ", host, "\nWelcome, ", auth_response$username, "!\n",  sep='')
-  } else{
-    stop(paste("ndex.connect:", auth_response))
+  ##Attempt authentication if we have credentials
+  if (credentials){
+    try(auth_response <- getURL(paste0(host, "/user/authenticate/", username, "/", password)))
+    if(isValidJSON(auth_response, asText=T)){
+      auth_response <- fromJSON(auth_response)
+      ##Authentication successful (JSON with user data was returned)
+      ndex.opts <- curlOptions(userpwd=paste0(username, ":", password), httpauth = 1L)
+      ##Store RCurl options in the internal environment; reuse for other REST queries which require authentication
+      assign('ndex.opts', value=ndex.opts, envir=NDEx.env)
+      assign('current.user', value=auth_response$id, envir=NDEx.env)
+      
+      cat(host, " responding as NDEx REST server ", "\nAuthentication of, ", auth_response$username, "is successful!\n",  sep='')
+    } else{
+      stop(paste("ndex.connect with credentials. response = ", auth_response))
+    }
+  } else {
+    ##Check response of standard admin query
+    try(auth_response <- getURL(paste0(host, "admin")))
+    if(isValidJSON(auth_response, asText=T)){
+      cat(host, " responding as NDEx REST server",  sep='')
+    }else{
+      stop(paste("ndex.connect:", auth_response))
+    }       
   }
   invisible(TRUE)
 }
@@ -74,17 +90,16 @@ ndex.alive <- function(){
 #' Generic GET query to API
 #' 
 #' @param route Character (route to specific REST query)
-#' @param auth Logical: is authentication required?
 #' @return JSON response from REST server (it will be handled downstream)
 #' @details Simply execute HTTP GET on URL host/route and fetch whatever data REST server returns 
 #' Making sure the route is well-formed is the job of calling function
 #' @seealso \code{\link{_ndex_rest_PUT}},  \code{\link{_ndex_rest_POST}},  \code{\link{_ndex_rest_DELETE}}
 #' @examples
 #' \dontrun{ndex_rest_GET("/networks/api")}
-ndex_rest_GET <- function(route, auth=TRUE){
+ndex_rest_GET <- function(route){
   url <- paste0(ndex.get.host(), route)
-  if(auth){
-    if(!ndex.alive()) stop("Authentication required!")
+  if(NDEx.env$ndex.opts){
+    #if(!ndex.alive()) stop("Authentication required!")
     auth.opts <- NDEx.env$ndex.opts
   } else{
     auth.opts <- curlOptions(httpauth = 1L)
@@ -105,11 +120,11 @@ ndex_rest_GET <- function(route, auth=TRUE){
 #' @seealso \code{\link{_ndex_rest_GET}},  \code{\link{_ndex_rest_POST}},  \code{\link{_ndex_rest_DELETE}}
 #' @examples
 #' ##TBD
-ndex_rest_PUT <- function(route, data, auth=TRUE){
+ndex_rest_PUT <- function(route, data){
   if(!isValidJSON(data, asText = TRUE)) stop(sprintf("Malformed JSON input for POST query: %s", data))
   url <- paste0(ndex.get.host(), route)
-  if(auth){
-    if(!ndex.alive()) stop("Authentication required!")
+  if(NDEx.env$ndex.opts){
+    #if(!ndex.alive()) stop("Authentication required!")
     auth.opts <- NDEx.env$ndex.opts
   } else{
     auth.opts <- curlOptions(httpauth = 1L)
@@ -138,7 +153,6 @@ ndex_rest_PUT <- function(route, data, auth=TRUE){
 #' 
 #' @param route Character (route to specific REST query)
 #' @param data Whatever data to be supplied with query. Should be valid JSON
-#' @param auth Logical: is authentication required?
 #' @return JSON response from REST server (it will be handled downstream)
 #' @details Simply execute HTTP PUT on URL host/route and fetch whatever data REST server returns 
 #' Making sure the route is well-formed is the job of calling function
@@ -146,11 +160,11 @@ ndex_rest_PUT <- function(route, data, auth=TRUE){
 #' @seealso \code{\link{_ndex_rest_GET}},  \code{\link{_ndex_rest_PUT}},  \code{\link{_ndex_rest_DELETE}}
 #' @examples
 #' ##TBD
-ndex_rest_POST <- function(route, data, auth=TRUE){
+ndex_rest_POST <- function(route, data){
   if(!isValidJSON(data, asText = TRUE)) stop(sprintf("Malformed JSON input for POST query: %s", data))
   url <- paste0(ndex.get.host(), route)
-  if(auth){
-    if(!ndex.alive()) stop("Authentication required!")
+  if(NDEx.env$ndex.opts){
+    ##if(!ndex.alive()) stop("Authentication required!")
     auth.opts <- NDEx.env$ndex.opts
   } else{
     auth.opts <- curlOptions(httpauth = 1L)
@@ -185,9 +199,12 @@ ndex.set.host <- function(host){
   if(!is.character(host)) stop("ndex.set.host: string expected as an input")
   ##Clean up a little (to avoid malformed queries)
   if(grepl("/$", host)) host <- sub("/$", "", host)
-  
+  adminURL <- paste0(host, "/admin/status") 
+  cat("\ntest url = ", adminURL)
+  exists <- url.exists(adminURL)
+  cat("\nexists = ", exists, " host = ", host)
   ##Check if host is alive
-  if(!url.exists(host)) stop(sprintf("Host %s does not exist"), host)
+  if(!exists) stop(sprintf("Host %s does not exist", host))
   
   assign('host', host, envir=NDEx.env)
   invisible(TRUE)
