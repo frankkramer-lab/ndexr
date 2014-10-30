@@ -98,8 +98,7 @@ ndex.alive <- function(){
 #' \dontrun{ndex_rest_GET("/networks/api")}
 ndex_rest_GET <- function(route){
   url <- paste0(ndex.get.host(), route)
-  if(NDEx.env$ndex.opts){
-    #if(!ndex.alive()) stop("Authentication required!")
+  if(exists('ndex.opts', envir=NDEx.env)){
     auth.opts <- NDEx.env$ndex.opts
   } else{
     auth.opts <- curlOptions(httpauth = 1L)
@@ -123,8 +122,7 @@ ndex_rest_GET <- function(route){
 ndex_rest_PUT <- function(route, data){
   if(!isValidJSON(data, asText = TRUE)) stop(sprintf("Malformed JSON input for POST query: %s", data))
   url <- paste0(ndex.get.host(), route)
-  if(NDEx.env$ndex.opts){
-    #if(!ndex.alive()) stop("Authentication required!")
+  if(exists('ndex.opts', envir=NDEx.env)){
     auth.opts <- NDEx.env$ndex.opts
   } else{
     auth.opts <- curlOptions(httpauth = 1L)
@@ -163,8 +161,8 @@ ndex_rest_PUT <- function(route, data){
 ndex_rest_POST <- function(route, data){
   if(!isValidJSON(data, asText = TRUE)) stop(sprintf("Malformed JSON input for POST query: %s", data))
   url <- paste0(ndex.get.host(), route)
-  if(NDEx.env$ndex.opts){
-    ##if(!ndex.alive()) stop("Authentication required!")
+  cat("\nPOST: [ ", url, " ]\n")
+  if(exists('ndex.opts', envir=NDEx.env)){
     auth.opts <- NDEx.env$ndex.opts
   } else{
     auth.opts <- curlOptions(httpauth = 1L)

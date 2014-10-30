@@ -1,4 +1,4 @@
-ndex-r-client
+rendex-r-client
 =============
 
 R client library for NDEx

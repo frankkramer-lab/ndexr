@@ -40,10 +40,9 @@ validate_ndexgraph <- function(object){
 
 #' S4 class representing NDEx network
 #' 
-#' @slot nodes Data frame with node attributes
-#' @slot edges Data frame with edge attributes
-#' @slot node_annot Data frame with additional information on nodes (node aliases or IDs from other namespaces)
-#' @slot metadata Data frame containing general information about the network
+#' @slot nodes Data frame with node properties
+#' @slot edges Data frame with edge properties
+#' @slot properties Data frame containing network properties
 #' @slot name Name of the network
 #' @slot id Unique ID of the network
 #' @note So far ID and name are optional (by default will be NA upon initialization, and go unchecked by validator).
@@ -51,14 +50,12 @@ validate_ndexgraph <- function(object){
 setClass("ndexgraph",
          representation(nodes = "data.frame", 
                         edges = "data.frame",
-                        node_annot = "data.frame", 
-                        metadata = "data.frame",
+                        properties = "data.frame",
                         name = "character", 
                         id = "character"),
          prototype = list(nodes = data.frame(node_id=character()),
                           edges = data.frame(node_id1=character(), node_id2=character()),
-                          node_annot = data.frame(node_id=character()),
-                          metadata = data.frame(id=character()),
+                          properties = data.frame(id=character()),
                           name = NA_character_,
                           id = NA_character_
          ),

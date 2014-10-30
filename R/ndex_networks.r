@@ -14,7 +14,7 @@
 #' @note Search strings may be structured
 #' @examples \dontrun{ndex.find.networks("calmodulin")}
 #' @export
-ndex.find.networks <- function(searchString="", accountName=FALSE, skip = 0, top = 10){
+ndex.find.networks <- function(searchString="", accountName, skipBlocks = 0, blockSize = 10){
   # searchType was an NDEx Beta feature but is not supported in v1.0. 
   # An equivalent functionality may return in future versions.
   # Dexter 10/30/14
@@ -22,17 +22,17 @@ ndex.find.networks <- function(searchString="", accountName=FALSE, skip = 0, top
   # searchType <- match.arg(searchType, choices=c("exact-match", "contains", "begins-with"))
   
   ##Form JSON to post
-  if (accountName){
-    query <- toJSON(list(searchString=searchString, accountName=accountName, skip=skip, top=top))
+  if (missing(accountName)){
+    query <- toJSON(list(searchString=searchString))
   } else {
-    query <- toJSON(list(searchString=searchString, skip=skip, top=top))
+    query <- toJSON(list(searchString=searchString, accountName=accountName))
   }
  
   ##Form route
-  route <- "/networks/search"
+  route <- sprintf("/network/search/%s/%s", skipBlocks, blockSize)
   #is.authorized <- exists('ndex.opts', envir=NDEx.env)
   
-  ##Get stuff
+  ##Get a list of NetworkSummary objects
   response_json <- ndex_rest_POST(route=route, query)
   
   response <- fromJSON(response_json)
@@ -49,14 +49,14 @@ ndex.find.networks <- function(searchString="", accountName=FALSE, skip = 0, top
 #' @param json logical; whether to return JSON (TRUE) or convert it to data frame. Default FALSE 
 #' @return Complete JSON response or Data frame with network metadata: ID, name, whether it is public, edge and node count; source and format of network
 #' @export
-ndex.get.network.metadata <- function(network_id, json=FALSE){
-  route <- paste0("/networks/", network_id)
+ndex.get.network.summary <- function(network_id, json=FALSE){
+  route <- paste0("/network/", network_id)
   response <- ndex_rest_GET(route)
   if(json) return(response)
   else return(json_parse_network_metadata(response))
 }
 
-#' Get network edges by ID
+#' Get complete network
 #' 
 #' @param network_id unique ID of the network
 #' @return \code{\link{ndexgraph}} object
@@ -64,64 +64,86 @@ ndex.get.network.metadata <- function(network_id, json=FALSE){
 #' Nodes use primary ID of the base term ('represents' element)
 #' Edges use primary ID of the base term ('predicate', or 'p' element)
 #' Mapping table for the nodes is retrieved ('alias' and 'related' terms) to facilitate conversions/data mapping
-#' @note Currently fetches all edges; may be suboptimal for huge networks
 #' @export
-ndex.get.complete.network <- function(network_id, json=FALSE){
-
-  
-  ##For now, just fetch all edges
+ndex.get.complete.network <- function(network_id){
   route <- paste0("/network/", network_id, "/asNetwork")
-  ejson <- ndex_rest_GET(route)
-  
-  nw <- fromJSON(ejson)
-  
-  ##Retrieve all namespaces
-  nslist <- nw$namespaces
-  namespaces <- jsonlist2df(nslist)
-  
-  ##Retrieve all base terms
-  termlist <- nw$terms
-  terms <- jsonlist2df(termlist)
-  terms$namespace_name <- namespaces$prefix[match(terms$namespace, namespaces$jdexId)]
-  
-  ##Get node data frame
-  nodelist <- nw$nodes
-  nodes <- do.call(rbind, lapply(nodelist, function(x){c(x$name, x$id, x$represents)}))
-  nodes <- data.frame(id=names(nodelist), nodes, stringsAsFactors = FALSE)
-  colnames(nodes) <- c('node_id', 'name', 'id', 'term_id')
-  ##Append information from the terms: namespace name and ID of 'representing' term in its namespace
-  terminfo_nodes <- terms[as.character(nodes$term_id), c('name', 'namespace', 'namespace_name')]
-  colnames(terminfo_nodes)[1] <- 'ref'
-  nodes <- cbind(nodes, terminfo_nodes)
-  
-  ##Get aliases and related terms for the nodes formatted
-  node.aliases <- lapply(nodelist, '[[', 'aliases')
-  alias_df <- unlist2df(node.aliases, names=c('node_id', 'ref_id'))
-  alias_df$type <- 'Alias'
-  node.related <- lapply(nodelist, '[[', 'relatedTerms')
-  related_df <- unlist2df(node.related, names=c('node_id', 'ref_id'))
-  related_df$type <- 'Related'
-  node.annot <- rbind(alias_df, related_df)
-  terminfo_annot <- terms[as.character(node.annot$ref_id), c('name', 'namespace', 'namespace_name')]
-  colnames(terminfo_annot)[1] <- 'ref'
-  node.annot <- cbind(node.annot, terminfo_annot)
-  
-  ##Retrieve all edges
-  edgelist <- nw$edges
-  edges <- jsonlist2df(edgelist)
-  ##Append information from the terms: namespace name and ID of predicate in this namespace
-  terminfo_edges <- terms[as.character(edges$p), c('name', 'namespace', 'namespace_name')]
-  colnames(terminfo_edges)[1] <- 'edge_desc'
-  edges <- cbind(edges, terminfo_edges)
-  
-  out <- new('ndexgraph',
-             nodes = nodes,
-             edges = edges,
-             node_annot = node.annot,
-             metadata = m,
-             name = m$network_name,
-             id = m$network_id)
+  return(ndex_rest_GET(route))
 }
+
+#' Get complete network as property graph
+#' 
+#' @param network_id unique ID of the network
+#' @return \code{\link{ndexgraph}} object
+#' @details Uses getEdges (this procedure will return complete network with all elements)
+#' Nodes use primary ID of the base term ('represents' element)
+#' Edges use primary ID of the base term ('predicate', or 'p' element)
+#' Mapping table for the nodes is retrieved ('alias' and 'related' terms) to facilitate conversions/data mapping
+#' @export
+ndex.get.complete.network.as.property.graph <- function(network_id){
+  route <- paste0("/network/", network_id, "/asPropertyGraph")
+  return(ndex_rest_GET(route))
+}
+
+ndex.property.graph.as.ndexgraph <- function(property_graph){
+  out <- new('ndexgraph',
+            nodes = nodes,
+            edges = edges,
+            properties = m,
+            name = m$network_name,
+            id = m$network_id)
+  return(out)
+}
+
+# 
+#   nw <- fromJSON(ejson)
+#   
+#   ##Retrieve all namespaces
+#   nslist <- nw$namespaces
+#   namespaces <- jsonlist2df(nslist)
+#   
+#   ##Retrieve all base terms
+#   termlist <- nw$terms
+#   terms <- jsonlist2df(termlist)
+#   terms$namespace_name <- namespaces$prefix[match(terms$namespace, namespaces$jdexId)]
+#   
+#   ##Get node data frame
+#   nodelist <- nw$nodes
+#   nodes <- do.call(rbind, lapply(nodelist, function(x){c(x$name, x$id, x$represents)}))
+#   nodes <- data.frame(id=names(nodelist), nodes, stringsAsFactors = FALSE)
+#   colnames(nodes) <- c('node_id', 'name', 'id', 'term_id')
+#   ##Append information from the terms: namespace name and ID of 'representing' term in its namespace
+#   terminfo_nodes <- terms[as.character(nodes$term_id), c('name', 'namespace', 'namespace_name')]
+#   colnames(terminfo_nodes)[1] <- 'ref'
+#   nodes <- cbind(nodes, terminfo_nodes)
+#   
+#   ##Get aliases and related terms for the nodes formatted
+#   node.aliases <- lapply(nodelist, '[[', 'aliases')
+#   alias_df <- unlist2df(node.aliases, names=c('node_id', 'ref_id'))
+#   alias_df$type <- 'Alias'
+#   node.related <- lapply(nodelist, '[[', 'relatedTerms')
+#   related_df <- unlist2df(node.related, names=c('node_id', 'ref_id'))
+#   related_df$type <- 'Related'
+#   node.annot <- rbind(alias_df, related_df)
+#   terminfo_annot <- terms[as.character(node.annot$ref_id), c('name', 'namespace', 'namespace_name')]
+#   colnames(terminfo_annot)[1] <- 'ref'
+#   node.annot <- cbind(node.annot, terminfo_annot)
+#   
+#   ##Retrieve all edges
+#   edgelist <- nw$edges
+#   edges <- jsonlist2df(edgelist)
+#   ##Append information from the terms: namespace name and ID of predicate in this namespace
+#   terminfo_edges <- terms[as.character(edges$p), c('name', 'namespace', 'namespace_name')]
+#   colnames(terminfo_edges)[1] <- 'edge_desc'
+#   edges <- cbind(edges, terminfo_edges)
+#   
+#   out <- new('ndexgraph',
+#              nodes = nodes,
+#              edges = edges,
+#              node_annot = node.annot,
+#              metadata = m,
+#              name = m$network_name,
+#              id = m$network_id)
+# }
 
 
 ##########################################################
