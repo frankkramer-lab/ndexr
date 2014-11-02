@@ -98,6 +98,7 @@ ndex.alive <- function(){
 #' \dontrun{ndex_rest_GET("/networks/api")}
 ndex_rest_GET <- function(route){
   url <- paste0(ndex.get.host(), route)
+  cat("\nGET: [ ", url, " ]\n")
   if(exists('ndex.opts', envir=NDEx.env)){
     auth.opts <- NDEx.env$ndex.opts
   } else{

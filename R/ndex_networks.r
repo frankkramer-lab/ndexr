@@ -4,7 +4,15 @@
 ##Created: 6 June 2014
 # Contains functions to search and retrieve networks
 
+get.network.api <- function(json=FALSE){
+  route <- "/network/api"
+  response <- ndex_rest_GET(route)
+  if(json) return(response)
+  else return(json_parse_network_metadata(response))
+}
+
 #' Search networks in NDEx (by description)
+#'     network    POST    /network/search/{skipBlocks}/{blockSize}    SimpleNetworkQuery    NetworkSummary[]
 #' 
 #' @param searchString string by which to search
 #' @param accountName string; constrain search to networks administered by this account
@@ -43,7 +51,14 @@ ndex.find.networks <- function(searchString="", accountName, skipBlocks = 0, blo
   return(out)
 }
 
-#' Get network metadata by ID
+# def findNetworksAsDataFrame(self, searchString="", accountName=None, skipBlocks=0, blockSize=100): 
+#   return pd.DataFrame(self.findNetworks(searchString, accountName, skipBlocks, blockSize))
+
+##########################################################
+# Network Functions
+
+#' Get NetworkSummary by Network UUID
+#' GET    /network/{networkUUID}       NetworkSummary
 #' 
 #' @param network_id unique ID of the network
 #' @param json logical; whether to return JSON (TRUE) or convert it to data frame. Default FALSE 
@@ -57,6 +72,7 @@ ndex.get.network.summary <- function(network_id, json=FALSE){
 }
 
 #' Get complete network
+#' GET    /network/{networkUUID}/asNetwork       Network
 #' 
 #' @param network_id unique ID of the network
 #' @return \code{\link{ndexgraph}} object
@@ -69,6 +85,34 @@ ndex.get.complete.network <- function(network_id){
   route <- paste0("/network/", network_id, "/asNetwork")
   return(ndex_rest_GET(route))
 }
+
+#    network    POST    /network/{networkUUID}/edge/asNetwork/{skipBlocks}/{blockSize}        Network
+def getNetworkByEdges(self, networkId, skipBlocks=0, blockSize=100):
+  route = "/network/%s/edge/asNetwork/%s/%s" % (networkId, skipBlocks, blockSize)
+return self.get(route)
+
+#    network    POST    /network    Network    NetworkSummary
+def saveNewNetwork(self, Network):
+  route = "/network/asNetwork"
+return self.post(route, Network)
+
+#    network    POST    /network/asNetwork/group/{group UUID}    Network    NetworkSummary
+def saveNewNetworkForGroup(self, Network, groupId):
+  route = "/network/asNetwork/group/%s" % (groupId)
+self.removeUUIDFromNetwork(Network)
+return self.post(route, Network)
+
+##  Neighborhood PathQuery
+#    network    POST    /network/{networkUUID}/asPropertyGraph/query    SimplePathQuery    PropertyGraphNetwork    
+def getNeighborhood(self, networkId, searchString, searchDepth=1):
+  route = "/network/%s/asNetwork/query" % (networkId) 
+postData = {'searchString': searchString,
+            'searchDepth': searchDepth}
+postJson = json.dumps(postData)
+return self.post(route, postJson)
+
+##########################################################
+# PropertyGraphNetwork Functions
 
 #' Get complete network as property graph
 #' 
@@ -93,6 +137,41 @@ ndex.property.graph.as.ndexgraph <- function(property_graph){
             id = m$network_id)
   return(out)
 }
+
+
+
+# PropertyGraphNetwork methods
+
+#    network    POST    /network/{networkUUID}/edge/asPropertyGraph/{skipBlocks}/{blockSize}        PropertyGraphNetwork
+def getPropertyGraphNetworkByEdges(self, networkId, skipBlocks=0, blockSize=100):
+  route = "/network/%s/edge/asPropertyGraph/%s/%s" % (networkId, skipBlocks, blockSize)
+return self.get(route)
+
+#    network    GET    /network/{networkUUID}/asPropertyGraph        PropertyGraphNetwork
+def getCompletePropertyGraphNetwork(self, networkId):
+  route = "/network/%s/asPropertyGraph" % (networkId)
+return self.get(route)
+
+#    network    POST    /network/asPropertyGraph    PropertyGraphNetwork    NetworkSummary
+def saveNewPropertyGraphNetwork(self, propertyGraphNetwork):
+  route = "/network/asPropertyGraph"
+self.removeUUIDFromNetwork(propertyGraphNetwork)
+return self.post(route, propertyGraphNetwork)
+
+#    network    POST    /network/asPropertyGraph/group/{group UUID}    PropertyGraphNetwork    NetworkSummary
+def saveNewPropertyGraphNetworkForGroup(self, propertyGraphNetwork, groupId):
+  route = "/network/asPropertyGraph/group/%s" % (groupId)
+self.removeUUIDFromNetwork(propertyGraphNetwork)
+return self.post(route, propertyGraphNetwork)
+
+##  Neighborhood PathQuery
+#    network    POST    /network/{networkUUID}/asPropertyGraph/query    SimplePathQuery    PropertyGraphNetwork    
+def getNeighborhoodAsPropertyGraph(self, networkId, searchString, searchDepth=1):
+  route = "/network/%s/asPropertyGraph/query" % (networkId) 
+postData = {'searchString': searchString,
+            'searchDepth': searchDepth}
+postJson = json.dumps(postData)
+return self.post(route, postJson)
 
 # 
 #   nw <- fromJSON(ejson)
