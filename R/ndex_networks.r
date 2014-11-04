@@ -86,35 +86,49 @@ ndex.get.complete.network <- function(network_id){
   return(ndex_rest_GET(route))
 }
 
-#    network    POST    /network/{networkUUID}/edge/asNetwork/{skipBlocks}/{blockSize}        Network
-def getNetworkByEdges(self, networkId, skipBlocks=0, blockSize=100):
-  route = "/network/%s/edge/asNetwork/%s/%s" % (networkId, skipBlocks, blockSize)
-return self.get(route)
+# POST    /network/{networkUUID}/edge/asNetwork/{skipBlocks}/{blockSize}        Network
+ndex.get.network.by.edges <- function(networkId, skipBlocks=0, blockSize=100){
+  route <- sprintf('/network/%s/edge/asNetwork/%s/%s', networkId, skipBlocks, blockSize)
+  return(ndex_rest_GET(route))
+}
 
-#    network    POST    /network    Network    NetworkSummary
-def saveNewNetwork(self, Network):
-  route = "/network/asNetwork"
-return self.post(route, Network)
+# POST    /network    Network    NetworkSummary
+ndex.save.new.network <- function(network){
+  route <- "/network/asNetwork"
+  return(ndex_rest_POST(route, network))
+}
 
-#    network    POST    /network/asNetwork/group/{group UUID}    Network    NetworkSummary
-def saveNewNetworkForGroup(self, Network, groupId):
-  route = "/network/asNetwork/group/%s" % (groupId)
-self.removeUUIDFromNetwork(Network)
-return self.post(route, Network)
+# POST    /network/asNetwork/group/{group UUID}    Network    NetworkSummary
+ndex.save.new.network.for.group <- function(network, groupId){
+  route <- paste0("/network/asNetwork/group/", groupId)
+  network <- remove.uuid.from.network(network)
+  return(ndex_rest_POST(route, network))
+}
 
 ##  Neighborhood PathQuery
-#    network    POST    /network/{networkUUID}/asPropertyGraph/query    SimplePathQuery    PropertyGraphNetwork    
-def getNeighborhood(self, networkId, searchString, searchDepth=1):
-  route = "/network/%s/asNetwork/query" % (networkId) 
-postData = {'searchString': searchString,
-            'searchDepth': searchDepth}
-postJson = json.dumps(postData)
-return self.post(route, postJson)
+#   POST    /network/{networkUUID}/asPropertyGraph/query    SimplePathQuery    PropertyGraphNetwork    
+ndex.get.neighborhood <- function(networkId, searchString="", searchDepth=1){
+  route <- sprintf("/network/%s/asNetwork/query", networkId) 
+  query <- toJSON(list(searchString=searchString, searchDepth=searchDepth))
+  return(ndex_rest_POST(route, query))
+}
 
 ##########################################################
 # PropertyGraphNetwork Functions
 
+# PropertyGraphNetwork JSON data are more easily converted to ndexgraph objects than Network JSON data
+ndex.property.graph.as.ndexgraph <- function(property_graph){
+  out <- new('ndexgraph',
+             nodes = nodes,
+             edges = edges,
+             properties = m,
+             name = m$network_name,
+             id = m$network_id)
+  return(out)
+}
+
 #' Get complete network as property graph
+#' GET    /network/{networkUUID}/asPropertyGraph        PropertyGraphNetwork
 #' 
 #' @param network_id unique ID of the network
 #' @return \code{\link{ndexgraph}} object
@@ -128,50 +142,33 @@ ndex.get.complete.network.as.property.graph <- function(network_id){
   return(ndex_rest_GET(route))
 }
 
-ndex.property.graph.as.ndexgraph <- function(property_graph){
-  out <- new('ndexgraph',
-            nodes = nodes,
-            edges = edges,
-            properties = m,
-            name = m$network_name,
-            id = m$network_id)
-  return(out)
+#   POST    /network/{networkUUID}/edge/asPropertyGraph/{skipBlocks}/{blockSize}        PropertyGraphNetwork
+ndex.get.property.graph.network.by.edges <- function(networkId, skipBlocks=0, blockSize=100){
+  route <- sprintf("/network/%s/edge/asPropertyGraph/%s/%s", networkId, skipBlocks, blockSize)
+  return(ndex_rest_GET(route))
 }
 
+#   POST    /network/asPropertyGraph    PropertyGraphNetwork    NetworkSummary
+ndex.save.new.property.graph.network <- function(propertyGraphNetwork){
+  route <- "/network/asPropertyGraph"
+  propertyGraphNetwork <- ndex.remove.uuid.from.network(propertyGraphNetwork)
+  return(ndex_rest_POST(route, propertyGraphNetwork))
+}
 
-
-# PropertyGraphNetwork methods
-
-#    network    POST    /network/{networkUUID}/edge/asPropertyGraph/{skipBlocks}/{blockSize}        PropertyGraphNetwork
-def getPropertyGraphNetworkByEdges(self, networkId, skipBlocks=0, blockSize=100):
-  route = "/network/%s/edge/asPropertyGraph/%s/%s" % (networkId, skipBlocks, blockSize)
-return self.get(route)
-
-#    network    GET    /network/{networkUUID}/asPropertyGraph        PropertyGraphNetwork
-def getCompletePropertyGraphNetwork(self, networkId):
-  route = "/network/%s/asPropertyGraph" % (networkId)
-return self.get(route)
-
-#    network    POST    /network/asPropertyGraph    PropertyGraphNetwork    NetworkSummary
-def saveNewPropertyGraphNetwork(self, propertyGraphNetwork):
-  route = "/network/asPropertyGraph"
-self.removeUUIDFromNetwork(propertyGraphNetwork)
-return self.post(route, propertyGraphNetwork)
-
-#    network    POST    /network/asPropertyGraph/group/{group UUID}    PropertyGraphNetwork    NetworkSummary
-def saveNewPropertyGraphNetworkForGroup(self, propertyGraphNetwork, groupId):
-  route = "/network/asPropertyGraph/group/%s" % (groupId)
-self.removeUUIDFromNetwork(propertyGraphNetwork)
-return self.post(route, propertyGraphNetwork)
+#   POST    /network/asPropertyGraph/group/{group UUID}    PropertyGraphNetwork    NetworkSummary
+ndex.save.new.property.graph.network.for.group <- function(propertyGraphNetwork, groupId){
+  route <- sprintf("/network/asPropertyGraph/group/%s", groupId)
+  propertyGraphNetwork <- ndex.remove.uuid.from.network(propertyGraphNetwork)
+  return(ndex_rest_POST(route, propertyGraphNetwork))
+}
 
 ##  Neighborhood PathQuery
-#    network    POST    /network/{networkUUID}/asPropertyGraph/query    SimplePathQuery    PropertyGraphNetwork    
-def getNeighborhoodAsPropertyGraph(self, networkId, searchString, searchDepth=1):
-  route = "/network/%s/asPropertyGraph/query" % (networkId) 
-postData = {'searchString': searchString,
-            'searchDepth': searchDepth}
-postJson = json.dumps(postData)
-return self.post(route, postJson)
+#   POST    /network/{networkUUID}/asPropertyGraph/query    SimplePathQuery    PropertyGraphNetwork 
+ndex.get.neighborhood.as.property.graph <-function(networkId, searchString="", searchDepth=1){
+  route <- sprintf("/network/%s/asPropertyGraph/query", networkId) 
+  query <- toJSON(list(searchString=searchString, searchDepth=searchDepth))
+  return(ndex_rest_POST(route, query))
+}
 
 # 
 #   nw <- fromJSON(ejson)
