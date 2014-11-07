@@ -67,6 +67,7 @@ ndex.find.networks <- function(searchString="", accountName, skipBlocks = 0, blo
 ndex.get.network.summary <- function(network_id, json=FALSE){
   route <- paste0("/network/", network_id)
   response <- ndex_rest_GET(route)
+  response <- fromJSON(response)
   if(json) return(response)
   else return(json_parse_network_metadata(response))
 }
@@ -239,6 +240,7 @@ jsonlist2vector <- function(l){
   l <- lapply(l, function(x){if(is.null(x)) return('') else return(x)})
   l[sapply(l, is.list)] <- ''
   l[sapply(l, length) > 1] <- NULL
+  print(l)
   cc <- unlist(l)
   return(cc)
 }
@@ -276,15 +278,15 @@ unlist2df <- function(l, names=c('key', 'value')){
 #' @param nd list with network metadata information (JSON or parsed JSON)
 #' @return Data frame with network information: ID, name, whether it is public, edge and node count; source and format of network
 json_parse_network_metadata <- function(nd){
-  if(!is.list(nd)) nd <- fromJSON(nd)
+  print(nd)
   if(any(sapply(nd, is.null))) nd <- lapply(nd, function(x){if(is.null(x)) return('') else return(x)})
-  out <- data.frame(network_id = nd$id,
+  out <- data.frame(network_id = nd$externalId,
                     network_name = nd$name,
                     node_count = nd$nodeCount,
                     edge_count = nd$edgeCount,
-                    isPublic = nd$isPublic,
-                    source = nd$metadata['Source'],
-                    format = nd$metadata['Format'],
+                    visibility = nd$visibility,
+                    #source = nd$properties['Source'],
+                    #format = nd$properties['Format'],
                     stringsAsFactors=FALSE)
   return(out)
 }

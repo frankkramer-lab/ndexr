@@ -40,13 +40,14 @@ ndex.connect <- function(username, password, host){
     try(auth_response <- getURL(paste0(host, "/user/authenticate/", username, "/", password)))
     if(isValidJSON(auth_response, asText=T)){
       auth_response <- fromJSON(auth_response)
+      #print(auth_response)
       ##Authentication successful (JSON with user data was returned)
       ndex.opts <- curlOptions(userpwd=paste0(username, ":", password), httpauth = 1L)
       ##Store RCurl options in the internal environment; reuse for other REST queries which require authentication
       assign('ndex.opts', value=ndex.opts, envir=NDEx.env)
       assign('current.user', value=auth_response$id, envir=NDEx.env)
       
-      cat(host, " responding as NDEx REST server ", "\nAuthentication of, ", auth_response$username, "is successful!\n",  sep='')
+      cat("\n", host, " is responding as an NDEx REST server ", "\nAuthentication of [", auth_response$accountName, "] is successful!\n",  sep='')
     } else{
       stop(paste("ndex.connect with credentials. response = ", auth_response))
     }
@@ -105,7 +106,7 @@ ndex_rest_GET <- function(route){
     auth.opts <- curlOptions(httpauth = 1L)
   }
   content <- getURL(url, .opts=auth.opts)
-  return(content)
+  return(fromJSON(content))
 }
 
 #' Generic PUT query to API
@@ -144,7 +145,7 @@ ndex_rest_PUT <- function(route, data){
   content = h$value()
   
   #content <- httpPUT(url, content=data , .opts=auth.opts)
-  return(content)
+  return(fromJSON(content))
 }
 
 
@@ -178,7 +179,7 @@ ndex_rest_POST <- function(route, data){
               .opts=auth.opts)
   
   content = h$value()
-  return(content)
+  return(fromJSON(content))
 }
 
 #################################################
@@ -199,12 +200,10 @@ ndex.set.host <- function(host){
   ##Clean up a little (to avoid malformed queries)
   if(grepl("/$", host)) host <- sub("/$", "", host)
   adminURL <- paste0(host, "/admin/status") 
-  cat("\ntest url = ", adminURL)
+  cat("\ntesting NDEx server status at ", adminURL)
   exists <- url.exists(adminURL)
-  cat("\nexists = ", exists, " host = ", host)
-  ##Check if host is alive
+  cat("\nhost exists = ", exists)
   if(!exists) stop(sprintf("Host %s does not exist", host))
-  
   assign('host', host, envir=NDEx.env)
   invisible(TRUE)
 }
