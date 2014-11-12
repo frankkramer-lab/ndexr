@@ -42,10 +42,10 @@ ndex.connect <- function(username, password, host){
       auth_response <- fromJSON(auth_response)
       #print(auth_response)
       ##Authentication successful (JSON with user data was returned)
-      ndex.opts <- curlOptions(userpwd=paste0(username, ":", password), httpauth = 1L)
+      ndex.opts <- curlOptions(userpwd = paste0(username, ":", password), httpauth = 1L)
       ##Store RCurl options in the internal environment; reuse for other REST queries which require authentication
-      assign('ndex.opts', value=ndex.opts, envir=NDEx.env)
-      assign('current.user', value=auth_response$id, envir=NDEx.env)
+      assign('ndex.opts', value = ndex.opts, envir = NDEx.env)
+      assign('current.user', value = auth_response$accountName, envir = NDEx.env)
       
       cat("\n", host, " is responding as an NDEx REST server ", "\nAuthentication of [", auth_response$accountName, "] is successful!\n",  sep='')
     } else{
@@ -74,7 +74,7 @@ ndex.alive <- function(){
   }else{
     ##Try getting something from API again
     test <- NULL
-    try(test <- getURL(paste0(ndex.get.host(), "/users/", NDEx.env$current.user), .opts=NDEx.env$ndex.opts))
+    try(test <- getURL(paste0(ndex.get.host(), "/user/", NDEx.env$current.user), .opts=NDEx.env$ndex.opts))
     if(is.null(test)){
       return(FALSE)
     }else{

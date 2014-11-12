@@ -4,11 +4,13 @@
 ##Created: 6 June 2014
 # Contains functions to search and retrieve networks
 
-get.network.api <- function(json=FALSE){
+get.network.api <- function(){
   route <- "/network/api"
-  response <- ndex_rest_GET(route)
-  if(json) return(response)
-  else return(json_parse_network_metadata(response))
+  response <- ndexr:::ndex_rest_GET(route)
+  df <- data.frame(path = sapply(response, `[[`, 'path'),
+                   description = sapply(response, `[[`, 'apiDoc'),
+                   requestType = sapply(response, `[[`, 'requestType'),stringsAsFactors = FALSE)
+  return(df)
 }
 
 #' Search networks in NDEx (by description)
@@ -35,15 +37,14 @@ ndex.find.networks <- function(searchString="", accountName, skipBlocks = 0, blo
   } else {
     query <- toJSON(list(searchString=searchString, accountName=accountName))
   }
- 
+  
   ##Form route
   route <- sprintf("/network/search/%s/%s", skipBlocks, blockSize)
   #is.authorized <- exists('ndex.opts', envir=NDEx.env)
   
   ##Get a list of NetworkSummary objects
-  response_json <- ndex_rest_POST(route=route, query)
+  response <- ndex_rest_POST(route=route, query)
   
-  response <- fromJSON(response_json)
   ##Retrieve necessary data fields
   out <- lapply(response, json_parse_network_metadata)
   out <- do.call(rbind, out)
@@ -61,19 +62,17 @@ ndex.find.networks <- function(searchString="", accountName, skipBlocks = 0, blo
 #' GET    /network/{networkUUID}       NetworkSummary
 #' 
 #' @param network_id unique ID of the network
-#' @param json logical; whether to return JSON (TRUE) or convert it to data frame. Default FALSE 
 #' @return Complete JSON response or Data frame with network metadata: ID, name, whether it is public, edge and node count; source and format of network
 #' @export
-ndex.get.network.summary <- function(network_id, json=FALSE){
+ndex.get.network.summary <- function(network_id){
   route <- paste0("/network/", network_id)
   response <- ndex_rest_GET(route)
-  response <- fromJSON(response)
-  if(json) return(response)
-  else return(json_parse_network_metadata(response))
+  return(json_parse_network_metadata(response))
 }
 
+
+
 #' Get complete network
-#' GET    /network/{networkUUID}/asNetwork       Network
 #' 
 #' @param network_id unique ID of the network
 #' @return \code{\link{ndexgraph}} object
@@ -81,6 +80,8 @@ ndex.get.network.summary <- function(network_id, json=FALSE){
 #' Nodes use primary ID of the base term ('represents' element)
 #' Edges use primary ID of the base term ('predicate', or 'p' element)
 #' Mapping table for the nodes is retrieved ('alias' and 'related' terms) to facilitate conversions/data mapping
+#' @section REST query:
+#' This function runs GET query /network/{networkUUID}/asNetwork (returns Network object
 #' @export
 ndex.get.complete.network <- function(network_id){
   route <- paste0("/network/", network_id, "/asNetwork")
@@ -117,26 +118,21 @@ ndex.get.neighborhood <- function(networkId, searchString="", searchDepth=1){
 ##########################################################
 # PropertyGraphNetwork Functions
 
-# PropertyGraphNetwork JSON data are more easily converted to ndexgraph objects than Network JSON data
-ndex.property.graph.as.ndexgraph <- function(property_graph){
-  out <- new('ndexgraph',
-             nodes = nodes,
-             edges = edges,
-             properties = m,
-             name = m$network_name,
-             id = m$network_id)
-  return(out)
-}
 
 #' Get complete network as property graph
-#' GET    /network/{networkUUID}/asPropertyGraph        PropertyGraphNetwork
-#' 
+#'  
 #' @param network_id unique ID of the network
 #' @return \code{\link{ndexgraph}} object
 #' @details Uses getEdges (this procedure will return complete network with all elements)
 #' Nodes use primary ID of the base term ('represents' element)
 #' Edges use primary ID of the base term ('predicate', or 'p' element)
 #' Mapping table for the nodes is retrieved ('alias' and 'related' terms) to facilitate conversions/data mapping
+#' @section REST query:
+#' Executes GET query /network/{networkUUID}/asPropertyGraph, returns parsed PropertyGraphNetwork object
+#' @examples
+#' \dontrun{
+#' x <- ndex.get.complete.network.as.property.graph('32733ca9-4e84-11e4-98fb-000c29873918')
+#' }
 #' @export
 ndex.get.complete.network.as.property.graph <- function(network_id){
   route <- paste0("/network/", network_id, "/asPropertyGraph")
@@ -222,6 +218,75 @@ ndex.get.neighborhood.as.property.graph <-function(networkId, searchString="", s
 #              id = m$network_id)
 # }
 
+##########################################################
+##Convert API exports to ndexgraph
+
+#' Convert propertyGraph export to ndexgraph
+#' 
+#' @param property_graph Property graph data structure (as returned by relevant API functions)
+#' @return \code{ndexgraph} object
+#' @details Collects term ID, name and properties for nodes; 
+#' predicate, subject, term ID and properties for edges. 
+#' Each property takes up a column; 
+#' column name is predicateString 
+#' and value is \code{value} for given node/edge
+#' @note PropertyGraphNetwork JSON data are more easily converted to ndexgraph objects than Network JSON data
+#' @export
+#' @examples
+#' \dontrun{
+#' x <- ndex.get.complete.network.as.property.graph('32733ca9-4e84-11e4-98fb-000c29873918')
+#' y <- ndex.property.graph.as.ndexgraph(x)
+#' }
+ndex.property.graph.as.ndexgraph <- function(property_graph){
+  
+  ##Nodes
+  nodes <- jsonlist2df(property_graph$nodes)
+  ##Subset
+  nodes <- nodes[,c('id', 'name')]
+  
+  ##Gather node properties
+  if(length(property_graph$nodes[[1]]$properties) > 0){
+    nodeprop_list <- lapply(property_graph$nodes, function(x){jsonlist2df(x$properties)})
+    nodeprop <- sapply(nodeprop_list, `[[`, 'value')
+    if(is.matrix(nodeprop)) nodeprop <- t(nodeprop)
+    nodeprop <- as.data.frame(nodeprop, stringsAsFactors = FALSE)
+    colnames(nodeprop) <- nodeprop_list[[1]]$predicateString
+    
+    nodes <- cbind(nodes, nodeprop)
+  }
+  
+  ##Edges
+  edges <- jsonlist2df(property_graph$edges)
+  ##Subset
+  edges <- edges[,c('subjectId', 'objectId', 'id', 'predicate')]
+  
+  ##Gather edge properties
+  if(length(property_graph$edges[[1]]$properties) > 0){
+    edgeprop_list <- lapply(property_graph$edges, function(x){jsonlist2df(x$properties)})
+    edgeprop <- sapply(edgeprop_list, `[[`, 'value')
+    if(is.matrix(edgeprop)) edgeprop <- t(edgeprop)
+    edgeprop <- as.data.frame(edgeprop, stringsAsFactors = FALSE)
+    colnames(edgeprop) <- edgeprop_list[[1]]$predicateString
+    edges <- cbind(edges, edgeprop)
+  }
+  
+  ##Properties
+  prop <- jsonlist2df(property_graph$properties)
+  
+  out <- new('ndexgraph',
+             nodes = nodes,
+             edges = edges,
+             properties = prop,
+             name = property_graph$name,
+             id = prop$value[prop$predicateString == 'NDEX:UUID'])
+  return(out)
+}
+
+
+##########################################################
+##Convert API exports to adjacency list (reannotation of nodes is main concern here)
+
+
 
 ##########################################################
 ##Auxiliary format conversion code (JSON -> list -> data frame)
@@ -240,7 +305,6 @@ jsonlist2vector <- function(l){
   l <- lapply(l, function(x){if(is.null(x)) return('') else return(x)})
   l[sapply(l, is.list)] <- ''
   l[sapply(l, length) > 1] <- NULL
-  print(l)
   cc <- unlist(l)
   return(cc)
 }
@@ -278,15 +342,40 @@ unlist2df <- function(l, names=c('key', 'value')){
 #' @param nd list with network metadata information (JSON or parsed JSON)
 #' @return Data frame with network information: ID, name, whether it is public, edge and node count; source and format of network
 json_parse_network_metadata <- function(nd){
-  print(nd)
-  if(any(sapply(nd, is.null))) nd <- lapply(nd, function(x){if(is.null(x)) return('') else return(x)})
+  if(!is.list(nd)) nd <- fromJSON(nd)
+  nd <- list.remove.nulls(nd)
+  properties <- jsonlist2df(nd$properties)
+  ##Grab network source (if any)
+  source.idx <- which(properties$predicateString == 'Source')
+  if(length(source.idx) == 1) ns <- properties$value[source.idx] else ns <- ''
+  ##Grab network format (if any)
+  format.idx <- which(properties$predicateString == 'Format')
+  if(length(format.idx) == 1) nf <- properties$value[format.idx] else nf <- ''
+  ##Grab species (if any)
+  species.idx <- which(properties$predicateString == 'ORGANISM')
+  if(length(species.idx) == 1) no <- properties$value[species.idx] else no <- ''
+  ##Grab species (if any)
+  uri.idx <- which(properties$predicateString == 'URI')
+  if(length(uri.idx) == 1) uri <- properties$value[uri.idx] else uri <- ''
+  
   out <- data.frame(network_id = nd$externalId,
                     network_name = nd$name,
                     node_count = nd$nodeCount,
                     edge_count = nd$edgeCount,
                     visibility = nd$visibility,
-                    #source = nd$properties['Source'],
-                    #format = nd$properties['Format'],
+                    source = ns,
+                    format = nf,
+                    species = no,
+                    uri = uri,
                     stringsAsFactors=FALSE)
   return(out)
+}
+
+list.remove.nulls <- function(x){
+  if(!is.list(x)) stop("list expected")
+  x <- lapply(x, function(x){
+    if(is.null(x)) return('') 
+    else return(x)
+  })
+  return(x)
 }
