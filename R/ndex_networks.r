@@ -147,13 +147,25 @@ ndex.get.property.graph.network.by.edges <- function(networkId, skipBlocks=0, bl
 
 #   POST    /network/asPropertyGraph    PropertyGraphNetwork    NetworkSummary
 ndex.save.new.property.graph.network <- function(propertyGraphNetwork){
+  if(class(propertyGraphNetwork) == 'list'){
+    propertyGraphNetwork <- ndex.remove.uuid.from.network(propertyGraphNetwork)
+    propertyGraphNetwork <- toJSON(propertyGraphNetwork)
+  } else stop(sprintf("'list' expected, got '%s'", class(propertyGraphNetwork)))
   route <- "/network/asPropertyGraph"
-  propertyGraphNetwork <- ndex.remove.uuid.from.network(propertyGraphNetwork)
-  return(ndex_rest_POST(route, propertyGraphNetwork))
+  response <- ndex_rest_POST(route, propertyGraphNetwork)
+  if(is.list(response)) out <- json_parse_network_metadata(response)
+  else {
+    warning("Posting network was unsuccessful")
+    out <- NULL
+  }
+  return(out)
 }
 
 #   POST    /network/asPropertyGraph/group/{group UUID}    PropertyGraphNetwork    NetworkSummary
 ndex.save.new.property.graph.network.for.group <- function(propertyGraphNetwork, groupId){
+  if(class(propertyGraphNetwork) == 'list'){
+    propertyGraphNetwork <- toJSON(propertyGraphNetwork)
+  }
   route <- sprintf("/network/asPropertyGraph/group/%s", groupId)
   propertyGraphNetwork <- ndex.remove.uuid.from.network(propertyGraphNetwork)
   return(ndex_rest_POST(route, propertyGraphNetwork))
@@ -163,7 +175,7 @@ ndex.save.new.property.graph.network.for.group <- function(propertyGraphNetwork,
 #   POST    /network/{networkUUID}/asPropertyGraph/query    SimplePathQuery    PropertyGraphNetwork 
 ndex.get.neighborhood.as.property.graph <-function(networkId, searchString="", searchDepth=1){
   route <- sprintf("/network/%s/asPropertyGraph/query", networkId) 
-  query <- toJSON(list(searchString=searchString, searchDepth=searchDepth))
+  query <- toJSON(list(searchString = searchString, searchDepth = searchDepth))
   return(ndex_rest_POST(route, query))
 }
 
@@ -243,42 +255,84 @@ ndex.property.graph.as.ndexgraph <- function(property_graph){
   nodes <- jsonlist2df(property_graph$nodes)
   ##Subset
   nodes <- nodes[,c('id', 'name')]
+  rownames(nodes) <- NULL
   
   ##Gather node properties
-  if(length(property_graph$nodes[[1]]$properties) > 0){
-    nodeprop_list <- lapply(property_graph$nodes, function(x){jsonlist2df(x$properties)})
-    nodeprop <- sapply(nodeprop_list, `[[`, 'value')
-    if(is.matrix(nodeprop)) nodeprop <- t(nodeprop)
-    nodeprop <- as.data.frame(nodeprop, stringsAsFactors = FALSE)
-    colnames(nodeprop) <- nodeprop_list[[1]]$predicateString
-    
-    nodes <- cbind(nodes, nodeprop)
-  }
+  nodeprop <- properties2df(property_graph$nodes)
+  nodes <- cbind(nodes, nodeprop)
   
   ##Edges
   edges <- jsonlist2df(property_graph$edges)
   ##Subset
   edges <- edges[,c('subjectId', 'objectId', 'id', 'predicate')]
+  rownames(edges) <- NULL
   
   ##Gather edge properties
-  if(length(property_graph$edges[[1]]$properties) > 0){
-    edgeprop_list <- lapply(property_graph$edges, function(x){jsonlist2df(x$properties)})
-    edgeprop <- sapply(edgeprop_list, `[[`, 'value')
-    if(is.matrix(edgeprop)) edgeprop <- t(edgeprop)
-    edgeprop <- as.data.frame(edgeprop, stringsAsFactors = FALSE)
-    colnames(edgeprop) <- edgeprop_list[[1]]$predicateString
-    edges <- cbind(edges, edgeprop)
-  }
+  edgeprop <- properties2df(property_graph$edges)
+  edges <- cbind(edges, edgeprop)
   
-  ##Properties
+  ##Properties of the network
   prop <- jsonlist2df(property_graph$properties)
   
+  name <- property_graph$name
+  if(is.null(name)) name <- NA_character_
+  
+  uuid <- prop$value[prop$predicateString == 'NDEX:UUID']
+  if(is.null(uuid)) uuid <- NA_character_
   out <- new('ndexgraph',
              nodes = nodes,
              edges = edges,
              properties = prop,
-             name = property_graph$name,
-             id = prop$value[prop$predicateString == 'NDEX:UUID'])
+             name = name,
+             id = uuid)
+  return(out)
+}
+
+
+#' Convert ndexgraph to propertyGraph for import to NDEx
+#' 
+#' @param ndexgraph Object of class \code{\link{ndexgraph}}
+#' @return List corresponding to propertyGraph JSON structure
+#' @details Creates node elements from term ID, name; adds properties if there are any; 
+#' Creates edge elements from predicate, subject, object ID, term ID and properties if there are any. 
+#' @export
+#' @examples
+#' \dontrun{
+#' x <- ndex.get.complete.network.as.property.graph('32733ca9-4e84-11e4-98fb-000c29873918')
+#' y <- ndex.property.graph.as.ndexgraph(x)
+#' z <- ndexgraph.as.ndex.property.graph(y)
+#' }
+ndexgraph.as.ndex.property.graph <- function(ndexgraph){
+  if(class(ndexgraph) != 'ndexgraph') stop(sprintf("'ndexgraph' object expected, got '%s'", class(ndexgraph))) 
+  
+  ##Nodes
+  nodes <- ndexgraph@nodes
+  nodelist <- df2jsonlist(nodes[,1:2, drop = FALSE])
+  node_prop <- df2properties(nodes[, -1:-2, drop = FALSE])
+  for(i in seq_along(nodelist)){
+    nodelist[[i]]$presentationProperties <- list()
+    nodelist[[i]]$properties <- node_prop[[i]]
+    nodelist[[i]]$type <- 'PropertyGraphNode'
+  }
+  
+  ##Edges
+  edges <- ndexgraph@edges
+  edgelist <- df2jsonlist(edges[, 1:4, drop = FALSE])
+  edge_prop <- df2properties(edges[, -1:-4, drop = FALSE])
+  for(i in seq_along(edgelist)){
+    edgelist[[i]]$presentationProperties <- list()
+    edgelist[[i]]$properties <- edge_prop[[i]]
+    edgelist[[i]]$type <- 'PropertyGraphEdge'
+  }
+  
+  ##Properties of the network
+  prop <- df2jsonlist(ndexgraph@properties)
+  
+  out <- list(edges = edgelist,
+              nodes = nodelist,               
+              presentationProperties = list(),
+              name = ndexgraph@name, 
+              properties = prop)
   return(out)
 }
 
@@ -293,6 +347,7 @@ ndex.property.graph.as.ndexgraph <- function(property_graph){
 #' Misc operations with lists (helps converting JSON to tabular formats)
 #'
 #' @param l list
+#' @param df data frame
 #' @name aux_list
 NULL
 
@@ -315,13 +370,32 @@ jsonlist2vector <- function(l){
 #'  for each row, NULLs are replaced with emply string (""); non-vector elements and vector elements with length > 1 are dropped
 jsonlist2df <- function(l){
   if(!is.list(l)) stop("list  expected")
+  if(length(l) == 0) return(as.data.frame(list()))
+  ##Assemble rows
   ll <- lapply(l, jsonlist2vector)
+  ##Check if all the vectors are of the same length (Actually might want to just align them all to the union of elements' names)
   ll_lengths <- sapply(ll, length)
-  if(dim(table(ll_lengths)) != 1) stop("jsonlist2df: Elements of list have different structure, impossible to convert to a data frame")
+  if(length(rle(ll_lengths)$values) > 1) stop("jsonlist2df: Elements of list have different structure, impossible to convert to a data frame")
+  ##Merge rows into a table
   df <- do.call(rbind, ll)
   df <- as.data.frame(df, stringsAsFactors=FALSE)
   return(df)
 }
+
+#' @rdname aux_list
+#' 
+#' @details \code{df2jsonlist} converts data frames to JSON-compatible lists of the same structure into a data frame. 
+#' Each row of data frame corresponds to first order element in list
+#'  for each row, missing values are replaced with nulls; non-vector elements and vector elements with length > 1 are dropped
+df2jsonlist <- function(df){
+  if(!is.data.frame(df)) stop(sprintf("'data.frame' expected, got '%s'", class(df)))
+  if(nrow(df) == 0) return(list())
+  ##COnvert to list of lists
+  ll <- apply(df, 1, as.list)
+  
+  return(ll)
+}
+
 
 #' @rdname aux_list
 #' @param names character vector of length 2 with column names for output
@@ -378,4 +452,84 @@ list.remove.nulls <- function(x){
     else return(x)
   })
   return(x)
+}
+
+
+#' Convert properties of nodes / edges to a data frame
+#' @param entities List of node or edge elements from 'propertyGraph'
+#' @param missing.value what to insert when a property is missing for a given element; default NA
+#' @return Data frame with all properties; missing values defined by missing.value
+#' @details Each node or edge can have properties (possibly not the same number of values across nodes/edges)
+#' Our goal is to turn them to the data frame, covering all properties and putting NA for the missing properties if those happen.
+#' @examples
+#' \dontrun{
+#' }
+properties2df <- function(entities, missing.value = NA){
+  ##Check if properties exist at all
+  property_count <- sapply(entities, function(x){length(x$properties)})
+  if(max(property_count) == 0){
+    ##Special case of no properties (does it happen actually?)
+    ##Return an empty DF
+    df <- data.frame(row.names = names(entities), stringsAsFactors = FALSE)
+    return(df)
+  }
+  
+  ##Otherwise, collect the properties
+  prop_list <- lapply(entities, function(x){jsonlist2df(x$properties)})
+  ##This is a list of data frames
+  property_names_list <- lapply(prop_list, `[[`, 'predicateString')
+  property_names <- Reduce(union, property_names_list)
+  ##Now we have to bring all data frames to the common row order
+  prop_list_ordered <- lapply(prop_list, function(x){x[match(property_names, x$predicateString), , drop = FALSE]})
+  ##Now, construct the matrix of all property  values 
+  ##At this moment, property value vectors must be of same length and same order
+  prop_matrix <- sapply(prop_list_ordered, `[[`, 'value')
+  ##Fill in the NAs with desired missing values
+  if(!is.na(missing.value)) prop_matrix[is.na(prop_matrix)] <- missing.value[1L]
+  if(is.matrix(prop_matrix)) prop_matrix <- t(prop_matrix)
+  ##Bring to DF and return
+  prop_matrix <- as.data.frame(prop_matrix, stringsAsFactors = FALSE)
+  colnames(prop_matrix) <- property_names
+  return(prop_matrix)
+  
+}
+
+#' Convert data frame of properties back to the list structure eligible to be used with propertyGraph
+#' @param df data frame made of node or edge properties
+#' @return properties in the list form
+#' @details This is needed to save the networks back to NDEx
+df2properties <- function(df, missing.value = NA){
+  if(!is.na(missing.value)) df[df == missing.value] <- NA
+  ##Form list for an edge
+  get_properties <- function(x){
+    names <- names(x)
+    names(x) <- NULL
+    out <- vector(mode = 'list', length = length(x))
+    for(i in seq_along(x)){
+      if(is.na(x[i])) next
+      out[[i]] <- list(dataType = 'String',
+                       predicateString = names[i],
+                       predicateId = 0,
+                       valueId = 0,
+                       value = x[i],
+                       type = 'NdexPropertyValuePair')
+    }
+    out <- out[!sapply(out, is.null)]
+    return(out)
+  }
+  
+  prop_values <- apply(df, 1, get_properties)
+  return(prop_values)
+}
+
+#' Auxiliary function: remove UUID from a network
+#' @param network network (as propertyGraph, so far)
+#' @return network with UUID replaced with NULL
+ndex.remove.uuid.from.network <- function(network){
+  idx <- which(sapply(network$properties, `[[`, 'predicateString') == 'NDEX:UUID')
+  if(length(idx) == 1){
+    ##The R usually drops an element from list when assigning NULL to it, so we do a little trick here
+    network$properties[[idx]]['value'] <- list(NULL)
+  }
+  return(network)
 }

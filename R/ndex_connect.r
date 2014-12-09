@@ -15,23 +15,24 @@ assign('host', 'http://www.ndexbio.org/rest', envir=NDEx.env)
 #' @param username character username
 #' @param password character password
 #' @param host (optional) URL of NDEx REST server to be used
+#' @param verbose logical; whether to print out extended feedback 
 #' @return returns nothing; RCurl options object for authentication is stored in the special environment and reused with the queries
 #' @note REST server location can also be set separately using \code{\link{ndex.get.host}}. In this case, supplying host here is not necessary
 #' @seealso \code{\link{ndex.get.host}}
 #' @export
-ndex.connect <- function(username, password, host){
+ndex.connect <- function(username, password, host, verbose = FALSE){
   credentials = TRUE
   if(missing(username) || missing(password)){
-    cat("\nndex.connect: Connecting anonymously - username or password not supplied")
+    warning("Connecting anonymously - username or password not supplied")
     credentials = FALSE
   } 
   if(missing(host)){
     ##Use host URL stored in internal environment (it may be default)
-    cat("ndex.connect: host not specified, using default")
+    if(verbose) cat("ndex.connect: host not specified, using default")
     host <- ndex.get.host()
   } else{
     ##Use supplied host and store it in internal env
-    cat("\nndex.connect: host = ", host)
+    if(verbose) cat("\nndex.connect: host = ", host)
     ndex.set.host(host)
   }
   
@@ -47,7 +48,7 @@ ndex.connect <- function(username, password, host){
       assign('ndex.opts', value = ndex.opts, envir = NDEx.env)
       assign('current.user', value = auth_response$accountName, envir = NDEx.env)
       
-      cat("\n", host, " is responding as an NDEx REST server ", "\nAuthentication of [", auth_response$accountName, "] is successful!\n",  sep='')
+      if(verbose) cat("\n", host, " is responding as an NDEx REST server ", "\nAuthentication of [", auth_response$accountName, "] is successful!\n",  sep='')
     } else{
       stop(paste("ndex.connect with credentials. response = ", auth_response))
     }
@@ -55,11 +56,12 @@ ndex.connect <- function(username, password, host){
     ##Check response of standard admin query
     try(auth_response <- getURL(paste0(host, "admin")))
     if(isValidJSON(auth_response, asText=T)){
-      cat(host, " responding as NDEx REST server",  sep='')
+      if(verbose) cat(host, " responding as NDEx REST server",  sep='')
     }else{
       stop(paste("ndex.connect:", auth_response))
     }       
   }
+  assign('verbose', verbose, envir = NDEx.env)
   invisible(TRUE)
 }
 
@@ -106,6 +108,7 @@ ndex_rest_GET <- function(route){
     auth.opts <- curlOptions(httpauth = 1L)
   }
   content <- getURL(url, .opts=auth.opts)
+  if(NDEx.env$verbose) cat('Response:', substring(content, 1, 300), '...', sep = '\n')
   return(fromJSON(content))
 }
 
@@ -145,6 +148,7 @@ ndex_rest_PUT <- function(route, data){
   content = h$value()
   
   #content <- httpPUT(url, content=data , .opts=auth.opts)
+  if(NDEx.env$verbose) cat('Response:', substring(content, 1, 300), '...', sep = '\n')
   return(fromJSON(content))
 }
 
@@ -179,6 +183,7 @@ ndex_rest_POST <- function(route, data){
               .opts=auth.opts)
   
   content = h$value()
+  if(NDEx.env$verbose) cat('Response:', substring(content, 1, 300), '...', sep = '\n')
   return(fromJSON(content))
 }
 
