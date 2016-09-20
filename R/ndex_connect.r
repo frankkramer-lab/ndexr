@@ -1,86 +1,85 @@
 ##Authors:
 #   Alex Ishkin [aleksandr.ishkin@thomsonreuters.com]
 #   Dexter Pratt [depratt@ucsd.edu]
+#   Frank Kramer [frank.kramer@med.uni-goettingen.de]
 ## Created: 1 June 2014
 ## Base functions to perform HTTP transactions to an NDEX server via the NDEx REST API
 ## Updated to NDEX v1.0 API 1 November 2014
+## Updated to use NDEXConnection object to store connection informations 15 September 2016
 
-##Initialize internal environment to store package-specific stuff, of no value to user
-NDEx.env <- new.env(hash=T)
-##Set default REST server
-assign('host', 'http://www.ndexbio.org/rest', envir=NDEx.env)
 
 #' Connect to NDEx REST API
 #' 
 #' @param username character username
 #' @param password character password
-#' @param host (optional) URL of NDEx REST server to be used
+#' @param host (optional) URL of NDEx REST server to be used; Default is: http://www.ndexbio.org/rest
 #' @param verbose logical; whether to print out extended feedback 
-#' @return returns nothing; RCurl options object for authentication is stored in the special environment and reused with the queries
-#' @note REST server location can also be set separately using \code{\link{ndex.get.host}}. In this case, supplying host here is not necessary
-#' @seealso \code{\link{ndex.get.host}}
+#' @return returns object of class NDEXConnection which stores options and authentication if successfull, NULL otherwise
 #' @export
-ndex.connect <- function(username, password, host, verbose = FALSE){
+ndex.connect <- function(username, password, host = "http://www.ndexbio.org/rest", verbose = FALSE){
+
   credentials = TRUE
   if(missing(username) || missing(password)){
-    warning("Connecting anonymously - username or password not supplied")
+    message("Connecting anonymously - username or password not supplied")
     credentials = FALSE
   } 
-  if(missing(host)){
-    ##Use host URL stored in internal environment (it may be default)
-    if(verbose) cat("ndex.connect: host not specified, using default")
-    host <- ndex.get.host()
-  } else{
-    ##Use supplied host and store it in internal env
-    if(verbose) cat("\nndex.connect: host = ", host)
-    ndex.set.host(host)
-  }
+  
+  if(missing(host)) if(verbose) message("ndex.connect: host not specified, using default")
   
   ##Attempt authentication if we have credentials
   if (credentials){
-    try(auth_response <- getURL(paste0(host, "/user/authenticate/", username, "/", password)))
-    if(isValidJSON(auth_response, asText=T)){
-      auth_response <- fromJSON(auth_response)
+    try(auth_response <- RCurl::getURL(paste0(host, "/user/authenticate/", username, "/", password)))
+    if(jsonlite::validate(auth_response)){
+      auth_response <- jsonlite::fromJSON(auth_response)
       #print(auth_response)
       ##Authentication successful (JSON with user data was returned)
-      ndex.opts <- curlOptions(userpwd = paste0(username, ":", password), httpauth = 1L)
-      ##Store RCurl options in the internal environment; reuse for other REST queries which require authentication
-      assign('ndex.opts', value = ndex.opts, envir = NDEx.env)
-      assign('current.user', value = auth_response$accountName, envir = NDEx.env)
-      
-      if(verbose) cat("\n", host, " is responding as an NDEx REST server ", "\nAuthentication of [", auth_response$accountName, "] is successful!\n",  sep='')
+      ndex.opts <- RCurl::curlOptions(userpwd = paste0(username, ":", password), httpauth = 1L)
+       
+      if(verbose) message("\n", host, " is responding as an NDEx REST server ", "\nAuthentication of [", auth_response$accountName, "] is successful!\n",  sep='')
     } else{
-      stop(paste("ndex.connect with credentials. response = ", auth_response))
+      stop(paste("Tried ndex.connect with credentials. response = ", auth_response))
     }
   } else {
     ##Check response of standard admin query
-    try(auth_response <- getURL(paste0(host, "admin")))
-    if(isValidJSON(auth_response, asText=T)){
-      if(verbose) cat(host, " responding as NDEx REST server",  sep='')
+    try(auth_response <- RCurl::getURL(paste0(host, "/network/api")))
+    if(jsonlite::validate(auth_response)){
+      ndex.opts <- RCurl::curlOptions(httpauth = 1L)
+      if(verbose) message(host, " responding as NDEx REST server",  sep='')
     }else{
       stop(paste("ndex.connect:", auth_response))
     }       
   }
-  assign('verbose', verbose, envir = NDEx.env)
-  invisible(TRUE)
+  
+
+  if(credentials) {
+    ndexcon = list(anon=FALSE, credentials=credentials, current.user= auth_response$accountName, curl.opts=ndex.opts, host=host,verbose=verbose)
+  } else {
+    ndexcon = list(anon=TRUE, curl.opts=ndex.opts, host=host, verbose=verbose)
+  }
+  class(ndexcon) = c("NDExConnection",class(ndexcon))
+  return(ndexcon)
 }
 
 #' Check if user is authenticated to NDEx REST server
+#' 
+#' @param ndexcon object of class NDEXConnection
 #' @return logical (TRUE if user is authenticated and connection is active, FALSE otherwise)
 #' @export
-ndex.alive <- function(){
-  if(!exists('NDEx.env')) return(FALSE) ##this shouldn't happen
-  if(!exists('current.user', envir = NDEx.env)) return(FALSE)
-  if(!exists('ndex.opts', envir=NDEx.env)) {
+ndex.alive <- function(ndexcon){
+  if(missing(ndexcon)) return(FALSE)
+  if(ndexcon$anon == TRUE) {
+    warning("Called ndex.alive on anonymous NDExConnection object. Returning false.")
     return(FALSE)
-  }else{
-    ##Try getting something from API again
-    test <- NULL
-    try(test <- getURL(paste0(ndex.get.host(), "/user/", NDEx.env$current.user), .opts=NDEx.env$ndex.opts))
+  }
+
+  ##Try getting something from API again
+  test <- NULL
+  try(test <- RCurl::getURL(paste0(ndexcon$host, "/user/", ndexcon$current.user), .opts=ndexcon$curl.opts))
+  {
     if(is.null(test)){
       return(FALSE)
     }else{
-      if(isValidJSON(test, asText=T)) return(TRUE)
+      if(jsonlite::validate(test)) return(TRUE)
       else return (FALSE)
     }
   }
@@ -92,134 +91,120 @@ ndex.alive <- function(){
 
 #' Generic GET query to API
 #' 
+#' @param ndexcon object of class NDEXConnection
 #' @param route Character (route to specific REST query)
-#' @return JSON response from REST server (it will be handled downstream)
+#' @param raw Specifies if server response should be returned in raw, or if jsonlite::fromJSON is called first. Defaults to FALSE.
+#' @return JSON response from REST server, NULL if no valid JSON was received. if parameter raw is TRUE, the raw response is returned without a call to jsonlite::fromJSON.
 #' @details Simply execute HTTP GET on URL host/route and fetch whatever data REST server returns 
 #' Making sure the route is well-formed is the job of calling function
-#' @seealso \code{\link{_ndex_rest_PUT}},  \code{\link{_ndex_rest_POST}},  \code{\link{_ndex_rest_DELETE}}
+#' @seealso \code{\link{ndex_rest_PUT}},  \code{\link{ndex_rest_POST}},  \code{\link{ndex_rest_POST}}
 #' @examples
 #' \dontrun{ndex_rest_GET("/networks/api")}
-ndex_rest_GET <- function(route){
-  url <- paste0(ndex.get.host(), route)
-  cat("\nGET: [ ", url, " ]\n")
-  if(exists('ndex.opts', envir=NDEx.env)){
-    auth.opts <- NDEx.env$ndex.opts
-  } else{
-    auth.opts <- curlOptions(httpauth = 1L)
+ndex_rest_GET <- function(ndexcon, route, raw = FALSE){
+  url <- paste0(ndexcon$host, route)
+  if(ndexcon$verbose) message("\nGET: [ ", url, " ]\n")
+  content <- RCurl::getURL(url, .opts=ndexcon$curl.opts)
+  if(ndexcon$verbose) message('Response:', substring(content, 1, 300), '...', sep = '\n')
+  if(raw) return(content)
+  if(jsonlite::validate(content)) {
+    return(jsonlite::fromJSON(content))
+  } else {
+    return(NULL)
   }
-  content <- getURL(url, .opts=auth.opts)
-  if(NDEx.env$verbose) cat('Response:', substring(content, 1, 300), '...', sep = '\n')
-  return(fromJSON(content))
 }
 
 #' Generic PUT query to API
 #' 
+#' @param ndexcon object of class NDEXConnection
 #' @param route Character (route to specific REST query)
 #' @param data Whatever data to be supplied with query. Should be valid JSON
-#' @param auth Logical: is authentication required?
-#' @return JSON response from REST server (it will be handled downstream)
+#' @param raw Specifies if server response should be returned in raw, or if jsonlite::fromJSON is called first. Defaults to FALSE.
+#' @return JSON response from REST server, NULL if no valid JSON was received. if parameter raw is TRUE, the raw response is returned without a call to jsonlite::fromJSON.
 #' @details Simply execute HTTP PUT on URL host/route and fetch whatever data REST server returns 
 #' Making sure the route is well-formed is the job of calling function
 #' Making sure the data is well-formed is also the job of calling function
-#' @seealso \code{\link{_ndex_rest_GET}},  \code{\link{_ndex_rest_POST}},  \code{\link{_ndex_rest_DELETE}}
+#' @seealso \code{\link{ndex_rest_GET}},  \code{\link{ndex_rest_POST}},  \code{\link{ndex_rest_POST}}
 #' @examples
 #' ##TBD
-ndex_rest_PUT <- function(route, data){
-  if(!isValidJSON(data, asText = TRUE)) stop(sprintf("Malformed JSON input for POST query: %s", data))
-  url <- paste0(ndex.get.host(), route)
-  if(exists('ndex.opts', envir=NDEx.env)){
-    auth.opts <- NDEx.env$ndex.opts
-  } else{
-    auth.opts <- curlOptions(httpauth = 1L)
-  }
-  
+ndex_rest_PUT <- function(ndexcon, route, data, raw = FALSE){
+  if(!jsonlite::validate(data)) stop(sprintf("Malformed JSON input for POST query: %s", data))
+  url <- paste0(ndexcon$host, route)
+
   rdata <- charToRaw(data)
   
-  h = basicTextGatherer()
+  h = RCurl::basicTextGatherer()
   h$reset()
-  curlPerform(url = url,
+  RCurl::curlPerform(url = url,
               httpheader=c('Content-Type' = "application/json"),
               customrequest = "PUT",
               readfunction=rdata,
               infilesize = length(rdata), upload=TRUE,
               writefunction = h$update,
-              .opts = auth.opts, verbose=TRUE)
+              .opts = ndexcon$curl.opts, verbose=TRUE)
   
   content = h$value()
   
   #content <- httpPUT(url, content=data , .opts=auth.opts)
-  if(NDEx.env$verbose) cat('Response:', substring(content, 1, 300), '...', sep = '\n')
-  return(fromJSON(content))
+  if(ndexcon$verbose) message('Response:', substring(content, 1, 300), '...', sep = '\n')
+  if(raw) return(content)
+  if(jsonlite::validate(content)) {
+    return(jsonlite::fromJSON(content))
+  } else {
+    return(NULL)
+  }
 }
 
 
 #' Generic POST query to API
 #' 
+#' @param ndexcon object of class NDEXConnection
 #' @param route Character (route to specific REST query)
 #' @param data Whatever data to be supplied with query. Should be valid JSON
-#' @return JSON response from REST server (it will be handled downstream)
+#' @param raw Specifies if server response should be returned in raw, or if jsonlite::fromJSON is called first. Defaults to FALSE.
+#' @return JSON response from REST server, NULL if no valid JSON was received. if parameter raw is TRUE, the raw response is returned without a call to jsonlite::fromJSON.
 #' @details Simply execute HTTP PUT on URL host/route and fetch whatever data REST server returns 
 #' Making sure the route is well-formed is the job of calling function
 #' Making sure the data is well-formed is also the job of calling function
-#' @seealso \code{\link{_ndex_rest_GET}},  \code{\link{_ndex_rest_PUT}},  \code{\link{_ndex_rest_DELETE}}
+#' @seealso \code{\link{ndex_rest_GET}},  \code{\link{ndex_rest_PUT}},  \code{\link{ndex_rest_POST}}
 #' @examples
 #' ##TBD
-ndex_rest_POST <- function(route, data){
-  if(!isValidJSON(data, asText = TRUE)) stop(sprintf("Malformed JSON input for POST query: %s", data))
-  url <- paste0(ndex.get.host(), route)
-  cat("\nPOST: [ ", url, " ]\n")
-  if(exists('ndex.opts', envir=NDEx.env)){
-    auth.opts <- NDEx.env$ndex.opts
-  } else{
-    auth.opts <- curlOptions(httpauth = 1L)
-  }
-  
-  h = basicTextGatherer()
+ndex_rest_POST <- function(ndexcon, route, data, raw = FALSE){
+  if(!jsonlite::validate(data)) stop(sprintf("Malformed JSON input for POST query: %s", data))
+  url <- paste0(ndexcon$host, route)
+  if(ndexcon$verbose) message("\nPOST: [ ", url, " ]\n")
+
+  h = RCurl::basicTextGatherer()
   h$reset()
-  curlPerform(url = url,
+  RCurl::curlPerform(url = url,
               postfields = data,
               httpheader = c('Content-Type' = "application/json"),
               writefunction = h$update,
-              .opts=auth.opts)
+              .opts=ndexcon$curl.opts)
   
   content = h$value()
-  if(NDEx.env$verbose) cat('Response:', substring(content, 1, 300), '...', sep = '\n')
-  return(fromJSON(content))
-}
-
-#################################################
-##Get/set the REST server URL
-
-#' Set NDEx REST server URL
-#' 
-#' @param host String with URL to NDEx REST server (currently, default will be \link{http://dev.ndexbio.org:8080/ndexbio-rest})
-#' @return returns TRUE invisibly
-#' @seealso \code{\link{ndex.get.host}}
-#' @export
-ndex.set.host <- function(host){
-  if(missing(host)) {
-    host <- ndex.get.host()
-    warning(sprintf("Host URL not supplied. Default host will be set: %s"), host)
+  if(ndexcon$verbose) message('Response:', substring(content, 1, 300), '...', sep = '\n')
+  if(raw) return(content)
+  if(jsonlite::validate(content)) {
+    return(jsonlite::fromJSON(content))
+  } else {
+    return(NULL)
   }
-  if(!is.character(host)) stop("ndex.set.host: string expected as an input")
-  ##Clean up a little (to avoid malformed queries)
-  if(grepl("/$", host)) host <- sub("/$", "", host)
-  adminURL <- paste0(host, "/admin/status") 
-  cat("\ntesting NDEx server status at ", adminURL)
-  exists <- url.exists(adminURL)
-  cat("\nhost exists = ", exists)
-  if(!exists) stop(sprintf("Host %s does not exist", host))
-  assign('host', host, envir=NDEx.env)
-  invisible(TRUE)
 }
 
-#' Get NDEx REST server URL
+
+#' List possible queries to NDEx API
 #' 
-#' @return REST server URL as a string
-#' @seealso \code{\link{ndex.set.host}}
-#' @export
-ndex.get.host <- function(){
-  return(get('host', envir=NDEx.env))
+#' @param ndexcon object of class NDEXConnection
+#' @return data.frame detaling the API names, paths, parameters and athentication needed for API requests.
+#' @details Retrieves information on the NDEx API calls
+#' @seealso \code{\link{ndex_rest_GET}},  \code{\link{ndex_rest_PUT}},  \code{\link{ndex_rest_POST}}
+#' @examples
+#' ##TBD
+get.network.api <- function(ndexcon){
+  route <- "/network/api"
+  response <- ndex_rest_GET(ndexcon,route)
+  #  df <- data.frame(path = sapply(response, `[[`, 'path'),
+  #                   description = sapply(response, `[[`, 'apiDoc'),
+  #                   requestType = sapply(response, `[[`, 'requestType'),stringsAsFactors = FALSE)
+  return(response)
 }
-
-

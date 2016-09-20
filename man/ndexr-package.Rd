@@ -13,13 +13,14 @@ NDEx R client library
 Package: \tab ndexr\cr
 Type: \tab Package\cr
 Version: \tab 1.0\cr
-Date: \tab 2014-06-05\cr
+Date: \tab 2016-09-15\cr
 License: \tab TBD\cr
 }
 \bold{~~ To be added} An overview of how to use the package, including the most important functions
 }
 \author{
 Alex Ishkin <aleksandr.ishkin@thomsonreuters.com>
+Frank Kramer <frank.kramer@med.uni-goettingen.de>
 
 Maintainer: Dexter Pratt <depratt@ucsc.edu>
 
@@ -29,8 +30,8 @@ Maintainer: Dexter Pratt <depratt@ucsc.edu>
 }
 \keyword{ package }
 \seealso{
-\code{\link[RCurl:RCurl-package]{RCurl}}, \code{\link[igraph:igraph-package]{igraph}}, \code{\link[RJSONIO:RJSONIO-package]{RJSONIO}}
+\code{\link[RCurl:RCurl-package]{RCurl}}, \code{\link[igraph:igraph-package]{igraph}}, \code{\link[jsonlite:jsonlite-package]{jsonlite}}
 }
 \examples{
-\bold{~~ To be added}
+#To be added
 }
