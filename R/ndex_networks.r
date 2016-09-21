@@ -72,8 +72,7 @@ ndex.get.network.summary <- function(ndexcon, network_id){
 ndex.get.complete.network <- function(ndexcon, network_id){
   route <- paste0("/network/", network_id, "/asCX")
   response = ndex_rest_GET(ndexcon, route, raw=T)
-  #CXnetwork = RCX.json2CX(response)
-  #return(CXnetwork)
-  return(response)
+  rcx = ndex.JSON2RCX(response)
+  return(rcx)
 }
 

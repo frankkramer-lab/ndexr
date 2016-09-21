@@ -1,10 +1,17 @@
 ###load
+#require(devtools)
+#install_github("frankkramer-lab/ndexr@develop")
+
 library(ndexr)
 
 ###connect anonymously
 ndexcon1 = ndex.connect(verbose=T)
 ###connect as test user
 ndexcon2 = ndex.connect(username="testacc", password="testacc", verbose=T)
+
+###get network api
+apidata1 = get.network.api(ndexcon1)
+apidata2 = get.network.api(ndexcon2)
 
 ###find some networks
 pws1 = ndexr::ndex.find.networks(ndexcon1,"p53")
@@ -20,19 +27,16 @@ pwsummary2 = ndex.get.network.summary(ndexcon1,pws[1,"externalId"])
 is.null(ndex.get.network.summary(ndexcon1,"sdjlbelglserglersg"))
 is.null(ndex.get.network.summary(ndexcon2,"sdjlbelglserglersg"))
 
-###get complete network
-pw1 = ndex.get.complete.network(ndexcon1,pws[1,"externalId"])
-pw2 = ndex.get.complete.network(ndexcon2,pws[1,"externalId"])
+###get complete network as RCX
+rcx1 = ndex.get.complete.network(ndexcon1,pws[1,"externalId"])
+rcx2 = ndex.get.complete.network(ndexcon2,pws[1,"externalId"])
 
+###convert to ngraph
+ngraph1 = ndex.RCX2ngraph(rcx1)
 
-###get network api
-
-apidata1 = get.network.api(ndexcon1)
-apidata2 = get.network.api(ndexcon2)
 
 
 
 #### get CX data
-#cx1 = ndexr:::ndex_rest_GET(ndexcon1, route=paste0("/network/",pws[1,"externalId"],"/asCX"))
-#content <- RCurl::getURL(paste0(ndexcon,"/network/",pws[1,"externalId"],"/asCX"),  .opts=ndexcon$curl.opts)
-#parsedcontent = jsonlite::fromJSON(content, flatten=T)
+
+

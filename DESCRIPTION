@@ -1,9 +1,9 @@
 Package: ndexr
 Type: Package
 Title: NDEx R client library
-Version: 2.0.1
-Date: 2016-09-15
-Author: Alex Ishkin <aleksandr.ishkin@thomsonreuters.com>, Frank Kramer <frank.kramer@med.uni-goettingen.de>
+Version: 2.0.2
+Date: 2016-09-21
+Author: Frank Kramer <frank.kramer@med.uni-goettingen.de>, Alex Ishkin <aleksandr.ishkin@thomsonreuters.com>
 Maintainer: Dexter Pratt <depratt@ucsc.edu>
 Description: More about what it does (maybe more than one line)
 License: TBD
