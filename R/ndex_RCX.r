@@ -3,11 +3,6 @@
 ## Created: 20 Sep 2016
 ## Base functions to create, parse, modify CX networks from/to JSON data
 
-#############
-# RCX object:
-# list (
-#  
-# )
 
 #' Create RCX object from JSON data
 #' 
@@ -34,7 +29,7 @@ ndex.JSON2RCX <- function(json, verbose = FALSE){
   jsonlist = as.list(json)
   aspectlist = list()
   
-  ### merge pre- and post-metadata
+  ### merge pre- and post-metadata. this is special as pre- and post-metadata can have the entries of the same name. 
   sel = which(!sapply(jsonlist[["metaData"]], is.null))
   if(length(sel)==1) {
     aspectlist$metaData[[1]] = jsonlist[["metaData"]][[sel[1]]]
@@ -55,7 +50,8 @@ ndex.JSON2RCX <- function(json, verbose = FALSE){
   ### remaining aspects must have same structure: rbind them
   for(i in names(jsonlist)) {
     if(i == "metaData") next
-    aspectlist[[i]] = do.call("rbind", jsonlist[[i]])
+    aspectlist[[i]] = plyr::rbind.fill(jsonlist[[i]])
+      #do.call("rbind", jsonlist[[i]]) might prove too slow for large amount of data
   }
   
   # ### handle core aspects manually, this saves time on the rbind step below - especially for large networks
@@ -85,7 +81,13 @@ ndex.JSON2RCX <- function(json, verbose = FALSE){
 #' @return json jsonlite json object if successfull, NULL otherwise
 #' @export
 ndex.RCX2JSON <- function(rcx, verbose = FALSE){
-  return(jsonlite::toJSON(rcx))
+  
+  if(is.null(rcx) || !("RCX" %in% class(rcx))) {
+    warning("ndex.RCX2JSON: parameter rcx does not contain RCX object")
+    return(NULL)
+  }
+  
+  return(jsonlite::toJSON(rcx, pretty=T))
 }
 
 

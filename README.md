@@ -27,12 +27,12 @@ Implementation
 * Get network information  (`ndex.get.network.summary`)
 * Defined a prototype RCX class as a named list of data.frames.
 * Get network as CX ("ndex.get.complete.network")
+* ndex.get.network.provenance, ndex.set.network.readonly, ndex.get.limited.aspect, ndex.get.network.namespace, ndex.get.network.metadata
+* ndex.get.complete.network -> ndex.RCX2ngraph -> ndex.ngraph2RCX -> ndex.RCX2JSON round trip works
 
 
 ### What is broken from prev versions:
-* First attempt to represent NDEx network in R, using tabular representation of nodes, edges etc. (S4 class `ndexgraph`)
-* Retrieve network metadata (`ndex.network.metadata(network_id)`)
-* Retrieve network (`ndex.network(network_id)`)
+* class `ndexgraph` : use classes RCX and ngraph now
 * Conversion of NDEx network object to the data frame usable by CBDD package
 
 ### What has changed:
@@ -42,14 +42,15 @@ Implementation
 * transferred basic network functions from RJSONIO to jsonlite
 * Low-level functions (GET, POST and PUT) have a swtich to return the raw response, without call to jsonlite::fromJSON
 * Networks are retrieved using the asCX API calls
-* RCX objects store the received CX data
+* RCX objects store the received CX data as a list of data.frames
+* ngraph objects represent the CX-encoded networks as graph (see "ndex.RCX2ngraph" and "ndex.ngraph2RCX")
 
 ### What is being worked on:
 * Start with implementing all API calls which produce data. Stay with 
 the raw data mostly. This is veryclose.
 * Implement the CX data model to go from JSON to CX  and back. This is prototyped.
-* Implement ngraph object extending igraph class to go from RCX to ngraph and back.
-* Implement the API calls which save data on the server.
+* Implement ngraph object extending igraph class to go from RCX to ngraph and back.  This is prototyped.
+* Implement the API calls which save data on the server. This is being debugged.
 
 ### Implementation details
 
@@ -62,6 +63,11 @@ Unit tests are not created so far.
 HTTP requests are performed using [RCurl](http://cran.r-project.org/web/packages/RCurl/index.html) package
 
 Parsing and creation of JSON is done using [jsonlite]() package.
+
+### RCX 
+
+The RCX object is currently implemented as a list of data.frames containing metaData and all aspects of the network.
+
 
 
 Examples

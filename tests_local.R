@@ -31,12 +31,17 @@ is.null(ndex.get.network.summary(ndexcon2,"sdjlbelglserglersg"))
 rcx1 = ndex.get.complete.network(ndexcon1,pws[1,"externalId"])
 rcx2 = ndex.get.complete.network(ndexcon2,pws[1,"externalId"])
 
-###convert to ngraph
+###convert to ngraph and back
 ngraph1 = ndex.RCX2ngraph(rcx1)
+rcx_back1 = ndex.ngraph2RCX(ngraph1)
 
+##test equality of conversion:
+for(i in names(rcx1)) {
+  cat(i)
+  cat(all.equal(rcx1[[i]], rcx_back1[[i]]))
+  cat("\n")
+}
 
-
-
-#### get CX data
+## to come: convert to JSON and save on NDEx server
 
 
