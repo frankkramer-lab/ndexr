@@ -37,6 +37,9 @@ pwsummary1 = ndex.get.network.summary(ndexcon1,pws1[1,"externalId"])
 ###get complete network as RCX object
 rcx1 = ndex.get.complete.network(ndexcon1,pws1[1,"externalId"])
 
+###plot it - no beauty here yet
+plot(ngraph1, vertex.label=V(ngraph1)$n, edge.label=E(ngraph1)$i)
+
 ###convert to ngraph and back
 ngraph1 = ndex.RCX2ngraph(rcx1)
 rcx_back1 = ndex.ngraph2RCX(ngraph1)
@@ -84,7 +87,7 @@ Implementation
 
 ### What is being worked on:
 * Start with implementing all API calls which produce data. Stay with 
-the raw data mostly. This is veryclose.
+the raw data mostly. This is very close.
 * Implement the CX data model to go from JSON to CX  and back. This is prototyped.
 * Implement ngraph object extending igraph class to go from RCX to ngraph and back.  This is prototyped.
 * Implement the API calls which save data on the server. This is being debugged.
@@ -100,6 +103,9 @@ Unit tests are not created so far.
 HTTP requests are performed using [RCurl](http://cran.r-project.org/web/packages/RCurl/index.html) package
 
 Parsing and creation of JSON is done using [jsonlite]() package.
+
+The ngraph object inherits from igraph - which has lots and lots of functionality. 
+See https://cran.r-project.org/web/packages/igraph/index.html and http://igraph.org/r/ 
 
 ### RCX 
 
@@ -208,9 +214,9 @@ The ngraph class inherits from igraph and contains the complete (R)CX informatio
 RCX objects store the CX data as a named list of data.frames containing metaData and all aspects of the network.
 The ngraph class inherits from igraph and contains the complete (R)CX information as graph, node and edge attributes.
 
-All \code{\link[igraph]{igraph}} functionality is available, e.g. access nodes and edges of igraph g via V(g) and E(g) and their attributes via V(g)$attribute
+All igraph functionality is available, e.g. access nodes and edges of igraph g via V(g) and E(g) and their attributes via V(g)$attribute
  
- The following rules apply to convert from \code{\link{RCX}} to ngraph:
+ The following rules apply to convert from RCX to ngraph:
  
  * nodes receive the "@id" value as name. All other information in aspects node and nodeAttributes are saved as node attributes, access via V(g). Data goes from long format (column n containing attribute name and column v containing attribute value) to wide format (columns for each unique n with cells contianing v).
  * edges are connected via their "s"art and "t"arget fields. The "@id" and "i"nteraction attribute are stored as is and all edgeAttributes are saved as node attributes, access via E(g). Data goes from long format (column n containing attribute name and column v containing attribute value) to wide format (columns for each unique n with cells contianing v).
