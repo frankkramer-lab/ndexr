@@ -15,6 +15,43 @@ install_github("frankkramer-lab/ndexr@develop")
 library(ndexr)
 ```
 
+I'm in a hurry, give me the tl;dr
+--------------
+
+```
+library(ndexr)
+###connect anonymously
+ndexcon1 = ndex.connect(verbose=T)
+###connect as test user
+ndexcon2 = ndex.connect(username="testacc", password="testacc", verbose=T)
+
+###get network api - skip this you wont need it
+apidata1 = ndex.get.network.api(ndexcon1)
+
+###find some networks containing p53
+pws1 = ndexr::ndex.find.networks(ndexcon1,"p53")
+
+###get network details
+pwsummary1 = ndex.get.network.summary(ndexcon1,pws1[1,"externalId"])
+
+###get complete network as RCX object
+rcx1 = ndex.get.complete.network(ndexcon1,pws1[1,"externalId"])
+
+###convert to ngraph and back
+ngraph1 = ndex.RCX2ngraph(rcx1)
+rcx_back1 = ndex.ngraph2RCX(ngraph1)
+
+##test equality of conversion:
+for(i in names(rcx1)) {
+  cat(i)
+  cat(all.equal(rcx1[[i]], rcx_back1[[i]]))
+  cat("\n")
+}
+
+#work on!
+```
+
+
 Implementation
 --------------
 
