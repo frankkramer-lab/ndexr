@@ -19,7 +19,7 @@ ndex_rest_PUT(ndexcon, route, data, raw = FALSE)
 JSON response from REST server, NULL if no valid JSON was received. if parameter raw is TRUE, the raw response is returned without a call to jsonlite::fromJSON.
 }
 \description{
-Generic PUT query to API
+This functions is internal.
 }
 \details{
 Simply execute HTTP PUT on URL host/route and fetch whatever data REST server returns 

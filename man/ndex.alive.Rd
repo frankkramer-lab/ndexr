@@ -13,6 +13,12 @@ ndex.alive(ndexcon)
 logical (TRUE if user is authenticated and connection is active, FALSE otherwise)
 }
 \description{
-Check if user is authenticated to NDEx REST server
+This function checks if the supplied NDEXConnection object allows user access to the NDEx server. It will fail for anonymous NDEXConnection objects.
+}
+\examples{
+\dontrun{
+ ndexcon = ndex.connect(verbose=T)
+ ndex.alive(ndexcon) # should return FALSE since ndexcon is anonymous
+ }
 }
 

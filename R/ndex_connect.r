@@ -10,12 +10,17 @@
 
 #' Connect to NDEx REST API
 #' 
+#' This function creates an NDEXConnection which stores options and authentication details. It is a parameter required for most of the other ndexr functions.
+#' If username and password are missing an anonymous connection is created, which already offers most of the retrieval functionality.
+#' 
 #' @param username character username
 #' @param password character password
 #' @param host (optional) URL of NDEx REST server to be used; Default is: http://www.ndexbio.org/rest
 #' @param verbose logical; whether to print out extended feedback 
 #' @return returns object of class NDEXConnection which stores options and authentication if successfull, NULL otherwise
 #' @export
+#' @examples
+#' \dontrun{ndexcon = ndex.connect(verbose=T)}
 ndex.connect <- function(username, password, host = "http://www.ndexbio.org/rest", verbose = FALSE){
 
   credentials = TRUE
@@ -62,9 +67,16 @@ ndex.connect <- function(username, password, host = "http://www.ndexbio.org/rest
 
 #' Check if user is authenticated to NDEx REST server
 #' 
+#' This function checks if the supplied NDEXConnection object allows user access to the NDEx server. It will fail for anonymous NDEXConnection objects.
+#' 
 #' @param ndexcon object of class NDEXConnection
 #' @return logical (TRUE if user is authenticated and connection is active, FALSE otherwise)
 #' @export
+#' @examples
+#' \dontrun{
+#'  ndexcon = ndex.connect(verbose=T)
+#'  ndex.alive(ndexcon) # should return FALSE since ndexcon is anonymous
+#'  }
 ndex.alive <- function(ndexcon){
   if(missing(ndexcon)) return(FALSE)
   if(ndexcon$anon == TRUE) {
@@ -89,7 +101,9 @@ ndex.alive <- function(ndexcon){
 #################################################
 ##Low-level REST-querying functions
 
-#' Generic GET query to API
+#' Generic GET query to API. 
+#' 
+#' This functions is internal.
 #' 
 #' @param ndexcon object of class NDEXConnection
 #' @param route Character (route to specific REST query)
@@ -99,7 +113,10 @@ ndex.alive <- function(ndexcon){
 #' Making sure the route is well-formed is the job of calling function
 #' @seealso \code{\link{ndex_rest_PUT}},  \code{\link{ndex_rest_POST}},  \code{\link{ndex_rest_POST}}
 #' @examples
-#' \dontrun{ndex_rest_GET("/networks/api")}
+#' \dontrun{
+#' ndexcon = ndex.connect(verbose=T)
+#' ndex_rest_GET(ndexcon, "/networks/api")
+#' }
 ndex_rest_GET <- function(ndexcon, route, raw = FALSE){
   url <- paste0(ndexcon$host, route)
   if(ndexcon$verbose) message("\nGET: [ ", url, " ]\n")
@@ -114,6 +131,8 @@ ndex_rest_GET <- function(ndexcon, route, raw = FALSE){
 }
 
 #' Generic PUT query to API
+#' 
+#' This functions is internal.
 #' 
 #' @param ndexcon object of class NDEXConnection
 #' @param route Character (route to specific REST query)
@@ -194,13 +213,19 @@ ndex_rest_POST <- function(ndexcon, route, data, raw = FALSE){
 
 #' List possible queries to NDEx API
 #' 
+#' This function returns a data.frame listing all the possible API calls supported by the NDEx server.
+#' 
 #' @param ndexcon object of class NDEXConnection
-#' @return data.frame detaling the API names, paths, parameters and athentication needed for API requests.
+#' @return data.frame detailing the API names, paths, parameters and athentication needed for API requests.
 #' @details Retrieves information on the NDEx API calls
 #' @seealso \code{\link{ndex_rest_GET}},  \code{\link{ndex_rest_PUT}},  \code{\link{ndex_rest_POST}}
+#' @export
 #' @examples
-#' ##TBD
-get.network.api <- function(ndexcon){
+#' \dontrun{
+#' ndexcon = ndex.connect(verbose=T)
+#' ndex.get.network.api(ndexcon)
+#' }
+ndex.get.network.api <- function(ndexcon){
   route <- "/network/api"
   response <- ndex_rest_GET(ndexcon,route)
   #  df <- data.frame(path = sapply(response, `[[`, 'path'),

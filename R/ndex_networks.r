@@ -9,7 +9,9 @@
 # Network Functions
 
 #' Search networks in NDEx (by description)
-#'     network    POST    /network/search/{skipBlocks}/{blockSize}    SimpleNetworkQuery    NetworkSummary[]
+#' 
+#' This functions searches the public networks on an NDEx server for networks containing the supplied search string. T
+#' his search can be limited to certain accounts as well as in length.
 #' 
 #' @param ndexcon object of class NDEXConnection
 #' @param searchString string by which to search
@@ -17,8 +19,13 @@
 #' @param skipBlocks -
 #' @param blockSize -
 #' @return Data frame with network information: ID, name, whether it is public, edge and node count; source and format of network. NULL if no networks are found.
+#' @section REST query:
+#' This function runs POST query /network/search/{skipBlocks}/{blockSize}    returns list of NetworkSummary
 #' @note Search strings may be structured
-#' @examples \dontrun{ndex.find.networks("p53")}
+#' @examples 
+#' \dontrun{
+#' ndexcon = ndex.connect(verbose=T)
+#' pws1 = ndex.find.networks(ndexcon1,"p53") }
 #' @export
 ndex.find.networks <- function(ndexcon, searchString="", accountName, skipBlocks = 0, blockSize = 10){
 
@@ -44,11 +51,19 @@ ndex.find.networks <- function(ndexcon, searchString="", accountName, skipBlocks
 
 
 #' Get NetworkSummary by Network UUID
-#' GET    /network/{networkUUID}       NetworkSummary
+#' 
+#' This function retrieves the summary of the network identified by the supplied network UUID string.
 #' 
 #' @param ndexcon object of class NDEXConnection
 #' @param network_id unique ID of the network
 #' @return List of network metadata: ID, name, whether it is public, edge and node count; source and format of network
+#' @section REST query:
+#' This function runs GET query /network/{networkUUID}    and returns a single NetworkSummary
+#' @examples 
+#' \dontrun{
+#' ndexcon = ndex.connect(verbose=T)
+#' pws = ndex.find.networks(ndexcon,"p53")
+#' ndex.get.network.summary(ndexcon,pws[1,"externalId"]) }
 #' @export
 ndex.get.network.summary <- function(ndexcon, network_id){
   route <- paste0("/network/", network_id)
@@ -67,7 +82,12 @@ ndex.get.network.summary <- function(ndexcon, network_id){
 #' Edges use primary ID of the base term ('predicate', or 'p' element)
 #' Mapping table for the nodes is retrieved ('alias' and 'related' terms) to facilitate conversions/data mapping
 #' @section REST query:
-#' This function runs GET query /network/{networkUUID}/asCX (returns CX Network object)
+#' This function runs GET query /network/{networkUUID}/asCX  and returns CX network object which is parsed into an RCX object
+#' @examples 
+#' \dontrun{
+#' ndexcon = ndex.connect(verbose=T)
+#' pws = ndex.find.networks(ndexcon,"p53")
+#' rcx = ndex.get.complete.network(ndexcon,pws[1,"externalId"]) }
 #' @export
 ndex.get.complete.network <- function(ndexcon, network_id){
   route <- paste0("/network/", network_id, "/asCX")
@@ -78,11 +98,19 @@ ndex.get.complete.network <- function(ndexcon, network_id){
 
 
 #' Get Network Provenance by Network UUID
-#' GET    /network/{networkUUID}/provenance       Provenance
+#' 
+#' This function retrieves the provenance of the network identified by the supplied network UUID string.
 #' 
 #' @param ndexcon object of class NDEXConnection
 #' @param network_id unique ID of the network
 #' @return List of network metadata: ID, name, whether it is public, edge and node count; source and format of network
+#' @section REST query:
+#' This function runs GET query /network/{networkUUID}/provenance    and returns Provenance
+#' @examples 
+#' \dontrun{
+#' ndexcon = ndex.connect(verbose=T)
+#' pws = ndex.find.networks(ndexcon,"p53")
+#' ndex.get.network.provenance(ndexcon,pws[1,"externalId"]) }
 #' @export
 ndex.get.network.provenance <- function(ndexcon, network_id){
   route <- paste0("/network/", network_id,"/provenance")
@@ -103,12 +131,20 @@ ndex.get.network.provenance <- function(ndexcon, network_id){
 
 
 #' Set a Network Read-Only
-#' GET : /network/{networkId}/setFlag/{parameter}={value}
+#' 
+#' This function sets the readonly flag on the network identified by the supplied network UUID.
 #' 
 #' @param ndexcon object of class NDEXConnection
 #' @param network_id unique ID of the network
-#' @param readonly logical, defaults to TRUE
+#' @param readonly logical defaults to TRUE
 #' @return response from server
+#' @section REST query:
+#' This function runs GET query /network/{networkId}/setFlag/{parameter}={value}
+#' @examples 
+#' \dontrun{
+#' ndexcon = ndex.connect(verbose=T)
+#' pws = ndex.find.networks(ndexcon,"p53")
+#' ndex.set.network.readonly(ndexcon,pws[1,"externalId"],readonly=TRUE) }
 #' @export
 ndex.set.network.readonly <- function(ndexcon, network_id, readonly=c(TRUE,FALSE)[1]){
   if(readonly) {
@@ -129,7 +165,6 @@ ndex.set.network.readonly <- function(ndexcon, network_id, readonly=c(TRUE,FALSE
 
 #' Get Some Aspect Elements from a Network as CX
 #' 
-#' GET : /network/{networkId}/aspect/{aspectName}/{limit}
 #' This method returns elements in the specified aspect up to the specified limit.
 #' 
 #' @param ndexcon object of class NDEXConnection
@@ -138,7 +173,12 @@ ndex.set.network.readonly <- function(ndexcon, network_id, readonly=c(TRUE,FALSE
 #' @param limit integer limiting the amount of output to retrieve
 #' @return \code{\link{RCX}} object
 #' @section REST query:
-#' GET : /network/{networkId}/aspect/{aspectName}/{limit}
+#' This function runs GET query /network/{networkId}/aspect/{aspectName}/{limit}  and returns CX network containing the specified aspect up to the specified limit which is parsed into an RCX object
+#' @examples 
+#' \dontrun{
+#' ndexcon = ndex.connect(verbose=T)
+#' pws = ndex.find.networks(ndexcon,"p53")
+#' ndex.get.limited.aspect(ndexcon,pws[1,"externalId"],"citations",5) }
 #' @export
 ndex.get.limited.aspect <- function(ndexcon, network_id, aspectName, limit){
   route <- paste0("/network/", network_id, "/aspect/",aspectName,"/",limit)
@@ -166,10 +206,10 @@ ndex.get.limited.aspect <- function(ndexcon, network_id, aspectName, limit){
 #' @export
 ndex.create.network <- function(ndexcon, rcx){
   route <- paste0("/network/asCX")
-  postdata = toJSON(list(
+  postdata = jsonlite::toJSON(list(
                           CXNetworkStream=
                            list("filename",
-                                rcx_back1,
+                                rcx,
                                 "application/octet-stream")
                          )
                     )
@@ -199,11 +239,19 @@ ndex.create.network <- function(ndexcon, rcx){
 
 
 #' Get the BEL Namespaces Associated with a Network UUID
-#' GET : /network/{networkId}/namespace
+#' 
+#' This function retrieves the BEL namespaces associated with the supplied network UUID.
 #' 
 #' @param ndexcon object of class NDEXConnection
 #' @param network_id unique ID of the network
 #' @return data.frame listing network namespace
+#' @section REST query:
+#' This function runs GET query /network/{networkId}/namespace    and returns a list of BEL Namespaces
+#' @examples 
+#' \dontrun{
+#' ndexcon = ndex.connect(verbose=T)
+#' pws = ndex.find.networks(ndexcon,"p53")
+#' ndex.get.network.namespace(ndexcon,pws[1,"externalId"]) }
 #' @export
 ndex.get.network.namespace <- function(ndexcon, network_id){
   route <- paste0("/network/", network_id,"/namespace")
@@ -213,11 +261,19 @@ ndex.get.network.namespace <- function(ndexcon, network_id){
 
 
 #' Get the Metadata Associated with a Network UUID
-#' GET : /network/{networkId}/metadata
+#' 
+#' This function retrieves the metadata associated with the supplied network UUID.
 #' 
 #' @param ndexcon object of class NDEXConnection
 #' @param network_id unique ID of the network
 #' @return data.frame listing network metadata: ID, name, whether it is public, edge and node count; source and format of network
+#' @section REST query:
+#' This function runs GET query /network/{networkId}/metadata    and returns the network metadata as a data.frame
+#' @examples 
+#' \dontrun{
+#' ndexcon = ndex.connect(verbose=T)
+#' pws = ndex.find.networks(ndexcon,"p53")
+#' ndex.get.network.metadata(ndexcon,pws[1,"externalId"]) }
 #' @export
 ndex.get.network.metadata <- function(ndexcon, network_id){
   route <- paste0("/network/", network_id,"/metadata")

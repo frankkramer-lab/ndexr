@@ -2,8 +2,7 @@
 % Please edit documentation in R/ndex_networks.r
 \name{ndex.get.network.metadata}
 \alias{ndex.get.network.metadata}
-\title{Get the Metadata Associated with a Network UUID
-GET : /network/{networkId}/metadata}
+\title{Get the Metadata Associated with a Network UUID}
 \usage{
 ndex.get.network.metadata(ndexcon, network_id)
 }
@@ -16,7 +15,16 @@ ndex.get.network.metadata(ndexcon, network_id)
 data.frame listing network metadata: ID, name, whether it is public, edge and node count; source and format of network
 }
 \description{
-Get the Metadata Associated with a Network UUID
-GET : /network/{networkId}/metadata
+This function retrieves the metadata associated with the supplied network UUID.
+}
+\section{REST query}{
+
+This function runs GET query /network/{networkId}/metadata    and returns the network metadata as a data.frame
+}
+\examples{
+\dontrun{
+ndexcon = ndex.connect(verbose=T)
+pws = ndex.find.networks(ndexcon,"p53")
+ndex.get.network.metadata(ndexcon,pws[1,"externalId"]) }
 }
 

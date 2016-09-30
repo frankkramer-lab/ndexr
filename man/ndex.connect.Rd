@@ -20,6 +20,10 @@ ndex.connect(username, password, host = "http://www.ndexbio.org/rest",
 returns object of class NDEXConnection which stores options and authentication if successfull, NULL otherwise
 }
 \description{
-Connect to NDEx REST API
+This function creates an NDEXConnection which stores options and authentication details. It is a parameter required for most of the other ndexr functions.
+If username and password are missing an anonymous connection is created, which already offers most of the retrieval functionality.
+}
+\examples{
+\dontrun{ndexcon = ndex.connect(verbose=T)}
 }
 

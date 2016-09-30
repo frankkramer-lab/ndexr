@@ -15,6 +15,35 @@ ndex.ngraph2RCX(ngraph, verbose = FALSE)
 returns object of class RCX if successfull, NULL otherwise
 }
 \description{
-Create RCX object from ngraph object
+This function creates an RCX object from a valid ngraph object.
+}
+\details{
+The following rules apply to convert from \code{\link{ngraph}} to \code{\link{RCX}}:
+\itemize{
+ \item all graph attributes are stored as named data.frames within the RCX object
+ \item nodes receive their name value as "@id" attribute. All other node attributes are saved in the RCX object as nodeAttributes, access via rcx[["nodeAttributes"]]. 
+       Data goes from wide format (columns for each unique n with cells contianing v) to long format (column n containing attribute name and column v containing attribute value).
+ \item edges are connected via their "s"art and "t"arget fields. The "@id" and "i"nteraction attribute are stored as is and all edgeAttributes are saved as node attributes, access via rcx[["edgeAttributes"]]. 
+       Data goes from wide format (columns for each unique n with cells contianing v) to long format (column n containing attribute name and column v containing attribute value).
+}
+}
+\examples{
+\dontrun{
+ndexcon = ndex.connect(verbose=T)
+pws = ndex.find.networks(ndexcon,"p53")
+rcx = ndex.get.complete.network(ndexcon,pws[1,"externalId"]) 
+ngraph = ndex.RCX2ngraph(rcx) 
+rcxback = ndex.ngraph2RCX(ngraph)
+
+#test equalness
+for(i in names(rcx)) {
+cat(i)
+cat(all.equal(rcx[[i]], rcxback[[i]]))
+cat("\\n")
+}
+}
+}
+\seealso{
+\code{\link{ngraph}} \code{\link{ndex.RCX2ngraph}} \code{\link{ndex.JSON2RCX}} \code{\link{ndex.RCX2JSON}}
 }
 

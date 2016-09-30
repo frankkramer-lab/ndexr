@@ -2,7 +2,7 @@
 % Please edit documentation in R/ndex_connect.r
 \name{ndex_rest_GET}
 \alias{ndex_rest_GET}
-\title{Generic GET query to API}
+\title{Generic GET query to API.}
 \usage{
 ndex_rest_GET(ndexcon, route, raw = FALSE)
 }
@@ -17,14 +17,17 @@ ndex_rest_GET(ndexcon, route, raw = FALSE)
 JSON response from REST server, NULL if no valid JSON was received. if parameter raw is TRUE, the raw response is returned without a call to jsonlite::fromJSON.
 }
 \description{
-Generic GET query to API
+This functions is internal.
 }
 \details{
 Simply execute HTTP GET on URL host/route and fetch whatever data REST server returns 
 Making sure the route is well-formed is the job of calling function
 }
 \examples{
-\dontrun{ndex_rest_GET("/networks/api")}
+\dontrun{
+ndexcon = ndex.connect(verbose=T)
+ndex_rest_GET(ndexcon, "/networks/api")
+}
 }
 \seealso{
 \code{\link{ndex_rest_PUT}},  \code{\link{ndex_rest_POST}},  \code{\link{ndex_rest_POST}}

@@ -2,8 +2,7 @@
 % Please edit documentation in R/ndex_networks.r
 \name{ndex.find.networks}
 \alias{ndex.find.networks}
-\title{Search networks in NDEx (by description)
-    network    POST    /network/search/{skipBlocks}/{blockSize}    SimpleNetworkQuery    NetworkSummary[]}
+\title{Search networks in NDEx (by description)}
 \usage{
 ndex.find.networks(ndexcon, searchString = "", accountName, skipBlocks = 0,
   blockSize = 10)
@@ -23,13 +22,19 @@ ndex.find.networks(ndexcon, searchString = "", accountName, skipBlocks = 0,
 Data frame with network information: ID, name, whether it is public, edge and node count; source and format of network. NULL if no networks are found.
 }
 \description{
-Search networks in NDEx (by description)
-    network    POST    /network/search/{skipBlocks}/{blockSize}    SimpleNetworkQuery    NetworkSummary[]
+This functions searches the public networks on an NDEx server for networks containing the supplied search string. T
+his search can be limited to certain accounts as well as in length.
 }
 \note{
 Search strings may be structured
 }
+\section{REST query}{
+
+This function runs POST query /network/search/{skipBlocks}/{blockSize}    returns list of NetworkSummary
+}
 \examples{
-\dontrun{ndex.find.networks("p53")}
+\dontrun{
+ndexcon = ndex.connect(verbose=T)
+pws1 = ndex.find.networks(ndexcon1,"p53") }
 }
 

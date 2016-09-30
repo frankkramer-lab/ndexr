@@ -17,4 +17,14 @@ json jsonlite json object if successfull, NULL otherwise
 \description{
 Generate JSON data from RCX object
 }
+\examples{
+\dontrun{
+ndexcon = ndex.connect(verbose=T)
+pws = ndex.find.networks(ndexcon,"p53")
+rcx = ndex.get.complete.network(ndexcon,pws[1,"externalId"]) 
+rcxjson = ndex.RCX2JSON(rcx) }
+}
+\seealso{
+\code{\link{ndex.RCX2ngraph}} \code{\link{ndex.ngraph2RCX}} \code{\link{ndex.JSON2RCX}}
+}
 

@@ -2,8 +2,7 @@
 % Please edit documentation in R/ndex_networks.r
 \name{ndex.get.network.summary}
 \alias{ndex.get.network.summary}
-\title{Get NetworkSummary by Network UUID
-GET    /network/{networkUUID}       NetworkSummary}
+\title{Get NetworkSummary by Network UUID}
 \usage{
 ndex.get.network.summary(ndexcon, network_id)
 }
@@ -16,7 +15,16 @@ ndex.get.network.summary(ndexcon, network_id)
 List of network metadata: ID, name, whether it is public, edge and node count; source and format of network
 }
 \description{
-Get NetworkSummary by Network UUID
-GET    /network/{networkUUID}       NetworkSummary
+This function retrieves the summary of the network identified by the supplied network UUID string.
+}
+\section{REST query}{
+
+This function runs GET query /network/{networkUUID}    and returns a single NetworkSummary
+}
+\examples{
+\dontrun{
+ndexcon = ndex.connect(verbose=T)
+pws = ndex.find.networks(ndexcon,"p53")
+ndex.get.network.summary(ndexcon,pws[1,"externalId"]) }
 }
 

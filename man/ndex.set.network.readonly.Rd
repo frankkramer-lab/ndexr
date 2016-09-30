@@ -2,8 +2,7 @@
 % Please edit documentation in R/ndex_networks.r
 \name{ndex.set.network.readonly}
 \alias{ndex.set.network.readonly}
-\title{Set a Network Read-Only
-GET : /network/{networkId}/setFlag/{parameter}={value}}
+\title{Set a Network Read-Only}
 \usage{
 ndex.set.network.readonly(ndexcon, network_id, readonly = c(TRUE, FALSE)[1])
 }
@@ -12,13 +11,22 @@ ndex.set.network.readonly(ndexcon, network_id, readonly = c(TRUE, FALSE)[1])
 
 \item{network_id}{unique ID of the network}
 
-\item{readonly}{logical, defaults to TRUE}
+\item{readonly}{logical defaults to TRUE}
 }
 \value{
 response from server
 }
 \description{
-Set a Network Read-Only
-GET : /network/{networkId}/setFlag/{parameter}={value}
+This function sets the readonly flag on the network identified by the supplied network UUID.
+}
+\section{REST query}{
+
+This function runs GET query /network/{networkId}/setFlag/{parameter}={value}
+}
+\examples{
+\dontrun{
+ndexcon = ndex.connect(verbose=T)
+pws = ndex.find.networks(ndexcon,"p53")
+ndex.set.network.readonly(ndexcon,pws[1,"externalId"],readonly=TRUE) }
 }
 

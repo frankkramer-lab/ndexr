@@ -25,6 +25,12 @@ Mapping table for the nodes is retrieved ('alias' and 'related' terms) to facili
 }
 \section{REST query}{
 
-This function runs GET query /network/{networkUUID}/asCX (returns CX Network object)
+This function runs GET query /network/{networkUUID}/asCX  and returns CX network object which is parsed into an RCX object
+}
+\examples{
+\dontrun{
+ndexcon = ndex.connect(verbose=T)
+pws = ndex.find.networks(ndexcon,"p53")
+rcx = ndex.get.complete.network(ndexcon,pws[1,"externalId"]) }
 }
 

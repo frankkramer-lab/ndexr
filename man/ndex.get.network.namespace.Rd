@@ -2,8 +2,7 @@
 % Please edit documentation in R/ndex_networks.r
 \name{ndex.get.network.namespace}
 \alias{ndex.get.network.namespace}
-\title{Get the BEL Namespaces Associated with a Network UUID
-GET : /network/{networkId}/namespace}
+\title{Get the BEL Namespaces Associated with a Network UUID}
 \usage{
 ndex.get.network.namespace(ndexcon, network_id)
 }
@@ -16,7 +15,16 @@ ndex.get.network.namespace(ndexcon, network_id)
 data.frame listing network namespace
 }
 \description{
-Get the BEL Namespaces Associated with a Network UUID
-GET : /network/{networkId}/namespace
+This function retrieves the BEL namespaces associated with the supplied network UUID.
+}
+\section{REST query}{
+
+This function runs GET query /network/{networkId}/namespace    and returns a list of BEL Namespaces
+}
+\examples{
+\dontrun{
+ndexcon = ndex.connect(verbose=T)
+pws = ndex.find.networks(ndexcon,"p53")
+ndex.get.network.namespace(ndexcon,pws[1,"externalId"]) }
 }
 

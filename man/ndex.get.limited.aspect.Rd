@@ -19,11 +19,16 @@ ndex.get.limited.aspect(ndexcon, network_id, aspectName, limit)
 \code{\link{RCX}} object
 }
 \description{
-GET : /network/{networkId}/aspect/{aspectName}/{limit}
 This method returns elements in the specified aspect up to the specified limit.
 }
 \section{REST query}{
 
-GET : /network/{networkId}/aspect/{aspectName}/{limit}
+This function runs GET query /network/{networkId}/aspect/{aspectName}/{limit}  and returns CX network containing the specified aspect up to the specified limit which is parsed into an RCX object
+}
+\examples{
+\dontrun{
+ndexcon = ndex.connect(verbose=T)
+pws = ndex.find.networks(ndexcon,"p53")
+ndex.get.limited.aspect(ndexcon,pws[1,"externalId"],"citations",5) }
 }
 

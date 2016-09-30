@@ -66,7 +66,143 @@ Parsing and creation of JSON is done using [jsonlite]() package.
 
 ### RCX 
 
-The RCX object is currently implemented as a list of data.frames containing metaData and all aspects of the network.
+The RCX object is currently implemented within this package as a list of data.frames containing metaData and all aspects of the network.
+The structure of an RCX object, as shown via 'str(rcx)' could be a list like this:
+ 
+```
+ > str(rcx)
+ 
+ List of 12
+ $ metaData          :'data.frame':	11 obs. of  7 variables:
+   ..$ name            : chr [1:11] "citations" "@context" "edgeAttributes" "edgeCitations" ...
+   ..$ consistencyGroup: int [1:11] 1 1 1 1 1 1 1 1 1 1 ...
+   ..$ elementCount    : int [1:11] 4 23 NA NA 11 1 NA NA NA 5 ...
+   ..$ lastUpdate      : num [1:11] 1.44e+12 1.44e+12 1.44e+12 1.44e+12 1.44e+12 ...
+   ..$ version         : chr [1:11] "1.0" "1.0" "1.0" "1.0" ...
+   ..$ idCounter       : int [1:11] 60714397 NA NA NA 60714399 NA NA NA NA 60714395 ...
+   ..$ properties      :List of 11
+ $ numberVerification:'data.frame':	1 obs. of  1 variable:
+   ..$ longNumber: num 2.81e+14
+ $ ndexStatus        :'data.frame':	1 obs. of  10 variables:
+   ..$ externalId      : chr "eac8a4b8-6194-11e5-8ac5-06603eb7f303"
+   ..$ creationTime    : num 1.44e+12
+   ..$ modificationTime: num 1.44e+12
+   ..$ visibility      : chr "PUBLIC"
+   ..$ published       : logi FALSE
+   ..$ nodeCount       : int 5
+   ..$ edgeCount       : int 11
+   ..$ owner           : chr "nci-pid"
+   ..$ ndexServerURI   : chr "http://public.ndexbio.org"
+   ..$ readOnly        : logi FALSE
+ $ @context          :'data.frame':	1 obs. of  23 variables:
+   ..$ GENPEPT                      : chr "http://www.ncbi.nlm.nih.gov/protein/"
+   ..$ NCBI GENE                    : chr "http://identifiers.org/ncbigene/"
+   ..$ ENSEMBL                      : chr "http://identifiers.org/ensembl/"
+   [...]
+ $ networkAttributes :'data.frame':	4 obs. of  2 variables:
+   ..$ n: chr [1:4] "name" "description" "version" "ndex:sourceFormat"
+   ..$ v: chr [1:4] "PLK3 signaling events" "This network ..." [...]
+ $ citations         :'data.frame':	4 obs. of  7 variables:
+  ..$ @id           : int [1:4] 60714380 60714383 60714386 60714397
+  ..$ dc:identifier : chr [1:4] "pmid:17264206" "pmid:14968113" "pmid:12242661" "pmid:11551930"
+  ..$ dc:type       : chr [1:4] "URI" "URI" "URI" "URI"
+  ..$ attributes    :List of 4 [...]
+ $ nodes             :'data.frame':	5 obs. of  2 variables:
+  ..$ @id: int [1:5] 60714376 60714377 60714381 60714384 60714395
+  ..$ n  : chr [1:5] "CCNE1" "PLK3" "MPIP3" "CHK2" ...
+ $ nodeAttributes    :'data.frame':	10 obs. of  4 variables:
+   ..$ po: int [1:10] 60714376 60714376 60714377 60714377 60714381 60714381 60714384 60714384 60714395 60714395
+   ..$ n : chr [1:10] "alias" "relatedTo" "alias" "relatedTo" ...
+   ..$ v :List of 10
+     .. ..$ : chr [1:6] "UniProt Knowledgebase:Q92501" "UniProt Knowledgebase:Q9UD21"  ...
+     .. ..$ : chr [1:98] "GENE ONTOLOGY:GO:0003713" "GENE ONTOLOGY:GO:0005515"  ...
+     [...]
+   ..$ d : chr [1:10] "list_of_string"  ...
+ $ edges             :'data.frame':	11 obs. of  4 variables:
+   ..$ @id: int [1:11] 60714379 60714382  ...
+   ..$ s  : int [1:11] 60714376 60714381  ...
+   ..$ t  : int [1:11] 60714377 60714377  ...
+   ..$ i  : chr [1:11] "neighbor-of" "neighbor-of"  ...
+ $ edgeCitations     :'data.frame':	11 obs. of  2 variables:
+   ..$ po       :List of 11
+   .. ..$ : int 60714379
+   .. ..$ : int 60714382
+   [...]
+ ..$ citations:List of 11
+ .. ..$ : int 60714380
+ .. ..$ : int 60714383
+   [...]
+ $ status            :'data.frame':	1 obs. of  2 variables:
+   ..$ error  : chr ""
+   ..$ success: logi TRUE
+- attr(*, "class")= chr [1:2] "RCX" "list"
+```
+ 
+The data.frames representing nodes and edges could look like this:
+
+```
+ > rcx[["nodes"]]
+    @id     n
+  1 60714376 CCNE1
+  2 60714377  PLK3
+  3 60714381 MPIP3
+  4 60714384  CHK2
+  5 60714395   P53
+
+ > rcx[["edges"]]
+     @id        s        t                           i
+  1  60714379 60714376 60714377                 neighbor-of
+  2  60714382 60714381 60714377                 neighbor-of
+  3  60714385 60714384 60714377                 neighbor-of
+  4  60714388 60714377 60714376      controls-expression-of
+  5  60714390 60714377 60714381 controls-phosphorylation-of
+  6  60714392 60714377 60714381    controls-state-change-of
+  7  60714393 60714377 60714384 controls-phosphorylation-of
+  8  60714394 60714377 60714384    controls-state-change-of
+  9  60714396 60714377 60714395 controls-phosphorylation-of
+  10 60714398 60714377 60714395    controls-state-change-of
+  11 60714399 60714377 60714395                 neighbor-of
+```
+
+
+### ngraph:
+
+The ngraph class inherits from igraph and contains the complete (R)CX information as graph, node and edge attributes. 
+RCX objects store the CX data as a named list of data.frames containing metaData and all aspects of the network.
+The ngraph class inherits from igraph and contains the complete (R)CX information as graph, node and edge attributes.
+
+All \code{\link[igraph]{igraph}} functionality is available, e.g. access nodes and edges of igraph g via V(g) and E(g) and their attributes via V(g)$attribute
+ 
+ The following rules apply to convert from \code{\link{RCX}} to ngraph:
+ 
+ * nodes receive the "@id" value as name. All other information in aspects node and nodeAttributes are saved as node attributes, access via V(g). Data goes from long format (column n containing attribute name and column v containing attribute value) to wide format (columns for each unique n with cells contianing v).
+ * edges are connected via their "s"art and "t"arget fields. The "@id" and "i"nteraction attribute are stored as is and all edgeAttributes are saved as node attributes, access via E(g). Data goes from long format (column n containing attribute name and column v containing attribute value) to wide format (columns for each unique n with cells contianing v).
+ * all other aspect data is stored as graph attributes, access via g$aspect
+
+An ngraph object could look like this:
+```
+> str(ngraph)
+IGRAPH DN-- 5 11 -- PLK3 signaling events
++ attr: name (g/c), description (g/c), version (g/c), ndex:sourceFormat (g/c), name (v/c), @id (v/n), n
+| (v/c), test (v/c), relatedTo (v/x), @id (e/n), i (e/c)
++ edges (vertex names):
+ [1] 60714376->60714377 60714381->60714377 60714384->60714377 60714377->60714376 60714377->60714381 60714377->60714381
+ [7] 60714377->60714384 60714377->60714384 60714377->60714395 60714377->60714395 60714377->60714395
+> V(ngraph)
++ 5/5 vertices, named:
+[1] 60714376 60714377 60714381 60714384 60714395
+> V(ngraph)$n
+[1] "CCNE1" "PLK3"  "MPIP3" "CHK2"  "P53"
+> E(ngraph)
++ 11/11 edges (vertex names):
+ [1] 60714376->60714377 60714381->60714377 60714384->60714377 60714377->60714376 60714377->60714381 60714377->60714381
+ [7] 60714377->60714384 60714377->60714384 60714377->60714395 60714377->60714395 60714377->60714395
+> E(ngraph)$i
+ [1] "neighbor-of"                 "neighbor-of"                 "neighbor-of"                
+ [4] "controls-expression-of"      "controls-phosphorylation-of" "controls-state-change-of"   
+ [7] "controls-phosphorylation-of" "controls-state-change-of"    "controls-phosphorylation-of"
+[10] "controls-state-change-of"    "neighbor-of"                
+```
 
 
 
@@ -83,7 +219,7 @@ Random thoughts and notes to self
 
 pre- and post-metaData can have a different structure but the same JSON name. (see below)
 
-################
+```
 aspectlist$metaData
 [[1]]
    consistencyGroup elementCount   lastUpdate              name properties version
@@ -100,52 +236,7 @@ aspectlist$metaData
 1  60714395     nodes       NULL
 2  60714399     edges       NULL
 3  60714397 citations       NULL
-################
+```
 
 -> take care when joining. currently pre and post are merged with the duplicate properties field removed afterwards
-
-### RCX:
-
- first prototyped an CX object in R as a list of data.frames, to give you an idea:
-##############
-rcx
-    $numberVerification
-       longNumber           1 2.81475e+14
-    
-     $ndexStatus
-                            externalId creationTime modificationTime visibility published nodeCount ...
-1 eac8a4b8-6194-11e5-8ac5-06603eb7f303 1.442973e+12     1.443031e+12     PUBLIC   ...
-
-    $citations
-       @id dc:title dc:contributor dc:identifier dc:type dc:description attributes
-1 60714380                      NA pmid:17264206     URI             NA       NULL
-2 60714383                      NA pmid:14968113     URI             NA       NULL
-3 60714386                      NA pmid:12242661     URI             NA       NULL
-4 60714397                      NA pmid:11551930     URI             NA       NULL
-
-    $nodes
-       @id     n
-1 60714376 CCNE1
-2 60714377  PLK3
-3 60714381 MPIP3
-4 60714384  CHK2
-5 60714395   P53
-
-    $edges
-        @id        s        t                           i
-1  60714379 60714376 60714377                 neighbor-of
-2  60714382 60714381 60714377                 neighbor-of
-3  60714385 60714384 60714377                 neighbor-of
-4  60714388 60714377 60714376      controls-expression-of
-5  60714390 60714377 60714381 controls-phosphorylation-of
-6  60714392 60714377 60714381    controls-state-change-of
-7  60714393 60714377 60714384 controls-phosphorylation-of
-8  60714394 60714377 60714384    controls-state-change-of
-9  60714396 60714377 60714395 controls-phosphorylation-of
-10 60714398 60714377 60714395    controls-state-change-of
-11 60714399 60714377 60714395                 neighbor-of
-##############
-
-
-
 

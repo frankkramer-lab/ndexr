@@ -2,6 +2,7 @@
 % Please edit documentation in R/ndex_ngraph.r
 \name{ndex.RCX2ngraph}
 \alias{ndex.RCX2ngraph}
+\alias{ngraph}
 \title{Create ngraph object from RCX object}
 \usage{
 ndex.RCX2ngraph(rcx, verbose = FALSE)
@@ -15,6 +16,57 @@ ndex.RCX2ngraph(rcx, verbose = FALSE)
 returns object of class ngraph if successfull, NULL otherwise
 }
 \description{
-Create ngraph object from RCX object
+This function creates an ngraph object from a supplied \code{\link{RCX}} object.
+RCX objects store the CX data as a named list of data.frames containing metaData and all aspects of the network.
+The ngraph class inherits from igraph and contains the complete (R)CX information as graph, node and edge attributes.
+All \code{\link[igraph]{igraph}} functionality is available, e.g. access nodes and edges of igraph g via V(g) and E(g) and their attributes via V(g)$attribute
+}
+\details{
+The following rules apply to convert from \code{\link{RCX}} to ngraph:
+\itemize{
+ \item nodes receive the "@id" value as name. All other information in aspects node and nodeAttributes are saved as node attributes, access via V(g). 
+       Data goes from long format (column n containing attribute name and column v containing attribute value) to wide format (columns for each unique n with cells contianing v).
+ \item edges are connected via their "s"art and "t"arget fields. The "@id" and "i"nteraction attribute are stored as is and all edgeAttributes are saved as node attributes, access via E(g). 
+       Data goes from long format (column n containing attribute name and column v containing attribute value) to wide format (columns for each unique n with cells contianing v).
+ \item all other aspect data is stored as graph attributes, access via g$aspect
+}
+
+An ngraph object could look like this:\cr
+\preformatted{
+> str(ngraph)
+ IGRAPH DN-- 5 11 -- PLK3 signaling events
+ + attr: name (g/c), description (g/c), version (g/c), ndex:sourceFormat (g/c), name (v/c), @id (v/n), n
+ | (v/c), test (v/c), relatedTo (v/x), @id (e/n), i (e/c)
+ + edges (vertex names):
+  [1] 60714376->60714377 60714381->60714377 60714384->60714377 60714377->60714376 60714377->60714381 60714377->60714381
+  [7] 60714377->60714384 60714377->60714384 60714377->60714395 60714377->60714395 60714377->60714395
+> V(ngraph)
+ + 5/5 vertices, named:
+  [1] 60714376 60714377 60714381 60714384 60714395
+> V(ngraph)$n
+ [1] "CCNE1" "PLK3"  "MPIP3" "CHK2"  "P53"
+> E(ngraph)
+ + 11/11 edges (vertex names):
+  [1] 60714376->60714377 60714381->60714377 60714384->60714377 60714377->60714376 60714377->60714381 60714377->60714381
+  [7] 60714377->60714384 60714377->60714384 60714377->60714395 60714377->60714395 60714377->60714395
+> E(ngraph)$i
+ [1] "neighbor-of"                 "neighbor-of"                 "neighbor-of"                
+ [4] "controls-expression-of"      "controls-phosphorylation-of" "controls-state-change-of"   
+ [7] "controls-phosphorylation-of" "controls-state-change-of"    "controls-phosphorylation-of"
+ [10] "controls-state-change-of"    "neighbor-of"                
+}
+}
+\examples{
+\dontrun{
+ndexcon = ndex.connect(verbose=T)
+pws = ndex.find.networks(ndexcon,"p53")
+rcx = ndex.get.complete.network(ndexcon,pws[1,"externalId"]) 
+rcx$edges
+ngraph = ndex.RCX2ngraph(rcx) 
+ngraph
+E(ngraph) }
+}
+\seealso{
+\code{\link{ndex.ngraph2RCX}} \code{\link{ndex.JSON2RCX}} \code{\link{ndex.RCX2JSON}} \code{\link{RCX}} \code{\link[igraph]{igraph}}
 }
 

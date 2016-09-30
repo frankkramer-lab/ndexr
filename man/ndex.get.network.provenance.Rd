@@ -2,8 +2,7 @@
 % Please edit documentation in R/ndex_networks.r
 \name{ndex.get.network.provenance}
 \alias{ndex.get.network.provenance}
-\title{Get Network Provenance by Network UUID
-GET    /network/{networkUUID}/provenance       Provenance}
+\title{Get Network Provenance by Network UUID}
 \usage{
 ndex.get.network.provenance(ndexcon, network_id)
 }
@@ -16,7 +15,16 @@ ndex.get.network.provenance(ndexcon, network_id)
 List of network metadata: ID, name, whether it is public, edge and node count; source and format of network
 }
 \description{
-Get Network Provenance by Network UUID
-GET    /network/{networkUUID}/provenance       Provenance
+This function retrieves the provenance of the network identified by the supplied network UUID string.
+}
+\section{REST query}{
+
+This function runs GET query /network/{networkUUID}/provenance    and returns Provenance
+}
+\examples{
+\dontrun{
+ndexcon = ndex.connect(verbose=T)
+pws = ndex.find.networks(ndexcon,"p53")
+ndex.get.network.provenance(ndexcon,pws[1,"externalId"]) }
 }
 
