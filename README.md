@@ -29,7 +29,7 @@ ndexcon2 = ndex.connect(username="testacc", password="testacc", verbose=T)
 apidata1 = ndex.get.network.api(ndexcon1)
 
 ###find some networks containing p53
-pws1 = ndexr::ndex.find.networks(ndexcon1,"p53")
+pws1 = ndex.find.networks(ndexcon1,"p53")
 
 ###get network details
 pwsummary1 = ndex.get.network.summary(ndexcon1,pws1[1,"externalId"])
@@ -37,12 +37,12 @@ pwsummary1 = ndex.get.network.summary(ndexcon1,pws1[1,"externalId"])
 ###get complete network as RCX object
 rcx1 = ndex.get.complete.network(ndexcon1,pws1[1,"externalId"])
 
-###plot it - no beauty here yet
-plot(ngraph1, vertex.label=V(ngraph1)$n, edge.label=E(ngraph1)$i)
-
 ###convert to ngraph and back
 ngraph1 = ndex.RCX2ngraph(rcx1)
 rcx_back1 = ndex.ngraph2RCX(ngraph1)
+
+###plot it - no beauty here yet
+plot(ngraph1, vertex.label=V(ngraph1)$n, edge.label=E(ngraph1)$i)
 
 ##test equality of conversion:
 for(i in names(rcx1)) {

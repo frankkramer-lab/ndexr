@@ -111,7 +111,7 @@ ndex.alive <- function(ndexcon){
 #' @return JSON response from REST server, NULL if no valid JSON was received. if parameter raw is TRUE, the raw response is returned without a call to jsonlite::fromJSON.
 #' @details Simply execute HTTP GET on URL host/route and fetch whatever data REST server returns 
 #' Making sure the route is well-formed is the job of calling function
-#' @seealso \code{\link{ndex_rest_PUT}},  \code{\link{ndex_rest_POST}},  \code{\link{ndex_rest_POST}}
+#' @seealso \code{\link{ndex_rest_PUT}},  \code{\link{ndex_rest_POST}},  \code{\link{ndex_rest_PUT}}
 #' @examples
 #' \dontrun{
 #' ndexcon = ndex.connect(verbose=T)
@@ -142,7 +142,7 @@ ndex_rest_GET <- function(ndexcon, route, raw = FALSE){
 #' @details Simply execute HTTP PUT on URL host/route and fetch whatever data REST server returns 
 #' Making sure the route is well-formed is the job of calling function
 #' Making sure the data is well-formed is also the job of calling function
-#' @seealso \code{\link{ndex_rest_GET}},  \code{\link{ndex_rest_POST}},  \code{\link{ndex_rest_POST}}
+#' @seealso \code{\link{ndex_rest_GET}},  \code{\link{ndex_rest_POST}},  \code{\link{ndex_rest_PUT}}
 #' @examples
 #' ##TBD
 ndex_rest_PUT <- function(ndexcon, route, data, raw = FALSE){

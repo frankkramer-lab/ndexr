@@ -138,14 +138,14 @@ ndex.JSON2RCX <- function(json, verbose = FALSE){
   ### merge pre- and post-metadata. this is special as pre- and post-metadata can have the entries of the same name. 
   sel = which(!sapply(jsonlist[["metaData"]], is.null))
   if(length(sel)==1) {
-    aspectlist$metaData[[1]] = jsonlist[["metaData"]][[sel[1]]]
+    aspectlist[["metaData"]] = jsonlist[["metaData"]][[sel[1]]]
   }
   if(length(sel)==2) {
-    aspectlist$metaData[[1]] = merge(jsonlist[["metaData"]][[sel[1]]],jsonlist[["metaData"]][[sel[2]]],by="name",all = T)
+    aspectlist[["metaData"]] = merge(jsonlist[["metaData"]][[sel[1]]],jsonlist[["metaData"]][[sel[2]]],by="name",all = T)
     if("properties.x" %in% names(aspectlist$metaData[[1]])) {
-      aspectlist$metaData[[1]]$properties = aspectlist$metaData[[1]]$properties.x
-      aspectlist$metaData[[1]]$properties.x = NULL
-      aspectlist$metaData[[1]]$properties.y = NULL
+      aspectlist[["metaData"]]$properties = aspectlist$metaData[[1]]$properties.x
+      aspectlist[["metaData"]]$properties.x = NULL
+      aspectlist[["metaData"]]$properties.y = NULL
     }
   }
   if(!(length(sel) %in% c(1,2))) {
