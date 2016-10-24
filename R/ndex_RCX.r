@@ -142,8 +142,8 @@ ndex.JSON2RCX <- function(json, verbose = FALSE){
   }
   if(length(sel)==2) {
     aspectlist[["metaData"]] = merge(jsonlist[["metaData"]][[sel[1]]],jsonlist[["metaData"]][[sel[2]]],by="name",all = T)
-    if("properties.x" %in% names(aspectlist$metaData[[1]])) {
-      aspectlist[["metaData"]]$properties = aspectlist$metaData[[1]]$properties.x
+    if("properties.x" %in% names(aspectlist$metaData)) {
+      aspectlist[["metaData"]]$properties = aspectlist$metaData$properties.x
       aspectlist[["metaData"]]$properties.x = NULL
       aspectlist[["metaData"]]$properties.y = NULL
     }
