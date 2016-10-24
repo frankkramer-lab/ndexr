@@ -23,7 +23,7 @@ ndex.RCX2CBDD <- function(rcx, useNamespace = NULL){
 
   if(!("RCX" %in% class(rcx))) stop("ndex.RCX2CBDD: supplied parameter rcx not of class RCX")
   
-  if(is.null(rcx$edges) || dim(rcx$edges[,c("s","t")])[1] = 0) {
+  if(is.null(rcx$edges) || dim(rcx$edges[,c("s","t")])[1] == 0) {
     warning("ndex.RCX2CBDD: rcx object does not contain edge information. Returning NULL.")
     return(NULL)
   }
