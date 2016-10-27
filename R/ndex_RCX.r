@@ -183,7 +183,8 @@ ndex.JSON2RCX <- function(json, verbose = FALSE){
 #' Generate JSON data from RCX object
 #' 
 #' @param rcx RCX object
-#' @param verbose logical; whether to print out extended feedback 
+#' @param verbose logical; whether to print out extended feedback
+#' @param pretty logical; adds indentation whitespace to JSON output
 #' @return json jsonlite json object if successfull, NULL otherwise
 #' @seealso \code{\link{ndex.RCX2ngraph}} \code{\link{ndex.ngraph2RCX}} \code{\link{ndex.JSON2RCX}}
 #' @examples 
@@ -193,15 +194,64 @@ ndex.JSON2RCX <- function(json, verbose = FALSE){
 #' rcx = ndex.get.complete.network(ndexcon,pws[1,"externalId"]) 
 #' rcxjson = ndex.RCX2JSON(rcx) }
 #' @export
-ndex.RCX2JSON <- function(rcx, verbose = FALSE){
-  
+ndex.RCX2JSON <- function(rcx, verbose = FALSE, pretty = FALSE){
   if(is.null(rcx) || !("RCX" %in% class(rcx))) {
     warning("ndex.RCX2JSON: parameter rcx does not contain RCX object")
     return(NULL)
   }
   
-  return(jsonlite::toJSON(rcx, pretty=T))
+  jsonCol = c()
+  for(aspect in names(rcx)){
+    ## if any of the aspects has a datatype ('d') property, at least one of the datatypes is not of 'string' (default datatype).
+    ## this means, the corresponding values ('v') have to be wrapped in arrays, if they are defined as kind of list (e.g. 'list_of_string', 'list_of_integer',...)
+    if('d' %in% names(rcx[[aspect]])){
+      tmpList = list()
+      tmpNoList = list()
+      isListVector = (!is.na(tmp$nodeAttributes$d)&(substr(tmp$nodeAttributes[,'d'],1,nchar("list_of_"))=="list_of_"))
+      tmpList[[aspect]] = rcx[[aspect]][isListVector,]       # has to be wrapped
+      tmpNoList[[aspect]] = rcx[[aspect]][!isListVector,]    # doesn't have to be wrapped
+      tmpList[[aspect]]$v = as.list(tmpList[[aspect]]$v)     # forces toJSON to encode the elements as arrays
+      
+      ## don't add an empty aspect, if all v's are lists
+      if(length(tmpNoList)!=0){
+        jsonCol = c(jsonCol, toJSON(tmpNoList, pretty = pretty))
+      }
+      ## don't add an empty aspect, if none v is a list (but might be an integer)
+      if(length(tmpList)!=0){
+        jsonCol = c(jsonCol, toJSON(tmpList, pretty = pretty))
+      }
+    }else{
+      tmpList = list()
+      tmpList[[aspect]]=rcx[[aspect]]
+      jsonCol = c(jsonCol, toJSON(tmpList, pretty = pretty))
+    }
+  }
+  return(paste0('[',paste0(jsonCol, collapse=','),']'))
 }
+
+#' Remove all interfering NDEx artefacts from RCX object
+#' 
+#' @param rcx RCX object
+#' @return \code{\link{RCX}} object
+#' @seealso \code{\link{ndex.JSON2RCX}} \code{\link{ndex.get.complete.network}}
+#' @details After a RCX is downloaded from an NDEx server, it will contain some aspects that are not present in a newly generated network, i.e. ndexStatus', provenanceHistory' and 'status'.
+#' Removing those aspects might be usefull in some cases.
+#' @examples 
+#' \dontrun{
+#' ndexcon = ndex.connect(verbose=T)
+#' pws = ndex.find.networks(ndexcon,"p53")
+#' rcx = ndex.get.complete.network(ndexcon,pws[1,"externalId"]) 
+#' rcx = as.newNetwork(rcx)
+#' rcxjson = ndex.RCX2JSON(rcx)
+#' ndex.create.network.fromJSON(ndexcon, rcxjson) }
+#' @export
+as.newNetwork = function(rcx){
+  rcx['ndexStatus'] = NULL          # a newly created network doesn't have an ndex-status yet
+  rcx['provenanceHistory'] = NULL   # ... also not an provenance history
+  rcx['status'] = NULL              # fragment from retrieving the network from the server
+  rcx
+}
+
 
 
 
