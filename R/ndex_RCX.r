@@ -205,9 +205,10 @@ ndex.RCX2JSON <- function(rcx, verbose = FALSE, pretty = FALSE){
     ## if any of the aspects has a datatype ('d') property, at least one of the datatypes is not of 'string' (default datatype).
     ## this means, the corresponding values ('v') have to be wrapped in arrays, if they are defined as kind of list (e.g. 'list_of_string', 'list_of_integer',...)
     if('d' %in% names(rcx[[aspect]])){
+      tmp = rcx[[aspect]]
       tmpList = list()
       tmpNoList = list()
-      isListVector = (!is.na(tmp$nodeAttributes$d)&(substr(tmp$nodeAttributes[,'d'],1,nchar("list_of_"))=="list_of_"))
+      isListVector = (!is.na(tmp$d)&(substr(tmp[,'d'],1,nchar("list_of_"))=="list_of_"))
       tmpList[[aspect]] = rcx[[aspect]][isListVector,]       # has to be wrapped
       tmpNoList[[aspect]] = rcx[[aspect]][!isListVector,]    # doesn't have to be wrapped
       tmpList[[aspect]]$v = as.list(tmpList[[aspect]]$v)     # forces toJSON to encode the elements as arrays

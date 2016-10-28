@@ -195,7 +195,6 @@ ndex.get.limited.aspect <- function(ndexcon, network_id, aspectName, limit){
 #' Create a Network from CX data
 #' 
 #' POST : /network/asCX
-#' TODO: currently doesnt seem to be working.Debug!
 #' This method creates a new network on the NDEx server.
 #' 
 #' @param ndexcon object of class NDEXConnection
@@ -206,21 +205,71 @@ ndex.get.limited.aspect <- function(ndexcon, network_id, aspectName, limit){
 #' @export
 ndex.create.network <- function(ndexcon, rcx){
   route <- paste0("/network/asCX")
-  postdata = jsonlite::toJSON(list(
-                          CXNetworkStream=
-                           list("filename",
-                                rcx,
-                                "application/octet-stream")
-                         )
-                    )
-  response = ndex_rest_POST(ndexcon, route, raw=T)
+  data <- c(CXNetworkStream = ndex.RCX2JSON(rcx))
+  response = ndex_rest_POST(ndexcon, route, data, raw=T)
   return(response)
 }
 
 
-## 
-## Update an Entire Network as CX
-### PUT : /network/asCX
+
+#' Update an Entire Network as CX
+#' 
+#' PUT : /network/asCX
+#' This method creates a new network on the NDEx server.
+#' 
+#' @param ndexcon object of class NDEXConnection
+#' @param rcx \code{\link{RCX}} object
+#' @return \code{\link{RCX}} object
+#' @section REST query:
+#' POST : /network/asCX
+#' @export
+ndex.update.network <- function(ndexcon, rcx, network_id = NULL){
+  if(is.null(network_id)){
+    if(is.null(rcx$ndexStatus)|| is.null(rcx$ndexStatus$externalId)) {
+      warning("ndex.update.network: no network id specified, whether as parameter nor in rcx$ndexStatus$externalId")
+      return(NULL)
+    }
+    network_id = rcx$ndexStatus$externalId
+  }
+  route <- paste0("/network/asCX/",network_id)
+  data <- c(CXNetworkStream = ndex.RCX2JSON(rcx))
+  response = ndex_rest_PUT(ndexcon, route, data, raw=T)
+  return(response)
+}
+# *   Trying 52.26.53.110...
+# * Connected to www.ndexbio.org (52.26.53.110) port 80 (#0)
+#   * Server auth using Basic with user 'testacc'
+#   > PUT /rest/network/asCX/1c6de696-9cef-11e6-9ed0-06603eb7f303 HTTP/1.1
+#   Host: www.ndexbio.org
+#   Authorization: Basic dGVzdGFjYzp0ZXN0YWNj
+#   Accept: */*
+#     Content-Type: application/json
+#   Content-Length: 147975
+#   Expect: 100-continue
+#   
+#   < HTTP/1.1 100 Continue
+#   * We are completely uploaded and fine
+#   < HTTP/1.1 502 Bad Gateway
+#   < Date: Fri, 28 Oct 2016 10:41:07 GMT
+#   < Server: Apache/2.4.23 (Amazon)
+#   < Content-Length: 232
+#   < Content-Type: text/html; charset=iso-8859-1
+#   < 
+#     * Connection #0 to host www.ndexbio.org left intact
+#   Response:<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+#     <html><head>
+#     <title>502 Bad Gateway</title>
+#     </head><body>
+#     <h1>Bad Gateway</h1>
+#     <p>The proxy server received an invalid
+#   response from an upstream server.<br />
+#     </p>
+#     </body></html>
+
+
+
+
+
 ## 
 ## Archive a BEL Namespace File in a Network
 ## POST : /network/{networkId}/namespace
