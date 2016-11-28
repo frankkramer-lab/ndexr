@@ -84,7 +84,8 @@ ndex.RCX2ngraph <- function(rcx, verbose = FALSE){
   if(!is.null(rcx$nodeAttributes) && dim(rcx$nodeAttributes)[1] > 0) {
     for(attrname in unique(rcx$nodeAttributes$n)) {
       sel = rcx$nodeAttributes$n == attrname
-      ngraph = igraph::set_vertex_attr(ngraph,attrname, index=as.character(rcx$nodeAttributes$po[sel]), value=as.list(rcx$nodeAttributes$v[sel]))
+      if(verbose){ cat('___________\nngraph:\n\tattrname:',attrname, '\n\tindex:',index=as.character(rcx$nodeAttributes$po[sel]),'\n\tvalue:', value=rcx$nodeAttributes$v[sel],'\n') }
+      ngraph = igraph::set_vertex_attr(ngraph,attrname, index=rcx$nodeAttributes$po[sel], value=as.list(rcx$nodeAttributes$v[sel]))
     }
   }
   

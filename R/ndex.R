@@ -9,6 +9,7 @@
 #' }
 #'
 #' @author Frank Kramer \email{frank.kramer@med.uni-goettingen.de}
+#' @author Florian Auer \email{florian.auer@med.uni-goettingen.de}
 #' @author Alex Ishkin \email{aleksandr.ishkin@thomsonreuters.com}
 #' @author Dexter Pratt \email{depratt@ucsc.edu}
 #' @name ndexr-package

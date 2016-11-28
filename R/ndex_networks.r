@@ -2,6 +2,7 @@
 #   Alex Ishkin [aleksandr.ishkin@thomsonreuters.com]
 #   Dexter Pratt [depratt@ucsd.edu]
 #   Frank Kramer [frank.kramer@med.uni-goettingen.de]
+#   Florian Auer [florian.auer@med.uni-goettingen.de]
 ##Created: 6 June 2014
 # Contains functions to search and retrieve networks
 
@@ -30,19 +31,33 @@
 ndex.find.networks <- function(ndexcon, searchString="", accountName, skipBlocks = 0, blockSize = 10){
 
   ##Form JSON to post
-  if (missing(accountName)){
-    query <- jsonlite::toJSON(list(searchString=searchString), pretty=T, auto_unbox = T)
-  } else {
-    query <- jsonlite::toJSON(list(searchString=searchString, accountName=accountName), pretty=T, auto_unbox = T)
+  query = list(searchString=searchString)
+  if (!missing(accountName)){
+    query$accountName=accountName
   }
+  query <- jsonlite::toJSON(query, pretty=T, auto_unbox = T)
   
   ##Form route
-  route <- sprintf("/network/search/%s/%s", skipBlocks, blockSize)
+  ## ToDo: somehow the 1.3 api changed?! old version:
+  ## route <- sprintf("/network/search/%s/%s", skipBlocks, blockSize)
+  ## now somehow it changed to "http://public.ndexbio.org/rest/network/textsearch/0/1000" (from Chrome, 28.Nov.2016)
+  api = ndex.api$search$network$search 
+  if(ndexcon$apiversion=='2.0'){
+    route <- ndex.api.addParams(api$'2.0'$url, c('start','size'), c(skipBlocks,blockSize))
+  }else{
+    route <- api$'1.3'$url
+    route <- gsub(ndex.api$replaceables$start,skipBlocks, route)
+    route <- gsub(ndex.api$replaceables$size, blockSize, route)
+  }
+  
   
   ##Get a list of NetworkSummary objects
-  response <- ndex_rest_POST(ndexcon, route=route, query)
+  response <- ndex_rest_POST(ndexcon, route=route, data=query)
   
-  if(is.data.frame(response)){
+  #cat(response) --> error, is now a list!
+  #ToDo: response type changed from data.frame to list in both apis, 1.3 and 2.0!
+  #if(is.data.frame(response)){
+  if(is.data.frame(response) || is.list(response)){
     return(response)
   } else {
     return(NULL)
@@ -66,7 +81,7 @@ ndex.find.networks <- function(ndexcon, searchString="", accountName, skipBlocks
 #' ndex.get.network.summary(ndexcon,pws[1,"externalId"]) }
 #' @export
 ndex.get.network.summary <- function(ndexcon, network_id){
-  route <- paste0("/network/", network_id)
+  route <- paste0("/network/", network_id)  ## ToDo: change to ndex.api and test! No hard-coded urls!!
   response <- ndex_rest_GET(ndexcon, route)
   return(response)
 }
@@ -81,6 +96,7 @@ ndex.get.network.summary <- function(ndexcon, network_id){
 #' Nodes use primary ID of the base term ('represents' element)
 #' Edges use primary ID of the base term ('predicate', or 'p' element)
 #' Mapping table for the nodes is retrieved ('alias' and 'related' terms) to facilitate conversions/data mapping
+#' Compatible to NDEx server version 1.3 and 2.0
 #' @section REST query:
 #' This function runs GET query /network/{networkUUID}/asCX  and returns CX network object which is parsed into an RCX object
 #' @examples 
@@ -90,7 +106,17 @@ ndex.get.network.summary <- function(ndexcon, network_id){
 #' rcx = ndex.get.complete.network(ndexcon,pws[1,"externalId"]) }
 #' @export
 ndex.get.complete.network <- function(ndexcon, network_id){
-  route <- paste0("/network/", network_id, "/asCX")
+  
+  ## route <- paste0("/network/", network_id, "/asCX")
+  api = ndex.api$network$get 
+  if(ndexcon$apiversion=='2.0'){
+    route <- api$'2.0'$url
+    route <- gsub(ndex.api$replaceables$network,network_id, route)
+  }else{
+    route <- api$'1.3'$url
+    route <- gsub(ndex.api$replaceables$network,network_id, route)
+  }
+  
   response = ndex_rest_GET(ndexcon, route, raw=T)
   rcx = ndex.JSON2RCX(response)
   return(rcx)
@@ -187,15 +213,17 @@ ndex.get.limited.aspect <- function(ndexcon, network_id, aspectName, limit){
   return(rcx)
 }
 
-#### TODO IMPLEMENT THIS
+#### ToDo: IMPLEMENT THIS
 ## Query a Network neighborhood as CX
 ## POST : /network/{networkId}/asCX/query
-## 
+## search$network$neighborhood
+
+
 
 #' Create a Network from CX data
 #' 
-#' POST : /network/asCX
 #' This method creates a new network on the NDEx server.
+#' Compatible to NDEx server version 1.3 and 2.0
 #' 
 #' @param ndexcon object of class NDEXConnection
 #' @param rcx \code{\link{RCX}} object
@@ -205,8 +233,14 @@ ndex.get.limited.aspect <- function(ndexcon, network_id, aspectName, limit){
 #' @export
 ndex.create.network <- function(ndexcon, rcx){
   route <- paste0("/network/asCX")
+  api = ndex.api$network$create
+  if(ndexcon$apiversion=='2.0'){
+    route <- api$'2.0'$url
+  }else{
+    route <- api$'1.3'$url
+  }
   data <- c(CXNetworkStream = ndex.RCX2JSON(rcx))
-  response = ndex_rest_POST(ndexcon, route, data, raw=T)
+  response = ndex_rest_POST(ndexcon, route, data, multipart=T, raw=T)
   return(response)
 }
 
