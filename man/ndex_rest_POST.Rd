@@ -4,7 +4,7 @@
 \alias{ndex_rest_POST}
 \title{Generic POST query to API}
 \usage{
-ndex_rest_POST(ndexcon, route, data, raw = FALSE)
+ndex_rest_POST(ndexcon, route, data, multipart = FALSE, raw = FALSE)
 }
 \arguments{
 \item{ndexcon}{object of class NDEXConnection}
@@ -12,6 +12,8 @@ ndex_rest_POST(ndexcon, route, data, raw = FALSE)
 \item{route}{Character (route to specific REST query)}
 
 \item{data}{Whatever data to be supplied with query. Should be valid JSON}
+
+\item{multipart}{Whatever data to be supplied with query. Should be valid JSON}
 
 \item{raw}{Specifies if server response should be returned in raw, or if jsonlite::fromJSON is called first. Defaults to FALSE.}
 }

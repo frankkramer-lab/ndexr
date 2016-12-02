@@ -22,6 +22,7 @@ Uses getEdges (this procedure will return complete network with all elements)
 Nodes use primary ID of the base term ('represents' element)
 Edges use primary ID of the base term ('predicate', or 'p' element)
 Mapping table for the nodes is retrieved ('alias' and 'related' terms) to facilitate conversions/data mapping
+Compatible to NDEx server version 1.3 and 2.0
 }
 \section{REST query}{
 

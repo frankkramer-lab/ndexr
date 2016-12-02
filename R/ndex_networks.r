@@ -53,11 +53,9 @@ ndex.find.networks <- function(ndexcon, searchString="", accountName, skipBlocks
   
   ##Get a list of NetworkSummary objects
   response <- ndex_rest_POST(ndexcon, route=route, data=query)
-  
-  #cat(response) --> error, is now a list!
-  #ToDo: response type changed from data.frame to list in both apis, 1.3 and 2.0!
-  #if(is.data.frame(response)){
-  if(is.data.frame(response) || is.list(response)){
+  response = response$networks
+
+  if(length(response) > 0){
     return(response)
   } else {
     return(NULL)

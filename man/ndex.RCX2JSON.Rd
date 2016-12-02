@@ -4,12 +4,14 @@
 \alias{ndex.RCX2JSON}
 \title{Generate JSON data from RCX object}
 \usage{
-ndex.RCX2JSON(rcx, verbose = FALSE)
+ndex.RCX2JSON(rcx, verbose = FALSE, pretty = FALSE)
 }
 \arguments{
 \item{rcx}{RCX object}
 
 \item{verbose}{logical; whether to print out extended feedback}
+
+\item{pretty}{logical; adds indentation whitespace to JSON output}
 }
 \value{
 json jsonlite json object if successfull, NULL otherwise

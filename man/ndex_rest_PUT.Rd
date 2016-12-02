@@ -30,6 +30,6 @@ Making sure the data is well-formed is also the job of calling function
 ##TBD
 }
 \seealso{
-\code{\link{ndex_rest_GET}},  \code{\link{ndex_rest_POST}},  \code{\link{ndex_rest_POST}}
+\code{\link{ndex_rest_GET}},  \code{\link{ndex_rest_POST}},  \code{\link{ndex_rest_PUT}}
 }
 

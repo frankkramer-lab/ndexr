@@ -38,6 +38,8 @@ plot(ngraph1, vertex.label=V(ngraph1)$n, edge.label=E(ngraph1)$i)
 \author{
 Frank Kramer \email{frank.kramer@med.uni-goettingen.de}
 
+Florian Auer \email{florian.auer@med.uni-goettingen.de}
+
 Alex Ishkin \email{aleksandr.ishkin@thomsonreuters.com}
 
 Dexter Pratt \email{depratt@ucsc.edu}

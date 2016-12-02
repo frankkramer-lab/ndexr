@@ -30,6 +30,6 @@ ndex_rest_GET(ndexcon, "/networks/api")
 }
 }
 \seealso{
-\code{\link{ndex_rest_PUT}},  \code{\link{ndex_rest_POST}},  \code{\link{ndex_rest_POST}}
+\code{\link{ndex_rest_PUT}},  \code{\link{ndex_rest_POST}},  \code{\link{ndex_rest_PUT}}
 }
 

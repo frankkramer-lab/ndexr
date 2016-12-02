@@ -20,10 +20,10 @@ I'm in a hurry, give me the tl;dr
 
 ```
 library(ndexr)
-###connect anonymously
-ndexcon1 = ndex.connect(verbose=T)
 ###connect as test user
-ndexcon2 = ndex.connect(username="testacc", password="testacc", verbose=T)
+ndexcon1 = ndex.connect(username="testacc", password="testacc", host='http://dev.ndexbio.org/v2', verbose=T)
+###connect anonymously
+ndexcon2 = ndex.connect(host='http://dev.ndexbio.org/v2', verbose=T)
 
 ###get network api - skip this you wont need it
 apidata1 = ndex.get.network.api(ndexcon1)
@@ -31,25 +31,20 @@ apidata1 = ndex.get.network.api(ndexcon1)
 ###find some networks containing p53
 pws1 = ndex.find.networks(ndexcon1,"p53")
 
-###get network details
-pwsummary1 = ndex.get.network.summary(ndexcon1,pws1[1,"externalId"])
-
 ###get complete network as RCX object
 rcx1 = ndex.get.complete.network(ndexcon1,pws1[1,"externalId"])
 
-###convert to ngraph and back
+###convert to ngraph
 ngraph1 = ndex.RCX2ngraph(rcx1)
-rcx_back1 = ndex.ngraph2RCX(ngraph1)
 
-###plot it - no beauty here yet
+###plot ngraph - automatic layout and coloring - do not expect beauty here.
 plot(ngraph1, vertex.label=V(ngraph1)$n, edge.label=E(ngraph1)$i)
 
-##test equality of conversion:
-for(i in names(rcx1)) {
-  cat(i)
-  cat(all.equal(rcx1[[i]], rcx_back1[[i]]))
-  cat("\n")
-}
+###convert ngraph to RCX
+rcx_back1 = ndex.ngraph2RCX(ngraph1)
+
+###save RCX object to ndex server. "ndex.RCXasNewNetwork" cleans up ndexStatus, provenanceHistory, status aspects
+uuid = ndex.create.network(ndexcon1, ndexr:::ndex.RCXasNewNetwork(rcx_back1))
 
 #work on!
 ```
@@ -69,6 +64,7 @@ Implementation
 * Get network as CX ("ndex.get.complete.network")
 * ndex.get.network.provenance, ndex.set.network.readonly, ndex.get.limited.aspect, ndex.get.network.namespace, ndex.get.network.metadata
 * ndex.get.complete.network -> ndex.RCX2ngraph -> ndex.ngraph2RCX -> ndex.RCX2JSON round trip works
+* Conversion of NDEx objects to CBDD format (`ndex.RCX2CBDD`,`ndex.ngraph2CBDD`)
 
 
 ### What is broken from prev versions:
@@ -89,8 +85,8 @@ Implementation
 * Start with implementing all API calls which produce data. Stay with 
 the raw data mostly. This is very close.
 * Implement the CX data model to go from JSON to CX  and back. This is prototyped.
-* Implement ngraph object extending igraph class to go from RCX to ngraph and back.  This is prototyped.
-* Implement the API calls which save data on the server. This is being debugged.
+* Implement ngraph object extending igraph class to go from RCX to ngraph and back. This is prototyped.
+* Implement the API calls which save data on the server. This is prototyped and being debugged API 1.3 and 2.0 versions.
 
 ### Implementation details
 

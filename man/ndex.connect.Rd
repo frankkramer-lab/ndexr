@@ -5,7 +5,7 @@
 \title{Connect to NDEx REST API}
 \usage{
 ndex.connect(username, password, host = "http://www.ndexbio.org/rest",
-  verbose = FALSE)
+  apiversion = "2.0", verbose = FALSE)
 }
 \arguments{
 \item{username}{character username}
@@ -13,6 +13,8 @@ ndex.connect(username, password, host = "http://www.ndexbio.org/rest",
 \item{password}{character password}
 
 \item{host}{(optional) URL of NDEx REST server to be used; Default is: http://www.ndexbio.org/rest}
+
+\item{apiversion}{character (optional) Version of NDEx REST server; Default is version "2.0"}
 
 \item{verbose}{logical; whether to print out extended feedback}
 }

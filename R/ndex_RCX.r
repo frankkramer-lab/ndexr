@@ -216,16 +216,16 @@ ndex.RCX2JSON <- function(rcx, verbose = FALSE, pretty = FALSE){
       
       ## don't add an empty aspect, if all v's are lists
       if(length(tmpNoList)!=0){
-        jsonCol = c(jsonCol, toJSON(tmpNoList, pretty = pretty))
+        jsonCol = c(jsonCol, jsonlite::toJSON(tmpNoList, pretty = pretty))
       }
       ## don't add an empty aspect, if none v is a list (but might be an integer)
       if(length(tmpList)!=0){
-        jsonCol = c(jsonCol, toJSON(tmpList, pretty = pretty))
+        jsonCol = c(jsonCol, jsonlite::toJSON(tmpList, pretty = pretty))
       }
     }else{
       tmpList = list()
       tmpList[[aspect]]=rcx[[aspect]]
-      jsonCol = c(jsonCol, toJSON(tmpList, pretty = pretty))
+      jsonCol = c(jsonCol, jsonlite::toJSON(tmpList, pretty = pretty))
     }
   }
   return(paste0('[',paste0(jsonCol, collapse=','),']'))
@@ -251,7 +251,7 @@ ndex.RCX2JSON <- function(rcx, verbose = FALSE, pretty = FALSE){
 #' rcx = ndex.get.complete.network(ndexcon,pws[1,"externalId"]) 
 #' rcx = ndex.RCXAsNewNetwork(rcx)
 #' rcxjson = ndex.RCX2JSON(rcx)
-#' ndex.create.network.fromJSON(ndexcon, rcxjson) }
+#' ndex.create.network(ndexcon, rcxjson) }
 #' @export
 ndex.RCXasNewNetwork = function(rcx){
   rcx['ndexStatus'] = NULL          # a newly created network doesn't have an ndex-status yet
@@ -534,7 +534,7 @@ ndex.RCXaddNodes = function(rcx, ids=NULL, startId=NULL, numberOfNodes=NULL, nod
   
   if(!is.null(ids)){
     if(is.null(nodeNames)){
-      nodeNames=rep(NA, lenght(ids))
+      nodeNames=rep(NA, length(ids))
     }
   }else if(!is.null(numberOfNodes)){
     
@@ -557,12 +557,12 @@ ndex.RCXremoveEdges = function(rcx, ids){
   
 }
 
-#' @param aspect single aspect or list of aspects
+# @param aspect single aspect or list of aspects
 ndex.RCXaddAspects = function(rcx, aspect){
   
 }
 
-#' @param aspects vector of strings, names of aspects to remove
+# @param aspects vector of strings, names of aspects to remove
 ndex.RCXremoveAspects = function(rcx, aspects){
   
 }
