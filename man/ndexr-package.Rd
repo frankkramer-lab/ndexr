@@ -12,8 +12,8 @@ The ndexr package offers an interface to NDEx servers, e.g. the public server at
 \tabular{ll}{
 Package: \tab ndexr\cr
 Type: \tab Package\cr
-Version: \tab 2.0.5\cr
-Date: \tab 2016-09-29\cr
+Version: \tab 2.0.7\cr
+Date: \tab 2016-12-02\cr
 License: \tab TBD\cr
 }
 }
@@ -26,8 +26,6 @@ ndexcon1 = ndex.connect(verbose=T)
 apidata1 = ndex.get.network.api(ndexcon1)
 ###find some networks containing p53
 pws1 = ndexr::ndex.find.networks(ndexcon1,"p53")
-###get network details
-pwsummary1 = ndex.get.network.summary(ndexcon1,pws1[1,"externalId"])
 ###get complete network as RCX
 rcx1 = ndex.get.complete.network(ndexcon1,pws1[1,"externalId"])
 ###convert to ngraph and back
