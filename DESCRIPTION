@@ -9,6 +9,7 @@ Description: This package offers an interface to NDEx servers, e.g. the public s
 License: TBD
 Depends:
     RCurl,
+    httr,
     jsonlite,
     plyr,
     tidyr,

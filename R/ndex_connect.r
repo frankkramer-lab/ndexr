@@ -16,14 +16,15 @@
 #' 
 #' @param username character username
 #' @param password character password
-#' @param host (optional) URL of NDEx REST server to be used; Default is: http://www.ndexbio.org/rest
+#' @param host (optional) URL of NDEx REST server to be used; For version 2.0 the host is "http://www.ndexbio.org/v2", for version 1.3 it is "http://www.ndexbio.org/rest", Default is: "http://www.ndexbio.org/v2"
 #' @param apiversion character (optional) Version of NDEx REST server; Default is version "2.0"
 #' @param verbose logical; whether to print out extended feedback 
 #' @return returns object of class NDEXConnection which stores options and authentication if successfull, NULL otherwise
 #' @export
 #' @examples
 #' \dontrun{ndexcon = ndex.connect(verbose=T)}
-ndex.connect <- function(username, password, host = "http://www.ndexbio.org/rest", apiversion = '2.0', verbose = FALSE){
+#' ToDo: check the ndexcon properties, especially curlOpts
+ndex.connect <- function(username, password, host = "http://www.ndexbio.org/v2", apiversion = '2.0', verbose = T){
 
   credentials = TRUE
   if(missing(username) || missing(password)){
@@ -31,41 +32,70 @@ ndex.connect <- function(username, password, host = "http://www.ndexbio.org/rest
     credentials = FALSE
   } 
   
-  if(missing(host)) if(verbose) message("ndex.connect: host not specified, using default")
+  if(missing(host)) if(verbose) message(paste("ndex.connect: host not specified, using default: [", host, "]" ))
   
   ##Attempt authentication if we have credentials
   if (credentials){
-    try(auth_response <- RCurl::getURL(paste0(host, "/user/authenticate/", username, "/", password)))
-    if(jsonlite::validate(auth_response)){
-      auth_response <- jsonlite::fromJSON(auth_response)
-      #print(auth_response)
-      ##Authentication successful (JSON with user data was returned)
-      ndex.opts <- RCurl::curlOptions(userpwd = paste0(username, ":", password), httpauth = 1L)
-       
-      if(verbose) message("\n", host, " is responding as an NDEx REST server ", "\nAuthentication of [", auth_response$accountName, "] is successful!\n",  sep='')
-    } else{
-      stop(paste("Tried ndex.connect with credentials. response = ", auth_response))
+    if(apiversion == '1.3'){
+      url <- paste0(host, ndex.api$user$authenticate$'1.3'$url)
+    }else if(apiversion == '2.0'){
+      url <- paste0(host, ndex.api$user$authenticate$'2.0'$url)
     }
+    
+    try(auth_response <- httr::GET(url, httr::authenticate(username, password)))
+    #print(auth_response)
+    ndex.http.response.handle(auth_response, paste("Tried to connect to [", host, "] with credentials.\nTried to autheticate user: ", username), verbose)
   } else {
     ##Check response of standard admin query
-    try(auth_response <- RCurl::getURL(paste0(host, "/network/api")))
-    if(jsonlite::validate(auth_response)){
-      ndex.opts <- RCurl::curlOptions(httpauth = 1L)
-      if(verbose) message(host, " responding as NDEx REST server",  sep='')
-    }else{
-      stop(paste("ndex.connect:", auth_response))
-    }       
+    if(apiversion == '1.3'){
+      url <- paste0(host, ndex.api$serverStatus$'1.3')
+    }else if(apiversion == '2.0'){
+      url <- paste0(host, ndex.api$serverStatus$'2.0')
+    }
+    
+    try(auth_response <- httr::GET(url))
+    ndex.http.response.handle(response, paste("Tried to check the server status of [", host, "]"), verbose)
   }
   
-
+  ndexcon = list(anonymous=TRUE, host=host, apiversion=apiversion, verbose=verbose)
   if(credentials) {
-    ndexcon = list(anon=FALSE, credentials=credentials, current.user= auth_response$accountName, curl.opts=ndex.opts, host=host, apiversion=apiversion, verbose=verbose)
-  } else {
-    ndexcon = list(anon=TRUE, curl.opts=ndex.opts, host=host, apiversion=apiversion, verbose=verbose)
+    #ndexcon = list(anon=FALSE, credentials=credentials, current.user= auth_response$accountName, curl.opts=ndex.opts, host=host, apiversion=apiversion, verbose=verbose)
+    ndexcon$anonymous = F
+    ndexcon$username = username
+    ndexcon$password = password
   }
   class(ndexcon) = c("NDExConnection",class(ndexcon))
   return(ndexcon)
 }
+
+#' Handles the http server response 
+#' 
+#' This function handles the response from a server. If some response code different from success (200) is returned, the execution stops and the reason is shown.
+#' 
+#' @param response object of class response (httr)
+#' @param description character; description of the action performed
+#' @param verbose logical; whether to print out extended feedback
+#' @return logical (TRUE if user is authenticated and connection is active, FALSE otherwise)
+#' @examples
+#' \dontrun{
+#'  ndex.http.response.handle(httr::GET('http://www.ndexbio.org'), 'Tried to connect to NDEx server', T)
+#'  }
+ndex.http.response.handle <- function(response, description, verbose=F){
+  if(class(response) != 'response'){
+    stop('ndex.http.response.handle: Parameter response does not contain response object')
+  }
+  if(response$status_code == 200){          ## Success: (200) OK
+    if(verbose) message(description, "\nServer is responding with success! (200)\n",  sep='')
+  } else if(response$status_code == 401){   ## Client error: (401) Unauthorized
+    stop(paste(description, "\nUser is not authorized! (401)\n"))
+  } else if(response$status_code == 500){   ## Server error: (500) Internal Server Error
+    error_content = content(response)
+    stop(paste(description, "Some internal server error occurred (500):", '\n[errorCode]', error_content$errorCode, '\n[message]', error_content$message, '\n[stackTrace]', error_content$stackTrace, '\n[timeStamp]', error_content$timeStamp, '', sep='\n'))
+  } else{
+    stop(paste(description, "\nSome error occurred:\n", response, '\n'))
+  }
+}
+
 
 #' Check if user is authenticated to NDEx REST server
 #' 
@@ -81,7 +111,7 @@ ndex.connect <- function(username, password, host = "http://www.ndexbio.org/rest
 #'  }
 ndex.alive <- function(ndexcon){
   if(missing(ndexcon)) return(FALSE)
-  if(ndexcon$anon == TRUE) {
+  if(ndexcon$anonymous == TRUE) {
     warning("Called ndex.alive on anonymous NDExConnection object. Returning false.")
     return(FALSE)
   }
@@ -89,13 +119,11 @@ ndex.alive <- function(ndexcon){
   ##Try getting something from API again
   test <- NULL
   try(test <- RCurl::getURL(paste0(ndexcon$host, "/user/", ndexcon$current.user), .opts=ndexcon$curl.opts))   ### ToDo: change to ndex.api and test! No hard-coded urls!!
-  {
-    if(is.null(test)){
-      return(FALSE)
-    }else{
-      if(jsonlite::validate(test)) return(TRUE)
-      else return (FALSE)
-    }
+  if(is.null(test)){
+    return(FALSE)
+  }else{
+    if(jsonlite::validate(test)) return(TRUE)
+    else return (FALSE)
   }
 }
 
@@ -121,8 +149,12 @@ ndex.alive <- function(ndexcon){
 #' }
 ndex_rest_GET <- function(ndexcon, route, raw = FALSE){
   url <- paste0(ndexcon$host, route)
-  if(ndexcon$verbose) message("\nGET: [ ", url, " ]\n")
-  content <- RCurl::getURL(url, .opts=ndexcon$curl.opts)
+  auth <- ifelse(ndexcon$anonymous, NULL, httr::authenticate(ndexcon$username, ndexcon$password))
+  
+  try(response <- httr::GET(url, auth))
+  ndex.http.response.handle(response, paste("GET: [", url, "]"), ndexcon$verbose)
+  content <- content(response, as='text')
+  
   if(ndexcon$verbose) message('Response:', substring(content, 1, 300), '...', sep = '\n')
   if(raw) return(content)
   if(jsonlite::validate(content)) {
@@ -148,11 +180,42 @@ ndex_rest_GET <- function(ndexcon, route, raw = FALSE){
 #' @examples
 #' ##TBD
 ndex_rest_PUT <- function(ndexcon, route, data, raw = FALSE){
+  if(!jsonlite::validate(data)) stop(paste("Malformed JSON input for POST query: [", url, "]\ndata:\n",substring(data, 1, 300),'\n...'))
+  
+  url <- paste0(ndexcon$host, route)
+  #url <- 'http://requestb.in/oux2pjou'
+  #print(httr::authenticate(ndexcon$username, ndexcon$password))
+  #print(ndexcon$anonymous)
+  auth <- NULL
+  if(ndexcon$anonymous) auth <- httr::authenticate(ndexcon$username, ndexcon$password)
+  # auth <- ifelse(ndexcon[['anonymous']], NULL, httr::authenticate(ndexcon$username, ndexcon$password))
+  encode <- ifelse(multipart, 'multipart', 'json')
+  contenttype <- content_type_json()
+  if(multipart) contenttype <- content_type('multipart/form-data')
+  
+  # print(multipart, contenttype, encode)
+  try(response <- httr::PUT(url, auth, contenttype, body = data, encode = encode))
+  #try(response <- httr::POST(url, auth, content_type('multipart/form-data'), body = data, encode = encode))
+  ndex.http.response.handle(response, paste("PUT: [", url, "]\ndata:\n",substring(data, 1, 300),'\n...'), ndexcon$verbose)
+  content <- content(response, as='text')
+  
+  if(ndexcon$verbose) message('Response:', substring(content, 1, 300), '...', sep = '\n')
+  if(raw) return(content)
+  if(jsonlite::validate(content)) {
+    return(jsonlite::fromJSON(content))
+  } else {
+    return(NULL)
+  }
+}
+
+
+### Not working!!
+ndex_rest_PUT_RCurl <- function(ndexcon, route, data, raw = FALSE){
   if(!jsonlite::validate(data)) stop(sprintf("Malformed JSON input for PUT query: %s", data))
   url <- paste0(ndexcon$host, route)
   
   rdata <- charToRaw(data)
-
+  
   h = RCurl::basicTextGatherer()
   h$reset()
   #cat('rdata:',rdata,'\nlength:',dim(data), sep='')
@@ -160,12 +223,12 @@ ndex_rest_PUT <- function(ndexcon, route, data, raw = FALSE){
   # stops after < HTTP/1.1 100 Continue
   #kills the R session?!?!?!?!?
   RCurl::curlPerform(url = url,
-              httpheader=c('Content-Type' = "multipart/form-data"),
-              customrequest = "PUT",
-              postfields = data,
-              writefunction = h$update,
-              .opts = ndexcon$curl.opts,
-              verbose=TRUE)
+                     httpheader=c('Content-Type' = "multipart/form-data"),
+                     customrequest = "PUT",
+                     postfields = data,
+                     writefunction = h$update,
+                     .opts = ndexcon$curl.opts,
+                     verbose=TRUE)
   
   content = h$value()
   
@@ -182,7 +245,7 @@ ndex_rest_PUT <- function(ndexcon, route, data, raw = FALSE){
   #                    httpheader=c('Content-Type' = "multipart/form-data"),
   #                    httpauth=T,
   #                    userpwd=ndexcon$curl.opts$userpwd)
-   
+  
   
   if(ndexcon$verbose) message('Response:', substring(content, 1, 300), '...', sep = '\n')
   if(raw) return(content)
@@ -209,12 +272,46 @@ ndex_rest_PUT <- function(ndexcon, route, data, raw = FALSE){
 #' @examples
 #' ##TBD
 ndex_rest_POST <- function(ndexcon, route, data, multipart = FALSE, raw = FALSE){
+  if(!jsonlite::validate(data)) stop(paste("Malformed JSON input for POST query: [", url, "]\ndata:\n",substring(data, 1, 300),'\n...'))
+  
+  url <- paste0(ndexcon$host, route)
+  #url <- 'http://requestb.in/oux2pjou'
+  #print(httr::authenticate(ndexcon$username, ndexcon$password))
+  #print(ndexcon$anonymous)
+  auth <- NULL
+  if(ndexcon$anonymous) auth <- httr::authenticate(ndexcon$username, ndexcon$password)
+  # auth <- ifelse(ndexcon[['anonymous']], NULL, httr::authenticate(ndexcon$username, ndexcon$password))
+  encode <- ifelse(multipart, 'multipart', 'json')
+  contenttype <- content_type_json()
+  if(multipart) contenttype <- content_type('multipart/form-data')
+  
+  # print(multipart, contenttype, encode)
+  try(response <- httr::POST(url, auth, contenttype, body = data, encode = encode))
+  #try(response <- httr::POST(url, auth, content_type('multipart/form-data'), body = data, encode = encode))
+  ndex.http.response.handle(response, paste("POST: [", url, "]\ndata:\n",substring(data, 1, 300),'\n...'), ndexcon$verbose)
+  content <- content(response, as='text')
+  
+  if(ndexcon$verbose) message('Response:', substring(content, 1, 300), '...', sep = '\n')
+  if(raw) return(content)
+  if(jsonlite::validate(content)) {
+    return(jsonlite::fromJSON(content))
+  } else {
+    return(NULL)
+  }
+}
+
+
+ndex_rest_POST_RCurl <- function(ndexcon, route, data, multipart = FALSE, raw = FALSE){
   if(!jsonlite::validate(data)) stop(sprintf("Malformed JSON input for POST query: %s", data))
   url <- paste0(ndexcon$host, route)
+  #url <- 'http://requestb.in/oux2pjou'
+  
   if(ndexcon$verbose) message("\nPOST: [ ", url, " ]\n")
-
+  
   if(multipart){
-    #cat('url:',url,'\ndata:',data,'\nopts:',ndexcon$curl.opts,sep='')
+    # print(paste('url:',url))
+    # print(paste('data:',substring(data,1,100)))
+    # print(paste('opts:',ndexcon$curl.opts))
     content = RCurl::postForm(url,
                               .params = data,
                               .opts=ndexcon$curl.opts)
@@ -222,10 +319,10 @@ ndex_rest_POST <- function(ndexcon, route, data, multipart = FALSE, raw = FALSE)
     h = RCurl::basicTextGatherer()
     h$reset()
     RCurl::curlPerform(url = url,
-                postfields = data,
-                httpheader = c('Content-Type' = "application/json"),
-                writefunction = h$update,
-                .opts=ndexcon$curl.opts)
+                       postfields = data,
+                       httpheader = c('Content-Type' = "application/json"),
+                       writefunction = h$update,
+                       .opts=ndexcon$curl.opts)
     
     content = h$value()
   }
@@ -237,7 +334,6 @@ ndex_rest_POST <- function(ndexcon, route, data, multipart = FALSE, raw = FALSE)
     return(NULL)
   }
 }
-
 
 #' List possible queries to NDEx API
 #' 

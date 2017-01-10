@@ -205,7 +205,7 @@ ndex.RCX2JSON <- function(rcx, verbose = FALSE, pretty = FALSE){
   for(aspect in names(rcx)){
     ## if any of the aspects has a datatype ('d') property, at least one of the datatypes is not of 'string' (default datatype).
     ## this means, the corresponding values ('v') have to be wrapped in arrays, if they are defined as kind of list (e.g. 'list_of_string', 'list_of_integer',...)
-    if('d' %in% names(rcx[[aspect]])){
+    if(('v' %in% names(rcx[[aspect]]))&&('d' %in% names(rcx[[aspect]]))){
       tmp = rcx[[aspect]]
       tmpList = list()
       tmpNoList = list()
