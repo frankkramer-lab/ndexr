@@ -1,14 +1,13 @@
-##Authors:
-#   Alex Ishkin [aleksandr.ishkin@thomsonreuters.com]
-#   Dexter Pratt [depratt@ucsd.edu]
-#   Frank Kramer [frank.kramer@med.uni-goettingen.de]
-#   Florian Auer [florian.auer@med.uni-goettingen.de]
-##Created: 28 November 2016
-# Contains API configuration for connecting to NDEx servers
-
-##########################################################
-# API conf
-
+################################################################################
+## Authors:
+##   Florian Auer [florian.auer@med.uni-goettingen.de]
+##
+## History:
+##   Created on 28 November 2016 by Auer
+## 	
+## Description:
+##   Contains API configuration for connecting to NDEx servers
+################################################################################
 
 
 #' NDEx server api configuration
@@ -78,7 +77,7 @@ ndex.api = list(replaceables = list(uuid='#UUID#',
                                                                    '2.0'=list(url='/network/#NETWORKID#/aspect/#ASPECT#/metadata',
                                                                               method='GET')),
                                            get=list( description='Get a Network Aspect As CX',
-                                                      '2.0'=list(url='/network/#NETWORKID#/aspect/#ASPECT#?',
+                                                      '2.0'=list(url='/network/#NETWORKID#/aspect/#ASPECT#',
                                                                  method='GET',
                                                                  params=list(size='#SIZE#')),
                                                       '1.3'=list(url='/network/#NETWORKID#/aspect/#ASPECT#/#SIZE#',
@@ -87,7 +86,7 @@ ndex.api = list(replaceables = list(uuid='#UUID#',
                                                          '2.0'=list(url='/network/#NETWORKID#/aspect/#ASPECT#',
                                                                     method='PUT'))),
                              permission=list(  get=list( description='Get All Permissions on a Network',
-                                                         '2.0'=list(url='/network/#NETWORKID#/permission?',
+                                                         '2.0'=list(url='/network/#NETWORKID#/permission',
                                                                     method='GET',
                                                                     params=list(type='#TYPE#', 
                                                                                 permission='#PERMISSION#', 
@@ -96,7 +95,7 @@ ndex.api = list(replaceables = list(uuid='#UUID#',
                                                          '1.3'=list(url='/network/#NETWORKID#/user/#PERMISSION#/#START#/#SIZE#',
                                                                     method='GET')),
                                                update=list( description='Update Network Permission',
-                                                         '2.0'=list(url='/network/#NETWORKID#/permission?',
+                                                         '2.0'=list(url='/network/#NETWORKID#/permission',
                                                                     method='PUT',
                                                                     params=list(userid='#UUID#', 
                                                                                 groupid='#UUID#', 
@@ -104,7 +103,7 @@ ndex.api = list(replaceables = list(uuid='#UUID#',
                                                          '1.3'=list(url='/network/#NETWORKID#/member',
                                                                     method='PUT')),
                                                delete=list( description='Delete Network Permission',
-                                                            '2.0'=list(url='/network/#NETWORKID#/permission?',
+                                                            '2.0'=list(url='/network/#NETWORKID#/permission',
                                                                        method='DELETE',
                                                                        params=list(userid='#UUID#', 
                                                                                    groupid='#UUID#'),
@@ -134,55 +133,31 @@ ndex.api = list(replaceables = list(uuid='#UUID#',
                                                          '1.3'=list(url='/network/#NETWORKID#/provenance',
                                                                     method='GET')))),
                 search=list(user=list( description='Search users',
-                                       '2.0'=list(url='/search/user?',
+                                       '2.0'=list(url='/search/user',
                                                   method='POST',
                                                   params=list(start='#START#',
                                                               size='#SIZE#')),
                                        '1.3'=list(url='/user/search/#START#/#SIZE#',
                                                   method='POST')),
                             group=list( description='Search groups',
-                                        '2.0'=list(url='/search/group?',
+                                        '2.0'=list(url='/search/group',
                                                    method='POST',
                                                    params=list(start='#START#',
                                                                size='#SIZE#')),
                                         '1.3'=list(url='/group/search/#START#/#SIZE#',
                                                    method='POST')),
                             network=list( search=list( description='Search network',
-                                                       '2.0'=list(url='/search/network?',
+                                                       '2.0'=list(url='/search/network',
                                                                   method='POST',
                                                                   params=list(start='#START#',
                                                                               size='#SIZE#')),
                                                        '1.3'=list(url='/network/textsearch/#START#/#SIZE#',
                                                                   method='POST')),
                                           neighborhood=list( description='Query Network As CX',
-                                                             '2.0'=list(url='/search/network/#NETWORKID#/query?',
+                                                             '2.0'=list(url='/search/network/#NETWORKID#/query',
                                                                         method='POST',
                                                                         params=list(size='#SIZE#')),
                                                              '1.3'=list(url='/network/#NETWORKID#/asCX/query',
                                                                         method='POST')))))
 
-
-
-#' Search networks in NDEx (by description)
-#' 
-#' This functions searches the public networks on an NDEx server for networks containing the supplied search string. T
-#' his search can be limited to certain accounts as well as in length.
-#' 
-#' @param ndexcon object of class NDEXConnection
-#' @param searchString string by which to search
-#' @param accountName string; constrain search to networks administered by this account
-#' @param skipBlocks -
-#' @param blockSize -
-#' @return Data frame with network information: ID, name, whether it is public, edge and node count; source and format of network. NULL if no networks are found.
-#' @section REST query:
-#' This function runs POST query /network/search/#START#/#SIZE#    returns list of NetworkSummary
-#' @note Search strings may be structured
-#' @examples 
-#' \dontrun{
-#' ndexcon = ndex.connect(verbose=T)
-#' pws1 = ndex.find.networks(ndexcon1,"p53") }
-#' @export
-ndex.api.addParams = function(url, replaceable, value){
-  paste0(url,paste(replaceable,value, sep = '=', collapse = '&'))
-}
 

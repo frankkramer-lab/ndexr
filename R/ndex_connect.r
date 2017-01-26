@@ -1,12 +1,19 @@
-##Authors:
-#   Alex Ishkin [aleksandr.ishkin@thomsonreuters.com]
-#   Dexter Pratt [depratt@ucsd.edu]
-#   Frank Kramer [frank.kramer@med.uni-goettingen.de]
-#   Florian Auer [florian.auer@med.uni-goettingen.de]
-## Created: 1 June 2014
-## Base functions to perform HTTP transactions to an NDEX server via the NDEx REST API
-## Updated to NDEX v1.0 API 1 November 2014
-## Updated to use NDEXConnection object to store connection informations 15 September 2016
+################################################################################
+## Authors:
+##   Alex Ishkin [aleksandr.ishkin@thomsonreuters.com]
+##   Dexter Pratt [depratt@ucsd.edu]
+##   Frank Kramer [frank.kramer@med.uni-goettingen.de]
+##   Florian Auer [florian.auer@med.uni-goettingen.de]
+##
+## History:
+##   Created on 1 June 2014 by Ishkin
+## 	
+## Description:
+##   Base functions to perform HTTP transactions to an NDEX server via the NDEx REST API
+##   Updated to NDEX v1.0 API 1 November 2014
+##   Updated to use NDEXConnection object to store connection informations 15 September 2016
+##   Updated to NDEX v2.0 API December 2016
+################################################################################
 
 
 #' Connect to NDEx REST API
@@ -44,7 +51,7 @@ ndex.connect <- function(username, password, host = "http://www.ndexbio.org/v2",
     
     try(auth_response <- httr::GET(url, httr::authenticate(username, password)))
     #print(auth_response)
-    ndex.http.response.handle(auth_response, paste("Tried to connect to [", host, "] with credentials.\nTried to autheticate user: ", username), verbose)
+    ndex.helper.httpResponseHandler(auth_response, paste("Tried to connect to [", host, "] with credentials.\nTried to autheticate user: ", username), verbose)
   } else {
     ##Check response of standard admin query
     if(apiversion == '1.3'){
@@ -54,7 +61,7 @@ ndex.connect <- function(username, password, host = "http://www.ndexbio.org/v2",
     }
     
     try(auth_response <- httr::GET(url))
-    ndex.http.response.handle(response, paste("Tried to check the server status of [", host, "]"), verbose)
+    ndex.helper.httpResponseHandler(auth_response, paste("Tried to check the server status of [", host, "]"), verbose)
   }
   
   ndexcon = list(anonymous=TRUE, host=host, apiversion=apiversion, verbose=verbose)
@@ -66,34 +73,6 @@ ndex.connect <- function(username, password, host = "http://www.ndexbio.org/v2",
   }
   class(ndexcon) = c("NDExConnection",class(ndexcon))
   return(ndexcon)
-}
-
-#' Handles the http server response 
-#' 
-#' This function handles the response from a server. If some response code different from success (200) is returned, the execution stops and the reason is shown.
-#' 
-#' @param response object of class response (httr)
-#' @param description character; description of the action performed
-#' @param verbose logical; whether to print out extended feedback
-#' @return logical (TRUE if user is authenticated and connection is active, FALSE otherwise)
-#' @examples
-#' \dontrun{
-#'  ndex.http.response.handle(httr::GET('http://www.ndexbio.org'), 'Tried to connect to NDEx server', T)
-#'  }
-ndex.http.response.handle <- function(response, description, verbose=F){
-  if(class(response) != 'response'){
-    stop('ndex.http.response.handle: Parameter response does not contain response object')
-  }
-  if(response$status_code == 200){          ## Success: (200) OK
-    if(verbose) message(description, "\nServer is responding with success! (200)\n",  sep='')
-  } else if(response$status_code == 401){   ## Client error: (401) Unauthorized
-    stop(paste(description, "\nUser is not authorized! (401)\n"))
-  } else if(response$status_code == 500){   ## Server error: (500) Internal Server Error
-    error_content = content(response)
-    stop(paste(description, "Some internal server error occurred (500):", '\n[errorCode]', error_content$errorCode, '\n[message]', error_content$message, '\n[stackTrace]', error_content$stackTrace, '\n[timeStamp]', error_content$timeStamp, '', sep='\n'))
-  } else{
-    stop(paste(description, "\nSome error occurred:\n", response, '\n'))
-  }
 }
 
 
@@ -109,7 +88,7 @@ ndex.http.response.handle <- function(response, description, verbose=F){
 #'  ndexcon = ndex.connect(verbose=T)
 #'  ndex.alive(ndexcon) # should return FALSE since ndexcon is anonymous
 #'  }
-ndex.alive <- function(ndexcon){
+ndex.alive <- function(ndexcon){	#!!!ToDo: Update to api 2.0 and remove RCurl!
   if(missing(ndexcon)) return(FALSE)
   if(ndexcon$anonymous == TRUE) {
     warning("Called ndex.alive on anonymous NDExConnection object. Returning false.")
@@ -128,8 +107,11 @@ ndex.alive <- function(ndexcon){
 }
 
 
-#################################################
-##Low-level REST-querying functions
+####################################################
+###
+###   Low-level REST-querying functions
+###
+####################################################
 
 #' Generic GET query to API. 
 #' 
@@ -152,7 +134,7 @@ ndex_rest_GET <- function(ndexcon, route, raw = FALSE){
   auth <- ifelse(ndexcon$anonymous, NULL, httr::authenticate(ndexcon$username, ndexcon$password))
   
   try(response <- httr::GET(url, auth))
-  ndex.http.response.handle(response, paste("GET: [", url, "]"), ndexcon$verbose)
+  ndex.helper.httpResponseHandler(response, paste("GET: [", url, "]"), ndexcon$verbose)
   content <- content(response, as='text')
   
   if(ndexcon$verbose) message('Response:', substring(content, 1, 300), '...', sep = '\n')
@@ -196,7 +178,7 @@ ndex_rest_PUT <- function(ndexcon, route, data, raw = FALSE){
   # print(multipart, contenttype, encode)
   try(response <- httr::PUT(url, auth, contenttype, body = data, encode = encode))
   #try(response <- httr::POST(url, auth, content_type('multipart/form-data'), body = data, encode = encode))
-  ndex.http.response.handle(response, paste("PUT: [", url, "]\ndata:\n",substring(data, 1, 300),'\n...'), ndexcon$verbose)
+  ndex.helper.httpResponseHandler(response, paste("PUT: [", url, "]\ndata:\n",substring(data, 1, 300),'\n...'), ndexcon$verbose)
   content <- content(response, as='text')
   
   if(ndexcon$verbose) message('Response:', substring(content, 1, 300), '...', sep = '\n')
@@ -288,7 +270,7 @@ ndex_rest_POST <- function(ndexcon, route, data, multipart = FALSE, raw = FALSE)
   # print(multipart, contenttype, encode)
   try(response <- httr::POST(url, auth, contenttype, body = data, encode = encode))
   #try(response <- httr::POST(url, auth, content_type('multipart/form-data'), body = data, encode = encode))
-  ndex.http.response.handle(response, paste("POST: [", url, "]\ndata:\n",substring(data, 1, 300),'\n...'), ndexcon$verbose)
+  ndex.helper.httpResponseHandler(response, paste("POST: [", url, "]\ndata:\n",substring(data, 1, 300),'\n...'), ndexcon$verbose)
   content <- content(response, as='text')
   
   if(ndexcon$verbose) message('Response:', substring(content, 1, 300), '...', sep = '\n')
@@ -350,7 +332,7 @@ ndex_rest_POST_RCurl <- function(ndexcon, route, data, multipart = FALSE, raw = 
 #' ndex.get.network.api(ndexcon)
 #' }
 ndex.get.network.api <- function(ndexcon){
-  route <- "/network/api"       ## ToDo: change to ndex.api and test! No hard-coded urls!!
+  route <- "/network/api"       #!ToDo: change to ndex.api and test! No hard-coded urls!!
   response <- ndex_rest_GET(ndexcon,route)
   #  df <- data.frame(path = sapply(response, `[[`, 'path'),
   #                   description = sapply(response, `[[`, 'apiDoc'),

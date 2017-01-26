@@ -1,13 +1,23 @@
-##Authors:
-#   Frank Kramer [frank.kramer@med.uni-goettingen.de]
-#   Florian Auer [florian.auer@med.uni-goettingen.de]
-## Created: 20 Sep 2016
-## Base functions to create, parse, modify CX networks from/to JSON data
+################################################################################
+## Authors:
+##   Frank Kramer [frank.kramer@med.uni-goettingen.de]
+##   Florian Auer [florian.auer@med.uni-goettingen.de]
+##
+## History:
+##   Created on 20 September 2016 by Kramer
+## 	
+## Description:
+##	Base functions to create, parse, modify CX networks from/to JSON data
+################################################################################
 
+
+####################################################
+## Conversion from/to JSON
+####################################################
 
 #' Create RCX object from JSON data
 #' 
-#' This function creates an RCX object from a supplied JSON-encoded CX object. It is usually called from within \code{\link{ndex.get.complete.network}}.
+#' This function creates an RCX object from a supplied JSON-encoded CX object. It is usually called from within \code{\link{ndex.get.network}}.
 #' RCX objects store the CX data as a named list of data.frames containing metaData and all aspects of the network.
 #' 
 #' The structure of an RCX object, as shown via str(rcx) could be a list like this:\cr
@@ -109,18 +119,18 @@
 #' @param json JSON data
 #' @param verbose logical; whether to print out extended feedback 
 #' @return returns object of class RCX if successfull, NULL otherwise
-#' @seealso \code{\link{ndex.RCX2ngraph}} \code{\link{ndex.ngraph2RCX}} \code{\link{ndex.RCX2JSON}} 
+#' @seealso \code{\link{ngraph.fromRCX}} \code{\link{ngraph.toRCX}} \code{\link{rcx.toJSON}} 
 #' @aliases RCX
 #' @examples 
 #' \dontrun{
 #' ndexcon = ndex.connect(verbose=T)
 #' pws = ndex.find.networks(ndexcon,"p53")
-#' rcx = ndex.get.complete.network(ndexcon,pws[1,"externalId"]) }
+#' rcx = ndex.get.network(ndexcon,pws[1,"externalId"]) }
 #' @export
-ndex.JSON2RCX <- function(json, verbose = FALSE){
+rcx.fromJSON <- function(json, verbose = FALSE){
   
   if(!jsonlite::validate(json)) {
-    warning("ndex.JSON2RCX: parameter json does not contain valid JSON")
+    warning("rcx.fromJSON: parameter json does not contain valid JSON")
     return(NULL)
   }
 
@@ -181,23 +191,24 @@ ndex.JSON2RCX <- function(json, verbose = FALSE){
   return(aspectlist)
 }
 
+
 #' Generate JSON data from RCX object
 #' 
 #' @param rcx RCX object
 #' @param verbose logical; whether to print out extended feedback
 #' @param pretty logical; adds indentation whitespace to JSON output
 #' @return json jsonlite json object if successfull, NULL otherwise
-#' @seealso \code{\link{ndex.RCX2ngraph}} \code{\link{ndex.ngraph2RCX}} \code{\link{ndex.JSON2RCX}}
+#' @seealso \code{\link{ngraph.fromRCX}} \code{\link{ngraph.toRCX}} \code{\link{rcx.fromJSON}}
 #' @examples 
 #' \dontrun{
 #' ndexcon = ndex.connect(verbose=T)
 #' pws = ndex.find.networks(ndexcon,"p53")
-#' rcx = ndex.get.complete.network(ndexcon,pws[1,"externalId"]) 
-#' rcxjson = ndex.RCX2JSON(rcx) }
+#' rcx = ndex.get.network(ndexcon,pws[1,"externalId"]) 
+#' rcxjson = rcx.toJSON(rcx) }
 #' @export
-ndex.RCX2JSON <- function(rcx, verbose = FALSE, pretty = FALSE){
+rcx.toJSON <- function(rcx, verbose = FALSE, pretty = FALSE){
   if(is.null(rcx) || !("RCX" %in% class(rcx))) {
-    warning("ndex.RCX2JSON: parameter rcx does not contain RCX object")
+    warning("rcx.toJSON: parameter rcx does not contain RCX object")
     return(NULL)
   }
   
@@ -231,29 +242,28 @@ ndex.RCX2JSON <- function(rcx, verbose = FALSE, pretty = FALSE){
   return(paste0('[',paste0(jsonCol, collapse=','),']'))
 }
 
-
-##########################################
-### Some convenience functions for RCX ###
-##########################################
+####################################################
+## Some convenience functions for RCX 
+####################################################
 
 
 #' Remove all interfering NDEx artefacts from RCX object
 #' 
 #' @param rcx RCX object
 #' @return \code{\link{RCX}} object
-#' @seealso \code{\link{ndex.JSON2RCX}} \code{\link{ndex.get.complete.network}}
+#' @seealso \code{\link{rcx.fromJSON}} \code{\link{ndex.get.network}}
 #' @details After a RCX is downloaded from an NDEx server, it will contain some aspects that are not present in a newly generated network, i.e. ndexStatus', provenanceHistory' and 'status'.
 #' Removing those aspects might be usefull in some cases.
 #' @examples 
 #' \dontrun{
 #' ndexcon = ndex.connect(verbose=T)
 #' pws = ndex.find.networks(ndexcon,"p53")
-#' rcx = ndex.get.complete.network(ndexcon,pws[1,"externalId"]) 
-#' rcx = ndex.RCXAsNewNetwork(rcx)
-#' rcxjson = ndex.RCX2JSON(rcx)
+#' rcx = ndex.get.network(ndexcon,pws[1,"externalId"]) 
+#' rcx = rcx.asNewNetwork(rcx)
+#' rcxjson = rcx.toJSON(rcx)
 #' ndex.create.network(ndexcon, rcxjson) }
 #' @export
-ndex.RCXasNewNetwork = function(rcx){
+rcx.asNewNetwork = function(rcx){
   rcx['ndexStatus'] = NULL          # a newly created network doesn't have an ndex-status yet
   rcx['provenanceHistory'] = NULL   # ... also not an provenance history
   rcx['status'] = NULL              # fragment from retrieving the network from the server
@@ -283,15 +293,15 @@ ndex.RCXasNewNetwork = function(rcx){
 #' (Note: Since keys are supposed to be unique, this might be the savest way realizing this within both, JSON and R)
 #' @examples 
 #' \dontrun{
-#' rcx = ndex.RCXupdateMetaData(rcx)
+#' rcx = rcx.updateMetaData(rcx)
 #' # or with explicitly set default values
-#' rcx = ndex.RCXupdateMetaData(rcx, mandatoryAspects=c('nodes'), countElementsOfAspects=NULL, keyValueAspects=c('@context'), verbose=FALSE)
+#' rcx = rcx.updateMetaData(rcx, mandatoryAspects=c('nodes'), countElementsOfAspects=NULL, keyValueAspects=c('@context'), verbose=FALSE)
 #' # which, in the most cases, equals to
-#' rcx = ndex.RCXupdateMetaData(rcx, mandatoryAspects=c('nodes'), countElementsOfAspects=c('citations','@context','edges','ndexStatus','nodes'), keyValueAspects=c('@context'), verbose=FALSE)}
+#' rcx = rcx.updateMetaData(rcx, mandatoryAspects=c('nodes'), countElementsOfAspects=c('citations','@context','edges','ndexStatus','nodes'), keyValueAspects=c('@context'), verbose=FALSE)}
 #' @export
-ndex.RCX.validate = function(rcx, mandatoryAspects=c('nodes'), countElementsOfAspects=NULL, keyValueAspects=c('@context'), verbose=FALSE){
+rcx.validate = function(rcx, mandatoryAspects=c('nodes'), countElementsOfAspects=NULL, keyValueAspects=c('@context'), verbose=FALSE){	#!ToDo: Check if it works and all cases are covered
   if(is.null(rcx) || !("RCX" %in% class(rcx))) {
-    warning("ndex.RCXupdateMetaData: Parameter rcx does not contain RCX object")
+    warning("rcx.updateMetaData: Parameter rcx does not contain RCX object")
     return(NULL)
   }
   
@@ -330,7 +340,7 @@ ndex.RCX.validate = function(rcx, mandatoryAspects=c('nodes'), countElementsOfAs
     # is aspect not anymore present in rcx object?
     if(is.null(rcx[[aspect]])){  
       if(aspect %in% mandatoryAspects){
-        warning('ndex.RCXupdateMetaData: Aspect "',aspect,'" is mandatory for an RCX model, but cannot be found in this RCX object!\nMandatory aspects for all RCX objects: ',paste0('"',mandatoryAspects,'"', collapse = ', '),'\nMandatory aspects specified for ndex.RCXupdateMetaData: ',paste0('"',mandatoryAspects,'"', collapse = ', '))
+        warning('rcx.updateMetaData: Aspect "',aspect,'" is mandatory for an RCX model, but cannot be found in this RCX object!\nMandatory aspects for all RCX objects: ',paste0('"',mandatoryAspects,'"', collapse = ', '),'\nMandatory aspects specified for rcx.updateMetaData: ',paste0('"',mandatoryAspects,'"', collapse = ', '))
         return(NULL)
       }else{
         rcx$metaData = rcx$metaData[-which(rcx$metaData$name==aspect),]
@@ -397,15 +407,15 @@ ndex.RCX.validate = function(rcx, mandatoryAspects=c('nodes'), countElementsOfAs
 #' (Note: Since keys are supposed to be unique, this might be the savest way realizing this within both, JSON and R)
 #' @examples 
 #' \dontrun{
-#' rcx = ndex.RCXupdateMetaData(rcx)
+#' rcx = rcx.updateMetaData(rcx)
 #' # or with explicitly set default values
-#' rcx = ndex.RCXupdateMetaData(rcx, mandatoryAspects=c('nodes'), countElementsOfAspects=NULL, keyValueAspects=c('@context'), verbose=FALSE)
+#' rcx = rcx.updateMetaData(rcx, mandatoryAspects=c('nodes'), countElementsOfAspects=NULL, keyValueAspects=c('@context'), verbose=FALSE)
 #' # which, in the most cases, equals to
-#' rcx = ndex.RCXupdateMetaData(rcx, mandatoryAspects=c('nodes'), countElementsOfAspects=c('citations','@context','edges','ndexStatus','nodes'), keyValueAspects=c('@context'), verbose=FALSE)}
+#' rcx = rcx.updateMetaData(rcx, mandatoryAspects=c('nodes'), countElementsOfAspects=c('citations','@context','edges','ndexStatus','nodes'), keyValueAspects=c('@context'), verbose=FALSE)}
 #' @export
-ndex.RCXupdateMetaData = function(rcx, mandatoryAspects=c('nodes'), countElementsOfAspects=NULL, keyValueAspects=c('@context'), verbose=FALSE){
+rcx.updateMetaData = function(rcx, mandatoryAspects=c('nodes'), countElementsOfAspects=NULL, keyValueAspects=c('@context'), verbose=FALSE){		#!ToDo: Check if it works and all cases are covered
   if(is.null(rcx) || !("RCX" %in% class(rcx))) {
-    warning("ndex.RCXupdateMetaData: Parameter rcx does not contain RCX object")
+    warning("rcx.updateMetaData: Parameter rcx does not contain RCX object")
     return(NULL)
   }
   
@@ -444,7 +454,7 @@ ndex.RCXupdateMetaData = function(rcx, mandatoryAspects=c('nodes'), countElement
     # is aspect not anymore present in rcx object?
     if(is.null(rcx[[aspect]])){  
       if(aspect %in% mandatoryAspects){
-        warning('ndex.RCXupdateMetaData: Aspect "',aspect,'" is mandatory for an RCX model, but cannot be found in this RCX object!\nMandatory aspects for all RCX objects: ',paste0('"',mandatoryAspects,'"', collapse = ', '),'\nMandatory aspects specified for ndex.RCXupdateMetaData: ',paste0('"',mandatoryAspects,'"', collapse = ', '))
+        warning('rcx.updateMetaData: Aspect "',aspect,'" is mandatory for an RCX model, but cannot be found in this RCX object!\nMandatory aspects for all RCX objects: ',paste0('"',mandatoryAspects,'"', collapse = ', '),'\nMandatory aspects specified for rcx.updateMetaData: ',paste0('"',mandatoryAspects,'"', collapse = ', '))
         return(NULL)
       }else{
         rcx$metaData = rcx$metaData[-which(rcx$metaData$name==aspect),]
@@ -492,95 +502,23 @@ ndex.RCXupdateMetaData = function(rcx, mandatoryAspects=c('nodes'), countElement
   return(rcx)
 }
 
-#' Get the next id, that should be used for creating a new node
-#' (euqals the maximal id in nodes + 1) 
-#' 
-#' @param rcx RCX object
-#' @return integer
-#' @details Get the next id, that should be used for creating a new node
-#' (euqals the maximal id in nodes + 1) 
-#' @examples 
-#' \dontrun{
-#' ndex.RCXnextNodeId(rcx) }
+
+#' Create a blank rcx object
+#' @param nodes At least one node is necessary for be a valid rcx
+#' @return RCX object
+#' @details “Constructor” for creating a blank rcx object, that fulfills the minimal requirements of CX
 #' @export
-ndex.RCXnextNodeId = function(rcx){
-  return(max(rcx$nodes['@id'])+1)
-}
-
-#' Get the next id, that should be used for creating a new edge
-#' (euqals the maximal id in nodes + 1) 
-#' 
-#' @param rcx RCX object
-#' @return integer
-#' @details Get the next id, that should be used for creating a new edge
-#' (euqals the maximal id in nodes + 1) 
-#' @examples 
-#' \dontrun{
-#' ndex.RCXnextEdgeId(rcx) }
-#' @export
-ndex.RCXnextEdgeId = function(rcx){
-  return(max(rcx$edges['@id']) +1)
-}
-
-
-ndex.RCXaddNodes = function(rcx, ids=NULL, startId=NULL, numberOfNodes=NULL, nodeNames=NULL, represents=NULL, verbose=FALSE){
-  if(is.null(rcx) || !("RCX" %in% class(rcx))) {
-    warning("ndex.RCXaddNodes: Parameter rcx does not contain RCX object")
-    return(NULL)
-  }else if(is.null(ids)&&is.null(startId)&&is.null(numberOfNodes)&&is.null(names)&&is.null(represents)){
-    warning("ndex.RCXaddNodes: At least one of the following parameters has to be specified: ids, startId, numberOfNodes, names or represents")
-    return(NULL)
-  }
-  
-  if(!is.null(ids)){
-    if(is.null(nodeNames)){
-      nodeNames=rep(NA, length(ids))
-    }
-  }else if(!is.null(numberOfNodes)){
-    
-  }else if((!is.null(names))||(!is.null(represents))){
-    
-  }
-  
-  return(rcx)
-}
-
-ndex.RCXremoveNodes = function(rcx, ids){
-  
-}
-
-ndex.RCXaddEdges = function(rcx, ids, sources, targets, interactions=NULL){
-  
-}
-
-ndex.RCXremoveEdges = function(rcx, ids){
-  
-}
-
-# @param aspect single aspect or list of aspects
-ndex.RCXaddAspects = function(rcx, aspect){
-  
-}
-
-# @param aspects vector of strings, names of aspects to remove
-ndex.RCXremoveAspects = function(rcx, aspects){
-  
-}
-
-ndex.RCXcheckConsistency = function(rcx){
-  
+rcx.new = function(nodes){	#!ToDo: Implement
+	rcx <- list(rcx, ...)
 }
 
 #' merging two or more rcx objects
-#' ||__layerMapping=NULL__|Layers are just megred toghether. If two rcx objects contain thesame layer id (by accident), the two layers are combined to one.
-#' __layerMapping=c('a','b')__|The vector elements are used as prefix for the original ids,i.e. with two input rcx objects and layers '1', '2' and '3' each,the layers of the first object become 'a1', 'a2' and 'a3', and forthe second object 'b1', 'b2' and 'b3' respectively
-#' __layerMapping=function(rcxIndex, layerId)__|Names the layers using a function, which is dependent on theindex of rcx object in the mergeRCX function call, and the layerid within that object. If two return values of the mappingfunction are equal, the two layers are combined to one.||
-ndex.RCXmerge = function(rcx,...){
-  rcx <- list(rcx, ...)
+#' @param rcx RCX object
+#' @param ... one or more RCX objects
+#' @return RCX object
+#' @details Two or more RCX objects are merged
+#' @export
+rcx.merge = function(rcx,...){	#!ToDo: Implement
+	rcx <- list(rcx, ...)
 }
-
-# multipath.RCXmerge = function(rcx,...,layerMapping=NULL){
-#   rcx <- list(rcx, ...)
-#   ndex.RCXmerge(rcx)
-# }
 

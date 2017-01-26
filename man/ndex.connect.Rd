@@ -4,15 +4,15 @@
 \alias{ndex.connect}
 \title{Connect to NDEx REST API}
 \usage{
-ndex.connect(username, password, host = "http://www.ndexbio.org/rest",
-  apiversion = "2.0", verbose = FALSE)
+ndex.connect(username, password, host = "http://www.ndexbio.org/v2",
+  apiversion = "2.0", verbose = T)
 }
 \arguments{
 \item{username}{character username}
 
 \item{password}{character password}
 
-\item{host}{(optional) URL of NDEx REST server to be used; Default is: http://www.ndexbio.org/rest}
+\item{host}{(optional) URL of NDEx REST server to be used; For version 2.0 the host is "http://www.ndexbio.org/v2", for version 1.3 it is "http://www.ndexbio.org/rest", Default is: "http://www.ndexbio.org/v2"}
 
 \item{apiversion}{character (optional) Version of NDEx REST server; Default is version "2.0"}
 
@@ -27,5 +27,6 @@ If username and password are missing an anonymous connection is created, which a
 }
 \examples{
 \dontrun{ndexcon = ndex.connect(verbose=T)}
+ToDo: check the ndexcon properties, especially curlOpts
 }
 

@@ -1,7 +1,13 @@
-##Authors:
-#   Frank Kramer [frank.kramer@med.uni-goettingen.de]
-## Created: 20 Sep 2016
-## Base functions to create, parse, modify ngraph objects from/to RCX data
+################################################################################
+## Authors:
+##   Frank Kramer [frank.kramer@med.uni-goettingen.de]
+##
+## History:
+##   Created on 20 September 2016 by Kramer
+## 	
+## Description:
+##	Base functions to create, parse, modify ngraph/igraph objects from/to CX networks
+################################################################################
 
 
 #' Create ngraph object from RCX object
@@ -49,19 +55,19 @@
 #' @param rcx RCX object
 #' @param verbose logical; whether to print out extended feedback 
 #' @return returns object of class ngraph if successfull, NULL otherwise
-#' @seealso \code{\link{ndex.ngraph2RCX}} \code{\link{ndex.JSON2RCX}} \code{\link{ndex.RCX2JSON}} \code{\link{RCX}} \code{\link[igraph]{igraph}}   
+#' @seealso \code{\link{ngraph.toRCX}} \code{\link{rcx.fromJSON}} \code{\link{rcx.toJSON}} \code{\link{RCX}} \code{\link[igraph]{igraph}}   
 #' @aliases ngraph
 #' @examples 
 #' \dontrun{
 #' ndexcon = ndex.connect(verbose=T)
 #' pws = ndex.find.networks(ndexcon,"p53")
-#' rcx = ndex.get.complete.network(ndexcon,pws[1,"externalId"]) 
+#' rcx = ndex.get.network(ndexcon,pws[1,"externalId"]) 
 #' rcx$edges
-#' ngraph = ndex.RCX2ngraph(rcx) 
+#' ngraph = ngraph.fromRCX(rcx) 
 #' ngraph
 #' E(ngraph) }
 #' @export
-ndex.RCX2ngraph <- function(rcx, verbose = FALSE){
+ngraph.fromRCX <- function(rcx, verbose = FALSE){
   
   if(!("RCX" %in% class(rcx))) {
     warning("RCX2ngraph: supplied parameter is not of class RCX! Returning null.")
@@ -111,6 +117,12 @@ ndex.RCX2ngraph <- function(rcx, verbose = FALSE){
 }
 
 
+#' Create ngraph object from RCX object
+#' @note Wrapper function for \code{\link{ngraph.fromRCX}}
+#' @export
+rcx.toNGraph <- ngraph.fromRCX
+
+
 #' ndex.internal_addAspects
 #' 
 #' @param ngraph ngraph object
@@ -155,14 +167,14 @@ ndex.internal_addAspects <- function(ngraph, rcx, verbose = FALSE){
 #' @param ngraph ngraph object
 #' @param verbose logical; whether to print out extended feedback 
 #' @return returns object of class RCX if successfull, NULL otherwise
-#' @seealso \code{\link{ngraph}} \code{\link{ndex.RCX2ngraph}} \code{\link{ndex.JSON2RCX}} \code{\link{ndex.RCX2JSON}}   
+#' @seealso \code{\link{ngraph}} \code{\link{ngraph.fromRCX}} \code{\link{rcx.fromJSON}} \code{\link{rcx.toJSON}}   
 #' @examples 
 #' \dontrun{
 #' ndexcon = ndex.connect(verbose=T)
 #' pws = ndex.find.networks(ndexcon,"p53")
-#' rcx = ndex.get.complete.network(ndexcon,pws[1,"externalId"]) 
-#' ngraph = ndex.RCX2ngraph(rcx) 
-#' rcxback = ndex.ngraph2RCX(ngraph)
+#' rcx = ndex.get.network(ndexcon,pws[1,"externalId"]) 
+#' ngraph = ngraph.fromRCX(rcx) 
+#' rcxback = ngraph.toRCX(ngraph)
 #' 
 #' #test equalness
 #' for(i in names(rcx)) {
@@ -172,10 +184,10 @@ ndex.internal_addAspects <- function(ngraph, rcx, verbose = FALSE){
 #' }
 #' }
 #' @export
-ndex.ngraph2RCX <- function(ngraph, verbose = FALSE){
+ngraph.toRCX <- function(ngraph, verbose = FALSE){
   
   if(is.null(ngraph) || !("igraph" %in% class(ngraph))) {
-    warning("ndex.ngraph2RCX: parameter ngraph does not contain igraph object")
+    warning("ngraph.toRCX: parameter ngraph does not contain igraph object")
     return(NULL)
   }
   
