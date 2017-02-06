@@ -23,47 +23,57 @@
 #' 
 #' @param username character username
 #' @param password character password
-#' @param host (optional) URL of NDEx REST server to be used; For version 2.0 the host is "http://www.ndexbio.org/v2", for version 1.3 it is "http://www.ndexbio.org/rest", Default is: "http://www.ndexbio.org/v2"
-#' @param apiversion character (optional) Version of NDEx REST server; Default is version "2.0"
+#' @param host character (optional) URL of NDEx REST server; Set in ndex.conf: By default: ndex.conf$url$host + ndex.conf$url$path$<api-version>; For version 2.0 the host is "http://www.ndexbio.org/v2", for version 1.3 it is "http://www.ndexbio.org/rest"
+#' @param apiversion character (optional) Version of NDEx REST server; Set in ndex.conf: 
 #' @param verbose logical; whether to print out extended feedback 
 #' @return returns object of class NDEXConnection which stores options and authentication if successfull, NULL otherwise
 #' @export
 #' @examples
 #' \dontrun{ndexcon = ndex.connect(verbose=T)}
 #' ToDo: check the ndexcon properties, especially curlOpts
-ndex.connect <- function(username, password, host = "http://www.ndexbio.org/v2", apiversion = '2.0', verbose = T){
+ndex.connect <- function(username, password, host = "ndex.api.conf$defaults$connection$host", apiPath = 'ndex.api.conf$defaults$connection$api', apiConfig=ndex.api.conf$Version_2.0, verbose = T){
 
+  ##Check parameters and set defaults by config
   credentials = TRUE
   if(missing(username) || missing(password)){
-    message("Connecting anonymously - username or password not supplied")
+    message("ndex.connect: Connecting anonymously - username or password not supplied")
     credentials = FALSE
-  } 
-  
-  if(missing(host)) if(verbose) message(paste("ndex.connect: host not specified, using default: [", host, "]" ))
-  
-  ##Attempt authentication if we have credentials
-  if (credentials){
-    if(apiversion == '1.3'){
-      url <- paste0(host, ndex.api$user$authenticate$'1.3'$url)
-    }else if(apiversion == '2.0'){
-      url <- paste0(host, ndex.api$user$authenticate$'2.0'$url)
-    }
-    
-    try(auth_response <- httr::GET(url, httr::authenticate(username, password)))
-    #print(auth_response)
-    ndex.helper.httpResponseHandler(auth_response, paste("Tried to connect to [", host, "] with credentials.\nTried to autheticate user: ", username), verbose)
-  } else {
-    ##Check response of standard admin query
-    if(apiversion == '1.3'){
-      url <- paste0(host, ndex.api$serverStatus$'1.3')
-    }else if(apiversion == '2.0'){
-      url <- paste0(host, ndex.api$serverStatus$'2.0')
-    }
-    
-    try(auth_response <- httr::GET(url))
-    ndex.helper.httpResponseHandler(auth_response, paste("Tried to check the server status of [", host, "]"), verbose)
   }
   
+  if(verbose) message(paste("ndex.connect: Using api configuration for version ", apiConfig$version ))
+  
+  if(missing(apiPath)){
+	  apiPath = apiConfig$defaults$connection$api
+	  if(verbose) message(paste("ndex.connect: apiPath not specified, using default: [", apiPath, "]" ))
+  }
+  
+  if(missing(host)){
+	  host = paste0(apiConfig$defaults$connection$host, apiPath)
+	  if(verbose) message(paste("ndex.connect: Host not specified, using default: [", host, "]" ))
+  } else {
+	  host = paste0(host, apiPath)
+	  if(verbose) message(paste("ndex.connect: Using host: [", host, "]" ))
+  }
+  
+  ##Setup server connection, with and without credentials
+  url = ''
+  auth_param = NULL
+  log_txt = NULL
+  if (credentials){
+	  url <- paste0(host, ndex.conf$user$authenticate[[apiversion]]$url)
+	  auth_param = httr::authenticate(username, password)
+      log_txt = paste0("Tried to connect to [", host, "] with credentials.\nTried to autheticate user: ", username)
+  } else {
+	  url <- paste0(host, ndex.conf$serverStatus[[apiversion]]$url)
+      log_txt = paste0("Tried to check the server status of [", host, "]")
+  }
+  ##Try to connect to the server; throws error if something went wrong
+  response = ndex.helper.httpResponseHandler(httr::GET(url=url, config=auth_param), 
+		  								 log_txt, 
+										 verbose)
+  if(verbose) message(paste("ndex.connect: Server response: ", response))							 
+  
+  ##Create ndexcon object
   ndexcon = list(anonymous=TRUE, host=host, apiversion=apiversion, verbose=verbose)
   if(credentials) {
     #ndexcon = list(anon=FALSE, credentials=credentials, current.user= auth_response$accountName, curl.opts=ndex.opts, host=host, apiversion=apiversion, verbose=verbose)
@@ -97,7 +107,7 @@ ndex.alive <- function(ndexcon){	#!!!ToDo: Update to api 2.0 and remove RCurl!
 
   ##Try getting something from API again
   test <- NULL
-  try(test <- RCurl::getURL(paste0(ndexcon$host, "/user/", ndexcon$current.user), .opts=ndexcon$curl.opts))   ### ToDo: change to ndex.api and test! No hard-coded urls!!
+  try(test <- RCurl::getURL(paste0(ndexcon$host, "/user/", ndexcon$current.user), .opts=ndexcon$curl.opts))   ### ToDo: change to ndex.conf and test! No hard-coded urls!!
   if(is.null(test)){
     return(FALSE)
   }else{
@@ -332,7 +342,7 @@ ndex_rest_POST_RCurl <- function(ndexcon, route, data, multipart = FALSE, raw = 
 #' ndex.get.network.api(ndexcon)
 #' }
 ndex.get.network.api <- function(ndexcon){
-  route <- "/network/api"       #!ToDo: change to ndex.api and test! No hard-coded urls!!
+  route <- "/network/api"       #!ToDo: change to ndex.conf and test! No hard-coded urls!!
   response <- ndex_rest_GET(ndexcon,route)
   #  df <- data.frame(path = sapply(response, `[[`, 'path'),
   #                   description = sapply(response, `[[`, 'apiDoc'),

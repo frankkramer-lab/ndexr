@@ -252,8 +252,8 @@ rcx.toJSON <- function(rcx, verbose = FALSE, pretty = FALSE){
 #' @param rcx RCX object
 #' @return \code{\link{RCX}} object
 #' @seealso \code{\link{rcx.fromJSON}} \code{\link{ndex.get.network}}
-#' @details After a RCX is downloaded from an NDEx server, it will contain some aspects that are not present in a newly generated network, i.e. ndexStatus', provenanceHistory' and 'status'.
-#' Removing those aspects might be usefull in some cases.
+#' @details After a RCX object is downloaded from an NDEx server, it will contain some aspects that are not present in a newly generated network, i.e. ndexStatus', provenanceHistory' and 'status'.
+#' Removing those aspects might be useful in some cases.
 #' @examples 
 #' \dontrun{
 #' ndexcon = ndex.connect(verbose=T)
@@ -506,7 +506,7 @@ rcx.updateMetaData = function(rcx, mandatoryAspects=c('nodes'), countElementsOfA
 #' Create a blank rcx object
 #' @param nodes At least one node is necessary for be a valid rcx
 #' @return RCX object
-#' @details “Constructor” for creating a blank rcx object, that fulfills the minimal requirements of CX
+#' @details Constructor for creating a blank rcx object, that fulfills the minimal requirements of CX
 #' @export
 rcx.new = function(nodes){	#!ToDo: Implement
 	rcx <- list(rcx, ...)

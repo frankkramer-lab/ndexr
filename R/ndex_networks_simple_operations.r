@@ -35,7 +35,7 @@
 #' ndex.get.network.summary(ndexcon,pws[1,"externalId"]) }
 #' @export
 ndex.get.network.summary <- function(ndexcon, network_id){
-  route <- paste0("/network/", network_id)  #!ToDo: change to ndex.api and test! No hard-coded urls!!
+  route <- paste0("/network/", network_id)  #!ToDo: change to ndex.conf and test! No hard-coded urls!!
   response <- ndex_rest_GET(ndexcon, route)
   return(response)
 }
@@ -62,13 +62,13 @@ ndex.get.network.summary <- function(ndexcon, network_id){
 ndex.get.network <- function(ndexcon, network_id){
   
   ## route <- paste0("/network/", network_id, "/asCX")
-  api = ndex.api$network$get 
+  api = ndex.conf$network$get 
   if(ndexcon$apiversion=='2.0'){
     route <- api$'2.0'$url
-    route <- gsub(ndex.api$replaceables$network,network_id, route)
+    route <- gsub(ndex.conf$replaceables$network,network_id, route)
   }else{
     route <- api$'1.3'$url
-    route <- gsub(ndex.api$replaceables$network,network_id, route)
+    route <- gsub(ndex.conf$replaceables$network,network_id, route)
   }
   
   response = ndex_rest_GET(ndexcon, route, raw=T)
@@ -90,7 +90,7 @@ ndex.get.network <- function(ndexcon, network_id){
 #' @export
 ndex.create.network <- function(ndexcon, rcx){
 	route <- paste0("/network/asCX")
-	api = ndex.api$network$create
+	api = ndex.conf$network$create
 	if(ndexcon$apiversion=='2.0'){
 		route <- api$'2.0'$url
 	}else{

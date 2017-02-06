@@ -16,6 +16,6 @@ RCX object
 Create a blank rcx object
 }
 \details{
-“Constructor” for creating a blank rcx object, that fulfills the minimal requirements of CX
+Constructor for creating a blank rcx object, that fulfills the minimal requirements of CX
 }
 

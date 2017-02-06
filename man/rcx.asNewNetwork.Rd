@@ -16,8 +16,8 @@ rcx.asNewNetwork(rcx)
 Remove all interfering NDEx artefacts from RCX object
 }
 \details{
-After a RCX is downloaded from an NDEx server, it will contain some aspects that are not present in a newly generated network, i.e. ndexStatus', provenanceHistory' and 'status'.
-Removing those aspects might be usefull in some cases.
+After a RCX object is downloaded from an NDEx server, it will contain some aspects that are not present in a newly generated network, i.e. ndexStatus', provenanceHistory' and 'status'.
+Removing those aspects might be useful in some cases.
 }
 \examples{
 \dontrun{

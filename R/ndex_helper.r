@@ -42,17 +42,30 @@ ndex.helper.UrlAddParams = function(url, params, values){
 #'  ndex.helper.httpResponseHandler(httr::GET('http://www.ndexbio.org'), 'Tried to connect to NDEx server', T)
 #'  }
 ndex.helper.httpResponseHandler <- function(response, description, verbose=F){
-	if(class(response) != 'response'){
+	if( !('response' %in% class(response))){
 		stop('ndex.helper.httpResponseHandler: Parameter response does not contain response object')
 	}
-	if(response$status_code == 200){          ## Success: (200) OK
-		if(verbose) message(description, "\nServer is responding with success! (200)\n",  sep='')
-	} else if(response$status_code == 401){   ## Client error: (401) Unauthorized
-		stop(paste(description, "\nUser is not authorized! (401)\n"))
-	} else if(response$status_code == 500){   ## Server error: (500) Internal Server Error
-		error_content = content(response)
-		stop(paste(description, "Some internal server error occurred (500):", '\n[errorCode]', error_content$errorCode, '\n[message]', error_content$message, '\n[stackTrace]', error_content$stackTrace, '\n[timeStamp]', error_content$timeStamp, '', sep='\n'))
-	} else{
-		stop(paste(description, "\nSome error occurred:\n", response, '\n'))
+  	if('status_code' %in% names(response)){
+		if(response$status_code == 200){          ## Success: (200) OK
+			if(verbose) message(description, "\nServer is responding with success! (200)",  sep='')
+		} else if(response$status_code == 201){          ## Success: (201) OK/Created
+		  	if(verbose) message(description, "\n\tServer is responding with success!\n\t(201) <object creation>",  sep='')
+		} else if(response$status_code == 202){          ## Success: (202) OK
+		  	if(verbose) message(description, "\n\tServer is responding with success!\n\t(202) <asynchronized function>",  sep='')
+		} else if(response$status_code == 204){          ## Success: (204) OK
+		  	if(verbose) message(description, "\n\tServer is responding with success!\n\t(204) <object modification or deletion>",  sep='')
+		} else if(response$status_code == 220){          ## Success: (220) Accepted
+		  	if(verbose) message(description, "\n\tServer is responding with success!\n\t(220) <request accepted>",  sep='')
+		} else if(response$status_code == 401){   ## Client error: (401) Unauthorized
+			stop(paste(description, "\n\tUser is not authorized! (401)\n"))
+		} else if(response$status_code == 404){   ## Not found error: (404) Page Not Found
+			stop(paste(description, "\n\tPage not found! (404)\n\tURL: [",response$url,"]"))
+		} else if(response$status_code == 500){   ## Server error: (500) Internal Server Error
+			error_content = content(response)
+			stop(paste(description, "Some internal server error occurred (500):", '\n[errorCode]', error_content$errorCode, '\n[message]', error_content$message, '\n[stackTrace]', error_content$stackTrace, '\n[timeStamp]', error_content$timeStamp, '', sep='\n'))
+		} else {   ## Other status
+			if(verbose) message(description, "\nServer is responding with unknown status code [",response$status_code, "]", sep='')
+		}
 	}
+	return(response)
 }

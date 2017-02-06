@@ -15,3 +15,4 @@ Depends:
     igraph,
     methods
 RoxygenNote: 5.0.1
+Suggests: testthat

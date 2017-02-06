@@ -4,19 +4,19 @@
 \alias{ndex.find.networks}
 \title{Search networks in NDEx (by description)}
 \usage{
-ndex.find.networks(ndexcon, searchString = "", accountName, skipBlocks = 0,
-  blockSize = 10)
+ndex.find.networks(ndexcon, searchString = "", accountName, start = 0,
+  size = 100)
 }
 \arguments{
 \item{ndexcon}{object of class NDEXConnection}
 
 \item{searchString}{string by which to search}
 
-\item{accountName}{string; constrain search to networks administered by this account}
+\item{accountName}{string (optional); constrain search to networks administered by this account}
 
-\item{skipBlocks}{-}
+\item{start}{integer (optional); specifies that the result is the nth page of the requested data. The default value is 0}
 
-\item{blockSize}{-}
+\item{size}{integer (optional); specifies the number of data items in each page. The default value is 100}
 }
 \value{
 Data frame with network information: ID, name, whether it is public, edge and node count; source and format of network. NULL if no networks are found.
@@ -30,7 +30,7 @@ Search strings may be structured
 }
 \section{REST query}{
 
-This function runs POST query /network/search/{skipBlocks}/{blockSize}    returns list of NetworkSummary
+This function runs POST query /network/search/{start}/{size}    returns list of NetworkSummary
 }
 \examples{
 \dontrun{
