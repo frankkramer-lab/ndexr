@@ -4,31 +4,36 @@
 \alias{ndex.connect}
 \title{Connect to NDEx REST API}
 \usage{
-ndex.connect(username, password,
-  host = "ndex.api.conf$defaults$connection$host",
-  apiPath = "ndex.api.conf$defaults$connection$api",
-  apiConfig = ndex.api.conf$Version_2.0, verbose = T)
+ndex.connect(username, password, host = "apiConfig$defaults$connection$host",
+  apiPath = "apiConfig$defaults$connection$api",
+  apiConfig = ndex.api.config, verbose = T)
 }
 \arguments{
-\item{username}{character username}
+\item{username}{character (optional); username}
 
-\item{password}{character password}
+\item{password}{character (optional); password}
 
-\item{host}{character (optional) URL of NDEx REST server; Set in ndex.conf: By default: ndex.conf$url$host + ndex.conf$url$path$<api-version>; For version 2.0 the host is "http://www.ndexbio.org/v2", for version 1.3 it is "http://www.ndexbio.org/rest"}
+\item{host}{character (optional); URL of NDEx REST server; Set in apiConfig$defaults$connection$host. By default the host is "http://www.ndexbio.org"}
 
-\item{verbose}{logical; whether to print out extended feedback}
+\item{apiConfig}{config object (neste list, optional); Configuration of NDEx REST server; Set in ndex.api.config (or ndex.api.yml): It contains specifications for NDEx server api version 1.3 and 2.0. The default api is specified by 'defaultVersion'}
 
-\item{apiversion}{character (optional) Version of NDEx REST server; Set in ndex.conf:}
+\item{verbose}{logical (optional); whether to print out extended feedback}
 }
 \value{
-returns object of class NDEXConnection which stores options and authentication if successfull, NULL otherwise
+returns object of class NDEXConnection which stores options, authentication and api configuration if successfull, NULL otherwise
 }
 \description{
 This function creates an NDEXConnection which stores options and authentication details. It is a parameter required for most of the other ndexr functions.
 If username and password are missing an anonymous connection is created, which already offers most of the retrieval functionality.
 }
 \examples{
-\dontrun{ndexcon = ndex.connect(verbose=T)}
-ToDo: check the ndexcon properties, especially curlOpts
+\dontrun{ndexcon = ndex.connect()   ## log in anonymously
+ndexcon = ndex.connect(verbose=T)   ## same as above
+ndexcon = ndex.connect('user','password')   ## log in with credentials
+ndexcon = ndex.connect(host='localhost:8765')   ## running some NDEx server locally
+ndexcon = ndex.connect(apiConfig=ndex.api.configig$Version2.0)   ## manually change the api and connection configuration}
+}
+\seealso{
+\code{\link{ndex.api.config}}, \code{\link{readYamlToRFile}}
 }
 

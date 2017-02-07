@@ -56,6 +56,8 @@ ndex.helper.httpResponseHandler <- function(response, description, verbose=F){
 		  	if(verbose) message(description, "\n\tServer is responding with success!\n\t(204) <object modification or deletion>",  sep='')
 		} else if(response$status_code == 220){          ## Success: (220) Accepted
 		  	if(verbose) message(description, "\n\tServer is responding with success!\n\t(220) <request accepted>",  sep='')
+		} else if(response$status_code == 400){   ## Client error: (400) Bad Request/User unknown
+		  stop(paste(description, "\n\tBad Request/User unknown! (400)\n"))
 		} else if(response$status_code == 401){   ## Client error: (401) Unauthorized
 			stop(paste(description, "\n\tUser is not authorized! (401)\n"))
 		} else if(response$status_code == 404){   ## Not found error: (404) Page Not Found

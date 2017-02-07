@@ -21,6 +21,6 @@ Run this manually if you want to update the ndex.api.conf
 only for package maintenance!
 }
 \examples{
-\dontrun{readYamlToRFile('R/ndex_api_conf.yml', 'R/ndex_api_conf.r', ndex.api.conf.header)}
+\dontrun{readYamlToRFile('R/ndex_api_config.yml', 'R/ndex_api_config.r', ndex.api.config.header)}
 }
 

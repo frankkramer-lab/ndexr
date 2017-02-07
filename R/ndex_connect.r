@@ -21,17 +21,21 @@
 #' This function creates an NDEXConnection which stores options and authentication details. It is a parameter required for most of the other ndexr functions.
 #' If username and password are missing an anonymous connection is created, which already offers most of the retrieval functionality.
 #' 
-#' @param username character username
-#' @param password character password
-#' @param host character (optional) URL of NDEx REST server; Set in ndex.conf: By default: ndex.conf$url$host + ndex.conf$url$path$<api-version>; For version 2.0 the host is "http://www.ndexbio.org/v2", for version 1.3 it is "http://www.ndexbio.org/rest"
-#' @param apiversion character (optional) Version of NDEx REST server; Set in ndex.conf: 
-#' @param verbose logical; whether to print out extended feedback 
-#' @return returns object of class NDEXConnection which stores options and authentication if successfull, NULL otherwise
+#' @param username character (optional); username
+#' @param password character (optional); password
+#' @param host character (optional); URL of NDEx REST server; Set in apiConfig$defaults$connection$host. By default the host is "http://www.ndexbio.org"
+#' @param apiConfig config object (neste list, optional); Configuration of NDEx REST server; Set in ndex.api.config (or ndex.api.yml): It contains specifications for NDEx server api version 1.3 and 2.0. The default api is specified by 'defaultVersion'
+#' @param verbose logical (optional); whether to print out extended feedback 
+#' @return returns object of class NDEXConnection which stores options, authentication and api configuration if successfull, NULL otherwise
 #' @export
 #' @examples
-#' \dontrun{ndexcon = ndex.connect(verbose=T)}
-#' ToDo: check the ndexcon properties, especially curlOpts
-ndex.connect <- function(username, password, host = "ndex.api.conf$defaults$connection$host", apiPath = 'ndex.api.conf$defaults$connection$api', apiConfig=ndex.api.conf$Version_2.0, verbose = T){
+#' \dontrun{ndexcon = ndex.connect()   ## log in anonymously
+#' ndexcon = ndex.connect(verbose=T)   ## same as above
+#' ndexcon = ndex.connect('user','password')   ## log in with credentials
+#' ndexcon = ndex.connect(host='localhost:8765')   ## running some NDEx server locally
+#' ndexcon = ndex.connect(apiConfig=ndex.api.configig$Version2.0)   ## manually change the api and connection configuration}
+#' @seealso  \code{\link{ndex.api.config}}, \code{\link{readYamlToRFile}}
+ndex.connect <- function(username, password, host = "apiConfig$defaults$connection$host", apiPath = 'apiConfig$defaults$connection$api', apiConfig=ndex.api.config, verbose = T){
 
   ##Check parameters and set defaults by config
   credentials = TRUE
@@ -40,7 +44,13 @@ ndex.connect <- function(username, password, host = "ndex.api.conf$defaults$conn
     credentials = FALSE
   }
   
-  if(verbose) message(paste("ndex.connect: Using api configuration for version ", apiConfig$version ))
+  if(missing(apiConfig)){
+    defaultVersion = apiConfig$defaultVersion
+    apiConfig=apiConfig[[defaultVersion]]
+    if(verbose) message(paste("ndex.connect: apiConfig not specified, using default version ", apiConfig$version, " [", defaultVersion, "]" ))
+  } else {
+    if(verbose) message(paste("ndex.connect: Using apiConfig for version ", apiConfig$version))
+  }
   
   if(missing(apiPath)){
 	  apiPath = apiConfig$defaults$connection$api
@@ -56,25 +66,31 @@ ndex.connect <- function(username, password, host = "ndex.api.conf$defaults$conn
   }
   
   ##Setup server connection, with and without credentials
-  url = ''
+  ##Check if server is available
   auth_param = NULL
-  log_txt = NULL
-  if (credentials){
-	  url <- paste0(host, ndex.conf$user$authenticate[[apiversion]]$url)
-	  auth_param = httr::authenticate(username, password)
-      log_txt = paste0("Tried to connect to [", host, "] with credentials.\nTried to autheticate user: ", username)
-  } else {
-	  url <- paste0(host, ndex.conf$serverStatus[[apiversion]]$url)
-      log_txt = paste0("Tried to check the server status of [", host, "]")
-  }
+  url <- paste0(host, apiConfig$api$serverStatus$url)
+  log_txt = paste0("ndex.connect: Tried to check the server status of [", host, "]")
+
   ##Try to connect to the server; throws error if something went wrong
   response = ndex.helper.httpResponseHandler(httr::GET(url=url, config=auth_param), 
-		  								 log_txt, 
-										 verbose)
-  if(verbose) message(paste("ndex.connect: Server response: ", response))							 
+                                             log_txt, 
+                                             verbose)
+  if(verbose) message(paste("ndex.connect: Server response: ", response))
+  
+  ##Checkt the provided credentials
+  if (credentials){
+	  url <- paste0(host, apiConfig$api$user$authenticate$url)
+	  auth_param = httr::authenticate(username, password)
+    log_txt = paste0("ndex.connect: Tried to autheticate user: ", username)
+    response = ndex.helper.httpResponseHandler(httr::GET(url=url, config=auth_param), 
+                                               log_txt, 
+                                               verbose)
+    if(verbose) message(paste("ndex.connect: Server response: ", response))	
+  }
+						 
   
   ##Create ndexcon object
-  ndexcon = list(anonymous=TRUE, host=host, apiversion=apiversion, verbose=verbose)
+  ndexcon = list(anonymous=TRUE, host=host, apiConfig=apiConfig, verbose=verbose)
   if(credentials) {
     #ndexcon = list(anon=FALSE, credentials=credentials, current.user= auth_response$accountName, curl.opts=ndex.opts, host=host, apiversion=apiversion, verbose=verbose)
     ndexcon$anonymous = F

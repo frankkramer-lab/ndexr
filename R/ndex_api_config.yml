@@ -1,3 +1,4 @@
+defaultVersion: "Version_2.0"
 Version_2.0:
   version: "2.0"
   defaults:
@@ -19,7 +20,7 @@ Version_2.0:
     key: "#KEY#"
     value: "#VALUE#"
     type: "#TYPE#"
-  url:
+  api:
     serverStatus:
       description: "Get Server Status"
       url: "/admin/status"
@@ -27,7 +28,7 @@ Version_2.0:
     user:
       authenticate:
         description: "Authenticate a User"
-        url: "/user?valid: true"
+        url: "/user?valid=true"
         method: "GET"
     network:
       create:
@@ -178,7 +179,7 @@ Version_1.3:
     key: "#KEY#"
     value: "#VALUE#"
     type: "#TYPE#"
-  url:
+  api:
     serverStatus:
       description: "Get Server Status"
       url: "/admin/status"
