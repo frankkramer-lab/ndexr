@@ -4,14 +4,16 @@
 \alias{ndex_rest_PUT}
 \title{Generic PUT query to API}
 \usage{
-ndex_rest_PUT(ndexcon, route, data, raw = FALSE)
+ndex_rest_PUT(ndexcon, route, data, multipart = FALSE, raw = FALSE)
 }
 \arguments{
-\item{ndexcon}{object of class NDEXConnection}
+\item{ndexcon}{object of class NDEXConnection \code{\link{ndex.connect}}}
 
 \item{route}{Character (route to specific REST query)}
 
 \item{data}{Whatever data to be supplied with query. Should be valid JSON}
+
+\item{multipart}{Whatever data to be supplied with query. Should be valid JSON}
 
 \item{raw}{Specifies if server response should be returned in raw, or if jsonlite::fromJSON is called first. Defaults to FALSE.}
 }
@@ -27,9 +29,14 @@ Making sure the route is well-formed is the job of calling function
 Making sure the data is well-formed is also the job of calling function
 }
 \examples{
-##TBD
+\dontrun{
+ndexcon = ndex.connect(verbose=T)
+ndex_rest_PUT(ndexcon, "/networks/api", data)
+ndex_rest_PUT(ndexcon, "/networks/api", data, raw=T)
+ndex_rest_PUT(ndexcon, "/networks/api", list(some=data, other=data2), multipart=T)
+}
 }
 \seealso{
-\code{\link{ndex_rest_GET}},  \code{\link{ndex_rest_POST}},  \code{\link{ndex_rest_PUT}}
+\code{\link{ndex_rest_GET}},  \code{\link{ndex_rest_POST}},  \code{\link{ndex_rest_PUT}} and \code{\link{ndex_rest_DELETE}}
 }
 

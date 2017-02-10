@@ -2,7 +2,7 @@
 % Please edit documentation in R/ndex_networks_simple_operations.r
 \name{ndex.create.network}
 \alias{ndex.create.network}
-\title{Create a Network from CX data}
+\title{Create a Network at a server from RCX data}
 \usage{
 ndex.create.network(ndexcon, rcx)
 }
@@ -12,14 +12,20 @@ ndex.create.network(ndexcon, rcx)
 \item{rcx}{\code{\link{RCX}} object}
 }
 \value{
-\code{\link{RCX}} object
+UUID of the newly created network
 }
 \description{
-This method creates a new network on the NDEx server.
+Create a Network at a server from RCX data
+}
+\details{
+This method creates a new network on the NDEx server from the given RCX object
+}
+\note{
 Compatible to NDEx server version 1.3 and 2.0
 }
 \section{REST query}{
 
-POST : /network/asCX
+POST (multipart/form-data): ndex.api.config$api$network$create$url
+data: CXNetworkStream = data
 }
 

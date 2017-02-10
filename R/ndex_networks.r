@@ -40,8 +40,16 @@
 #' ndexcon = ndex.connect(verbose=T)
 #' pws1 = ndex.find.networks(ndexcon1,"p53") }
 #' @export
-ndex.find.networks <- function(ndexcon, searchString="", accountName, start=0, size=100){
-
+ndex.find.networks <- function(ndexcon, searchString="", accountName, start='apiConf$defaults$start', size='apiConf$defaults$size'){
+  
+  if (missing(start)){
+    start = ndexcon$apiConfig$defaults$start
+  }
+  
+  if (missing(size)){
+    size = ndexcon$apiConfig$defaults$size
+  }
+  
   ##Form JSON to post
   query = list(searchString=searchString)
   if (!missing(accountName)){
@@ -53,14 +61,8 @@ ndex.find.networks <- function(ndexcon, searchString="", accountName, start=0, s
   ## ToDo: somehow the 1.3 api changed?! old version:
   ## route <- sprintf("/network/search/%s/%s", start, size)
   ## now somehow it changed to "http://public.ndexbio.org/rest/network/textsearch/0/1000" (from Chrome, 28.Nov.2016)
-  api = ndex.conf$search$network$search 
-  if(ndexcon$apiversion=='2.0'){
-    route <- ndex.helper.UrlAddParams(api$'2.0'$url, c('start','size'), c(start,size))
-  }else{
-    route <- api$'1.3'$url
-    route <- gsub(ndex.conf$replaceables$start,start, route)
-    route <- gsub(ndex.conf$replaceables$size, size, route)
-  }
+  api = ndexcon$apiConfig$api$search$network$search
+  route <- ndex.helper.encodeParams(api$url, api$params, c(start,size))
   
   
   ##Get a list of NetworkSummary objects

@@ -4,8 +4,8 @@
 \alias{ndex.find.networks}
 \title{Search networks in NDEx (by description)}
 \usage{
-ndex.find.networks(ndexcon, searchString = "", accountName, start = 0,
-  size = 100)
+ndex.find.networks(ndexcon, searchString = "", accountName,
+  start = "apiConf$defaults$start", size = "apiConf$defaults$size")
 }
 \arguments{
 \item{ndexcon}{object of class NDEXConnection}

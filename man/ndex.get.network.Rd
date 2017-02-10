@@ -22,11 +22,13 @@ Uses getEdges (this procedure will return complete network with all elements)
 Nodes use primary ID of the base term ('represents' element)
 Edges use primary ID of the base term ('predicate', or 'p' element)
 Mapping table for the nodes is retrieved ('alias' and 'related' terms) to facilitate conversions/data mapping
+}
+\note{
 Compatible to NDEx server version 1.3 and 2.0
 }
 \section{REST query}{
 
-This function runs GET query /network/{networkUUID}/asCX  and returns CX network object which is parsed into an RCX object
+GET: ndex.api.config$api$network$get
 }
 \examples{
 \dontrun{

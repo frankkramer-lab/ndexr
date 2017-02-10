@@ -212,8 +212,16 @@ rcx.toJSON <- function(rcx, verbose = FALSE, pretty = FALSE){
     return(NULL)
   }
   
+  ## numberVerification has to be 2^48 = 281,474,976,710,655
+  rcx$numberVerification = data.frame(longNumber=281474976710655)
   jsonCol = c()
-  for(aspect in names(rcx)){
+  ## numberVerifiction has to be first!!
+  ## metaData has to be second!!
+  rcxNames = names(rcx)
+  rcxNames = rcxNames[rcxNames!="numberVerification"]
+  rcxNames = rcxNames[rcxNames!="metaData"]
+  rcxNames = c("numberVerification", "metaData", rcxNames)
+  for(aspect in rcxNames){
     ## if any of the aspects has a datatype ('d') property, at least one of the datatypes is not of 'string' (default datatype).
     ## this means, the corresponding values ('v') have to be wrapped in arrays, if they are defined as kind of list (e.g. 'list_of_string', 'list_of_integer',...)
     if(('v' %in% names(rcx[[aspect]]))&&('d' %in% names(rcx[[aspect]]))){
@@ -274,6 +282,13 @@ rcx.asNewNetwork = function(rcx){
 ## below this line everything is in developement!
 ## Do not use anything from below!
 ####################################################
+
+# ndex cx reqirements:
+# number verification at first position!
+# metadata at second position
+# number verification has a special calculated value! But how?
+# a status object/aspect is needed
+
 
 
 #' Updating the meta-data of an RCX object

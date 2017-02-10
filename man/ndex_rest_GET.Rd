@@ -7,7 +7,7 @@
 ndex_rest_GET(ndexcon, route, raw = FALSE)
 }
 \arguments{
-\item{ndexcon}{object of class NDEXConnection}
+\item{ndexcon}{object of class NDEXConnection \code{\link{ndex.connect}}}
 
 \item{route}{Character (route to specific REST query)}
 
@@ -30,6 +30,6 @@ ndex_rest_GET(ndexcon, "/networks/api")
 }
 }
 \seealso{
-\code{\link{ndex_rest_PUT}},  \code{\link{ndex_rest_POST}},  \code{\link{ndex_rest_PUT}}
+\code{\link{ndex_rest_GET}},  \code{\link{ndex_rest_POST}},  \code{\link{ndex_rest_PUT}} and \code{\link{ndex_rest_DELETE}}
 }
 

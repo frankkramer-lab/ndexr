@@ -12,21 +12,89 @@
 
 #' Adds Parameters to an url
 #' 
-#' This functions searches the public networks on an NDEx server for networks containing the supplied search string. T
-#' his search can be limited to certain accounts as well as in length.
+#' Encodes the given parameter and adds it to the url. The methods can be 'asParams', 'asPath' and 'withinURL'.
+#' The methods are chosen automatically depending on the provided parameter:
+#' if only values are provided, the values are encoded as url (e.g. "url/value1/value2/...")[encoding='asPath']
+#' if the params are unnamed and values are provided, it is encoded as params (e.g. "url?param1=value1&param2=value2&...")[encoding='asParams']
+#' if the params are named an no values are provided, it is encoded as params (e.g. "url?param1=value1&param2=value2&...")[encoding='asNamedParams']
+#' if named params and values are given, the value of params is used to replace it in the url with the corresponding value (e.g. url="abc.de/#test#/else", params=(bla='#test#') and value=('blubb') becomes to "abc.de/blubb/else")[encoding='withinURL']
 #' 
-#' @param url string
-#' @param params character vector;
-#' @param values character vector;
-#' @return URL with parameters as string
+#' @param url character
+#' @param params (named) character vector;
+#' @param values character vector (optional if params are named);
+#' @param encoding character (optional); Method to encode the parameter: 'asParams', 'asNamedParams', 'asPath', 'withinURL';
+#' @return URL with encoded parameters as character
 #' @note params and values must have the same length
 #' @examples 
 #' \dontrun{
-#' ndex.helper.UrlAddParams("http://en.wikipedia.org/w/index.php", c("title", "limit", "offset", "action"), c("Train", "5", "90", "history"))
-#' # "http://en.wikipedia.org/w/index.php?title=Train&limit=5&offset=90&action=history"
+#' url = "http://en.wikipedia.org/w/index.php"
+#' values = c("Train", "5", "90", "history")
+#' ndex.helper.encodeParams(url, values=values)
+#' #[1] "http://en.wikipedia.org/w/index.php/Train/5/90/history"
+#' 
+#' params = c("title", "limit", "offset", "action") 
+#' namedParams = c(title="Train", limit="5", offset="90", action="history")
+#' ndex.helper.encodeParams(url, params=params, values=values)
+#' ndex.helper.encodeParams(url, params, values)          ## same as above, but shorter
+#' ndex.helper.encodeParams(url, params=namedParams)      ## same as above, but with named params
+#' ndex.helper.encodeParams(url, namedParams)             ## same as above, but shorter
+#' #[1] "http://en.wikipedia.org/w/index.php?title=Train&limit=5&offset=90&action=history"
+#' 
+#' url = "http://en.wikipedia.org/w/index.php/#Train#/somethingElse/#Number#"
+#' namedParams = c(train="#Train#", someNumber="#Number#")
+#' values = c("ICE200", 12345)
+#' ndex.helper.encodeParams(url, params=namedParams, values=values)
+#' ndex.helper.encodeParams(url, namedParams, values)
+#' #[1] "http://en.wikipedia.org/w/index.php/ICE200/somethingElse/12345"
 #' }
-ndex.helper.UrlAddParams = function(url, params, values){
-	paste0(url,"?",paste(params,values, sep = '=', collapse = '&'))
+ndex.helper.encodeParams = function(url, params, values, encoding){
+  # pn=pv, v   withinurl
+  # pn=pv      asnamedparams
+  # pv, v      asparams
+  # v          aspath
+  
+  if(missing(encoding)){
+    if(missing(params)){              ## no params
+      if(missing(values)){            ## no values
+        encoding = 'url'                  ## nothing to encode!  
+      }else{                          ## with values
+        encoding = 'aspath'               ## only values are given
+      }
+    }else{                            ## with params
+      if(! is.null(names(params))){   ## params with names
+        if(missing(values)){          ## no values
+          encoding = 'asnamedparams'           ## only name-value pairs
+        }else{                        ## with values
+          encoding = 'withinurl'          ## name-value pairs and extra value
+        }
+      }else{                          ## params without names
+        if(missing(values)){          ## no values
+          encoding = 'url'           ## only params; nothing to encode!
+        }else{                        ## with values
+          encoding = 'asparams'          ## param-value pairs
+        }
+      }
+    }
+  }
+  
+  result = ''
+	if(tolower(encoding)=='asparams') {
+	  result = paste0(url,"?",paste(params,values, sep = '=', collapse = '&'))
+	}else if(tolower(encoding)=='asnamedparams') {
+	  result = paste0(url,"?",paste(names(params),params, sep = '=', collapse = '&'))
+	}else if(tolower(encoding)=='withinurl') {
+	  result = url
+	  paramNames = names(params)
+	  names(params) = NULL
+	  for(i in 1:length(params)) {
+	    result = gsub(params[i],values[i], result)
+	  }
+	}else if(tolower(encoding)=='aspath') {
+	  result = paste0(url,"/",paste0(values, collapse = '/'))
+	}else{
+	  result = url
+	}
+	return(result)
 }
 
 
@@ -63,7 +131,7 @@ ndex.helper.httpResponseHandler <- function(response, description, verbose=F){
 		} else if(response$status_code == 404){   ## Not found error: (404) Page Not Found
 			stop(paste(description, "\n\tPage not found! (404)\n\tURL: [",response$url,"]"))
 		} else if(response$status_code == 500){   ## Server error: (500) Internal Server Error
-			error_content = content(response)
+			error_content = httr::content(response)
 			stop(paste(description, "Some internal server error occurred (500):", '\n[errorCode]', error_content$errorCode, '\n[message]', error_content$message, '\n[stackTrace]', error_content$stackTrace, '\n[timeStamp]', error_content$timeStamp, '', sep='\n'))
 		} else {   ## Other status
 			if(verbose) message(description, "\nServer is responding with unknown status code [",response$status_code, "]", sep='')

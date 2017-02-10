@@ -4,7 +4,7 @@
 \alias{ndex.delete.network}
 \title{Delete a network}
 \usage{
-ndex.delete.network(ndexcon, network_id)
+ndex.delete.network(ndexcon, nuuid)
 }
 \arguments{
 \item{ndexcon}{object of class NDEXConnection}

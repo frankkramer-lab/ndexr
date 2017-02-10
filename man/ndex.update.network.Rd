@@ -4,24 +4,27 @@
 \alias{ndex.update.network}
 \title{Update an Entire Network as CX}
 \usage{
-ndex.update.network(ndexcon, rcx, network_id = NULL)
+ndex.update.network(ndexcon, rcx, nuuid)
 }
 \arguments{
 \item{ndexcon}{object of class NDEXConnection}
 
 \item{rcx}{\code{\link{RCX}} object}
 
-\item{network_id}{UUID of the network}
+\item{nuuid}{UUID of the network}
 }
 \value{
-\code{\link{RCX}} object
+UUID of the updated network
 }
 \description{
-PUT : /network/asCX
-This method creates a new network on the NDEx server.
+This method updates/replaces a existing network on the NDEx server with new content.
+}
+\details{
+This method updates a network on the NDEx server with new content from the given RCX object
 }
 \section{REST query}{
 
-POST : /network/asCX
+PUT (multipart/form-data): ndex.api.config$api$network$update$url
+data: CXNetworkStream = data
 }
 

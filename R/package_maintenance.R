@@ -74,7 +74,11 @@ listToRCode = function(obj, indent='\t', indentShift=''){
 		if('list' %in% class(obj[[n]])){
 			txts = c(txts, paste0(newIndent, n, '=', listToRCode(obj[[n]], indent = indent, indentShift = newIndent)))
 		}else if('character' %in% class(obj[[n]])){
-			txts = c(txts, paste0(newIndent, n, '="', obj[[n]],'"'))
+		  if(length(obj[[n]])>1){
+		    txts = c(txts, paste0(newIndent, n, '= c("', paste0(obj[[n]], collapse = '", "'),'")'))
+		  }else{
+		    txts = c(txts, paste0(newIndent, n, '="', obj[[n]],'"'))
+		  }
 		}else if('numeric' %in% class(obj[[n]])){
 		  txts = c(txts, paste0(newIndent, n, '=', obj[[n]]))
 		}
@@ -114,7 +118,14 @@ listToYaml = function(obj, indent='  ', indentShift=''){
     if('list' %in% class(obj[[n]])){
       txts = c(txts, paste0(indentShift, n, ':\n', listToYaml(obj[[n]], indent = indent, indentShift = paste0(indentShift, indent))))
     }else if('character' %in% class(obj[[n]])){
-      txts = c(txts, paste0(indentShift, n, ': "', obj[[n]],'"'))
+      if(length(obj[[n]])>1){
+        txts = c(txts, paste0(indentShift, n, ': '))
+        for(li in obj[[n]]){
+          txts = c(txts, paste0(indentShift, indent, n, '- "', obj[[n]],'"'))
+        }
+      }else{
+        txts = c(txts, paste0(indentShift, n, ': "', obj[[n]],'"'))
+      }
     }else if('numeric' %in% class(obj[[n]])){
       txts = c(txts, paste0(indentShift, n, ': ', obj[[n]]))
     }
@@ -129,18 +140,16 @@ listToYaml = function(obj, indent='  ', indentShift=''){
 #' only for package maintenance!
 #'
 #' @param yamlFile character; input file in YAML format
-#' @param rFile character; output file for the R script
-#' @param fileHeader character (optional); text that will be put in front of the R script
+#' @param rScriptFile character; output file for the R script
+#' @param defaultHeader character (optional); text that will be put in front of the R script
 #'
 #' @examples
-#' \dontrun{readYamlToRFile('R/ndex_api_config.yml', 'R/ndex_api_config.r', ndex.api.config.header)}
-readYamlToRFile = function(yamlFile, rFile, fileHeader = ''){
-	yamlObj = yaml::yaml.load_file(yamlFile)
-	rCodeTxt = paste0(fileHeader, listToRCode(yamlObj))
-	outFile = file(rFile)
-	writeLines(rCodeTxt, outFile)
-	close(outFile)
+#' \dontrun{updateConfigFromYaml('R/ndex_api_config.yml', 'R/ndex_api_config.r', ndex.api.config.header)}
+updateConfigFromYaml = function(yamlFile='R/ndex_api_config.yml', rScriptFile='R/ndex_api_config.r', defaultHeader=ndex.api.config.header){
+  yamlObj = yaml::yaml.load_file(yamlFile)
+  rCodeTxt = paste0(defaultHeader, listToRCode(yamlObj))
+  outFile = file(rScriptFile)
+  writeLines(rCodeTxt, outFile)
+  close(outFile)
 }
-
-## readYamlToRFile('R/ndex_api_config.yml', 'R/ndex_api_config.r', ndex.api.config.header)
 

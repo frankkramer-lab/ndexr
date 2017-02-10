@@ -29,6 +29,8 @@ ndex.api.config = list(
 		version="2.0",
 		defaults=list(
 			description="Default parameters",
+			start="0",
+			size="100",
 			connection=list(
 				description="URL of the NDEx server",
 				host="www.ndexbio.org",
@@ -69,23 +71,35 @@ ndex.api.config = list(
 				update=list(
 					description="Update a Network",
 					url="/network/#NETWORKID#",
-					method="PUT"
+					method="PUT",
+					params=list(
+						networkUUID="#NETWORKID#"
+					)
 				),
 				delete=list(
 					description="Delete a Network",
 					url="/network/#NETWORKID#",
-					method="DELETE"
+					method="DELETE",
+					params=list(
+						networkUUID="#NETWORKID#"
+					)
 				),
 				get=list(
 					description="Get Complete Network in CX format",
 					url="/network/#NETWORKID#",
-					method="GET"
+					method="GET",
+					params=list(
+						networkUUID="#NETWORKID#"
+					)
 				),
 				summary=list(
 					get=list(
 						description="Get Network Summary",
 						url="/network/#NETWORKID#/summary",
-						method="GET"
+						method="GET",
+						params=list(
+							networkUUID="#NETWORKID#"
+						)
 					)
 				),
 				sample=list(
@@ -215,10 +229,7 @@ ndex.api.config = list(
 						description="Search network",
 						url="/search/network",
 						method="POST",
-						params=list(
-							start="#START#",
-							size="#SIZE#"
-						)
+						params= c("start", "size")
 					),
 					neighborhood=list(
 						description="Query Network As CX",
@@ -236,6 +247,8 @@ ndex.api.config = list(
 		version="1.3",
 		defaults=list(
 			description="Default parameters",
+			start="0",
+			size="100",
 			connection=list(
 				description="URL of the NDEx server",
 				host="www.ndexbio.org",
@@ -276,23 +289,35 @@ ndex.api.config = list(
 				update=list(
 					description="Update a Network",
 					url="/network/asCX/#NETWORKID#",
-					method="PUT"
+					method="PUT",
+					params=list(
+						networkUUID="#NETWORKID#"
+					)
 				),
 				delete=list(
 					description="Delete a Network",
 					url="/network/#NETWORKID#",
-					method="DELETE"
+					method="DELETE",
+					params=list(
+						networkUUID="#NETWORKID#"
+					)
 				),
 				get=list(
 					description="Get Complete Network in CX format",
 					url="/network/#NETWORKID#/asCX",
-					method="GET"
+					method="GET",
+					params=list(
+						networkUUID="#NETWORKID#"
+					)
 				),
 				summary=list(
 					get=list(
 						description="Get Network Summary",
-						url="/network/#NETWORKID#/summary",
-						method="GET"
+						url="/network/#NETWORKID#",
+						method="GET",
+						params=list(
+							networkUUID="#NETWORKID#"
+						)
 					)
 				),
 				aspect=list(

@@ -3,8 +3,8 @@ Version_2.0:
   version: "2.0"
   defaults:
     description: "Default parameters"
-    start: 0
-    size: 100
+    start: "0"
+    size: "100"
     connection:
       description: "URL of the NDEx server"
       host: "www.ndexbio.org"
@@ -39,19 +39,27 @@ Version_2.0:
         description: "Update a Network"
         url: "/network/#NETWORKID#"
         method: "PUT"
+        params:
+          networkUUID: "#NETWORKID#"
       delete:
         description: "Delete a Network"
         url: "/network/#NETWORKID#"
         method: "DELETE"
+        params:
+          networkUUID: "#NETWORKID#"
       get:
         description: "Get Complete Network in CX format"
         url: "/network/#NETWORKID#"
         method: "GET"
+        params:
+          networkUUID: "#NETWORKID#"
       summary:
         get:
           description: "Get Network Summary"
           url: "/network/#NETWORKID#/summary"
           method: "GET"
+          params:
+            networkUUID: "#NETWORKID#"
       sample:
         set:
           description: "Get Network Summary"
@@ -150,8 +158,8 @@ Version_2.0:
           url: "/search/network"
           method: "POST"
           params:
-            start: "#START#"
-            size: "#SIZE#"
+            - start
+            - size
         neighborhood:
           description: "Query Network As CX"
           url: "/search/network/#NETWORKID#/query"
@@ -162,8 +170,8 @@ Version_1.3:
   version: "1.3"
   defaults:
     description: "Default parameters"
-    start: 0
-    size: 100
+    start: "0"
+    size: "100"
     connection:
       description: "URL of the NDEx server"
       host: "www.ndexbio.org"
@@ -198,19 +206,27 @@ Version_1.3:
         description: "Update a Network"
         url: "/network/asCX/#NETWORKID#"
         method: "PUT"
+        params:
+          networkUUID: "#NETWORKID#"
       delete:
         description: "Delete a Network"
         url: "/network/#NETWORKID#"
         method: "DELETE"
+        params:
+          networkUUID: "#NETWORKID#"
       get:
         description: "Get Complete Network in CX format"
         url: "/network/#NETWORKID#/asCX"
         method: "GET"
+        params:
+          networkUUID: "#NETWORKID#"
       summary:
         get:
           description: "Get Network Summary"
-          url: "/network/#NETWORKID#/summary"
+          url: "/network/#NETWORKID#"
           method: "GET"
+          params:
+            networkUUID: "#NETWORKID#"
       aspect:
         getMetaData:
           description: "Get Network CX Metadata Collection"

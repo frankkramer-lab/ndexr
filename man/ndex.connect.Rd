@@ -31,9 +31,9 @@ If username and password are missing an anonymous connection is created, which a
 ndexcon = ndex.connect(verbose=T)   ## same as above
 ndexcon = ndex.connect('user','password')   ## log in with credentials
 ndexcon = ndex.connect(host='localhost:8765')   ## running some NDEx server locally
-ndexcon = ndex.connect(apiConfig=ndex.api.configig$Version2.0)   ## manually change the api and connection configuration}
+ndexcon = ndex.connect(apiConfig=ndex.api.config$Version2.0)   ## manually change the api and connection configuration}
 }
 \seealso{
-\code{\link{ndex.api.config}}, \code{\link{readYamlToRFile}}
+\code{\link{ndex.api.config}}, \code{\link{updateConfigFromYaml}}
 }
 
