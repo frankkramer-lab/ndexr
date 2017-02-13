@@ -68,7 +68,8 @@ ndex.connect <- function(username, password, host = "apiConfig$defaults$connecti
   ##Setup server connection, with and without credentials
   ##Check if server is available
   auth_param = NULL
-  url <- paste0(host, apiConfig$api$serverStatus$url)
+  api = ndex.helper.getApi(list(apiConfig=apiConfig), 'serverStatus')
+  url <- paste0(host, api$url)
   log_txt = paste0("ndex.connect: Tried to check the server status of [", host, "]")
 
   ##Try to connect to the server; throws error if something went wrong
@@ -79,7 +80,8 @@ ndex.connect <- function(username, password, host = "apiConfig$defaults$connecti
   
   ##Checkt the provided credentials
   if (credentials){
-	  url <- paste0(host, apiConfig$api$user$authenticate$url)
+	  api = ndex.helper.getApi(list(apiConfig=apiConfig), 'user$authenticate')
+	  url <- paste0(host, api$url)
 	  auth_param = httr::authenticate(username, password)
     log_txt = paste0("ndex.connect: Tried to autheticate user: ", username)
     response = ndex.helper.httpResponseHandler(httr::GET(url=url, config=auth_param), 
@@ -92,7 +94,6 @@ ndex.connect <- function(username, password, host = "apiConfig$defaults$connecti
   ##Create ndexcon object
   ndexcon = list(anonymous=TRUE, host=host, apiConfig=apiConfig, verbose=verbose)
   if(credentials) {
-    #ndexcon = list(anon=FALSE, credentials=credentials, current.user= auth_response$accountName, curl.opts=ndex.opts, host=host, apiversion=apiversion, verbose=verbose)
     ndexcon$anonymous = F
     ndexcon$username = username
     ndexcon$password = password

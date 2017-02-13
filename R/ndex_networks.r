@@ -61,7 +61,7 @@ ndex.find.networks <- function(ndexcon, searchString="", accountName, start='api
   ## ToDo: somehow the 1.3 api changed?! old version:
   ## route <- sprintf("/network/search/%s/%s", start, size)
   ## now somehow it changed to "http://public.ndexbio.org/rest/network/textsearch/0/1000" (from Chrome, 28.Nov.2016)
-  api = ndexcon$apiConfig$api$search$network$search
+  api = ndex.helper.getApi(ndexcon, 'search$network$search')
   route <- ndex.helper.encodeParams(api$url, api$params, c(start,size))
   
   

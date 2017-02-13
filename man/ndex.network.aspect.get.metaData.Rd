@@ -4,7 +4,7 @@
 \alias{ndex.network.aspect.get.metaData}
 \title{Get the Metadata Associated with a Network UUID}
 \usage{
-ndex.network.aspect.get.metaData(ndexcon, network_id)
+ndex.network.aspect.get.metaData(ndexcon, network_id, aspect)
 }
 \arguments{
 \item{ndexcon}{object of class NDEXConnection}
@@ -12,14 +12,17 @@ ndex.network.aspect.get.metaData(ndexcon, network_id)
 \item{network_id}{unique ID of the network}
 }
 \value{
-data.frame listing network metadata: ID, name, whether it is public, edge and node count; source and format of network
+metadata for an aspect as list: consistencyGroup, elementCount, lastUpdate, data, name, properties, version and idCounter
 }
 \description{
 This function retrieves the metadata associated with the supplied network UUID.
 }
+\note{
+Compatible to NDEx server version 2.0
+}
 \section{REST query}{
 
-This function runs GET query /network/{networkId}/metadata    and returns the network metadata as a data.frame
+GET: ndex.api.config$api$network$aspect$getMetaDataByName
 }
 \examples{
 \dontrun{

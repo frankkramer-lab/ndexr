@@ -36,7 +36,7 @@
 #' ndex.network.get.summary(ndexcon,pws[1,"externalId"]) }
 #' @export
 ndex.network.get.summary <- function(ndexcon, network_id){
-  api = ndexcon$apiConfig$api$network$summary$get
+  api = ndex.helper.getApi(ndexcon, 'network$summary$get')
   route <- ndex.helper.encodeParams(api$url, api$params, network_id)
   
   response = ndex_rest_GET(ndexcon, route)
@@ -63,7 +63,7 @@ ndex.network.get.summary <- function(ndexcon, network_id){
 #' rcx = ndex.get.network(ndexcon,pws[1,"externalId"]) }
 #' @export
 ndex.get.network <- function(ndexcon, network_id){
-  api = ndexcon$apiConfig$api$network$get
+  api = ndex.helper.getApi(ndexcon, 'network$get')
   route <- ndex.helper.encodeParams(api$url, api$params, network_id)
   
   response = ndex_rest_GET(ndexcon, route, raw=T)
@@ -84,7 +84,8 @@ ndex.get.network <- function(ndexcon, network_id){
 #' @note Compatible to NDEx server version 1.3 and 2.0
 #' @export
 ndex.create.network <- function(ndexcon, rcx){
-  route <- ndexcon$apiConfig$api$network$create$url
+  api = ndex.helper.getApi(ndexcon, 'network$create')
+  route <- api$url
   
   tmpFile = tempfile()
   writeLines(rcx.toJSON(rcx, pretty = T), tmpFile)
@@ -118,8 +119,8 @@ ndex.update.network <- function(ndexcon, rcx, nuuid){
 		}
 	  nuuid = rcx$ndexStatus$externalId
 	}
-	
-	api <- ndexcon$apiConfig$api$network$update
+		
+	api = ndex.helper.getApi(ndexcon, 'network$update')
 	route <- ndex.helper.encodeParams(api$url, api$params, nuuid)
 	
 	tmpFile = tempfile()
@@ -137,7 +138,7 @@ ndex.update.network <- function(ndexcon, rcx, nuuid){
 #' @section REST query:
 #' @export
 ndex.delete.network <- function(ndexcon, nuuid){
-  api <- ndexcon$apiConfig$api$network$delete
+  api = ndex.helper.getApi(ndexcon, 'network$delete')
   route <- ndex.helper.encodeParams(api$url, api$params, nuuid)
   response = ndex_rest_DELETE(ndexcon, route, raw=T)
 	return(NULL)

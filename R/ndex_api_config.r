@@ -118,12 +118,19 @@ ndex.api.config = list(
 					getMetaData=list(
 						description="Get Network CX Metadata Collection",
 						url="/network/#NETWORKID#/aspect",
-						method="GET"
+						method="GET",
+						params=list(
+							networkUUID="#NETWORKID#"
+						)
 					),
 					getMetaDataByName=list(
 						description="Get Network Aspect Metadata",
 						url="/network/#NETWORKID#/aspect/#ASPECT#/metadata",
-						method="GET"
+						method="GET",
+						params=list(
+							networkUUID="#NETWORKID#",
+							aspect="#ASPECT#"
+						)
 					),
 					get=list(
 						description="Get a Network Aspect As CX",
@@ -324,13 +331,18 @@ ndex.api.config = list(
 					getMetaData=list(
 						description="Get Network CX Metadata Collection",
 						url="/network/#NETWORKID#/metadata",
-						method="GET"
+						method="GET",
+						params=list(
+							networkUUID="#NETWORKID#"
+						)
 					),
 					get=list(
 						description="Get a Network Aspect As CX",
 						url="/network/#NETWORKID#/aspect/#ASPECT#/#SIZE#",
 						method="GET",
 						params=list(
+							networkUUID="#NETWORKID#",
+							aspect="#ASPECT#",
 							size="#SIZE#"
 						)
 					)

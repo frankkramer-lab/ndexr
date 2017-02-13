@@ -26,3 +26,10 @@ test_that('encode parameters in urls', {
   
   expect_identical(ndex.helper.encodeParams(url), url, info='No params or values provided, so return the url')
 })
+
+test_that('Get the right api object', {
+  con = ndex.connect()
+  expect_identical(ndex.helper.getApi(con,'serverStatus'), con$apiConfig$api$serverStatus, info='The server status should work, else establishing an connection should have thrown an error!')
+  expect_identical(ndex.helper.getApi(con,'network$summary$get'), con$apiConfig$api$network$summary$get, info='Testing some more complex query..')
+  expect_error(ndex.helper.getApi(con,'network$aspect$create'), con$apiConfig$api$network$aspect$create, info='There should be no create function for aspects!!')
+})

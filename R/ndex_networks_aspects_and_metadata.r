@@ -21,9 +21,27 @@
 
 
 #' Get Network CX Metadata Collection
+#' 
+#' This function retrieves the (aspect) meta-data of the network identified by the supplied network UUID string.
+#' 
+#' @param ndexcon object of class NDEXConnection
+#' @param network_id unique ID of the network
+#' @return metadata as list: consistencyGroup, elementCount, lastUpdate, name, properties, version and idCounter
+#' @section REST query:
+#' GET: ndex.api.config$api$network$aspect$getMetaData
+#' @note Compatible to NDEx server version 1.3 and 2.0, but doesn't work for version 1.3
+#' @examples 
+#' \dontrun{
+#' ndexcon = ndex.connect(verbose=T)
+#' pws = ndex.find.networks(ndexcon,"p53")
+#' ndex.network.get.metadata(ndexcon,pws[1,"externalId"]) }
 #' @export
-ndex.network.get.aspects <- function(ndexcon, network_id){	#!!ToDo: Implement!
+ndex.network.get.metadata <- function(ndexcon, network_id){
+	api = ndex.helper.getApi(ndexcon, 'network$aspect$getMetaData')
+	route <- ndex.helper.encodeParams(api$url, api$params, network_id)
 	
+	response = ndex_rest_GET(ndexcon, route)
+	return(response)
 }
 
 
@@ -33,18 +51,21 @@ ndex.network.get.aspects <- function(ndexcon, network_id){	#!!ToDo: Implement!
 #' 
 #' @param ndexcon object of class NDEXConnection
 #' @param network_id unique ID of the network
-#' @return data.frame listing network metadata: ID, name, whether it is public, edge and node count; source and format of network
+#' @return metadata for an aspect as list: consistencyGroup, elementCount, lastUpdate, data, name, properties, version and idCounter
 #' @section REST query:
-#' This function runs GET query /network/{networkId}/metadata    and returns the network metadata as a data.frame
+#' GET: ndex.api.config$api$network$aspect$getMetaDataByName
+#' @note Compatible to NDEx server version 2.0
 #' @examples 
 #' \dontrun{
 #' ndexcon = ndex.connect(verbose=T)
 #' pws = ndex.find.networks(ndexcon,"p53")
 #' ndex.network.aspect.get.metaData(ndexcon,pws[1,"externalId"]) }
 #' @export
-ndex.network.aspect.get.metaData <- function(ndexcon, network_id){	#!!ToDo: Update and implement!
-	route <- paste0("/network/", network_id,"/metadata")
-	response <- ndex_rest_GET(ndexcon, route)
+ndex.network.aspect.get.metaData <- function(ndexcon, network_id, aspect){
+	api = ndex.helper.getApi(ndexcon, 'network$aspect$getMetaDataByName')
+	route <- ndex.helper.encodeParams(api$url, api$params, c(network_id, aspect))
+	
+	response = ndex_rest_GET(ndexcon, route)
 	return(response)
 }
 

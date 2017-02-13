@@ -139,3 +139,18 @@ ndex.helper.httpResponseHandler <- function(response, description, verbose=F){
 	}
 	return(response)
 }
+
+ndex.helper.getApi <- function(ndexcon, apiPath){
+	if(is.null(ndexcon)||is.null(ndexcon$apiConfig)||is.null(ndexcon$apiConfig$api)){
+		stop('API: No or no valid API definition found within the ndex.connection!')
+	}
+	version = ndexcon$apiConfig$version
+	cur = ndexcon$apiConfig$api
+	curPath = c()
+	for(word in unlist(strsplit(apiPath,'$', fixed = T))){
+		curPath = c(curPath, word)
+		cur = cur[[word]]
+		if(is.null(cur)) stop('API: The method "',paste0(curPath, collapse='->'), ' is not defined for this API (version: ', version, ')')
+	}
+	return(cur)
+}

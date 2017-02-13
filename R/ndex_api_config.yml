@@ -74,10 +74,15 @@ Version_2.0:
           description: "Get Network CX Metadata Collection"
           url: "/network/#NETWORKID#/aspect"
           method: "GET"
+          params:
+            networkUUID: "#NETWORKID#"
         getMetaDataByName:
           description: "Get Network Aspect Metadata"
           url: "/network/#NETWORKID#/aspect/#ASPECT#/metadata"
           method: "GET"
+          params:
+            networkUUID: "#NETWORKID#"
+            aspect: "#ASPECT#"
         get:
           description: "Get a Network Aspect As CX"
           url: "/network/#NETWORKID#/aspect/#ASPECT#"
@@ -232,11 +237,15 @@ Version_1.3:
           description: "Get Network CX Metadata Collection"
           url: "/network/#NETWORKID#/metadata"
           method: "GET"
+          params:
+            networkUUID: "#NETWORKID#"
         get:
           description: "Get a Network Aspect As CX"
           url: "/network/#NETWORKID#/aspect/#ASPECT#/#SIZE#"
           method: "GET"
           params:
+            networkUUID: "#NETWORKID#"
+            aspect: "#ASPECT#"
             size: "#SIZE#"
       permission:
         get:
