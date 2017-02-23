@@ -9,12 +9,25 @@ ndex.delete.network(ndexcon, nuuid)
 \arguments{
 \item{ndexcon}{object of class NDEXConnection}
 
-\item{network_id}{UUID of the network}
+\item{nuuid}{unique ID of the network}
+}
+\value{
+NULL on success; Error else
 }
 \description{
 Delete a network
 }
+\note{
+Compatible to NDEx server version 1.3 and 2.0
+}
 \section{REST query}{
 
+DELETE: ndex.api.config$api$network$delete
+}
+\examples{
+\dontrun{
+ndexcon = ndex.connect('MyAccountName', 'MyPassword', verbose=T)
+pws = ndex.find.networks(ndexcon,"SomeNetwork", accountName='MyAccountName')
+response = ndex.delete.network(ndexcon, pws[1,"externalId")}
 }
 

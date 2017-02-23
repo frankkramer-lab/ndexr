@@ -33,22 +33,17 @@
 #' @param size integer (optional); specifies the number of data items in each page. The default value is 100
 #' @return Data frame with network information: ID, name, whether it is public, edge and node count; source and format of network. NULL if no networks are found.
 #' @section REST query:
-#' This function runs POST query /network/search/{start}/{size}    returns list of NetworkSummary
+#' GET: ndex.api.config$api$search$network$search    returns list of NetworkSummary
 #' @note Search strings may be structured
 #' @examples 
 #' \dontrun{
 #' ndexcon = ndex.connect(verbose=T)
 #' pws1 = ndex.find.networks(ndexcon1,"p53") }
 #' @export
-ndex.find.networks <- function(ndexcon, searchString="", accountName, start='apiConf$defaults$start', size='apiConf$defaults$size'){
+ndex.find.networks <- function(ndexcon, searchString="", accountName, start, size){
   
-  if (missing(start)){
-    start = ndexcon$apiConfig$defaults$start
-  }
-  
-  if (missing(size)){
-    size = ndexcon$apiConfig$defaults$size
-  }
+  if (missing(start)) start = NULL
+  if (missing(size)) size = NULL
   
   ##Form JSON to post
   query = list(searchString=searchString)
@@ -62,8 +57,7 @@ ndex.find.networks <- function(ndexcon, searchString="", accountName, start='api
   ## route <- sprintf("/network/search/%s/%s", start, size)
   ## now somehow it changed to "http://public.ndexbio.org/rest/network/textsearch/0/1000" (from Chrome, 28.Nov.2016)
   api = ndex.helper.getApi(ndexcon, 'search$network$search')
-  route <- ndex.helper.encodeParams(api$url, api$params, c(start,size))
-  
+  route <- ndex.helper.encodeParams(api$url, api$params, start=start, size=size)
   
   ##Get a list of NetworkSummary objects
   response <- ndex_rest_POST(ndexcon, route=route, data=query)

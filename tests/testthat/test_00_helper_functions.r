@@ -4,27 +4,62 @@ context('Helper funtions')
 
 
 test_that('encode parameters in urls', {
-  url = "http://en.wikipedia.org/w/index.php"
-  values = c("Train", "5", "90", "history")
-  result = "http://en.wikipedia.org/w/index.php/Train/5/90/history"
-  expect_identical(ndex.helper.encodeParams(url, values=values), result, info='Encode values as path')
-   
-  params = c("title", "limit", "offset", "action") 
-  namedParams = c(title="Train", limit="5", offset="90", action="history")
-  result = "http://en.wikipedia.org/w/index.php?title=Train&limit=5&offset=90&action=history"
-  expect_identical(ndex.helper.encodeParams(url, params=params, values=values), result, info='Encode params and values as params')
-  expect_identical(ndex.helper.encodeParams(url, params, values), result, info='Encode params and values as params')          ## same as above, but shorter
-  expect_identical(ndex.helper.encodeParams(url, params=namedParams), result, info='Encode params and values as params')      ## same as above, but with named params
-  expect_identical(ndex.helper.encodeParams(url, namedParams), result, info='Encode params and values as params')             ## same as above, but shorter
-   
-  url = "http://en.wikipedia.org/w/index.php/#Train#/somethingElse/#Number#"
-  namedParams = c(train="#Train#", someNumber="#Number#")
-  values = c("ICE200", 12345)
-  result = "http://en.wikipedia.org/w/index.php/ICE200/somethingElse/12345"
-  expect_identical(ndex.helper.encodeParams(url, params=namedParams, values=values), result, info='Replace params with values in url')
-  expect_identical(ndex.helper.encodeParams(url, namedParams, values), result, info='Replace params with values in url')
+  ## replace
+  url = "http://en.wikipedia.org/#NETWORKID#/index.php"
+  params = list(	network=list(	tag="#NETWORKID#", method="replace"))
+  values = c(network='aaaa-bb-cc-dddddd', bla='This is not used!')
+  result = "http://en.wikipedia.org/aaaa-bb-cc-dddddd/index.php"
+  expect_identical(ndex.helper.encodeParams(url, params=params, values), result, info='Encode params and values (replace)')
   
-  expect_identical(ndex.helper.encodeParams(url), url, info='No params or values provided, so return the url')
+  values = c(bla='This is not used!')
+  expect_error(ndex.helper.encodeParams(url, params=params, values), info='Encode params and (no) values (replace) -> error')
+  
+  params = list(	network=list(	tag="#NETWORKID#", method="replace", default="xxxx-xx-xx-xxxxxx"))
+  result = "http://en.wikipedia.org/xxxx-xx-xx-xxxxxx/index.php"
+  expect_identical(ndex.helper.encodeParams(url, params=params, values), result, info='Encode params and default values (replace)')
+  
+  ## parameter
+  url = "http://en.wikipedia.org/w/index.php"
+  params = list(	network=list(	tag="network", method="parameter"))
+  values = c(network='aaaa-bb-cc-dddddd', bla='This is not used!')
+  result = "http://en.wikipedia.org/w/index.php?network=aaaa-bb-cc-dddddd"
+  expect_identical(ndex.helper.encodeParams(url, params=params, values), result, info='Encode params and values (parameter)')
+  
+  values = c(bla='This is not used!')
+  expect_error(ndex.helper.encodeParams(url, params=params, values), info='Encode params and (no) values (parameter) -> error')
+  
+  params = list(	network=list(	tag="network", method="parameter", optional=TRUE))
+  expect_identical(ndex.helper.encodeParams(url, params=params, values), url, info='Encode (optional) params and (no) values (parameter)')
+  
+  params = list(	network=list(	tag="network", method="parameter", default="xxxx-xx-xx-xxxxxx"))
+  result = "http://en.wikipedia.org/w/index.php?network=xxxx-xx-xx-xxxxxx"
+  expect_identical(ndex.helper.encodeParams(url, params=params, values), result, info='Encode params and (default) values (parameter)')
+  
+  values = c(network='aaaa-bb-cc-dddddd', bla='This is not used!')
+  result = "http://en.wikipedia.org/w/index.php?network=aaaa-bb-cc-dddddd"
+  expect_identical(ndex.helper.encodeParams(url, params=params, values), result, info='Encode params and (default) values (parameter, do not use default value)')
+  
+  ## append
+  url = "http://en.wikipedia.org/w/index.php"
+  params = list(	network=list(	method="append"))
+  values = c(network='aaaa-bb-cc-dddddd', bla='This is not used!')
+  result = "http://en.wikipedia.org/w/index.php/aaaa-bb-cc-dddddd"
+  expect_identical(ndex.helper.encodeParams(url, params=params, values), result, info='Encode params and values (append)')
+  
+  values = c(bla='This is not used!')
+  expect_error(ndex.helper.encodeParams(url, params=params, values), info='Encode params and (no) values (append) -> error')
+  
+  params = list(	network=list(	method="append", optional=TRUE))
+  expect_identical(ndex.helper.encodeParams(url, params=params, values), url, info='Encode (optional) params and (no) values (append)')
+  
+  params = list(	network=list(	method="append", default="xxxx-xx-xx-xxxxxx"))
+  result = "http://en.wikipedia.org/w/index.php/xxxx-xx-xx-xxxxxx"
+  expect_identical(ndex.helper.encodeParams(url, params=params, values), result, info='Encode params and (default) values (append)')
+  
+  values = c(network='aaaa-bb-cc-dddddd', bla='This is not used!')
+  result = "http://en.wikipedia.org/w/index.php/aaaa-bb-cc-dddddd"
+  expect_identical(ndex.helper.encodeParams(url, params=params, values), result, info='Encode params and (default) values (append, do not use default value)')
+  
 })
 
 test_that('Get the right api object', {

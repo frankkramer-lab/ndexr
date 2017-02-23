@@ -4,7 +4,7 @@
 \alias{ndex.helper.encodeParams}
 \title{Adds Parameters to an url}
 \usage{
-ndex.helper.encodeParams(url, params, values, encoding)
+ndex.helper.encodeParams(url, params, ...)
 }
 \arguments{
 \item{url}{character}

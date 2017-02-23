@@ -4,12 +4,12 @@
 \alias{ndex.network.get.metadata}
 \title{Get Network CX Metadata Collection}
 \usage{
-ndex.network.get.metadata(ndexcon, network_id)
+ndex.network.get.metadata(ndexcon, nuuid)
 }
 \arguments{
 \item{ndexcon}{object of class NDEXConnection}
 
-\item{network_id}{unique ID of the network}
+\item{nuuid}{unique ID of the network}
 }
 \value{
 metadata as list: consistencyGroup, elementCount, lastUpdate, name, properties, version and idCounter
@@ -18,7 +18,7 @@ metadata as list: consistencyGroup, elementCount, lastUpdate, name, properties, 
 This function retrieves the (aspect) meta-data of the network identified by the supplied network UUID string.
 }
 \note{
-Compatible to NDEx server version 1.3 and 2.0
+Compatible to NDEx server version 1.3 and 2.0, but doesn't work for version 1.3
 }
 \section{REST query}{
 

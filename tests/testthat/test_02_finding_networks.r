@@ -32,7 +32,7 @@ test_that('Get list of networks from a server', {
     networks = ndex.find.networks(con, start=1, size=5)
     rownames(networks) = NULL
     rownames(forLater) = NULL
-    columnsToBeEqual = c("ownerUUID", "isReadOnly", "visibility", "edgeCount", "nodeCount", "uri", "version", "owner", "description", "name", "externalId","modificationTime", "creationTime")
+    columnsToBeEqual = c("ownerUUID", "isReadOnly", "visibility", "edgeCount", "nodeCount", "uri", "owner", "name", "externalId","modificationTime", "creationTime")
 
     expect_is(networks, 'data.frame', info=paste0('Checking class of found network list (start=1, size=5) using api ', apiVersion))
     expect_object_conains_names(networks, netColNames, info=paste0('Checking column names of found network list (start=1, size=5) using api ', apiVersion))

@@ -25,7 +25,7 @@
 #' This function retrieves the (aspect) meta-data of the network identified by the supplied network UUID string.
 #' 
 #' @param ndexcon object of class NDEXConnection
-#' @param network_id unique ID of the network
+#' @param nuuid unique ID of the network
 #' @return metadata as list: consistencyGroup, elementCount, lastUpdate, name, properties, version and idCounter
 #' @section REST query:
 #' GET: ndex.api.config$api$network$aspect$getMetaData
@@ -36,9 +36,9 @@
 #' pws = ndex.find.networks(ndexcon,"p53")
 #' ndex.network.get.metadata(ndexcon,pws[1,"externalId"]) }
 #' @export
-ndex.network.get.metadata <- function(ndexcon, network_id){
+ndex.network.get.metadata <- function(ndexcon, nuuid){
 	api = ndex.helper.getApi(ndexcon, 'network$aspect$getMetaData')
-	route <- ndex.helper.encodeParams(api$url, api$params, network_id)
+	route <- ndex.helper.encodeParams(api$url, api$params, network=nuuid)
 	
 	response = ndex_rest_GET(ndexcon, route)
 	return(response)
@@ -50,7 +50,7 @@ ndex.network.get.metadata <- function(ndexcon, network_id){
 #' This function retrieves the metadata associated with the supplied network UUID.
 #' 
 #' @param ndexcon object of class NDEXConnection
-#' @param network_id unique ID of the network
+#' @param nuuid unique ID of the network
 #' @return metadata for an aspect as list: consistencyGroup, elementCount, lastUpdate, data, name, properties, version and idCounter
 #' @section REST query:
 #' GET: ndex.api.config$api$network$aspect$getMetaDataByName
@@ -59,25 +59,73 @@ ndex.network.get.metadata <- function(ndexcon, network_id){
 #' \dontrun{
 #' ndexcon = ndex.connect(verbose=T)
 #' pws = ndex.find.networks(ndexcon,"p53")
-#' ndex.network.aspect.get.metaData(ndexcon,pws[1,"externalId"]) }
+#' ndex.network.aspect.get.metadata(ndexcon,pws[1,"externalId"]) }
 #' @export
-ndex.network.aspect.get.metaData <- function(ndexcon, network_id, aspect){
+ndex.network.aspect.get.metadata <- function(ndexcon, nuuid, aspect){
 	api = ndex.helper.getApi(ndexcon, 'network$aspect$getMetaDataByName')
-	route <- ndex.helper.encodeParams(api$url, api$params, c(network_id, aspect))
+	route <- ndex.helper.encodeParams(api$url, api$params, network=nuuid, aspect=aspect)
 	
 	response = ndex_rest_GET(ndexcon, route)
 	return(response)
 }
 
 #' Get a Network Aspect As CX
+#' 
+#' This function retrieves the provided aspect as CX. The result is the same as accessing an aspect of a RCX object.
+#' 
+#' @param ndexcon object of class NDEXConnection
+#' @param nuuid unique ID of the network
+#' @param aspect name of the aspect
+#' @return data.frame of the aspect data (the same as rcx[[aspectName]])
+#' @section REST query:
+#' GET: ndex.api.config$api$network$aspect$getMetaDataByName
+#' @note Compatible to NDEx server version 1.3 and 2.0, but doesn't work for version 1.3
+#' @examples 
+#' \dontrun{
+#' ndexcon = ndex.connect(verbose=T)
+#' pws = ndex.find.networks(ndexcon,"p53")
+#' aspect = ndex.network.get.aspect(ndexcon,pws[1,"externalId"], 'nodeAttributes') }
 #' @export
-ndex.network.get.aspect <- function(ndexcon, network_id){	#!!ToDo: Implement!
+ndex.network.get.aspect <- function(ndexcon, nuuid, aspect, size){
+	if(missing(size)) size = NULL
 	
+	api = ndex.helper.getApi(ndexcon, 'network$aspect$get')
+	route <- ndex.helper.encodeParams(api$url, api$params, network=nuuid, aspect=aspect, size=size)
+	
+	response = ndex_rest_GET(ndexcon, route)
+	return(response)
 }
 
 
 #' Update an Aspect of a Network
+#' 
+#' This function updates an aspect with the provided CX for the aspect.
+#' 
+#' @param ndexcon object of class NDEXConnection
+#' @param nuuid unique ID of the network
+#' @param aspectName name of the aspect
+#' @param aspectAsRCX rcx data for the aspect (rcx[[aspectName]])
+#' @return nuuid unique ID of the modified network
+#' @section REST query:
+#' PUT: ndex.api.config$api$network$aspect$update
+#' @note Compatible to NDEx server version 2.0
+#' #!!!ToDo: Error on server!
+#' @examples 
+#' \dontrun{
+#' ndexcon = ndex.connect(verbose=T)
+#' pws = ndex.find.networks(ndexcon,"p53")
+#' aspect = ndex.network.get.aspect(ndexcon,pws[1,"externalId"], 'nodeAttributes') 
+#' aspectModified = aspect[1:5,]
+#' ndex.network.update.aspect(ndexcon,pws[1,"externalId"], 'nodeAttributes', aspectModified)}
 #' @export
-ndex.network.update.aspect <- function(ndexcon, network_id){	#!!ToDo: Implement!
+ndex.network.update.aspect <- function(ndexcon, nuuid, aspectName, aspectAsRCX){
+	api = ndex.helper.getApi(ndexcon, 'network$aspect$update')
+	route <- ndex.helper.encodeParams(api$url, api$params, network=nuuid, aspect=aspectName)
 	
+	tmpFile = tempfile()
+	writeLines(paste0('[{"',aspectName,'":[',rcx.aspect.toJSON(aspectAsRCX),']}]'), tmpFile)
+	data <- list(CXNetworkStream = upload_file(tmpFile, type = 'application/json'))
+	response = ndex_rest_PUT(ndexcon, route, data, multipart=T, raw=T)
+	file.remove(tmpFile)
+	return(nuuid)
 }

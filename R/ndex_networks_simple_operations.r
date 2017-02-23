@@ -24,7 +24,7 @@
 #' This function retrieves the summary of the network identified by the supplied network UUID string.
 #' 
 #' @param ndexcon object of class NDEXConnection
-#' @param network_id unique ID of the network
+#' @param nuuid unique ID of the network
 #' @return List of network metadata: ID, name, whether it is public, edge and node count; source and format of network
 #' @section REST query:
 #' GET: ndex.api.config$api$network$summary$get
@@ -35,9 +35,9 @@
 #' pws = ndex.find.networks(ndexcon,"p53")
 #' ndex.network.get.summary(ndexcon,pws[1,"externalId"]) }
 #' @export
-ndex.network.get.summary <- function(ndexcon, network_id){
+ndex.network.get.summary <- function(ndexcon, nuuid){
   api = ndex.helper.getApi(ndexcon, 'network$summary$get')
-  route <- ndex.helper.encodeParams(api$url, api$params, network_id)
+  route <- ndex.helper.encodeParams(api$url, api$params, network=nuuid)
   
   response = ndex_rest_GET(ndexcon, route)
   return(response)
@@ -47,7 +47,7 @@ ndex.network.get.summary <- function(ndexcon, network_id){
 #' Get complete network
 #' 
 #' @param ndexcon object of class NDEXConnection
-#' @param network_id unique ID of the network
+#' @param nuuid unique ID of the network
 #' @return \code{\link{RCX}} object
 #' @details Uses getEdges (this procedure will return complete network with all elements)
 #' Nodes use primary ID of the base term ('represents' element)
@@ -62,9 +62,9 @@ ndex.network.get.summary <- function(ndexcon, network_id){
 #' pws = ndex.find.networks(ndexcon,"p53")
 #' rcx = ndex.get.network(ndexcon,pws[1,"externalId"]) }
 #' @export
-ndex.get.network <- function(ndexcon, network_id){
+ndex.get.network <- function(ndexcon, nuuid){
   api = ndex.helper.getApi(ndexcon, 'network$get')
-  route <- ndex.helper.encodeParams(api$url, api$params, network_id)
+  route <- ndex.helper.encodeParams(api$url, api$params, network=nuuid)
   
   response = ndex_rest_GET(ndexcon, route, raw=T)
   rcx = rcx.fromJSON(response)
@@ -82,10 +82,16 @@ ndex.get.network <- function(ndexcon, network_id){
 #' POST (multipart/form-data): ndex.api.config$api$network$create$url
 #' data: CXNetworkStream = data
 #' @note Compatible to NDEx server version 1.3 and 2.0
+#' @examples 
+#' \dontrun{
+#' ndexcon = ndex.connect('MyAccountName', 'MyPassword', verbose=T)
+#' pws = ndex.find.networks(ndexcon,"p53")
+#' rcx = ndex.get.network(ndexcon,pws[1,"externalId"]) 
+#' nuuid = ndex.create.network(ndexcon, rcx)}
 #' @export
 ndex.create.network <- function(ndexcon, rcx){
   api = ndex.helper.getApi(ndexcon, 'network$create')
-  route <- api$url
+  route <- ndex.helper.encodeParams(api$url, api$params)
   
   tmpFile = tempfile()
   writeLines(rcx.toJSON(rcx, pretty = T), tmpFile)
@@ -102,15 +108,25 @@ ndex.create.network <- function(ndexcon, rcx){
 #' Update an Entire Network as CX
 #' 
 #' This method updates/replaces a existing network on the NDEx server with new content.
+#' The UUID can either be specified manually or it will be extracted from the RCX object (i.e. from rcx$ndexStatus$externalId).
 #' 
 #' @param ndexcon object of class NDEXConnection
 #' @param rcx \code{\link{RCX}} object
-#' @param nuuid UUID of the network
+#' @param nuuid (optional); unique ID of the network
 #' @return UUID of the updated network
 #' @details This method updates a network on the NDEx server with new content from the given RCX object
 #' @section REST query:
 #' PUT (multipart/form-data): ndex.api.config$api$network$update$url
 #' data: CXNetworkStream = data
+#' @note Compatible to NDEx server version 1.3 and 2.0
+#' @examples 
+#' \dontrun{
+#' ndexcon = ndex.connect('MyAccountName', 'MyPassword', verbose=T)
+#' pws = ndex.find.networks(ndexcon,"p53")
+#' rcx = ndex.get.network(ndexcon,pws[1,"externalId"]) 
+#' ## do some changes to rcx
+#' nuuid = ndex.update.network(ndexcon, rcx, nuuid)
+#' nuuid = ndex.update.network(ndexcon, rcx) ## same as previous}
 #' @export
 ndex.update.network <- function(ndexcon, rcx, nuuid){
 	if(missing(nuuid)){
@@ -121,7 +137,7 @@ ndex.update.network <- function(ndexcon, rcx, nuuid){
 	}
 		
 	api = ndex.helper.getApi(ndexcon, 'network$update')
-	route <- ndex.helper.encodeParams(api$url, api$params, nuuid)
+	route <- ndex.helper.encodeParams(api$url, api$params, network=nuuid)
 	
 	tmpFile = tempfile()
 	writeLines(rcx.toJSON(rcx, pretty = T), tmpFile)
@@ -134,12 +150,20 @@ ndex.update.network <- function(ndexcon, rcx, nuuid){
 
 #' Delete a network
 #' @param ndexcon object of class NDEXConnection
-#' @param network_id UUID of the network
+#' @param nuuid unique ID of the network
+#' @return NULL on success; Error else
 #' @section REST query:
+#' DELETE: ndex.api.config$api$network$delete
+#' @note Compatible to NDEx server version 1.3 and 2.0
+#' @examples 
+#' \dontrun{
+#' ndexcon = ndex.connect('MyAccountName', 'MyPassword', verbose=T)
+#' pws = ndex.find.networks(ndexcon,"SomeNetwork", accountName='MyAccountName')
+#' response = ndex.delete.network(ndexcon, pws[1,"externalId")}
 #' @export
 ndex.delete.network <- function(ndexcon, nuuid){
-  api = ndex.helper.getApi(ndexcon, 'network$delete')
-  route <- ndex.helper.encodeParams(api$url, api$params, nuuid)
-  response = ndex_rest_DELETE(ndexcon, route, raw=T)
+  	api = ndex.helper.getApi(ndexcon, 'network$delete')
+  	route <- ndex.helper.encodeParams(api$url, api$params, network=nuuid)
+  	response = ndex_rest_DELETE(ndexcon, route, raw=T)
 	return(NULL)
 }

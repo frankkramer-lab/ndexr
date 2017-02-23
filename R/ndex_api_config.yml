@@ -1,25 +1,10 @@
 defaultVersion: "Version_2.0"
 Version_2.0:
   version: "2.0"
-  defaults:
-    description: "Default parameters"
-    start: "0"
-    size: "100"
-    connection:
-      description: "URL of the NDEx server"
-      host: "www.ndexbio.org"
-      api: "/v2"
-  replaceables:
-    description: "Tabs used within urls to be replaced with content"
-    uuid: "#UUID#"
-    network: "#NETWORKID#"
-    aspect: "#ASPECT#"
-    start: "#START#"
-    size: "#SIZE#"
-    permission: "#PERMISSION#"
-    key: "#KEY#"
-    value: "#VALUE#"
-    type: "#TYPE#"
+  connection:
+    description: "URL of the NDEx server"
+    host: "www.ndexbio.org"
+    api: "/v2"
   api:
     serverStatus:
       description: "Get Server Status"
@@ -30,6 +15,11 @@ Version_2.0:
         description: "Authenticate a User"
         url: "/user?valid=true"
         method: "GET"
+        params:
+          valid:
+            method: "parameter"
+            tag: "valid"
+            default: "true"
     network:
       create:
         description: "Create a CX Network"
@@ -40,59 +30,97 @@ Version_2.0:
         url: "/network/#NETWORKID#"
         method: "PUT"
         params:
-          networkUUID: "#NETWORKID#"
+          network: 
+            tag: "#NETWORKID#"
+            method: "replace"
       delete:
         description: "Delete a Network"
         url: "/network/#NETWORKID#"
         method: "DELETE"
         params:
-          networkUUID: "#NETWORKID#"
+          network: 
+            tag: "#NETWORKID#"
+            method: "replace"
       get:
         description: "Get Complete Network in CX format"
         url: "/network/#NETWORKID#"
         method: "GET"
         params:
-          networkUUID: "#NETWORKID#"
+          network: 
+            tag: "#NETWORKID#"
+            method: "replace"
       summary:
         get:
           description: "Get Network Summary"
           url: "/network/#NETWORKID#/summary"
           method: "GET"
           params:
-            networkUUID: "#NETWORKID#"
+            network: 
+              tag: "#NETWORKID#"
+              method: "replace"
       sample:
         set:
           description: "Get Network Summary"
           url: "/network/#NETWORKID#/sample"
           method: "PUT"
+          params:
+            network: 
+              tag: "#NETWORKID#"
+              method: "replace"
         get:
           description: "Set Network Sample"
           url: "/network/#NETWORKID#/sample"
           method: "GET"
+          params:
+            network: 
+              tag: "#NETWORKID#"
+              method: "replace"
       aspect:
         getMetaData:
           description: "Get Network CX Metadata Collection"
           url: "/network/#NETWORKID#/aspect"
           method: "GET"
           params:
-            networkUUID: "#NETWORKID#"
+            network: 
+              tag: "#NETWORKID#"
+              method: "replace"
         getMetaDataByName:
           description: "Get Network Aspect Metadata"
           url: "/network/#NETWORKID#/aspect/#ASPECT#/metadata"
           method: "GET"
           params:
-            networkUUID: "#NETWORKID#"
-            aspect: "#ASPECT#"
+            network: 
+              tag: "#NETWORKID#"
+              method: "replace"
+            aspect: 
+              tag: "#ASPECT#"
+              method: "replace"
         get:
           description: "Get a Network Aspect As CX"
           url: "/network/#NETWORKID#/aspect/#ASPECT#"
           method: "GET"
           params:
-            size: "#SIZE#"
+            network: 
+              tag: "#NETWORKID#"
+              method: "replace"
+            aspect:  
+              tag: "#ASPECT#"
+              method: "replace"
+            size: 
+              tag: "size"
+              method: "parameter"
+              optional: TRUE
         update:
           description: "Update an Aspect of a Network"
           url: "/network/#NETWORKID#/aspect/#ASPECT#"
           method: "PUT"
+          params:
+            network: 
+              tag: "#NETWORKID#"
+              method: "replace"
+            aspect: 
+              tag: "#ASPECT#"
+              method: "replace"
       permission:
         get:
           description: "Get All Permissions on a Network"
@@ -108,6 +136,9 @@ Version_2.0:
           url: "/network/#NETWORKID#/permission"
           method: "PUT"
           params:
+            network: 
+              tag: "#NETWORKID#"
+              method: "replace"
             userid: "#UUID#"
             groupid: "#UUID#"
             permission: "#PERMISSION#"
@@ -116,6 +147,9 @@ Version_2.0:
           url: "/network/#NETWORKID#/permission"
           method: "DELETE"
           params:
+            network: 
+              tag: "#NETWORKID#"
+              method: "replace"
             userid: "#UUID#"
             groupid: "#UUID#"
       profile:
@@ -123,75 +157,104 @@ Version_2.0:
           description: "Update Network Profile"
           url: "/network/#NETWORKID#/profile"
           method: "PUT"
+          params:
+            network: 
+              tag: "#NETWORKID#"
+              method: "replace"
       systemproperties:
         set:
           description: "Set Network System Properties"
           url: "/network/#NETWORKID#/systemproperty"
           method: "PUT"
+          params:
+            network: 
+              tag: "#NETWORKID#"
+              method: "replace"
       properties:
         set:
           description: "Set Network Properties"
           url: "/network/#NETWORKID#/properties"
           method: "PUT"
+          params:
+            network: 
+              tag: "#NETWORKID#"
+              method: "replace"
       provenance:
         set:
           description: "Set Network Provenance"
           url: "/network/#NETWORKID#/provenance"
           method: "PUT"
+          params:
+            network: 
+              tag: "#NETWORKID#"
+              method: "replace"
         get:
           description: "Get Network Provenance"
           url: "/network/#NETWORKID#/provenance"
           method: "GET"
+          params:
+            network: 
+              tag: "#NETWORKID#"
+              method: "replace"
     search:
       user:
         description: "Search users"
         url: "/search/user"
         method: "POST"
         params:
-          start: "#START#"
-          size: "#SIZE#"
+          start: 
+            tag: "start"
+            method: "parameter"
+            default: "0"
+          size: 
+            tag: "size"
+            method: "parameter"
+            default: "100"
       group:
         description: "Search groups"
         url: "/search/group"
         method: "POST"
         params:
-          start: "#START#"
-          size: "#SIZE#"
+          start: 
+            tag: "start"
+            method: "parameter"
+            default: "0"
+          size: 
+            tag: "size"
+            method: "parameter"
+            default: "100"
       network:
         search:
           description: "Search network"
           url: "/search/network"
           method: "POST"
           params:
-            - start
-            - size
+            start: 
+              tag: "start"
+              method: "parameter"
+              default: "0"
+            size: 
+              tag: "size"
+              method: "parameter"
+              default: "100"
         neighborhood:
           description: "Query Network As CX"
           url: "/search/network/#NETWORKID#/query"
           method: "POST"
           params:
-            size: "#SIZE#"
+            network: 
+              tag: "#NETWORKID#"
+              method: "replace"
+            size: 
+              tag: "size"
+              method: "parameter"
+              optional: true
 Version_1.3:
   version: "1.3"
-  defaults:
-    description: "Default parameters"
-    start: "0"
-    size: "100"
-    connection:
-      description: "URL of the NDEx server"
-      host: "www.ndexbio.org"
-      api: "/rest"
-  replaceables:
-    description: "Tabs used within urls to be replaced with content"
-    uuid: "#UUID#"
-    network: "#NETWORKID#"
-    aspect: "#ASPECT#"
-    start: "#START#"
-    size: "#SIZE#"
-    permission: "#PERMISSION#"
-    key: "#KEY#"
-    value: "#VALUE#"
-    type: "#TYPE#"
+  connection:
+    description: "URL of the NDEx server"
+    host: "www.ndexbio.org"
+    api: "/rest"
   api:
     serverStatus:
       description: "Get Server Status"
@@ -212,50 +275,72 @@ Version_1.3:
         url: "/network/asCX/#NETWORKID#"
         method: "PUT"
         params:
-          networkUUID: "#NETWORKID#"
+          network: 
+            tag: "#NETWORKID#"
+            method: "replace"
       delete:
         description: "Delete a Network"
         url: "/network/#NETWORKID#"
         method: "DELETE"
         params:
-          networkUUID: "#NETWORKID#"
+          network: 
+            tag: "#NETWORKID#"
+            method: "replace"
       get:
         description: "Get Complete Network in CX format"
         url: "/network/#NETWORKID#/asCX"
         method: "GET"
         params:
-          networkUUID: "#NETWORKID#"
+          network: 
+            tag: "#NETWORKID#"
+            method: "replace"
       summary:
         get:
           description: "Get Network Summary"
           url: "/network/#NETWORKID#"
           method: "GET"
           params:
-            networkUUID: "#NETWORKID#"
+            network: 
+              tag: "#NETWORKID#"
+              method: "replace"
       aspect:
         getMetaData:
           description: "Get Network CX Metadata Collection"
           url: "/network/#NETWORKID#/metadata"
           method: "GET"
           params:
-            networkUUID: "#NETWORKID#"
+            network: 
+              tag: "#NETWORKID#"
+              method: "replace"
         get:
           description: "Get a Network Aspect As CX"
-          url: "/network/#NETWORKID#/aspect/#ASPECT#/#SIZE#"
+          url: "/network/#NETWORKID#/aspect/#ASPECT#"
           method: "GET"
           params:
-            networkUUID: "#NETWORKID#"
-            aspect: "#ASPECT#"
-            size: "#SIZE#"
+            network: 
+              tag: "#NETWORKID#"
+              method: "replace"
+            aspect:  
+              tag: "#ASPECT#"
+              method: "replace"
+            size:
+              method: "append"
+              optional: true
       permission:
         get:
           description: "Get All Permissions on a Network"
-          url: "/network/#NETWORKID#/user/#PERMISSION#/#START#/#SIZE#"
+          url: "/network/#NETWORKID#/user/#PERMISSION#"
           method: "GET"
           params:
-            permission: "#PERMISSION#"
-            start: "#START#"
-            size: "#SIZE#"
+            permission: 
+              tag: "#PERMISSION#"
+              method: "replace"
+            start: 
+              method: "append"
+              default: "0"
+            size: 
+              method: "append"
+              default: "100"
         update:
           description: "Update Network Permission"
           url: "/network/#NETWORKID#/member"
@@ -276,46 +361,72 @@ Version_1.3:
           description: "Set Network System Properties"
           url: "/network/#NETWORKID#/setFlag/#KEY#=#VALUE#"
           method: "PUT"
+          params:
+            network: 
+              tag: "#NETWORKID#"
+              method: "replace"
       properties:
         set:
           description: "Set Network Properties"
           url: "/network/#NETWORKID#/properties"
           method: "PUT"
+          params:
+            network: 
+              tag: "#NETWORKID#"
+              method: "replace"
       provenance:
         set:
           description: "Set Network Provenance"
           url: "/network/#NETWORKID#/provenance"
           method: "PUT"
+          params:
+            network: 
+              tag: "#NETWORKID#"
+              method: "replace"
         get:
           description: "Get Network Provenance"
           url: "/network/#NETWORKID#/provenance"
           method: "GET"
+          params:
+            network: 
+              tag: "#NETWORKID#"
+              method: "replace"
     search:
       user:
         description: "Search users"
-        url: "/user/search/#START#/#SIZE#"
+        url: "/user/search"
         method: "POST"
         params:
-          start: "#START#"
-          size: "#SIZE#"
+          start: 
+            method: "append"
+            default: "0"
+          size: 
+            method: "append"
+            default: "100"
       group:
         description: "Search groups"
-        url: "/group/search/#START#/#SIZE#"
+        url: "/group/search"
         method: "POST"
         params:
-          start: "#START#"
-          size: "#SIZE#"
+          start: 
+            method: "append"
+            default: "0"
+          size: 
+            method: "append"
+            default: "100"
       network:
         search:
           description: "Search network"
-          url: "/network/textsearch/#START#/#SIZE#"
+          url: "/network/textsearch"
           method: "POST"
           params:
-            start: "#START#"
-            size: "#SIZE#"
+            start: 
+              method: "append"
+              default: "0"
+            size: 
+              method: "append"
+              default: "100"
         neighborhood:
           description: "Query Network As CX"
           url: "/network/#NETWORKID#/asCX/query"
           method: "POST"
-          params:
-            size: "#SIZE#"

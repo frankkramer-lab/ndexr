@@ -35,7 +35,7 @@
 #' ndexcon = ndex.connect(host='localhost:8765')   ## running some NDEx server locally
 #' ndexcon = ndex.connect(apiConfig=ndex.api.config$Version2.0)   ## manually change the api and connection configuration}
 #' @seealso  \code{\link{ndex.api.config}}, \code{\link{updateConfigFromYaml}}
-ndex.connect <- function(username, password, host = "apiConfig$defaults$connection$host", apiPath = 'apiConfig$defaults$connection$api', apiConfig=ndex.api.config, verbose = T){
+ndex.connect <- function(username, password, host = "apiConfig$connection$host", apiPath = 'apiConfig$connection$api', apiConfig=ndex.api.config, verbose = T){
 
   ##Check parameters and set defaults by config
   credentials = TRUE
@@ -53,12 +53,12 @@ ndex.connect <- function(username, password, host = "apiConfig$defaults$connecti
   }
   
   if(missing(apiPath)){
-	  apiPath = apiConfig$defaults$connection$api
+	  apiPath = apiConfig$connection$api
 	  if(verbose) message(paste("ndex.connect: apiPath not specified, using default: [", apiPath, "]" ))
   }
   
   if(missing(host)){
-	  host = paste0(apiConfig$defaults$connection$host, apiPath)
+	  host = paste0(apiConfig$connection$host, apiPath)
 	  if(verbose) message(paste("ndex.connect: Host not specified, using default: [", host, "]" ))
   } else {
 	  host = paste0(host, apiPath)

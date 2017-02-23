@@ -5,7 +5,7 @@
 \title{Updating the meta-data of an RCX object}
 \usage{
 rcx.updateMetaData(rcx, mandatoryAspects = c("nodes"),
-  countElementsOfAspects = NULL, keyValueAspects = c("@context"),
+  noMetaDataAspects = c("metaData", "numberVerification", "status"),
   verbose = FALSE)
 }
 \arguments{
@@ -13,11 +13,11 @@ rcx.updateMetaData(rcx, mandatoryAspects = c("nodes"),
 
 \item{mandatoryAspects}{character vector; Aspects, that are mandatory for a valid RCX object (by default: "nodes")}
 
+\item{verbose}{logical; whether to print out extended feedback}
+
 \item{countElementsOfAspects}{character vector; Aspects, that should be counted (i.e. have an entry in elementCount != NA)}
 
 \item{keyValueAspects}{character vector; Specifies the aspects, that consist of key-value pairs}
-
-\item{verbose}{logical; whether to print out extended feedback}
 }
 \value{
 \code{\link{RCX}} object

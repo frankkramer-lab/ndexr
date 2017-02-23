@@ -4,8 +4,7 @@
 \alias{ndex.find.networks}
 \title{Search networks in NDEx (by description)}
 \usage{
-ndex.find.networks(ndexcon, searchString = "", accountName,
-  start = "apiConf$defaults$start", size = "apiConf$defaults$size")
+ndex.find.networks(ndexcon, searchString = "", accountName, start, size)
 }
 \arguments{
 \item{ndexcon}{object of class NDEXConnection}
@@ -30,7 +29,7 @@ Search strings may be structured
 }
 \section{REST query}{
 
-This function runs POST query /network/search/{start}/{size}    returns list of NetworkSummary
+GET: ndex.api.config$api$search$network$search    returns list of NetworkSummary
 }
 \examples{
 \dontrun{

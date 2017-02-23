@@ -96,7 +96,7 @@ test_that('Create, update and delete a network on the server', {
     expect_equal(uuidCreated, uuidUpdated, info=paste0('Create and Update should have the same uuid (api ', apiVersion, ')'))
     expect_equal(uuidUpdated, uuidUpdatedRcx, info=paste0('Update by rcx and manually set should have the same uuid (api ', apiVersion, ')'))
     
-	Sys.sleep(60)	## Wait some time until the updating of the network is done
+	Sys.sleep(60)	## Wait some time until the updating of the network on the server is done
 	
 	expect_null(ndex.delete.network(con, uuidUpdatedRcx), info=paste0('Returns NULL if network is successfully deleted (api ', apiVersion, ')'))
     expect_error(ndex.delete.network(con, uuidUpdatedRcx), info=paste0('Deleting the same network again should throw an error (api ', apiVersion, ')'))

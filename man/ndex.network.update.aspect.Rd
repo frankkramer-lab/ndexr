@@ -4,9 +4,37 @@
 \alias{ndex.network.update.aspect}
 \title{Update an Aspect of a Network}
 \usage{
-ndex.network.update.aspect(ndexcon, network_id)
+ndex.network.update.aspect(ndexcon, nuuid, aspectName, aspectAsRCX)
+}
+\arguments{
+\item{ndexcon}{object of class NDEXConnection}
+
+\item{nuuid}{unique ID of the network}
+
+\item{aspectName}{name of the aspect}
+
+\item{aspectAsRCX}{rcx data for the aspect (rcx[[aspectName]])}
+}
+\value{
+nuuid unique ID of the modified network
 }
 \description{
-Update an Aspect of a Network
+This function updates an aspect with the provided CX for the aspect.
+}
+\note{
+Compatible to NDEx server version 2.0
+#!!!ToDo: Error on server!
+}
+\section{REST query}{
+
+PUT: ndex.api.config$api$network$aspect$update
+}
+\examples{
+\dontrun{
+ndexcon = ndex.connect(verbose=T)
+pws = ndex.find.networks(ndexcon,"p53")
+aspect = ndex.network.get.aspect(ndexcon,pws[1,"externalId"], 'nodeAttributes') 
+aspectModified = aspect[1:5,]
+ndex.network.update.aspect(ndexcon,pws[1,"externalId"], 'nodeAttributes', aspectModified)}
 }
 

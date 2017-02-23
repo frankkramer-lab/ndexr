@@ -81,6 +81,8 @@ listToRCode = function(obj, indent='\t', indentShift=''){
 		  }
 		}else if('numeric' %in% class(obj[[n]])){
 		  txts = c(txts, paste0(newIndent, n, '=', obj[[n]]))
+		}else if('logical' %in% class(obj[[n]])){
+			txts = c(txts, paste0(newIndent, n, '=', obj[[n]]))
 		}
 	}
 	txt =paste0('list(\n', paste(txts, collapse = ",\n"), '\n', indentShift, ')')

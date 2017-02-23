@@ -27,27 +27,10 @@ ndex.api.config = list(
 	defaultVersion="Version_2.0",
 	Version_2.0=list(
 		version="2.0",
-		defaults=list(
-			description="Default parameters",
-			start="0",
-			size="100",
-			connection=list(
-				description="URL of the NDEx server",
-				host="www.ndexbio.org",
-				api="/v2"
-			)
-		),
-		replaceables=list(
-			description="Tabs used within urls to be replaced with content",
-			uuid="#UUID#",
-			network="#NETWORKID#",
-			aspect="#ASPECT#",
-			start="#START#",
-			size="#SIZE#",
-			permission="#PERMISSION#",
-			key="#KEY#",
-			value="#VALUE#",
-			type="#TYPE#"
+		connection=list(
+			description="URL of the NDEx server",
+			host="www.ndexbio.org",
+			api="/v2"
 		),
 		api=list(
 			serverStatus=list(
@@ -59,7 +42,14 @@ ndex.api.config = list(
 				authenticate=list(
 					description="Authenticate a User",
 					url="/user?valid=true",
-					method="GET"
+					method="GET",
+					params=list(
+						valid=list(
+							method="parameter",
+							tag="valid",
+							default="true"
+						)
+					)
 				)
 			),
 			network=list(
@@ -73,7 +63,10 @@ ndex.api.config = list(
 					url="/network/#NETWORKID#",
 					method="PUT",
 					params=list(
-						networkUUID="#NETWORKID#"
+						network=list(
+							tag="#NETWORKID#",
+							method="replace"
+						)
 					)
 				),
 				delete=list(
@@ -81,7 +74,10 @@ ndex.api.config = list(
 					url="/network/#NETWORKID#",
 					method="DELETE",
 					params=list(
-						networkUUID="#NETWORKID#"
+						network=list(
+							tag="#NETWORKID#",
+							method="replace"
+						)
 					)
 				),
 				get=list(
@@ -89,7 +85,10 @@ ndex.api.config = list(
 					url="/network/#NETWORKID#",
 					method="GET",
 					params=list(
-						networkUUID="#NETWORKID#"
+						network=list(
+							tag="#NETWORKID#",
+							method="replace"
+						)
 					)
 				),
 				summary=list(
@@ -98,7 +97,10 @@ ndex.api.config = list(
 						url="/network/#NETWORKID#/summary",
 						method="GET",
 						params=list(
-							networkUUID="#NETWORKID#"
+							network=list(
+								tag="#NETWORKID#",
+								method="replace"
+							)
 						)
 					)
 				),
@@ -106,12 +108,24 @@ ndex.api.config = list(
 					set=list(
 						description="Get Network Summary",
 						url="/network/#NETWORKID#/sample",
-						method="PUT"
+						method="PUT",
+						params=list(
+							network=list(
+								tag="#NETWORKID#",
+								method="replace"
+							)
+						)
 					),
 					get=list(
 						description="Set Network Sample",
 						url="/network/#NETWORKID#/sample",
-						method="GET"
+						method="GET",
+						params=list(
+							network=list(
+								tag="#NETWORKID#",
+								method="replace"
+							)
+						)
 					)
 				),
 				aspect=list(
@@ -120,7 +134,10 @@ ndex.api.config = list(
 						url="/network/#NETWORKID#/aspect",
 						method="GET",
 						params=list(
-							networkUUID="#NETWORKID#"
+							network=list(
+								tag="#NETWORKID#",
+								method="replace"
+							)
 						)
 					),
 					getMetaDataByName=list(
@@ -128,8 +145,14 @@ ndex.api.config = list(
 						url="/network/#NETWORKID#/aspect/#ASPECT#/metadata",
 						method="GET",
 						params=list(
-							networkUUID="#NETWORKID#",
-							aspect="#ASPECT#"
+							network=list(
+								tag="#NETWORKID#",
+								method="replace"
+							),
+							aspect=list(
+								tag="#ASPECT#",
+								method="replace"
+							)
 						)
 					),
 					get=list(
@@ -137,13 +160,35 @@ ndex.api.config = list(
 						url="/network/#NETWORKID#/aspect/#ASPECT#",
 						method="GET",
 						params=list(
-							size="#SIZE#"
+							network=list(
+								tag="#NETWORKID#",
+								method="replace"
+							),
+							aspect=list(
+								tag="#ASPECT#",
+								method="replace"
+							),
+							size=list(
+								tag="size",
+								method="parameter",
+								optional=TRUE
+							)
 						)
 					),
 					update=list(
 						description="Update an Aspect of a Network",
 						url="/network/#NETWORKID#/aspect/#ASPECT#",
-						method="PUT"
+						method="PUT",
+						params=list(
+							network=list(
+								tag="#NETWORKID#",
+								method="replace"
+							),
+							aspect=list(
+								tag="#ASPECT#",
+								method="replace"
+							)
+						)
 					)
 				),
 				permission=list(
@@ -163,6 +208,10 @@ ndex.api.config = list(
 						url="/network/#NETWORKID#/permission",
 						method="PUT",
 						params=list(
+							network=list(
+								tag="#NETWORKID#",
+								method="replace"
+							),
 							userid="#UUID#",
 							groupid="#UUID#",
 							permission="#PERMISSION#"
@@ -173,6 +222,10 @@ ndex.api.config = list(
 						url="/network/#NETWORKID#/permission",
 						method="DELETE",
 						params=list(
+							network=list(
+								tag="#NETWORKID#",
+								method="replace"
+							),
 							userid="#UUID#",
 							groupid="#UUID#"
 						)
@@ -182,33 +235,63 @@ ndex.api.config = list(
 					update=list(
 						description="Update Network Profile",
 						url="/network/#NETWORKID#/profile",
-						method="PUT"
+						method="PUT",
+						params=list(
+							network=list(
+								tag="#NETWORKID#",
+								method="replace"
+							)
+						)
 					)
 				),
 				systemproperties=list(
 					set=list(
 						description="Set Network System Properties",
 						url="/network/#NETWORKID#/systemproperty",
-						method="PUT"
+						method="PUT",
+						params=list(
+							network=list(
+								tag="#NETWORKID#",
+								method="replace"
+							)
+						)
 					)
 				),
 				properties=list(
 					set=list(
 						description="Set Network Properties",
 						url="/network/#NETWORKID#/properties",
-						method="PUT"
+						method="PUT",
+						params=list(
+							network=list(
+								tag="#NETWORKID#",
+								method="replace"
+							)
+						)
 					)
 				),
 				provenance=list(
 					set=list(
 						description="Set Network Provenance",
 						url="/network/#NETWORKID#/provenance",
-						method="PUT"
+						method="PUT",
+						params=list(
+							network=list(
+								tag="#NETWORKID#",
+								method="replace"
+							)
+						)
 					),
 					get=list(
 						description="Get Network Provenance",
 						url="/network/#NETWORKID#/provenance",
-						method="GET"
+						method="GET",
+						params=list(
+							network=list(
+								tag="#NETWORKID#",
+								method="replace"
+							)
+						)
 					)
 				)
 			),
@@ -218,8 +301,16 @@ ndex.api.config = list(
 					url="/search/user",
 					method="POST",
 					params=list(
-						start="#START#",
-						size="#SIZE#"
+						start=list(
+							tag="start",
+							method="parameter",
+							default="0"
+						),
+						size=list(
+							tag="size",
+							method="parameter",
+							default="100"
+						)
 					)
 				),
 				group=list(
@@ -227,8 +318,16 @@ ndex.api.config = list(
 					url="/search/group",
 					method="POST",
 					params=list(
-						start="#START#",
-						size="#SIZE#"
+						start=list(
+							tag="start",
+							method="parameter",
+							default="0"
+						),
+						size=list(
+							tag="size",
+							method="parameter",
+							default="100"
+						)
 					)
 				),
 				network=list(
@@ -236,14 +335,33 @@ ndex.api.config = list(
 						description="Search network",
 						url="/search/network",
 						method="POST",
-						params= c("start", "size")
+						params=list(
+							start=list(
+								tag="start",
+								method="parameter",
+								default="0"
+							),
+							size=list(
+								tag="size",
+								method="parameter",
+								default="100"
+							)
+						)
 					),
 					neighborhood=list(
 						description="Query Network As CX",
 						url="/search/network/#NETWORKID#/query",
 						method="POST",
 						params=list(
-							size="#SIZE#"
+							network=list(
+								tag="#NETWORKID#",
+								method="replace"
+							),
+							size=list(
+								tag="size",
+								method="parameter",
+								optional=TRUE
+							)
 						)
 					)
 				)
@@ -252,27 +370,10 @@ ndex.api.config = list(
 	),
 	Version_1.3=list(
 		version="1.3",
-		defaults=list(
-			description="Default parameters",
-			start="0",
-			size="100",
-			connection=list(
-				description="URL of the NDEx server",
-				host="www.ndexbio.org",
-				api="/rest"
-			)
-		),
-		replaceables=list(
-			description="Tabs used within urls to be replaced with content",
-			uuid="#UUID#",
-			network="#NETWORKID#",
-			aspect="#ASPECT#",
-			start="#START#",
-			size="#SIZE#",
-			permission="#PERMISSION#",
-			key="#KEY#",
-			value="#VALUE#",
-			type="#TYPE#"
+		connection=list(
+			description="URL of the NDEx server",
+			host="www.ndexbio.org",
+			api="/rest"
 		),
 		api=list(
 			serverStatus=list(
@@ -298,7 +399,10 @@ ndex.api.config = list(
 					url="/network/asCX/#NETWORKID#",
 					method="PUT",
 					params=list(
-						networkUUID="#NETWORKID#"
+						network=list(
+							tag="#NETWORKID#",
+							method="replace"
+						)
 					)
 				),
 				delete=list(
@@ -306,7 +410,10 @@ ndex.api.config = list(
 					url="/network/#NETWORKID#",
 					method="DELETE",
 					params=list(
-						networkUUID="#NETWORKID#"
+						network=list(
+							tag="#NETWORKID#",
+							method="replace"
+						)
 					)
 				),
 				get=list(
@@ -314,7 +421,10 @@ ndex.api.config = list(
 					url="/network/#NETWORKID#/asCX",
 					method="GET",
 					params=list(
-						networkUUID="#NETWORKID#"
+						network=list(
+							tag="#NETWORKID#",
+							method="replace"
+						)
 					)
 				),
 				summary=list(
@@ -323,7 +433,10 @@ ndex.api.config = list(
 						url="/network/#NETWORKID#",
 						method="GET",
 						params=list(
-							networkUUID="#NETWORKID#"
+							network=list(
+								tag="#NETWORKID#",
+								method="replace"
+							)
 						)
 					)
 				),
@@ -333,29 +446,50 @@ ndex.api.config = list(
 						url="/network/#NETWORKID#/metadata",
 						method="GET",
 						params=list(
-							networkUUID="#NETWORKID#"
+							network=list(
+								tag="#NETWORKID#",
+								method="replace"
+							)
 						)
 					),
 					get=list(
 						description="Get a Network Aspect As CX",
-						url="/network/#NETWORKID#/aspect/#ASPECT#/#SIZE#",
+						url="/network/#NETWORKID#/aspect/#ASPECT#",
 						method="GET",
 						params=list(
-							networkUUID="#NETWORKID#",
-							aspect="#ASPECT#",
-							size="#SIZE#"
+							network=list(
+								tag="#NETWORKID#",
+								method="replace"
+							),
+							aspect=list(
+								tag="#ASPECT#",
+								method="replace"
+							),
+							size=list(
+								method="append",
+								optional=TRUE
+							)
 						)
 					)
 				),
 				permission=list(
 					get=list(
 						description="Get All Permissions on a Network",
-						url="/network/#NETWORKID#/user/#PERMISSION#/#START#/#SIZE#",
+						url="/network/#NETWORKID#/user/#PERMISSION#",
 						method="GET",
 						params=list(
-							permission="#PERMISSION#",
-							start="#START#",
-							size="#SIZE#"
+							permission=list(
+								tag="#PERMISSION#",
+								method="replace"
+							),
+							start=list(
+								method="append",
+								default="0"
+							),
+							size=list(
+								method="append",
+								default="100"
+							)
 						)
 					),
 					update=list(
@@ -382,65 +516,104 @@ ndex.api.config = list(
 					set=list(
 						description="Set Network System Properties",
 						url="/network/#NETWORKID#/setFlag/#KEY#=#VALUE#",
-						method="PUT"
+						method="PUT",
+						params=list(
+							network=list(
+								tag="#NETWORKID#",
+								method="replace"
+							)
+						)
 					)
 				),
 				properties=list(
 					set=list(
 						description="Set Network Properties",
 						url="/network/#NETWORKID#/properties",
-						method="PUT"
+						method="PUT",
+						params=list(
+							network=list(
+								tag="#NETWORKID#",
+								method="replace"
+							)
+						)
 					)
 				),
 				provenance=list(
 					set=list(
 						description="Set Network Provenance",
 						url="/network/#NETWORKID#/provenance",
-						method="PUT"
+						method="PUT",
+						params=list(
+							network=list(
+								tag="#NETWORKID#",
+								method="replace"
+							)
+						)
 					),
 					get=list(
 						description="Get Network Provenance",
 						url="/network/#NETWORKID#/provenance",
-						method="GET"
+						method="GET",
+						params=list(
+							network=list(
+								tag="#NETWORKID#",
+								method="replace"
+							)
+						)
 					)
 				)
 			),
 			search=list(
 				user=list(
 					description="Search users",
-					url="/user/search/#START#/#SIZE#",
+					url="/user/search",
 					method="POST",
 					params=list(
-						start="#START#",
-						size="#SIZE#"
+						start=list(
+							method="append",
+							default="0"
+						),
+						size=list(
+							method="append",
+							default="100"
+						)
 					)
 				),
 				group=list(
 					description="Search groups",
-					url="/group/search/#START#/#SIZE#",
+					url="/group/search",
 					method="POST",
 					params=list(
-						start="#START#",
-						size="#SIZE#"
+						start=list(
+							method="append",
+							default="0"
+						),
+						size=list(
+							method="append",
+							default="100"
+						)
 					)
 				),
 				network=list(
 					search=list(
 						description="Search network",
-						url="/network/textsearch/#START#/#SIZE#",
+						url="/network/textsearch",
 						method="POST",
 						params=list(
-							start="#START#",
-							size="#SIZE#"
+							start=list(
+								method="append",
+								default="0"
+							),
+							size=list(
+								method="append",
+								default="100"
+							)
 						)
 					),
 					neighborhood=list(
 						description="Query Network As CX",
 						url="/network/#NETWORKID#/asCX/query",
-						method="POST",
-						params=list(
-							size="#SIZE#"
-						)
+						method="POST"
 					)
 				)
 			)

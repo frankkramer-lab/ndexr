@@ -4,9 +4,32 @@
 \alias{ndex.network.get.aspect}
 \title{Get a Network Aspect As CX}
 \usage{
-ndex.network.get.aspect(ndexcon, network_id)
+ndex.network.get.aspect(ndexcon, nuuid, aspect, size)
+}
+\arguments{
+\item{ndexcon}{object of class NDEXConnection}
+
+\item{nuuid}{unique ID of the network}
+
+\item{aspect}{name of the aspect}
+}
+\value{
+data.frame of the aspect data (the same as rcx[[aspectName]])
 }
 \description{
-Get a Network Aspect As CX
+This function retrieves the provided aspect as CX. The result is the same as accessing an aspect of a RCX object.
+}
+\note{
+Compatible to NDEx server version 1.3 and 2.0, but doesn't work for version 1.3
+}
+\section{REST query}{
+
+GET: ndex.api.config$api$network$aspect$getMetaDataByName
+}
+\examples{
+\dontrun{
+ndexcon = ndex.connect(verbose=T)
+pws = ndex.find.networks(ndexcon,"p53")
+aspect = ndex.network.get.aspect(ndexcon,pws[1,"externalId"], 'nodeAttributes') }
 }
 

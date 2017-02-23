@@ -4,18 +4,27 @@
 \alias{rcx.new}
 \title{Create a blank rcx object}
 \usage{
-rcx.new(nodes)
+rcx.new(nodes = c(`@id` = 1))
 }
 \arguments{
-\item{nodes}{At least one node is necessary for be a valid rcx}
+\item{nodes}{vector or data.frame (default: c('@id'=1) ) node(s)}
 }
 \value{
 RCX object
 }
 \description{
-Create a blank rcx object
+This function generates a (blank) RCX object. For a valid RCX, at least one node has to be specified. Optional attributes are 'n' for names and 'r' for represents.
+Ids have to be unique (in nodes) and may not contain 'NA' values. For names and represents attributes, 'NA' values are allowed.
 }
-\details{
-Constructor for creating a blank rcx object, that fulfills the minimal requirements of CX
+\examples{
+\dontrun{
+rcx = rcx.new()
+rcx = rcx.new(c('@id'=1))        						#same as one before
+rcx = rcx.new(nodes=c('@id'=1))  						#same as one before
+rcx = rcx.new(data.frame('@id'=c(1)), check.names=F)) 	#same as one before
+rcx = rcx.new(c('@id'=1, n='Some Name'))
+rcx = rcx.new(c('@id'=1, n='Some Name', r='HGNC:Symbol'))
+rcx = rcx.new(data.frame('@id'=c(1),n=c('Some Name'), r=c('HGNC:Symbol'), check.names=F))	#same as one before
+rcx = rcx.new(data.frame('@id'=c(1,2,3),n=c('Some Name','And another name',NA), r=c('HGNC:Symbol',NA,'UniProt:C3P0'), check.names=F))}
 }
 

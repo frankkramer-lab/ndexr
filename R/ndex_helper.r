@@ -47,54 +47,47 @@
 #' ndex.helper.encodeParams(url, namedParams, values)
 #' #[1] "http://en.wikipedia.org/w/index.php/ICE200/somethingElse/12345"
 #' }
-ndex.helper.encodeParams = function(url, params, values, encoding){
-  # pn=pv, v   withinurl
-  # pn=pv      asnamedparams
-  # pv, v      asparams
-  # v          aspath
-  
-  if(missing(encoding)){
-    if(missing(params)){              ## no params
-      if(missing(values)){            ## no values
-        encoding = 'url'                  ## nothing to encode!  
-      }else{                          ## with values
-        encoding = 'aspath'               ## only values are given
-      }
-    }else{                            ## with params
-      if(! is.null(names(params))){   ## params with names
-        if(missing(values)){          ## no values
-          encoding = 'asnamedparams'           ## only name-value pairs
-        }else{                        ## with values
-          encoding = 'withinurl'          ## name-value pairs and extra value
-        }
-      }else{                          ## params without names
-        if(missing(values)){          ## no values
-          encoding = 'url'           ## only params; nothing to encode!
-        }else{                        ## with values
-          encoding = 'asparams'          ## param-value pairs
-        }
-      }
-    }
+ndex.helper.encodeParams = function(url, params, ...){
+  urlParamAppend = c()
+  urlParamKeyValue = c()
+  paramValues = c(...)
+
+  for(curParamName in names(params)){
+	  curParam = params[[curParamName]]
+	  method = curParam$method
+	  if(method == "replace"){
+		curParamValue = NULL
+		if(curParamName %in% names(paramValues)) curParamValue = paramValues[curParamName]
+		else if(! is.null(curParam$default)) curParamValue = curParam$default
+		else stop(paste0('Helper: Encode Parameter: Parameter "',curParamName,'" has neither a value nor a default value!'))
+		
+		curParamTag = curParam$tag
+		url = gsub(curParamTag, curParamValue, url)
+	  }else if(method == "append"){
+		curParamValue = NULL
+		if(curParamName %in% names(paramValues)) curParamValue = paramValues[curParamName]
+		else if(! is.null(curParam$default)) curParamValue = curParam$default
+		else if(curParam$optional==TRUE) next
+		else stop(paste0('Helper: Encode Parameter: Parameter "',curParamName,'" has neither a value nor a default value, nor is optional!'))
+		
+		urlParamAppend = c(urlParamAppend, curParamValue)			  
+	  }else if(method == "parameter"){
+		curParamValue = NULL
+		if(curParamName %in% names(paramValues)) curParamValue = paramValues[curParamName]
+		else if(! is.null(curParam$default)) curParamValue = curParam$default
+		else if(curParam$optional==TRUE) next
+		else stop(paste0('Helper: Encode Parameter: Parameter "',curParamName,'" has neither a value nor a default value, nor is optional!'))
+		
+		curParamTag = curParam$tag
+		urlParamKeyValue = c(urlParamKeyValue, paste(curParamTag, curParamValue, sep='='))
+	  }else{
+		  stop(paste0('Helper: Encode Parameter: No method for encoding specified for parameter "',curParamName,'" [',url,']'))
+	  }
   }
   
-  result = ''
-	if(tolower(encoding)=='asparams') {
-	  result = paste0(url,"?",paste(params,values, sep = '=', collapse = '&'))
-	}else if(tolower(encoding)=='asnamedparams') {
-	  result = paste0(url,"?",paste(names(params),params, sep = '=', collapse = '&'))
-	}else if(tolower(encoding)=='withinurl') {
-	  result = url
-	  paramNames = names(params)
-	  names(params) = NULL
-	  for(i in 1:length(params)) {
-	    result = gsub(params[i],values[i], result)
-	  }
-	}else if(tolower(encoding)=='aspath') {
-	  result = paste0(url,"/",paste0(values, collapse = '/'))
-	}else{
-	  result = url
-	}
-	return(result)
+  if(length(urlParamAppend)>0) url = paste0(url, paste0('/',urlParamAppend ,collapse = ''))
+  if(length(urlParamKeyValue)>0) url = paste0(url,"?",paste0(urlParamKeyValue, collapse='&'))
+  return(url)
 }
 
 
@@ -110,6 +103,9 @@ ndex.helper.encodeParams = function(url, params, values, encoding){
 #'  ndex.helper.httpResponseHandler(httr::GET('http://www.ndexbio.org'), 'Tried to connect to NDEx server', T)
 #'  }
 ndex.helper.httpResponseHandler <- function(response, description, verbose=F){
+	if(missing(response) || is.null(response)){
+		stop(paste0('ndex.helper.httpResponseHandler: No server response',description))
+	}
 	if( !('response' %in% class(response))){
 		stop('ndex.helper.httpResponseHandler: Parameter response does not contain response object')
 	}

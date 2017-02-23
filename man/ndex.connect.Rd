@@ -4,9 +4,9 @@
 \alias{ndex.connect}
 \title{Connect to NDEx REST API}
 \usage{
-ndex.connect(username, password, host = "apiConfig$defaults$connection$host",
-  apiPath = "apiConfig$defaults$connection$api",
-  apiConfig = ndex.api.config, verbose = T)
+ndex.connect(username, password, host = "apiConfig$connection$host",
+  apiPath = "apiConfig$connection$api", apiConfig = ndex.api.config,
+  verbose = T)
 }
 \arguments{
 \item{username}{character (optional); username}
