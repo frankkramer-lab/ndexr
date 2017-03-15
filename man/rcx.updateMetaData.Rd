@@ -5,19 +5,19 @@
 \title{Updating the meta-data of an RCX object}
 \usage{
 rcx.updateMetaData(rcx, mandatoryAspects = c("nodes"),
-  noMetaDataAspects = c("metaData", "numberVerification", "status"),
-  verbose = FALSE)
+  excludeAspects = c("metaData", "numberVerification", "status"),
+  force = FALSE, verbose = FALSE)
 }
 \arguments{
 \item{rcx}{RCX object}
 
 \item{mandatoryAspects}{character vector; Aspects, that are mandatory for a valid RCX object (by default: "nodes")}
 
+\item{excludeAspects}{character vector; Aspects, that are excluded for generating metaData (by default: "metaData", "numberVerification" and "status")}
+
+\item{force}{logical; force the creation of new metaData (even if the RCX object already contains metaData)}
+
 \item{verbose}{logical; whether to print out extended feedback}
-
-\item{countElementsOfAspects}{character vector; Aspects, that should be counted (i.e. have an entry in elementCount != NA)}
-
-\item{keyValueAspects}{character vector; Specifies the aspects, that consist of key-value pairs}
 }
 \value{
 \code{\link{RCX}} object
@@ -26,20 +26,14 @@ rcx.updateMetaData(rcx, mandatoryAspects = c("nodes"),
 Updating the meta-data of an RCX object
 }
 \details{
-For a given RCX object the meta-data is updated, i.e. the counted elements and id counter are updated. If an aspect was removed, it will also removed from the meta-data. But, in contrast, if an aspect is added (manually, and not by ndex.RCXaddAspect), no meta-data is added.
-If mandatory aspects (specified in mandatoryAspects parameter; by default "mandatoryAspects=c('nodes')", which is the minimal requirement for a valid RCX object) are missing in the RCX object, an error is thrown.
-By default, the aspects, which already have an entry for "elementCount" (i.e. != NA), are updated. If any aspect name is given by the "countElementsOfAspects" parameter, those aspects are used for counting (the default behavour usually corresponds with setting "countElementsOfAspects=c('citations','@context','edges','ndexStatus','nodes')")
-For counting the elements, there are two different strategies: The default strategy is counting the lines of the data.frame (which translate in JSON to the elements of an array).
-In some cases (e.g. for the aspect "@context"), the data consists of simple key-value pairs. In the RCX object the keys are the (named) columns, and the values embeded in the single line of the data.frame (which translates in JSON to an array, with an object as single entry).
-The correct way of counting the elements of those aspects is therefore by column, which can spezified by the "keyValueAspects" parameter, e.g. by default the parameter is set "keyValueAspects=c('@context')" to allow the key-value pairs in the "@context" aspect to be counted correctly.
-(Note: Since keys are supposed to be unique, this might be the savest way realizing this within both, JSON and R)
+For a given RCX object the meta-data is updated, i.e. the counted elements and id counter are updated. If an aspect was added/removed, it will also added/removed from the meta-data.
+If mandatory aspects (specified in mandatoryAspects parameter) are missing in the RCX object, an error is thrown.
 }
 \examples{
 \dontrun{
 rcx = rcx.updateMetaData(rcx)
 # or with explicitly set default values
-rcx = rcx.updateMetaData(rcx, mandatoryAspects=c('nodes'), countElementsOfAspects=NULL, keyValueAspects=c('@context'), verbose=FALSE)
-# which, in the most cases, equals to
-rcx = rcx.updateMetaData(rcx, mandatoryAspects=c('nodes'), countElementsOfAspects=c('citations','@context','edges','ndexStatus','nodes'), keyValueAspects=c('@context'), verbose=FALSE)}
+rcx = rcx.updateMetaData(rcx, mandatoryAspects=c('nodes'), excludeAspects=c("metaData", "numberVerification", "status"), force=FALSE, verbose=FALSE)
+}
 }
 

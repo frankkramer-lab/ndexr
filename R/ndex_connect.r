@@ -207,7 +207,7 @@ ndex_rest_POST <- function(ndexcon, route, data, multipart = FALSE, raw = FALSE)
 #' ndex_rest_PUT(ndexcon, "/networks/api", data, raw=T)
 #' ndex_rest_PUT(ndexcon, "/networks/api", list(some=data, other=data2), multipart=T)
 #' }
-ndex_rest_PUT <- function(ndexcon, route, data, multipart = FALSE, raw = FALSE){
+ndex_rest_PUT <- function(ndexcon, route, data=NULL, multipart = FALSE, raw = FALSE){
 	url <- paste0(ndexcon$host, route)
 	auth <- NULL
 	if(! ndexcon$anonymous) auth <- httr::authenticate(ndexcon$username, ndexcon$password)

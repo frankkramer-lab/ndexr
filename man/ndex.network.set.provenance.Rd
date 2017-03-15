@@ -4,7 +4,7 @@
 \alias{ndex.network.set.provenance}
 \title{Set Network Provenance}
 \usage{
-ndex.network.set.provenance(ndexcon, network_id)
+ndex.network.set.provenance(ndexcon, nuuid)
 }
 \description{
 Set Network Provenance

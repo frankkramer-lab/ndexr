@@ -19,6 +19,8 @@ This function retrieves the metadata associated with the supplied network UUID.
 }
 \note{
 Compatible to NDEx server version 2.0
+
+Server error (version 2.0) since March 13th 2017
 }
 \section{REST query}{
 

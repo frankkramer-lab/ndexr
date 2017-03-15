@@ -4,9 +4,44 @@
 \alias{ndex.network.update.permission}
 \title{Update Network Permission}
 \usage{
-ndex.network.update.permission(ndexcon, network_id)
+ndex.network.update.permission(ndexcon, nuuid, user = NULL, group = NULL,
+  permission)
+}
+\arguments{
+\item{ndexcon}{object of class NDEXConnection}
+
+\item{nuuid}{unique ID of the network}
+
+\item{user}{character (optional); uuid of the user. Only either user or group may be set!}
+
+\item{group}{character (optional); uuid of the group. Only either user or group may be set!}
+
+\item{permission}{character (optional)("READ"|"WRITE"|"ADMIN"); type of permission to be given. If granted admin permission, the current admin loses the admin status.}
+}
+\value{
+1 integer on success, 0 if user/group allready has this permissions on the network
 }
 \description{
-Update Network Permission
+Updates the permission of a user specified by userid or group specified by groupid for the network
+}
+\note{
+Compatible to NDEx server version 1.3 and 2.0, but doesn't work for version 1.3
+
+In version 1.3 the function only works for user permissions!
+}
+\section{REST query}{
+
+GET: ndex.api.config$api$network$permission$update
+}
+\examples{
+\dontrun{
+ndexcon = ndex.connect('MyAccountName', 'MyPassword', verbose=T)
+networks = ndex.find.networks(ndexcon,"p53")
+nuuid = networks[1,"externalId"]
+## get the permissions
+permissions = ndex.network.update.permission(ndexcon, nuuid, user=someUserUuid, 'WRITE')
+permissions = ndex.network.update.permission(ndexcon, nuuid, group=someGroupUuid, 'READ')
+permissions = ndex.network.update.permission(ndexcon, nuuid, user=someUserUuid, 'ADMIN')	# sets a new admin
+}
 }
 

@@ -107,7 +107,7 @@ ndex.helper.httpResponseHandler <- function(response, description, verbose=F){
 		stop(paste0('ndex.helper.httpResponseHandler: No server response',description))
 	}
 	if( !('response' %in% class(response))){
-		stop('ndex.helper.httpResponseHandler: Parameter response does not contain response object')
+		stop(paste0('ndex.helper.httpResponseHandler: Parameter response does not contain response object!\nResponse:\n',response))
 	}
   	if('status_code' %in% names(response)){
 		if(response$status_code == 200){          ## Success: (200) OK

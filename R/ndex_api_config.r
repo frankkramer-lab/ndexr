@@ -197,10 +197,29 @@ ndex.api.config = list(
 						url="/network/#NETWORKID#/permission",
 						method="GET",
 						params=list(
-							type="#TYPE#",
-							permission="#PERMISSION#",
-							start="#START#",
-							size="#SIZE#"
+							network=list(
+								tag="#NETWORKID#",
+								method="replace"
+							),
+							type=list(
+								tag="type",
+								method="parameter"
+							),
+							permission=list(
+								tag="permission",
+								method="parameter",
+								optional=TRUE
+							),
+							start=list(
+								tag="start",
+								method="parameter",
+								optional=TRUE
+							),
+							size=list(
+								tag="size",
+								method="parameter",
+								optional=TRUE
+							)
 						)
 					),
 					update=list(
@@ -212,9 +231,20 @@ ndex.api.config = list(
 								tag="#NETWORKID#",
 								method="replace"
 							),
-							userid="#UUID#",
-							groupid="#UUID#",
-							permission="#PERMISSION#"
+							user=list(
+								tag="userid",
+								method="parameter",
+								optional=TRUE
+							),
+							group=list(
+								tag="groupid",
+								method="parameter",
+								optional=TRUE
+							),
+							permission=list(
+								tag="permission",
+								method="parameter"
+							)
 						)
 					),
 					delete=list(
@@ -226,8 +256,16 @@ ndex.api.config = list(
 								tag="#NETWORKID#",
 								method="replace"
 							),
-							userid="#UUID#",
-							groupid="#UUID#"
+							user=list(
+								tag="userid",
+								method="parameter",
+								optional=TRUE
+							),
+							group=list(
+								tag="groupid",
+								method="parameter",
+								optional=TRUE
+							)
 						)
 					)
 				),
@@ -478,9 +516,14 @@ ndex.api.config = list(
 						url="/network/#NETWORKID#/user/#PERMISSION#",
 						method="GET",
 						params=list(
+							network=list(
+								tag="#NETWORKID#",
+								method="replace"
+							),
 							permission=list(
 								tag="#PERMISSION#",
-								method="replace"
+								method="replace",
+								default="ALL"
 							),
 							start=list(
 								method="append",
@@ -488,38 +531,53 @@ ndex.api.config = list(
 							),
 							size=list(
 								method="append",
-								default="100"
+								default="1000"
 							)
 						)
 					),
 					update=list(
 						description="Update Network Permission",
-						url="/network/#NETWORKID#/member",
-						method="PUT",
+						url="/network/#NETWORKID#/member/user/#USERID#",
+						method="POST",
 						params=list(
-							userid="#UUID#",
-							groupid="#UUID#",
-							permission="#PERMISSION#"
+							network=list(
+								tag="#NETWORKID#",
+								method="replace"
+							),
+							user=list(
+								tag="#USERID#",
+								method="replace"
+							)
 						)
 					),
 					delete=list(
 						description="Delete Network Permission",
-						url="/network/#NETWORKID#/member/#UUID#",
+						url="/network/#NETWORKID#/member/user/#USERID#",
 						method="DELETE",
 						params=list(
-							userid="#UUID#",
-							groupid="#UUID#"
+							network=list(
+								tag="#NETWORKID#",
+								method="replace"
+							),
+							user=list(
+								tag="#USERID#",
+								method="replace"
+							)
 						)
 					)
 				),
 				systemproperties=list(
 					set=list(
 						description="Set Network System Properties",
-						url="/network/#NETWORKID#/setFlag/#KEY#=#VALUE#",
+						url="/network/#NETWORKID#/setFlag/readOnly=#VALUE#",
 						method="PUT",
 						params=list(
 							network=list(
 								tag="#NETWORKID#",
+								method="replace"
+							),
+							readOnly=list(
+								tag="#VALUE#",
 								method="replace"
 							)
 						)

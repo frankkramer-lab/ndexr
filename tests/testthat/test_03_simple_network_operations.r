@@ -1,7 +1,6 @@
 library(ndexr)
 context('Simple network operations')
 
-
 test_that('Get a network from server', {
   nms = names(ndex.api.config)
   apiVersions = nms[nms!='defaultVersion']
@@ -96,6 +95,7 @@ test_that('Create, update and delete a network on the server', {
     expect_equal(uuidCreated, uuidUpdated, info=paste0('Create and Update should have the same uuid (api ', apiVersion, ')'))
     expect_equal(uuidUpdated, uuidUpdatedRcx, info=paste0('Update by rcx and manually set should have the same uuid (api ', apiVersion, ')'))
     
+	cat('(wait 60sec)')
 	Sys.sleep(60)	## Wait some time until the updating of the network on the server is done
 	
 	expect_null(ndex.delete.network(con, uuidUpdatedRcx), info=paste0('Returns NULL if network is successfully deleted (api ', apiVersion, ')'))

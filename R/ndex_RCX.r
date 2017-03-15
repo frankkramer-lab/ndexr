@@ -130,8 +130,7 @@
 rcx.fromJSON <- function(json, verbose = FALSE){
   
   if(!jsonlite::validate(json)) {
-    warning("rcx.fromJSON: parameter json does not contain valid JSON")
-    return(NULL)
+    stop("rcx.fromJSON: parameter json does not contain valid JSON")
   }
 
   json = jsonlite::fromJSON(json)
@@ -189,6 +188,7 @@ rcx.fromJSON <- function(json, verbose = FALSE){
 #' pws = ndex.find.networks(ndexcon,"p53")
 #' rcx = ndex.get.network(ndexcon,pws[1,"externalId"]) 
 #' rcxjson = rcx.toJSON(rcx) }
+#' #!:ToDo: add pretty to aspects
 #' @export
 rcx.toJSON <- function(rcx, verbose = FALSE, pretty = FALSE){
   if(is.null(rcx) || !("RCX" %in% class(rcx))) {
@@ -224,7 +224,6 @@ rcx.toJSON <- function(rcx, verbose = FALSE, pretty = FALSE){
 #' pws = ndex.find.networks(ndexcon,"p53")
 #' rcx = ndex.get.network(ndexcon,pws[1,"externalId"]) 
 #' rcxNodesJson = rcx.aspect.toJSON(rcx$nodes) }
-#' @export
 rcx.aspect.toJSON <- function(rcxAspect, verbose = FALSE, pretty = FALSE){
 	result = ''
 	## if any of the aspects has a datatype ('d') property, at least one of the datatypes is not of 'string' (default datatype).
@@ -238,21 +237,24 @@ rcx.aspect.toJSON <- function(rcxAspect, verbose = FALSE, pretty = FALSE){
 		jsonCol = c()
 		
 		## don't add an empty aspect, if all v's are lists
-		if(length(tmpNoList)!=0){
+		if(dim(tmpNoList)[1]!=0){
 			tmpNoList$v <- unlist(tmpNoList$v)
-			tmpTxt = jsonlite::toJSON(tmpNoList, pretty = pretty)
+			tmpTxt = jsonlite::toJSON(tmpNoList, na='string', pretty = pretty)
 			tmpTxt = sub('\n*$','',substr(tmpTxt,2,nchar(tmpTxt)-1))		
 			jsonCol = c(jsonCol, tmpTxt)
 		}
+		
 		## don't add an empty aspect, if none v is a list (but might be an integer)
-		if(length(tmpList)!=0){
-			tmpTxt = jsonlite::toJSON(tmpList, pretty = pretty)
-			jsonCol = c(jsonCol, substr(tmpTxt,2,nchar(tmpTxt)-1))
+		if(dim(tmpList)[1]!=0){
+			tmpTxt = jsonlite::toJSON(tmpList, na='string', pretty = pretty)
+			tmpTxt = substr(tmpTxt,2,nchar(tmpTxt)-1)
+			jsonCol = c(jsonCol, tmpTxt)
 		}
+		
 		result = paste0('[',paste0(jsonCol, collapse=','),']')
 	}else{
 		tmpList = rcxAspect
-		result = jsonlite::toJSON(tmpList, pretty = pretty)
+		result = jsonlite::toJSON(tmpList, na='string', pretty = pretty)
 	}
 
 	return(result)
@@ -299,7 +301,7 @@ rcx.asNewNetwork = function(rcx){
 #' rcx = rcx.new()
 #' rcx = rcx.new(c('@id'=1))        						#same as one before
 #' rcx = rcx.new(nodes=c('@id'=1))  						#same as one before
-#' rcx = rcx.new(data.frame('@id'=c(1)), check.names=F)) 	#same as one before
+#' rcx = rcx.new(data.frame('@id'=c(1)), check.names=F) 	#same as one before
 #' rcx = rcx.new(c('@id'=1, n='Some Name'))
 #' rcx = rcx.new(c('@id'=1, n='Some Name', r='HGNC:Symbol'))
 #' rcx = rcx.new(data.frame('@id'=c(1),n=c('Some Name'), r=c('HGNC:Symbol'), check.names=F))	#same as one before
@@ -309,396 +311,116 @@ rcx.asNewNetwork = function(rcx){
 rcx.new = function(nodes=c('@id'=1), edges, nodeAttributes, edgeAttributes, networkAttributes){
 	if(is.null(nodes)) stop('rcx.new: At least one node is necessary!')
 	if(!'@id' %in% names(nodes)) stop('rcx.new: No "@id" column in nodes!')
-	ids = nodes[['@id']]
+	ids = as.character(nodes[['@id']])
 	if(length(unique(ids)) != length(ids)) stop('rcx.new: Some ids in "@id" column are duplicated!')
 	if(any(NA %in% nodes[['@id']])) stop('rcx.new: Some ids in "@id" column have "NA" value!')
 	rcx <- list(nodes=data.frame('@id'=ids, stringsAsFactors=F, check.names=F))
-	if('n' %in% names(nodes)) rcx$nodes$n = nodes['n']
-	if('r' %in% names(nodes)) rcx$nodes$r = nodes['r']
+	if('n' %in% names(nodes)) rcx$nodes$n = as.character(nodes[['n']])
+	if('r' %in% names(nodes)) rcx$nodes$r = as.character(nodes[['r']])
 	class(rcx) = c("RCX",class(rcx))
 	rcx = rcx.updateMetaData(rcx)
 	return(rcx)
 }
 
 
-####################################################
-## below this line everything is in developement!
-## Do not use anything from below!
-####################################################
-
-# ndex cx reqirements:
-# number verification at first position!
-# metadata at second position
-# number verification has a special calculated value! But how?
-# a status object/aspect is needed
-
-
-
 #' Updating the meta-data of an RCX object
 #' 
 #' @param rcx RCX object 
 #' @param mandatoryAspects character vector; Aspects, that are mandatory for a valid RCX object (by default: "nodes")
-#' @param countElementsOfAspects character vector; Aspects, that should be counted (i.e. have an entry in elementCount != NA)
-#' @param keyValueAspects character vector; Specifies the aspects, that consist of key-value pairs
+#' @param excludeAspects character vector; Aspects, that are excluded for generating metaData (by default: "metaData", "numberVerification" and "status")
+#' @param force logical; force the creation of new metaData (even if the RCX object already contains metaData)
 #' @param verbose logical; whether to print out extended feedback
 #' @return \code{\link{RCX}} object
-#' @details For a given RCX object the meta-data is updated, i.e. the counted elements and id counter are updated. If an aspect was removed, it will also removed from the meta-data. But, in contrast, if an aspect is added (manually, and not by ndex.RCXaddAspect), no meta-data is added.
-#' If mandatory aspects (specified in mandatoryAspects parameter; by default "mandatoryAspects=c('nodes')", which is the minimal requirement for a valid RCX object) are missing in the RCX object, an error is thrown.
-#' By default, the aspects, which already have an entry for "elementCount" (i.e. != NA), are updated. If any aspect name is given by the "countElementsOfAspects" parameter, those aspects are used for counting (the default behavour usually corresponds with setting "countElementsOfAspects=c('citations','@context','edges','ndexStatus','nodes')")
-#' For counting the elements, there are two different strategies: The default strategy is counting the lines of the data.frame (which translate in JSON to the elements of an array).
-#' In some cases (e.g. for the aspect "@context"), the data consists of simple key-value pairs. In the RCX object the keys are the (named) columns, and the values embeded in the single line of the data.frame (which translates in JSON to an array, with an object as single entry).
-#' The correct way of counting the elements of those aspects is therefore by column, which can spezified by the "keyValueAspects" parameter, e.g. by default the parameter is set "keyValueAspects=c('@context')" to allow the key-value pairs in the "@context" aspect to be counted correctly.
-#' (Note: Since keys are supposed to be unique, this might be the savest way realizing this within both, JSON and R)
+#' @details For a given RCX object the meta-data is updated, i.e. the counted elements and id counter are updated. If an aspect was added/removed, it will also added/removed from the meta-data.
+#' If mandatory aspects (specified in mandatoryAspects parameter) are missing in the RCX object, an error is thrown.
 #' @examples 
 #' \dontrun{
 #' rcx = rcx.updateMetaData(rcx)
 #' # or with explicitly set default values
-#' rcx = rcx.updateMetaData(rcx, mandatoryAspects=c('nodes'), countElementsOfAspects=NULL, keyValueAspects=c('@context'), verbose=FALSE)
-#' # which, in the most cases, equals to
-#' rcx = rcx.updateMetaData(rcx, mandatoryAspects=c('nodes'), countElementsOfAspects=c('citations','@context','edges','ndexStatus','nodes'), keyValueAspects=c('@context'), verbose=FALSE)}
+#' rcx = rcx.updateMetaData(rcx, mandatoryAspects=c('nodes'), excludeAspects=c("metaData", "numberVerification", "status"), force=FALSE, verbose=FALSE)
+#' }
 #' @export
-rcx.validate = function(rcx, mandatoryAspects=c('nodes'), countElementsOfAspects=NULL, keyValueAspects=c('@context'), verbose=FALSE){	#!ToDo: Check if it works and all cases are covered
-  if(is.null(rcx) || !("RCX" %in% class(rcx))) {
-    warning("rcx.updateMetaData: Parameter rcx does not contain RCX object")
-    return(NULL)
-  }
-  
-  # id exporting aspects are required to have specified an id counter (max id in the aspect)
-  idCounterAspects = c()
-  for(a in names(rcx)){
-    if('@id' %in% colnames(rcx[[a]])) {
-      idCounterAspects = c(idCounterAspects, a)
-    }
-  }
-  
-  # get the most current consistency group
-  commonConsistencyGroup = max(rcx$metaData['consistencyGroup'])
-  
-  # Check if the element count should be updated
-  # note: the element count attribute is optional
-  updateElementCount = F
-  # element count will be updated, if any aspect is manually set
-  if(!is.null(countElementsOfAspects)){ updateElementCount = T }
-  # ..or some element counts are allready set and it should be just updated
-  if('elementCount' %in% names(rcx$metaData)){
-      updateElementCount = T
-  }else{
-    # in case it should be updated, but the column doesn't exist yet, it should be created
-    if(updateElementCount){
-      rcx$metaData$elementCount = NA
-    }
-  }
-  
-  maxLastUpdate = max(rcx$metaData$lastUpdate)
- 
-  
-  for(aspect in rcx$metaData$name){
-    if(verbose){cat('checking aspect "',aspect,'"...\n', sep = '')}
-    
-    # is aspect not anymore present in rcx object?
-    if(is.null(rcx[[aspect]])){  
-      if(aspect %in% mandatoryAspects){
-        warning('rcx.updateMetaData: Aspect "',aspect,'" is mandatory for an RCX model, but cannot be found in this RCX object!\nMandatory aspects for all RCX objects: ',paste0('"',mandatoryAspects,'"', collapse = ', '),'\nMandatory aspects specified for rcx.updateMetaData: ',paste0('"',mandatoryAspects,'"', collapse = ', '))
-        return(NULL)
-      }else{
-        rcx$metaData = rcx$metaData[-which(rcx$metaData$name==aspect),]
-        if(verbose){cat('\tAspect not found in RCX object! Therefore it was removed from the meta data.\n', sep = '')}
-      }
-    }else{
-      #consistencyGroup elementCount   lastUpdate version idCounter properties
-      ## update consistency Groups
-      ## check consistency in an other function!!
-      # aspectConsistencyGroup = rcx$metaData[rcx$metaData['name'] == aspect,'consistencyGroup']
-      # if(aspectConsistencyGroup != commonConsistencyGroup){
-      #   rcx$metaData[rcx$metaData['name'] == aspect,'consistencyGroup'] = commonConsistencyGroup
-      #   if(verbose){cat('\tconsistency group updated from "',aspectConsistencyGroup,'" to "',commonConsistencyGroup,'"', sep='')}
-      # }
-      
-      # update id counter to the max id in the aspect (if an @id is set)
-      aspectIdCounter = rcx$metaData[rcx$metaData['name'] == aspect,'idCounter']
-      if(aspect %in% idCounterAspects){
-        oldIdCounter = rcx$metaData[rcx$metaData['name'] == aspect,'idCounter']
-        newIdCounter = max(rcx[[aspect]][,'@id'])
-        rcx$metaData[rcx$metaData['name'] == aspect,'idCounter'] = newIdCounter
-        if(verbose && (is.na(oldIdCounter)||(oldIdCounter!=newIdCounter))){cat('\tId counter updated from "',oldIdCounter,'" to "',newIdCounter,'"\n', sep='')}
-      }else{
-        rcx$metaData[rcx$metaData['name'] == aspect,'idCounter'] = NA
-      }
-      
-      # update element count
-      if(updateElementCount){
-        oldAspectElementCount = rcx$metaData[rcx$metaData['name'] == aspect,'elementCount']
-        if((!is.na(oldAspectElementCount))||(aspect %in% countElementsOfAspects)){
-          countByDimension = 1
-          if(aspect %in% keyValueAspects){
-            countByDimension = 2
-          }
-          newAspectElementCount = dim(rcx[[aspect]])[countByDimension]
-          rcx$metaData[rcx$metaData['name'] == aspect,'elementCount'] = newAspectElementCount
-          if(verbose && (is.na(oldAspectElementCount)||(oldAspectElementCount != newAspectElementCount))){cat('\tElement count updated from "',oldAspectElementCount,'" to "',newAspectElementCount,'"\n', sep='')}
-        }
-      }
-    }
-  }
-  aspectsToSkip = c('metaData', 'numberVerification', 'status')
-  aspectsNotInMetaData = setdiff(names(rcx)[-which(names(rcx) %in% aspectsToSkip)], rcx$metaData$name)
-  if(verbose && (length(aspectsNotInMetaData)>0)){cat('Some aspects have no meta-data: ',paste0('"',aspectsNotInMetaData,'"', collapse = ', '),'\n(Except the following aspects, which are not supposed to have any meta-data: ',paste0('"',aspectsToSkip,'"', collapse = ', '),')\n', sep='')}
-  return(rcx)
-}
-
-
-rcx.validate.old = function(rcx, mandatoryAspects=c('nodes'), countElementsOfAspects=NULL, keyValueAspects=c('@context'), verbose=FALSE){	#!ToDo: Check if it works and all cases are covered
-	if(is.null(rcx) || !("RCX" %in% class(rcx))) {
-		warning("rcx.updateMetaData: Parameter rcx does not contain RCX object")
-		return(NULL)
-	}
+rcx.updateMetaData = function(rcx, mandatoryAspects=c('nodes'), excludeAspects=c("metaData", "numberVerification", "status"), force=FALSE, verbose=FALSE){		#!ToDo: Check if it works and all cases are covered
+	if(missing(rcx) || is.null(rcx) || !("RCX" %in% class(rcx))) stop("rcx.updateMetaData: Parameter rcx does not contain RCX object")
 	
-	# id exporting aspects are required to have specified an id counter (max id in the aspect)
-	idCounterAspects = c()
-	for(a in names(rcx)){
-		if('@id' %in% colnames(rcx[[a]])) {
-			idCounterAspects = c(idCounterAspects, a)
-		}
-	}
+	# check if mandatoryAspects are present in the RCX object
+	if(any(!(mandatoryAspects %in% names(rcx)))) stop(paste0("rcx.updateMetaData: Mandatory aspects are missing in the RCX object: ", paste0(mandatoryAspects[!(mandatoryAspects %in% names(rcx))], collapse=', ')))
 	
-	# get the most current consistency group
-	commonConsistencyGroup = max(rcx$metaData['consistencyGroup'])
 	
-	# Check if the element count should be updated
-	# note: the element count attribute is optional
-	updateElementCount = F
-	# element count will be updated, if any aspect is manually set
-	if(!is.null(countElementsOfAspects)){ updateElementCount = T }
-	# ..or some element counts are allready set and it should be just updated
-	if('elementCount' %in% names(rcx$metaData)){
-		updateElementCount = T
+	# get meta data from RCX object
+	# create it, if it doesn't exist (or if it is forced)
+	metaData = rcx$metaData
+	if(is.null(metaData) || force) {
+		if(verbose) print('rcx.updateMetaData: MetaData will be created')
+		metaData = data.frame(consistencyGroup=1, elementCount=0, lastUpdate=1, name = sort(names(rcx)[!(names(rcx) %in% excludeAspects)]), version='1.0', idCounter=NA, stringsAsFactors = F)
 	}else{
-		# in case it should be updated, but the column doesn't exist yet, it should be created
-		if(updateElementCount){
-			rcx$metaData$elementCount = NA
-		}
-	}
-	
-	maxLastUpdate = max(rcx$metaData$lastUpdate)
-	
-	
-	for(aspect in rcx$metaData$name){
-		if(verbose){cat('checking aspect "',aspect,'"...\n', sep = '')}
+		if(verbose) print('rcx.updateMetaData: Existing metaData will be updated')
 		
-		# is aspect not anymore present in rcx object?
-		if(is.null(rcx[[aspect]])){  
-			if(aspect %in% mandatoryAspects){
-				warning('rcx.updateMetaData: Aspect "',aspect,'" is mandatory for an RCX model, but cannot be found in this RCX object!\nMandatory aspects for all RCX objects: ',paste0('"',mandatoryAspects,'"', collapse = ', '),'\nMandatory aspects specified for rcx.updateMetaData: ',paste0('"',mandatoryAspects,'"', collapse = ', '))
-				return(NULL)
-			}else{
-				rcx$metaData = rcx$metaData[-which(rcx$metaData$name==aspect),]
-				if(verbose){cat('\tAspect not found in RCX object! Therefore it was removed from the meta data.\n', sep = '')}
-			}
-		}else{
-			#consistencyGroup elementCount   lastUpdate version idCounter properties
-			## update consistency Groups
-			## check consistency in an other function!!
-			# aspectConsistencyGroup = rcx$metaData[rcx$metaData['name'] == aspect,'consistencyGroup']
-			# if(aspectConsistencyGroup != commonConsistencyGroup){
-			#   rcx$metaData[rcx$metaData['name'] == aspect,'consistencyGroup'] = commonConsistencyGroup
-			#   if(verbose){cat('\tconsistency group updated from "',aspectConsistencyGroup,'" to "',commonConsistencyGroup,'"', sep='')}
-			# }
-			
-			# update id counter to the max id in the aspect (if an @id is set)
-			aspectIdCounter = rcx$metaData[rcx$metaData['name'] == aspect,'idCounter']
-			if(aspect %in% idCounterAspects){
-				oldIdCounter = rcx$metaData[rcx$metaData['name'] == aspect,'idCounter']
-				newIdCounter = max(rcx[[aspect]][,'@id'])
-				rcx$metaData[rcx$metaData['name'] == aspect,'idCounter'] = newIdCounter
-				if(verbose && (is.na(oldIdCounter)||(oldIdCounter!=newIdCounter))){cat('\tId counter updated from "',oldIdCounter,'" to "',newIdCounter,'"\n', sep='')}
-			}else{
-				rcx$metaData[rcx$metaData['name'] == aspect,'idCounter'] = NA
-			}
-			
-			# update element count
-			if(updateElementCount){
-				oldAspectElementCount = rcx$metaData[rcx$metaData['name'] == aspect,'elementCount']
-				if((!is.na(oldAspectElementCount))||(aspect %in% countElementsOfAspects)){
-					countByDimension = 1
-					if(aspect %in% keyValueAspects){
-						countByDimension = 2
-					}
-					newAspectElementCount = dim(rcx[[aspect]])[countByDimension]
-					rcx$metaData[rcx$metaData['name'] == aspect,'elementCount'] = newAspectElementCount
-					if(verbose && (is.na(oldAspectElementCount)||(oldAspectElementCount != newAspectElementCount))){cat('\tElement count updated from "',oldAspectElementCount,'" to "',newAspectElementCount,'"\n', sep='')}
-				}
-			}
+		if(!('consistencyGroup' %in% names(metaData))){
+			metaData$consistencyGroup = 1
+			if(verbose) warning('rcx.updateMetaData: No consistancy groups specified (Set by default to "1")!  Check manually for consistency!')
 		}
-	}
-	aspectsToSkip = c('metaData', 'numberVerification', 'status')
-	aspectsNotInMetaData = setdiff(names(rcx)[-which(names(rcx) %in% aspectsToSkip)], rcx$metaData$name)
-	if(verbose && (length(aspectsNotInMetaData)>0)){cat('Some aspects have no meta-data: ',paste0('"',aspectsNotInMetaData,'"', collapse = ', '),'\n(Except the following aspects, which are not supposed to have any meta-data: ',paste0('"',aspectsToSkip,'"', collapse = ', '),')\n', sep='')}
-	return(rcx)
-}
-
-#' Updating the meta-data of an RCX object
-#' 
-#' @param rcx RCX object 
-#' @param mandatoryAspects character vector; Aspects, that are mandatory for a valid RCX object (by default: "nodes")
-#' @param countElementsOfAspects character vector; Aspects, that should be counted (i.e. have an entry in elementCount != NA)
-#' @param keyValueAspects character vector; Specifies the aspects, that consist of key-value pairs
-#' @param verbose logical; whether to print out extended feedback
-#' @return \code{\link{RCX}} object
-#' @details For a given RCX object the meta-data is updated, i.e. the counted elements and id counter are updated. If an aspect was removed, it will also removed from the meta-data. But, in contrast, if an aspect is added (manually, and not by ndex.RCXaddAspect), no meta-data is added.
-#' If mandatory aspects (specified in mandatoryAspects parameter; by default "mandatoryAspects=c('nodes')", which is the minimal requirement for a valid RCX object) are missing in the RCX object, an error is thrown.
-#' By default, the aspects, which already have an entry for "elementCount" (i.e. != NA), are updated. If any aspect name is given by the "countElementsOfAspects" parameter, those aspects are used for counting (the default behavour usually corresponds with setting "countElementsOfAspects=c('citations','@context','edges','ndexStatus','nodes')")
-#' For counting the elements, there are two different strategies: The default strategy is counting the lines of the data.frame (which translate in JSON to the elements of an array).
-#' In some cases (e.g. for the aspect "@context"), the data consists of simple key-value pairs. In the RCX object the keys are the (named) columns, and the values embeded in the single line of the data.frame (which translates in JSON to an array, with an object as single entry).
-#' The correct way of counting the elements of those aspects is therefore by column, which can spezified by the "keyValueAspects" parameter, e.g. by default the parameter is set "keyValueAspects=c('@context')" to allow the key-value pairs in the "@context" aspect to be counted correctly.
-#' (Note: Since keys are supposed to be unique, this might be the savest way realizing this within both, JSON and R)
-#' @examples 
-#' \dontrun{
-#' rcx = rcx.updateMetaData(rcx)
-#' # or with explicitly set default values
-#' rcx = rcx.updateMetaData(rcx, mandatoryAspects=c('nodes'), countElementsOfAspects=NULL, keyValueAspects=c('@context'), verbose=FALSE)
-#' # which, in the most cases, equals to
-#' rcx = rcx.updateMetaData(rcx, mandatoryAspects=c('nodes'), countElementsOfAspects=c('citations','@context','edges','ndexStatus','nodes'), keyValueAspects=c('@context'), verbose=FALSE)}
-#' @export
-rcx.updateMetaData = function(rcx, mandatoryAspects=c('nodes'), noMetaDataAspects=c("metaData", "numberVerification", "status"), verbose=FALSE){		#!ToDo: Check if it works and all cases are covered
-  if(missing(rcx) || is.null(rcx) || !("RCX" %in% class(rcx))) stop("rcx.updateMetaData: Parameter rcx does not contain RCX object")
-  
-  # check if mandatoryAspects are present in the RCX object
-  if(any(!(mandatoryAspects %in% names(rcx)))) stop(paste0("rcx.updateMetaData: Mandatory aspects are missing in the RCX object: ", paste0(mandatoryAspects[!(mandatoryAspects %in% names(rcx))], collapse=', ')))
-  
-  
-  # get meta data from RCX object
-  # create it, if it doesn't exist
-  metaData = rcx$metaData
-  if(is.null(metaData)) {
-	  metaData = data.frame(consistencyGroup=1, elementCount=0, lastUpdate=1, name = names(rcx)[!(names(rcx) %in% noMetaDataAspects)], version='1.0', idCounter=NA, stringsAsFactors = F)
-	  if(verbose) print('rcx.updateMetaData: No metaData aspect found in the RCX objet! MetaData will be created.')
-  }
-  
-  # id exporting aspects are required to have specified an id counter (max id in the aspect)
-  sapply(metaData$name, function(x){return(ifelse('@id' %in% colnames(rcx[[x]]), max(rcx[[x]]$'@id'), NA))})
-  
-  # get the current consistency group(s)
-  consistencyGroups = unique(metaData$consistencyGroup)
-  # create consistancy group column, if it not exists
-  if(is.null(consistencyGroups)){
-	  metaData$consistencyGroup = 1
-	  if(verbose) warning('rcx.updateMetaData: No consistancy groups specified (Set by default to "1")!  Check manually for consistency!')
-  }
-  if(verbose && (length(consistencyGroups)>1)){
-	  warn = paste0("rcx.updateMetaData: RCX object contains ",length(consistencyGroups), " consistency groups! Check the groups manually for consistency!\n")
-	  for(cgNr in consistencyGroups){
-	  	warn = paste0(warn, 'Group ',cgNr, ':', paste0(metaData$name[metaData$consistencyGroup==cgNr], collapse = ', '),'\n')
-  	  }
-	  warning(warn)
-  }
-  
-  # update element count
-  metaData$elementCount = sapply(metaData$name, function(x){return(dim(rcx[[x]])[1])})
-  
-  # set properties (if not already set)
-  if(!('list' %in% class(metaData$properties))){
-	  metaData$properties=rep(list(), length.out=dim(metaData)[1])
-  }
-  rcx$metaData = metaData
-  return(rcx)
-}
-
-rcx.updateMetaData.old = function(rcx, mandatoryAspects=c('nodes'), countElementsOfAspects=NULL, keyValueAspects=c('@context'), verbose=FALSE){		#!ToDo: Check if it works and all cases are covered
-	if(missing(rcx) || is.null(rcx) || !("RCX" %in% class(rcx))) {
-		stop("rcx.updateMetaData: Parameter rcx does not contain RCX object")
+		if(!('elementCount' %in% names(metaData))) metaData$elementCount = 0
+		if(!('lastUpdate' %in% names(metaData))) metaData$lastUpdate = 1
+		if(!('version' %in% names(metaData))) metaData$version = '1.0'
+		if(!('idCounter' %in% names(metaData))) metaData$idCounter = NA
+		properties = NULL
+		if('properties' %in% names(metaData)){
+			properties = metaData$properties
+			metaData$properties = NULL
+		}else{
+			properties = rep(list(), length.out=dim(metaData)[1])
+		}
+		
+		aspects = names(rcx)[!(names(rcx) %in% excludeAspects)]
+		aspectsAlreadyInMDIndex = which(metaData$name %in% aspects)
+		
+		# exclude rows, that are no aspects and order columns
+		metaData = metaData[aspectsAlreadyInMDIndex,sort(colnames(metaData))]
+		properties = properties[aspectsAlreadyInMDIndex]
+		
+		# find aspects missing in meta-data
+		aspectsNotYetInMD = aspects[!aspects %in% metaData$name]
+		
+		# add missing aspects to metaData
+		if(length(aspectsNotYetInMD)!=0) {
+			metaData = rbind(metaData, data.frame(consistencyGroup=1, elementCount=0, idCounter=NA, lastUpdate=1, name = aspectsNotYetInMD, version='1.0', stringsAsFactors = F))
+			properties = c(properties,rep(list(),length.out=length(aspectsNotYetInMD)))
+		}
+		
+		# add the properties column again
+		metaData$properties = properties
 	}
 	
+	if(verbose) print('rcx.updateMetaData: idCounter will be updated')
 	# id exporting aspects are required to have specified an id counter (max id in the aspect)
-	idCounterAspects = c()
-	for(a in names(rcx)){
-		if('@id' %in% colnames(rcx[[a]])) {
-			idCounterAspects = c(idCounterAspects, a)
+	metaData$idCounter = sapply(metaData$name, function(x){return(ifelse('@id' %in% colnames(rcx[[x]]), max(rcx[[x]]$'@id'), NA))})
+	
+	
+	if(verbose) print('rcx.updateMetaData: Consistency groups will be checked')
+	# get the current consistency group(s)
+	consistencyGroups = unique(metaData$consistencyGroup)
+	if(verbose && (length(consistencyGroups)>1)){
+		warn = paste0("rcx.updateMetaData: RCX object contains ",length(consistencyGroups), " consistency groups! Check the groups manually for consistency!\n")
+		for(cgNr in consistencyGroups){
+			warn = paste0(warn, 'Group ',cgNr, ': ', paste0(metaData$name[metaData$consistencyGroup==cgNr], collapse = ', '),'\n')
 		}
+		warning(warn)
 	}
 	
-	# get the most current consistency group
-	commonConsistencyGroup = max(rcx$metaData['consistencyGroup'])
+	# update element count
+	metaData$elementCount = sapply(metaData$name, function(x){return(max(dim(rcx[[x]])[1],0))})	# max(0,NULL) = 0 to set default value to 0
 	
-	# Check if the element count should be updated
-	# note: the element count attribute is optional
-	updateElementCount = F
-	# element count will be updated, if any aspect is manually set
-	if(!is.null(countElementsOfAspects)){ updateElementCount = T }
-	# ..or some element counts are allready set and it should be just updated
-	if('elementCount' %in% names(rcx$metaData)){
-		updateElementCount = T
-	}else{
-		# in case it should be updated, but the column doesn't exist yet, it should be created
-		if(updateElementCount){
-			rcx$metaData$elementCount = NA
-		}
+	# set properties (if not already set)
+	if(!('list' %in% class(metaData$properties))){
+		metaData$properties=rep(list(), length.out=dim(metaData)[1])
 	}
 	
-	maxLastUpdate = max(rcx$metaData$lastUpdate)
+	# order meta-data elements by names and correct the row numbering
+	metaData = metaData[order(metaData$name),order(colnames(metaData))]
+	rownames(metaData) = 1:dim(metaData)[1]
 	
-	
-	for(aspect in rcx$metaData$name){
-		if(verbose){cat('checking aspect "',aspect,'"...\n', sep = '')}
-		
-		# is aspect not anymore present in rcx object?
-		if(is.null(rcx[[aspect]])){  
-			if(aspect %in% mandatoryAspects){
-				warning('rcx.updateMetaData: Aspect "',aspect,'" is mandatory for an RCX model, but cannot be found in this RCX object!\nMandatory aspects for all RCX objects: ',paste0('"',mandatoryAspects,'"', collapse = ', '),'\nMandatory aspects specified for rcx.updateMetaData: ',paste0('"',mandatoryAspects,'"', collapse = ', '))
-				return(NULL)
-			}else{
-				rcx$metaData = rcx$metaData[-which(rcx$metaData$name==aspect),]
-				if(verbose){cat('\tAspect not found in RCX object! Therefore it was removed from the meta data.\n', sep = '')}
-			}
-		}else{
-			#consistencyGroup elementCount   lastUpdate version idCounter properties
-			## update consistency Groups
-			## check consistency in an other function!!
-			# aspectConsistencyGroup = rcx$metaData[rcx$metaData['name'] == aspect,'consistencyGroup']
-			# if(aspectConsistencyGroup != commonConsistencyGroup){
-			#   rcx$metaData[rcx$metaData['name'] == aspect,'consistencyGroup'] = commonConsistencyGroup
-			#   if(verbose){cat('\tconsistency group updated from "',aspectConsistencyGroup,'" to "',commonConsistencyGroup,'"', sep='')}
-			# }
-			
-			# update id counter to the max id in the aspect (if an @id is set)
-			aspectIdCounter = rcx$metaData[rcx$metaData['name'] == aspect,'idCounter']
-			if(aspect %in% idCounterAspects){
-				oldIdCounter = rcx$metaData[rcx$metaData['name'] == aspect,'idCounter']
-				newIdCounter = max(rcx[[aspect]][,'@id'])
-				rcx$metaData[rcx$metaData['name'] == aspect,'idCounter'] = newIdCounter
-				if(verbose && (is.na(oldIdCounter)||(oldIdCounter!=newIdCounter))){cat('\tId counter updated from "',oldIdCounter,'" to "',newIdCounter,'"\n', sep='')}
-			}else{
-				rcx$metaData[rcx$metaData['name'] == aspect,'idCounter'] = NA
-			}
-			
-			# update element count
-			if(updateElementCount){
-				oldAspectElementCount = rcx$metaData[rcx$metaData['name'] == aspect,'elementCount']
-				if((!is.na(oldAspectElementCount))||(aspect %in% countElementsOfAspects)){
-					countByDimension = 1
-					if(aspect %in% keyValueAspects){
-						countByDimension = 2
-					}
-					newAspectElementCount = dim(rcx[[aspect]])[countByDimension]
-					rcx$metaData[rcx$metaData['name'] == aspect,'elementCount'] = newAspectElementCount
-					if(verbose && (is.na(oldAspectElementCount)||(oldAspectElementCount != newAspectElementCount))){cat('\tElement count updated from "',oldAspectElementCount,'" to "',newAspectElementCount,'"\n', sep='')}
-				}
-			}
-		}
-	}
-	aspectsToSkip = c('metaData', 'numberVerification', 'status')
-	aspectsNotInMetaData = setdiff(names(rcx)[-which(names(rcx) %in% aspectsToSkip)], rcx$metaData$name)
-	if(verbose && (length(aspectsNotInMetaData)>0)){cat('Some aspects have no meta-data: ',paste0('"',aspectsNotInMetaData,'"', collapse = ', '),'\n(Except the following aspects, which are not supposed to have any meta-data: ',paste0('"',aspectsToSkip,'"', collapse = ', '),')\n', sep='')}
+	rcx$metaData = metaData
 	return(rcx)
-}
-
-
-#' merging two or more rcx objects
-#' @param rcx RCX object
-#' @param ... one or more RCX objects
-#' @return RCX object
-#' @details Two or more RCX objects are merged
-#' @export
-rcx.merge = function(rcx,...){	#!ToDo: Implement
-	rcx <- list(rcx, ...)
 }
 

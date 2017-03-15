@@ -109,7 +109,7 @@ Version_2.0:
             size: 
               tag: "size"
               method: "parameter"
-              optional: TRUE
+              optional: true
         update:
           description: "Update an Aspect of a Network"
           url: "/network/#NETWORKID#/aspect/#ASPECT#"
@@ -127,10 +127,24 @@ Version_2.0:
           url: "/network/#NETWORKID#/permission"
           method: "GET"
           params:
-            type: "#TYPE#"
-            permission: "#PERMISSION#"
-            start: "#START#"
-            size: "#SIZE#"
+            network: 
+              tag: "#NETWORKID#"
+              method: "replace"
+            type:
+              tag: "type"
+              method: "parameter"
+            permission:
+              tag: "permission"
+              method: "parameter"
+              optional: true
+            start: 
+              tag: "start"
+              method: "parameter"
+              optional: true
+            size: 
+              tag: "size"
+              method: "parameter"
+              optional: true
         update:
           description: "Update Network Permission"
           url: "/network/#NETWORKID#/permission"
@@ -139,9 +153,17 @@ Version_2.0:
             network: 
               tag: "#NETWORKID#"
               method: "replace"
-            userid: "#UUID#"
-            groupid: "#UUID#"
-            permission: "#PERMISSION#"
+            user:
+              tag: "userid"
+              method: "parameter"
+              optional: true
+            group:
+              tag: "groupid"
+              method: "parameter"
+              optional: true
+            permission:
+              tag: "permission"
+              method: "parameter"
         delete:
           description: "Delete Network Permission"
           url: "/network/#NETWORKID#/permission"
@@ -150,8 +172,14 @@ Version_2.0:
             network: 
               tag: "#NETWORKID#"
               method: "replace"
-            userid: "#UUID#"
-            groupid: "#UUID#"
+            user:
+              tag: "userid"
+              method: "parameter"
+              optional: true
+            group:
+              tag: "groupid"
+              method: "parameter"
+              optional: true
       profile:
         update:
           description: "Update Network Profile"
@@ -332,38 +360,52 @@ Version_1.3:
           url: "/network/#NETWORKID#/user/#PERMISSION#"
           method: "GET"
           params:
+            network: 
+              tag: "#NETWORKID#"
+              method: "replace"
             permission: 
               tag: "#PERMISSION#"
               method: "replace"
+              default: "ALL"
             start: 
               method: "append"
               default: "0"
             size: 
               method: "append"
-              default: "100"
+              default: "1000"
         update:
           description: "Update Network Permission"
-          url: "/network/#NETWORKID#/member"
-          method: "PUT"
+          url: "/network/#NETWORKID#/member/user/#USERID#"
+          method: "POST"
           params:
-            userid: "#UUID#"
-            groupid: "#UUID#"
-            permission: "#PERMISSION#"
+            network: 
+              tag: "#NETWORKID#"
+              method: "replace"
+            user:
+              tag: "#USERID#"
+              method: "replace"
         delete:
           description: "Delete Network Permission"
-          url: "/network/#NETWORKID#/member/#UUID#"
+          url: "/network/#NETWORKID#/member/user/#USERID#"
           method: "DELETE"
           params:
-            userid: "#UUID#"
-            groupid: "#UUID#"
+            network: 
+              tag: "#NETWORKID#"
+              method: "replace"
+            user:
+              tag: "#USERID#"
+              method: "replace"
       systemproperties:
         set:
           description: "Set Network System Properties"
-          url: "/network/#NETWORKID#/setFlag/#KEY#=#VALUE#"
+          url: "/network/#NETWORKID#/setFlag/readOnly=#VALUE#"
           method: "PUT"
           params:
             network: 
               tag: "#NETWORKID#"
+              method: "replace"
+            readOnly: 
+              tag: "#VALUE#"
               method: "replace"
       properties:
         set:

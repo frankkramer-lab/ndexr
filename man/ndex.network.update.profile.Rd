@@ -4,7 +4,7 @@
 \alias{ndex.network.update.profile}
 \title{Update Network Profile}
 \usage{
-ndex.network.update.profile(ndexcon, network_id)
+ndex.network.update.profile(ndexcon, nuuid)
 }
 \description{
 Update Network Profile

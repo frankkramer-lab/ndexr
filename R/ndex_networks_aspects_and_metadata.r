@@ -41,7 +41,7 @@ ndex.network.get.metadata <- function(ndexcon, nuuid){
 	route <- ndex.helper.encodeParams(api$url, api$params, network=nuuid)
 	
 	response = ndex_rest_GET(ndexcon, route)
-	return(response)
+	return(response$metaData)
 }
 
 
@@ -55,6 +55,7 @@ ndex.network.get.metadata <- function(ndexcon, nuuid){
 #' @section REST query:
 #' GET: ndex.api.config$api$network$aspect$getMetaDataByName
 #' @note Compatible to NDEx server version 2.0
+#' @note Server error (version 2.0) since March 13th 2017
 #' @examples 
 #' \dontrun{
 #' ndexcon = ndex.connect(verbose=T)
@@ -74,8 +75,9 @@ ndex.network.aspect.get.metadata <- function(ndexcon, nuuid, aspect){
 #' This function retrieves the provided aspect as CX. The result is the same as accessing an aspect of a RCX object.
 #' 
 #' @param ndexcon object of class NDEXConnection
-#' @param nuuid unique ID of the network
-#' @param aspect name of the aspect
+#' @param nuuid character; unique ID of the network
+#' @param aspect character; name of the aspect
+#' @param size integer; specifies the number of elements returned
 #' @return data.frame of the aspect data (the same as rcx[[aspectName]])
 #' @section REST query:
 #' GET: ndex.api.config$api$network$aspect$getMetaDataByName
@@ -84,7 +86,8 @@ ndex.network.aspect.get.metadata <- function(ndexcon, nuuid, aspect){
 #' \dontrun{
 #' ndexcon = ndex.connect(verbose=T)
 #' pws = ndex.find.networks(ndexcon,"p53")
-#' aspect = ndex.network.get.aspect(ndexcon,pws[1,"externalId"], 'nodeAttributes') }
+#' aspect = ndex.network.get.aspect(ndexcon,pws[1,"externalId"], 'nodeAttributes')
+#' aspect = ndex.network.get.aspect(ndexcon,pws[1,"externalId"], 'nodeAttributes', 10)	# limit the returned elemets of the aspect to the first 10 elements}
 #' @export
 ndex.network.get.aspect <- function(ndexcon, nuuid, aspect, size){
 	if(missing(size)) size = NULL

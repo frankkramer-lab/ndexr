@@ -4,12 +4,12 @@
 \alias{ndex.network.get.provenance}
 \title{Get Network Provenance}
 \usage{
-ndex.network.get.provenance(ndexcon, network_id)
+ndex.network.get.provenance(ndexcon, nuuid)
 }
 \arguments{
 \item{ndexcon}{object of class NDEXConnection}
 
-\item{network_id}{unique ID of the network}
+\item{nuuid}{unique ID of the network}
 }
 \value{
 List of network metadata: ID, name, whether it is public, edge and node count; source and format of network

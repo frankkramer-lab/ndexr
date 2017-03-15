@@ -4,7 +4,7 @@
 \alias{ndex.network.set.samples}
 \title{Set Sample Network}
 \usage{
-ndex.network.set.samples(ndexcon, network_id)
+ndex.network.set.samples(ndexcon, nuuid)
 }
 \description{
 Set Sample Network

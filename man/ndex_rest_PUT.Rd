@@ -4,7 +4,7 @@
 \alias{ndex_rest_PUT}
 \title{Generic PUT query to API}
 \usage{
-ndex_rest_PUT(ndexcon, route, data, multipart = FALSE, raw = FALSE)
+ndex_rest_PUT(ndexcon, route, data = NULL, multipart = FALSE, raw = FALSE)
 }
 \arguments{
 \item{ndexcon}{object of class NDEXConnection \code{\link{ndex.connect}}}

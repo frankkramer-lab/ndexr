@@ -4,9 +4,46 @@
 \alias{ndex.network.get.permission}
 \title{Get All Permissions on a Network}
 \usage{
-ndex.network.get.permission(ndexcon, network_id)
+ndex.network.get.permission(ndexcon, nuuid, type, permission, start, size)
+}
+\arguments{
+\item{ndexcon}{object of class NDEXConnection}
+
+\item{nuuid}{unique ID of the network}
+
+\item{type}{character ("user"|"group"); specifies whether user or group permissions should be returned}
+
+\item{permission}{character (optional)("READ"|"WRITE"|"ADMIN"); constrains the type of the returned membership. If not set, all permission types will be returned.}
+
+\item{start}{integer (optional); specifies that the result is the nth page of the requested data.}
+
+\item{size}{integer (optional); specifies the number of data items in each page.}
+}
+\value{
+data.frame containing user or group UUIDs and the highest permission assigned to that user or group
 }
 \description{
-Get All Permissions on a Network
+This function retrieves the user or group permissions for a network
+}
+\note{
+Compatible to NDEx server version 1.3 and 2.0
+
+In version 1.3 the function only returns user permissions and differs in the returned data (more columns)!
+}
+\section{REST query}{
+
+GET: ndex.api.config$api$network$permission$get
+}
+\examples{
+\dontrun{
+ndexcon = ndex.connect('MyAccountName', 'MyPassword', verbose=T)
+networks = ndex.find.networks(ndexcon,"p53")
+nuuid = networks[1,"externalId"]
+## get the permissions
+permissions = ndex.network.get.permission(ndexcon, nuuid, 'user')
+permissions = ndex.network.get.permission(ndexcon, nuuid, 'user', NULL)	# same as previous
+permissions = ndex.network.get.permission(ndexcon, nuuid, 'user', 'READ', 0, 10)
+permissions = ndex.network.get.permission(ndexcon, nuuid, 'group')
+}
 }
 

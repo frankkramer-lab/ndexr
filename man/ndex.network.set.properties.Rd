@@ -4,7 +4,7 @@
 \alias{ndex.network.set.properties}
 \title{Set Network Properties}
 \usage{
-ndex.network.set.properties(ndexcon, network_id)
+ndex.network.set.properties(ndexcon, nuuid)
 }
 \description{
 Set Network Properties

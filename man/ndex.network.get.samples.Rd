@@ -4,7 +4,7 @@
 \alias{ndex.network.get.samples}
 \title{Get Network Sample}
 \usage{
-ndex.network.get.samples(ndexcon, network_id)
+ndex.network.get.samples(ndexcon, nuuid)
 }
 \description{
 Get Network Sample

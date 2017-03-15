@@ -9,9 +9,11 @@ ndex.network.get.aspect(ndexcon, nuuid, aspect, size)
 \arguments{
 \item{ndexcon}{object of class NDEXConnection}
 
-\item{nuuid}{unique ID of the network}
+\item{nuuid}{character; unique ID of the network}
 
-\item{aspect}{name of the aspect}
+\item{aspect}{character; name of the aspect}
+
+\item{size}{integer; specifies the number of elements returned}
 }
 \value{
 data.frame of the aspect data (the same as rcx[[aspectName]])
@@ -30,6 +32,7 @@ GET: ndex.api.config$api$network$aspect$getMetaDataByName
 \dontrun{
 ndexcon = ndex.connect(verbose=T)
 pws = ndex.find.networks(ndexcon,"p53")
-aspect = ndex.network.get.aspect(ndexcon,pws[1,"externalId"], 'nodeAttributes') }
+aspect = ndex.network.get.aspect(ndexcon,pws[1,"externalId"], 'nodeAttributes')
+aspect = ndex.network.get.aspect(ndexcon,pws[1,"externalId"], 'nodeAttributes', 10)	# limit the returned elemets of the aspect to the first 10 elements}
 }
 
