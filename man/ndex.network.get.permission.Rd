@@ -13,7 +13,7 @@ ndex.network.get.permission(ndexcon, nuuid, type, permission, start, size)
 
 \item{type}{character ("user"|"group"); specifies whether user or group permissions should be returned}
 
-\item{permission}{character (optional)("READ"|"WRITE"|"ADMIN"); constrains the type of the returned membership. If not set, all permission types will be returned.}
+\item{permission}{character (optional)("READ"|"WRITE"|"ADMIN"); constrains the type of the returned membership. If not set (or NULL), all permission types will be returned.}
 
 \item{start}{integer (optional); specifies that the result is the nth page of the requested data.}
 
@@ -34,6 +34,7 @@ In version 1.3 the function only returns user permissions and differs in the ret
 
 GET: ndex.api.config$api$network$permission$get
 }
+
 \examples{
 \dontrun{
 ndexcon = ndex.connect('MyAccountName', 'MyPassword', verbose=T)
@@ -46,4 +47,3 @@ permissions = ndex.network.get.permission(ndexcon, nuuid, 'user', 'READ', 0, 10)
 permissions = ndex.network.get.permission(ndexcon, nuuid, 'group')
 }
 }
-

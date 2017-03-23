@@ -30,10 +30,10 @@ Compatible to NDEx server version 1.3 and 2.0
 
 GET: ndex.api.config$api$network$get
 }
+
 \examples{
 \dontrun{
 ndexcon = ndex.connect(verbose=T)
 pws = ndex.find.networks(ndexcon,"p53")
 rcx = ndex.get.network(ndexcon,pws[1,"externalId"]) }
 }
-

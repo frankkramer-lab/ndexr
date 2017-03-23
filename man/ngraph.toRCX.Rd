@@ -46,4 +46,3 @@ cat("\\n")
 \seealso{
 \code{\link{ngraph}} \code{\link{ngraph.fromRCX}} \code{\link{rcx.fromJSON}} \code{\link{rcx.toJSON}}
 }
-

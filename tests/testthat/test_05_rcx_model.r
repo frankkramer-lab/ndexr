@@ -1,11 +1,29 @@
+################################################################################
+## Authors:
+##   Florian Auer [florian.auer@med.uni-goettingen.de]
+##
+## History:
+##   Created on 05 February 2017 by Auer
+## 	
+## Description:
+##	Tests for RCX data model:
+##    Check from and to JSON (rcx.fromJSON, rcx.toJSON)
+##    Check new RCX objects (rcx.new)
+##    Check MetaData update (rcx.updateMetaData)
+##
+## Usage:
+##  devtools::test(filter='05_*')
+################################################################################
+
 library(ndexr)
 context('RCX data model')
 
 
-test_that('Check from and to JSON', {
+test_that('Check from and to JSON (rcx.fromJSON, rcx.toJSON)', {
 	con = ndex.connect()
-	networks = ndex.find.networks(con, accountName = 'ndextutorials')  ## public ndex account networks
-	uuid = networks[1,'externalId']
+#	networks = ndex.find.networks(con, accountName = 'ndextutorials')  ## public ndex account networks
+#	uuid = networks[1,'externalId']
+	uuid = ndexTestConf$uuidPublicNetwork
 	rcx = ndex.get.network(con, uuid)
 	rcx2json = rcx.toJSON(rcx)
 	rcx2json2rcx = rcx.fromJSON(rcx2json)
@@ -15,7 +33,7 @@ test_that('Check from and to JSON', {
 	expect_equal(rcx, rcx2json2rcx, info=paste0('A conversion from rcx to json and back to rcx must produce the same rcx object'))
 })
 
-test_that('Check new RCX objects', {
+test_that('Check new RCX objects (rcx.new)', {
 	rcx1 = rcx.new()										# default
 	rcx2 = rcx.new(c('@id'=1))								# with node
 	rcx3 = rcx.new(nodes=c('@id'=1))						# name with node
@@ -43,10 +61,11 @@ test_that('Check new RCX objects', {
 	expect_equal(rcxV, rcxD, info=paste0('The two functions (from vector and data.frame) should return the same rcx object'))
 })
 
-test_that('Check MetaData update', {
+test_that('Check MetaData update (rcx.updateMetaData)', {
 	con = ndex.connect()
-	networks = ndex.find.networks(con, accountName = 'ndextutorials')  ## public ndex account networks
-	uuid = networks[1,'externalId']
+#	networks = ndex.find.networks(con, accountName = 'ndextutorials')  ## public ndex account networks
+#	uuid = networks[1,'externalId']
+	uuid = ndexTestConf$uuidPublicNetwork
 	rcx = ndex.get.network(con, uuid)
 	rcxF = rcx.updateMetaData(rcx,force=T)		# forced metaData update
 	

@@ -36,4 +36,3 @@ ndexcon = ndex.connect(apiConfig=ndex.api.config$Version2.0)   ## manually chang
 \seealso{
 \code{\link{ndex.api.config}}, \code{\link{updateConfigFromYaml}}
 }
-

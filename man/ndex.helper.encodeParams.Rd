@@ -52,4 +52,3 @@ ndex.helper.encodeParams(url, namedParams, values)
 #[1] "http://en.wikipedia.org/w/index.php/ICE200/somethingElse/12345"
 }
 }
-

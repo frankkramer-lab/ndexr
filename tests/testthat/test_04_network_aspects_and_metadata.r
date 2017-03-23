@@ -1,29 +1,45 @@
+################################################################################
+## Authors:
+##   Florian Auer [florian.auer@med.uni-goettingen.de]
+##
+## History:
+##   Created on 05 February 2017 by Auer
+## 	
+## Description:
+##	Tests Aspects and meta-data:
+##    Get network meta-data (ndex.network.get.metadata)
+##    Get network aspect as CX (ndex.network.get.aspect)
+##
+## Usage:
+##  devtools::test(filter='04_*')
+################################################################################
+
 library(ndexr)
 context('Aspects and meta-data')
 
 
 test_that('Get network meta-data (ndex.network.get.metadata)', {
-  nms = names(ndex.api.config)
-  apiVersions = nms[nms!='defaultVersion']
-  netColNames = c("consistencyGroup", "elementCount", "lastUpdate", "name", "properties", "version", "idCounter")
+    nms = names(ndex.api.config)
+    apiVersions = nms[nms!='defaultVersion']
+    netColNames = c("consistencyGroup", "elementCount", "lastUpdate", "name", "properties", "version", "idCounter")
   
-  con = ndex.connect()
+#   con = ndex.connect()
   
-  networks = ndex.find.networks(con, accountName = 'ndextutorials')  ## public ndex account networks
-  uuid = networks[1,'externalId']
-  
-  for(apiVersion in apiVersions){
-    api = ndex.api.config[[apiVersion]]
-    con = ndex.connect(apiConfig = api)
-    rcx = ndex.network.get.metadata(con, uuid)
-	if(con$apiConfig$version == '1.3'){
-		expect_null(rcx, info=paste0('Aspect meta-data should work, but for some reason for api 1.3 only returns NULL!'))
-	}else{
-	    expect_is(rcx, 'list', info=paste0('Checking class of aspect meta-data (api ', apiVersion, ')'))
-		expect_identical(names(rcx), 'metaData', info=paste0('Checking if returned object contains meta-data (api ', apiVersion, ')'))
-		expect_object_conains_names(rcx, netColNames, info=paste0('Checking meta-data column names (api ', apiVersion, ')'))		
-	}
-  }
+#   networks = ndex.find.networks(con, accountName = 'ndextutorials')  ## public ndex account networks
+#   uuid = networks[1,'externalId']
+	uuid = ndexTestConf$uuidPublicNetwork
+	
+    for(apiVersion in apiVersions){
+	    api = ndex.api.config[[apiVersion]]
+	    con = ndex.connect(apiConfig = api)
+	    rcx = ndex.network.get.metadata(con, uuid)
+		if(con$apiConfig$version == '1.3'){
+			expect_null(rcx, info=paste0('Aspect meta-data should work, but for some reason for api 1.3 only returns NULL!'))
+		}else{
+		    expect_is(rcx, 'data.frame', info=paste0('Checking class of aspect meta-data (api ', apiVersion, ')'))
+			expect_object_conains_names(rcx, netColNames, info=paste0('Checking meta-data column names (api ', apiVersion, ')'))		
+		}
+    }
 })
 
 
@@ -37,8 +53,10 @@ test_that('Get network meta-data (ndex.network.get.metadata)', {
 #	
 #	con = ndex.connect()
 #	
-#	networks = ndex.find.networks(con, accountName = 'ndextutorials')  ## public ndex account networks
-#	uuid = networks[1,'externalId']
+##	networks = ndex.find.networks(con, accountName = 'ndextutorials')  ## public ndex account networks
+##	uuid = networks[1,'externalId']
+#	uuid = ndexTestConf$uuidPublicNetwork
+#
 #	metData  = ndex.network.get.metadata(con, uuid)
 #	metDataNames = metData$metaData$name
 #	
@@ -63,8 +81,9 @@ test_that('Get network aspect as CX (ndex.network.get.aspect)', {
 	apiVersions = nms[nms!='defaultVersion']
 	con = ndex.connect()
 	
-	networks = ndex.find.networks(con, accountName = 'ndextutorials')  ## public ndex account networks
-	uuid = networks[1,'externalId']
+#	networks = ndex.find.networks(con, accountName = 'ndextutorials')  ## public ndex account networks
+#	uuid = networks[1,'externalId']
+	uuid = ndexTestConf$uuidPublicNetwork
 	metData  = ndex.network.get.metadata(con, uuid)
 	metDataNames = metData$metaData$name[metData$metaData$elementCount>0]
 	
@@ -85,10 +104,11 @@ test_that('Get network aspect as CX (ndex.network.get.aspect)', {
 #test_that('Update network aspect (ndex.network.update.aspect)', {
 #	nms = names(ndex.api.config)
 #	apiVersions = nms[nms!='defaultVersion']
-#	con = ndex.connect()
+#	con = ndex.connect(ndexTestConf$user, ndexTestConf$password)
 #	
-#	networks = ndex.find.networks(con, accountName = 'ndextutorials')  ## public ndex account networks
-#	uuid = networks[1,'externalId']
+##	networks = ndex.find.networks(con, accountName = 'ndextutorials')  ## public ndex account networks
+##	uuid = networks[1,'externalId']
+#	uuid = ndexTestConf$uuidPrivateNetwork
 #	rcx = ndex.get.network(con, uuid)
 #	aspectNames = names(rcx)
 #	aspectNames = aspectNames[aspectNames != 'metaData']
@@ -96,7 +116,7 @@ test_that('Get network aspect as CX (ndex.network.get.aspect)', {
 #	
 #	for(apiVersion in apiVersions){
 #		api = ndex.api.config[[apiVersion]]
-#		con = ndex.connect(ndex$user, ndex$password, apiConfig = api)
+#		con = ndex.connect(ndexTestConf$user, ndexTestConf$password, apiConfig = api)
 #		uuidCreated = ndex.create.network(con,rcx)
 #		
 #		if(con$apiConfig$version != '1.3'){

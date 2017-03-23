@@ -9,4 +9,3 @@ ndex.network.set.samples(ndexcon, nuuid)
 \description{
 Set Sample Network
 }
-

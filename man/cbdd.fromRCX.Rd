@@ -25,4 +25,3 @@ pws = ndex.find.networks(ndexcon,"p53")
 rcx = ndex.get.network(ndexcon,pws[1,"externalId"]) 
 cbdd = cbdd.fromRCX(rcx)}
 }
-

@@ -5,6 +5,7 @@
 ##
 ## History:
 ##   Created on 20 September 2016 by Kramer
+##   Restructured on 10 January 2017 by Auer
 ## 	
 ## Description:
 ##	Base functions to create, parse, modify CX networks from/to JSON data
@@ -239,14 +240,16 @@ rcx.aspect.toJSON <- function(rcxAspect, verbose = FALSE, pretty = FALSE){
 		## don't add an empty aspect, if all v's are lists
 		if(dim(tmpNoList)[1]!=0){
 			tmpNoList$v <- unlist(tmpNoList$v)
-			tmpTxt = jsonlite::toJSON(tmpNoList, na='string', pretty = pretty)
+#			tmpTxt = jsonlite::toJSON(tmpNoList, na='string', pretty = pretty) # TODO!! [fauer:20.03.2017]: NA as string or NULL? for citations$`dc:contributor` it has to be NULL!
+			tmpTxt = jsonlite::toJSON(tmpNoList, na=NULL, pretty = pretty)
 			tmpTxt = sub('\n*$','',substr(tmpTxt,2,nchar(tmpTxt)-1))		
 			jsonCol = c(jsonCol, tmpTxt)
 		}
 		
 		## don't add an empty aspect, if none v is a list (but might be an integer)
 		if(dim(tmpList)[1]!=0){
-			tmpTxt = jsonlite::toJSON(tmpList, na='string', pretty = pretty)
+#			tmpTxt = jsonlite::toJSON(tmpList, na='string', pretty = pretty)
+			tmpTxt = jsonlite::toJSON(tmpList, na=NULL, pretty = pretty)
 			tmpTxt = substr(tmpTxt,2,nchar(tmpTxt)-1)
 			jsonCol = c(jsonCol, tmpTxt)
 		}
@@ -254,7 +257,8 @@ rcx.aspect.toJSON <- function(rcxAspect, verbose = FALSE, pretty = FALSE){
 		result = paste0('[',paste0(jsonCol, collapse=','),']')
 	}else{
 		tmpList = rcxAspect
-		result = jsonlite::toJSON(tmpList, na='string', pretty = pretty)
+#		result = jsonlite::toJSON(tmpList, na='string', pretty = pretty)
+		result = jsonlite::toJSON(tmpList, na=NULL, pretty = pretty)
 	}
 
 	return(result)
@@ -288,7 +292,6 @@ rcx.asNewNetwork = function(rcx){
   return(rcx)
 }
 
-
 #' Create a blank rcx object
 #' 
 #' This function generates a (blank) RCX object. For a valid RCX, at least one node has to be specified. Optional attributes are 'n' for names and 'r' for represents.
@@ -305,10 +308,11 @@ rcx.asNewNetwork = function(rcx){
 #' rcx = rcx.new(c('@id'=1, n='Some Name'))
 #' rcx = rcx.new(c('@id'=1, n='Some Name', r='HGNC:Symbol'))
 #' rcx = rcx.new(data.frame('@id'=c(1),n=c('Some Name'), r=c('HGNC:Symbol'), check.names=F))	#same as one before
-#' rcx = rcx.new(data.frame('@id'=c(1,2,3),n=c('Some Name','And another name',NA), r=c('HGNC:Symbol',NA,'UniProt:C3P0'), check.names=F))}
-#' #!ToDo: add parameters for edges and other core aspects
+#' rcx = rcx.new(data.frame('@id'=c(1,2,3),n=c('Some Name','And another name',NA), r=c('HGNC:Symbol',NA,'UniProt:C3P0'), check.names=F))
+#' }
 #' @export
 rcx.new = function(nodes=c('@id'=1), edges, nodeAttributes, edgeAttributes, networkAttributes){
+# TODO : add parameters for edges and other core aspects
 	if(is.null(nodes)) stop('rcx.new: At least one node is necessary!')
 	if(!'@id' %in% names(nodes)) stop('rcx.new: No "@id" column in nodes!')
 	ids = as.character(nodes[['@id']])
@@ -340,7 +344,8 @@ rcx.new = function(nodes=c('@id'=1), edges, nodeAttributes, edgeAttributes, netw
 #' rcx = rcx.updateMetaData(rcx, mandatoryAspects=c('nodes'), excludeAspects=c("metaData", "numberVerification", "status"), force=FALSE, verbose=FALSE)
 #' }
 #' @export
-rcx.updateMetaData = function(rcx, mandatoryAspects=c('nodes'), excludeAspects=c("metaData", "numberVerification", "status"), force=FALSE, verbose=FALSE){		#!ToDo: Check if it works and all cases are covered
+rcx.updateMetaData = function(rcx, mandatoryAspects=c('nodes'), excludeAspects=c("metaData", "numberVerification", "status"), force=FALSE, verbose=FALSE){		
+# TODO : Check if it works and all cases are covered
 	if(missing(rcx) || is.null(rcx) || !("RCX" %in% class(rcx))) stop("rcx.updateMetaData: Parameter rcx does not contain RCX object")
 	
 	# check if mandatoryAspects are present in the RCX object

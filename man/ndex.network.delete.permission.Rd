@@ -28,6 +28,7 @@ Compatible to NDEx server version 1.3 and 2.0
 
 GET: ndex.api.config$api$network$permission$delete
 }
+
 \examples{
 \dontrun{
 ndexcon = ndex.connect('MyAccountName', 'MyPassword', verbose=T)
@@ -39,4 +40,3 @@ ndex.network.delete.permission(ndexcon, nuuid, user=someUserUuid)	# returns 0, b
 ndex.network.delete.permission(ndexcon, nuuid, group=someGroupUuid)
 }
 }
-

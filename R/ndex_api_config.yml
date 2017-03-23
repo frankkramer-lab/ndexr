@@ -20,6 +20,164 @@ Version_2.0:
             method: "parameter"
             tag: "valid"
             default: "true"
+      create:
+        description: "Create a new user"
+        url: "/user"
+        method: "POST"
+      delete:
+        description: "Deletes the authenticated user, removing any other objects in the database that depend on the user"
+        url: "/user/#USERID#"
+        method: "DELETE"
+        params:
+          user: 
+            tag: "#USERID#"
+            method: "replace"
+      update:
+        description: "Updates the authenticated user based on the serialized user object in the PUT data"
+        url: "/user/#USERID#"
+        method: "PUT"
+        params:
+          user: 
+            tag: "#USERID#"
+            method: "replace"
+      get:
+        byName:
+          description: "Get User By userName"
+          url: "/user"
+          method: "GET"
+          params:
+            userName:
+              method: "parameter"
+              tag: "username"
+        byId:
+          description: "Get User By UUID"
+          url: "/user/#USERID#"
+          method: "GET"
+          params:
+            user:
+              method: "replace"
+              tag: "#USERID#"
+      password:
+        change:
+          description: "Changes the authenticated user’s password to the new password"
+          url: "/user/#USERID#/password"
+          method: "PUT"
+          params:
+            user:
+              method: "replace"
+              tag: "#USERID#"
+        mail:
+          description: "Causes a new password to be generated for the given user account and then emailed to the user’s emailAddress"
+          url: "/user/#USERID#/password"
+          method: "PUT"
+          params:
+            user:
+              method: "replace"
+              tag: "#USERID#"
+            forgot:
+              method: "parameter"
+              tag: "forgot"
+              default: "true"
+      verify:
+        description: "Verify a User with verificationCode"
+        url: "/user/#USERID#/verification"
+        method: "GET"
+        params:
+          user: 
+            tag: "#USERID#"
+            method: "replace"
+          code:
+              method: "parameter"
+              tag: "verificationCode"
+      group:
+        get:
+          description: "Get User’s Permissions in Group"
+          url: "/user/#USERID#/membership"
+          method: "GET"
+          params:
+            user: 
+              tag: "#USERID#"
+              method: "replace"
+            group:
+                method: "parameter"
+                tag: "groupid"
+        list:
+          description: "List Groups for which a user has the specified permission types"
+          url: "/user/#USERID#/membership"
+          method: "GET"
+          params:
+            user: 
+              tag: "#USERID#"
+              method: "replace"
+            type:
+                method: "parameter"
+                tag: "type"
+                optional: true
+            start:
+                method: "parameter"
+                tag: "start"
+                optional: true
+            size:
+                method: "parameter"
+                tag: "size"
+                optional: true
+      permission:
+        get:
+          description: "Get User’s Permission for Network"
+          url: "/user/#USERID#/permission"
+          method: "GET"
+          params:
+            user: 
+              tag: "#USERID#"
+              method: "replace"
+            network:
+                method: "parameter"
+                tag: "networkid"
+                optional: true
+            directonly:
+                method: "parameter"
+                tag: "directonly"
+                default: "false"
+        list:
+          description: "List User’s Network Permissions"
+          url: "/user/#USERID#/permission?permission={permission}&start={startPage}&size={pageSize}&directonly={true|false}"
+          method: "GET"
+          params:
+            user: 
+              tag: "#USERID#"
+              method: "replace"
+            permission:
+                method: "parameter"
+                tag: "permission"
+                optional: true
+            start:
+                method: "parameter"
+                tag: "start"
+                optional: true
+            size:
+                method: "parameter"
+                tag: "size"
+                optional: true
+            directonly:
+                method: "parameter"
+                tag: "directonly"
+                default: "false"
+      showcase:
+        description: "Get User’s Showcase Networks"
+        url: "/user/#USERID#/showcase"
+        method: "GET"
+        params:
+          user: 
+            tag: "#USERID#"
+            method: "replace"
+      networksummary:
+        description: "Verify a User with verificationCode"
+        url: "/user/#USERID#/networksummary"
+        method: "GET"
+        params:
+          user: 
+            tag: "#USERID#"
+            method: "replace"
     network:
       create:
         description: "Create a CX Network"
@@ -394,6 +552,15 @@ Version_1.3:
               method: "replace"
             user:
               tag: "#USERID#"
+              method: "replace"
+      profile:
+        update:
+          description: "Update Network Profile"
+          url: "/network/#NETWORKID#/summary"
+          method: "PUT"
+          params:
+            network: 
+              tag: "#NETWORKID#"
               method: "replace"
       systemproperties:
         set:

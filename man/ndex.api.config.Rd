@@ -18,4 +18,3 @@ If possible, the version 2.0 should be used
 Own configurations must contain a 'version' entry!
 }
 \keyword{datasets}
-

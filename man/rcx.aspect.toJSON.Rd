@@ -29,4 +29,3 @@ rcxNodesJson = rcx.aspect.toJSON(rcx$nodes) }
 \seealso{
 \code{\link{ngraph.toJSON}}, \code{\link{ngraph.fromRCX}}, \code{\link{ngraph.toRCX}} and \code{\link{rcx.fromJSON}}
 }
-

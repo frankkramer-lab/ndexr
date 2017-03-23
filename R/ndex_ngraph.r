@@ -8,7 +8,7 @@
 ## Description:
 ##	Base functions to create, parse, modify ngraph/igraph objects from/to CX networks
 ################################################################################
-
+# TODO!! [fauer:20.03.2017]: nGraph or iGraph?! No new functionality to iGraph! 
 
 #' Create ngraph object from RCX object
 #' 

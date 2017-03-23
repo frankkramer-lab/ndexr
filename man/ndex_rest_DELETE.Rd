@@ -32,4 +32,3 @@ ndex_rest_DELETE(ndexcon, "/networks/api")
 \seealso{
 \code{\link{ndex_rest_GET}},  \code{\link{ndex_rest_POST}},  \code{\link{ndex_rest_PUT}} and \code{\link{ndex_rest_DELETE}}
 }
-

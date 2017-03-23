@@ -99,7 +99,6 @@ ndex.network.get.aspect <- function(ndexcon, nuuid, aspect, size){
 	return(response)
 }
 
-
 #' Update an Aspect of a Network
 #' 
 #' This function updates an aspect with the provided CX for the aspect.
@@ -112,7 +111,6 @@ ndex.network.get.aspect <- function(ndexcon, nuuid, aspect, size){
 #' @section REST query:
 #' PUT: ndex.api.config$api$network$aspect$update
 #' @note Compatible to NDEx server version 2.0
-#' #!!!ToDo: Error on server!
 #' @examples 
 #' \dontrun{
 #' ndexcon = ndex.connect(verbose=T)
@@ -122,12 +120,13 @@ ndex.network.get.aspect <- function(ndexcon, nuuid, aspect, size){
 #' ndex.network.update.aspect(ndexcon,pws[1,"externalId"], 'nodeAttributes', aspectModified)}
 #' @export
 ndex.network.update.aspect <- function(ndexcon, nuuid, aspectName, aspectAsRCX){
+# TODO!! : Error on server!
 	api = ndex.helper.getApi(ndexcon, 'network$aspect$update')
 	route <- ndex.helper.encodeParams(api$url, api$params, network=nuuid, aspect=aspectName)
 	
 	tmpFile = tempfile()
 	writeLines(paste0('[{"',aspectName,'":[',rcx.aspect.toJSON(aspectAsRCX),']}]'), tmpFile)
-	data <- list(CXNetworkStream = upload_file(tmpFile, type = 'application/json'))
+	data <- list(CXNetworkStream = httr::upload_file(tmpFile, type = 'application/json'))
 	response = ndex_rest_PUT(ndexcon, route, data, multipart=T, raw=T)
 	file.remove(tmpFile)
 	return(nuuid)

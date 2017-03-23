@@ -30,4 +30,3 @@ rcxjson = rcx.toJSON(rcx) }
 \seealso{
 \code{\link{ngraph.fromRCX}} \code{\link{ngraph.toRCX}} \code{\link{rcx.fromJSON}}
 }
-

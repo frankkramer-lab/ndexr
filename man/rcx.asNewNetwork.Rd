@@ -31,4 +31,3 @@ ndex.create.network(ndexcon, rcxjson) }
 \seealso{
 \code{\link{rcx.fromJSON}} \code{\link{ndex.get.network}}
 }
-

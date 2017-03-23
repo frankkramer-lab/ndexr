@@ -36,4 +36,3 @@ rcx = rcx.updateMetaData(rcx)
 rcx = rcx.updateMetaData(rcx, mandatoryAspects=c('nodes'), excludeAspects=c("metaData", "numberVerification", "status"), force=FALSE, verbose=FALSE)
 }
 }
-

@@ -90,12 +90,12 @@ ndex.get.network <- function(ndexcon, nuuid){
 #' nuuid = ndex.create.network(ndexcon, rcx)}
 #' @export
 ndex.create.network <- function(ndexcon, rcx){
-  api = ndex.helper.getApi(ndexcon, 'network$create')
-  route <- ndex.helper.encodeParams(api$url, api$params)
+	api = ndex.helper.getApi(ndexcon, 'network$create')
+	route <- ndex.helper.encodeParams(api$url, api$params)
   
-  tmpFile = tempfile()
-  writeLines(rcx.toJSON(rcx, pretty = T), tmpFile)
-  data <- list(CXNetworkStream = upload_file(tmpFile, type = 'application/json'))
+	tmpFile = tempfile()
+	writeLines(rcx.toJSON(rcx), tmpFile)
+	data <- list(CXNetworkStream = httr::upload_file(tmpFile, type = 'application/json'))
 	response = ndex_rest_POST(ndexcon, route, data, multipart=T, raw=T)
 	## response is the url of the network: "http://public.ndexbio.org/v2/network/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 	## only the uuid should be returned
@@ -140,8 +140,8 @@ ndex.update.network <- function(ndexcon, rcx, nuuid){
 	route <- ndex.helper.encodeParams(api$url, api$params, network=nuuid)
 	
 	tmpFile = tempfile()
-	writeLines(rcx.toJSON(rcx, pretty = T), tmpFile)
-	data <- list(CXNetworkStream = upload_file(tmpFile, type = 'application/json'))
+	writeLines(rcx.toJSON(rcx), tmpFile)
+	data <- list(CXNetworkStream = httr::upload_file(tmpFile, type = 'application/json'))
 	response = ndex_rest_PUT(ndexcon, route, data, multipart=T, raw=T)
 	file.remove(tmpFile)
 	return(nuuid)

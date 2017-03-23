@@ -50,7 +50,7 @@ ndex.find.networks <- function(ndexcon, searchString="", accountName, start, siz
   if (!missing(accountName)){
     query$accountName=accountName
   }
-  query <- jsonlite::toJSON(query, pretty=T, auto_unbox = T)
+  query <- jsonlite::toJSON(query, auto_unbox = T)
   
   ##Form route
   ## ToDo: somehow the 1.3 api changed?! old version:

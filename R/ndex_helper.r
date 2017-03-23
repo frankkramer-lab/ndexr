@@ -126,6 +126,9 @@ ndex.helper.httpResponseHandler <- function(response, description, verbose=F){
 			stop(paste(description, "\n\tUser is not authorized! (401)\n"))
 		} else if(response$status_code == 404){   ## Not found error: (404) Page Not Found
 			stop(paste(description, "\n\tPage not found! (404)\n\tURL: [",response$url,"]"))
+		} else if(response$status_code == 409){   ## Not found error: (409) NDEx_Duplicate_Object_Exception
+			content = jsonlite::fromJSON(content(response, as='text', encoding='UTF-8'))
+			stop(paste(description, "\n\tNDEx_Duplicate_Object_Exception (409)\n\t",content$message,"\n\tURL: [",response$url,"]"))
 		} else if(response$status_code == 500){   ## Server error: (500) Internal Server Error
 			error_content = httr::content(response)
 			stop(paste(description, "Some internal server error occurred (500):", '\n[errorCode]', error_content$errorCode, '\n[message]', error_content$message, '\n[stackTrace]', error_content$stackTrace, '\n[timeStamp]', error_content$timeStamp, '', sep='\n'))

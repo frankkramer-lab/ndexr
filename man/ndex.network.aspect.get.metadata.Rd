@@ -26,10 +26,10 @@ Server error (version 2.0) since March 13th 2017
 
 GET: ndex.api.config$api$network$aspect$getMetaDataByName
 }
+
 \examples{
 \dontrun{
 ndexcon = ndex.connect(verbose=T)
 pws = ndex.find.networks(ndexcon,"p53")
 ndex.network.aspect.get.metadata(ndexcon,pws[1,"externalId"]) }
 }
-

@@ -24,10 +24,10 @@ Compatible to NDEx server version 1.3 and 2.0, but doesn't work for version 1.3
 
 GET: ndex.api.config$api$network$aspect$getMetaData
 }
+
 \examples{
 \dontrun{
 ndexcon = ndex.connect(verbose=T)
 pws = ndex.find.networks(ndexcon,"p53")
 ndex.network.get.metadata(ndexcon,pws[1,"externalId"]) }
 }
-

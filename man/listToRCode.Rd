@@ -37,4 +37,3 @@ listToRCode(test)
 #[1] "list(\\n\\tbla=\\"some text\\",\\n\\tblubb=list(\\n\\t\\ta=\\"more text\\",\\n\\t\\tversion=\\"2.0\\"\\n\\t)\\n)"
 }
 }
-

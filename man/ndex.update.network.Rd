@@ -31,6 +31,7 @@ Compatible to NDEx server version 1.3 and 2.0
 PUT (multipart/form-data): ndex.api.config$api$network$update$url
 data: CXNetworkStream = data
 }
+
 \examples{
 \dontrun{
 ndexcon = ndex.connect('MyAccountName', 'MyPassword', verbose=T)
@@ -40,4 +41,3 @@ rcx = ndex.get.network(ndexcon,pws[1,"externalId"])
 nuuid = ndex.update.network(ndexcon, rcx, nuuid)
 nuuid = ndex.update.network(ndexcon, rcx) ## same as previous}
 }
-

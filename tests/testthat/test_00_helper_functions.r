@@ -1,9 +1,25 @@
+################################################################################
+## Authors:
+##   Florian Auer [florian.auer@med.uni-goettingen.de]
+##
+## History:
+##   Created on 05 February 2017 by Auer
+## 	
+## Description:
+##	Tests for Helper functions:
+##    Encode parameters in urls (ndex.helper.encodeParams)
+##    Get the right api object (ndex.helper.getApi)
+##
+## Usage:
+##  devtools::test(filter='00_*')
+################################################################################
+
 library(ndexr)
 context('Helper funtions')
 
 
 
-test_that('encode parameters in urls', {
+test_that('Encode parameters in urls (ndex.helper.encodeParams)', {
   ## replace
   url = "http://en.wikipedia.org/#NETWORKID#/index.php"
   params = list(	network=list(	tag="#NETWORKID#", method="replace"))
@@ -62,7 +78,7 @@ test_that('encode parameters in urls', {
   
 })
 
-test_that('Get the right api object', {
+test_that('Get the right api object (ndex.helper.getApi)', {
   con = ndex.connect()
   expect_identical(ndex.helper.getApi(con,'serverStatus'), con$apiConfig$api$serverStatus, info='The server status should work, else establishing an connection should have thrown an error!')
   expect_identical(ndex.helper.getApi(con,'network$summary$get'), con$apiConfig$api$network$summary$get, info='Testing some more complex query..')

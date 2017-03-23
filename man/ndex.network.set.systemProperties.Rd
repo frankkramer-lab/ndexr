@@ -18,9 +18,6 @@ ndex.network.set.systemProperties(ndexcon, nuuid, readOnly = NULL,
 
 \item{showcase}{boolean (optional); Authenticated user can use this property to control whether this network will display in his or her home page. Caller will receive an error if the user does not have explicit permission to that network. At least one of readOnly, visibility or showcase have to be set!}
 }
-\value{
-1 integer on success, 0 if user/group allready has no permissions on the network
-}
 \description{
 Network System properties are the properties that describe the network’s status in a particular NDEx server but that are not part of the corresponding CX network object.
 }
@@ -33,15 +30,16 @@ In version 1.3 only the parameter readOnly is supported
 
 GET: ndex.api.config$api$network$systemproperties$set
 }
+
 \examples{
 \dontrun{
 ndexcon = ndex.connect('MyAccountName', 'MyPassword', verbose=T)
 networks = ndex.find.networks(ndexcon,"p53")
 nuuid = networks[1,"externalId"]
-## get the permissions
-ndex.network.delete.permission(ndexcon, nuuid, user=someUserUuid)	# returns 1
-ndex.network.delete.permission(ndexcon, nuuid, user=someUserUuid)	# returns 0, because user already lost permission on network
-ndex.network.delete.permission(ndexcon, nuuid, group=someGroupUuid)
+## set network system properties
+ndex.network.set.systemProperties(ndexcon, nuuid, readOnly=TRUE)
+ndex.network.set.systemProperties(ndexcon, nuuid, visibility="PUBLIC")
+ndex.network.set.systemProperties(ndexcon, nuuid, showcase=TRUE)
+ndex.network.set.systemProperties(ndexcon, nuuid, readOnly=FALSE, visibility="PRIVATE", showcase=FALSE)
 }
 }
-

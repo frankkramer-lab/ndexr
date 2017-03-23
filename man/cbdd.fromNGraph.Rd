@@ -29,4 +29,3 @@ rcx = ndex.get.network(ndexcon,pws[1,"externalId"])
 ngraph = ngraph.fromRCX(rcx) 
 cbdd = cbdd.fromNGraph(ngraph)}
 }
-

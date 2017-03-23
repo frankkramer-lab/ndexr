@@ -2,8 +2,8 @@
 % Please edit documentation in R/ndex.R
 \docType{package}
 \name{ndexr-package}
-\alias{ndexr}
 \alias{ndexr-package}
+\alias{ndexr}
 \title{NDEx R client library}
 \description{
 The ndexr package offers an interface to NDEx servers, e.g. the public server at http://ndexbio.org/. It can retrieve and save networks via the API. Networks are offered as RCX object and as igraph representation.
@@ -43,4 +43,3 @@ Alex Ishkin \email{aleksandr.ishkin@thomsonreuters.com}
 Dexter Pratt \email{depratt@ucsc.edu}
 }
 \keyword{package}
-

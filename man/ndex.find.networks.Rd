@@ -31,9 +31,9 @@ Search strings may be structured
 
 GET: ndex.api.config$api$search$network$search    returns list of NetworkSummary
 }
+
 \examples{
 \dontrun{
 ndexcon = ndex.connect(verbose=T)
 pws1 = ndex.find.networks(ndexcon1,"p53") }
 }
-

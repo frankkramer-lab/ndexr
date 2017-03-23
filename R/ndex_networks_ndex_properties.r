@@ -218,66 +218,66 @@ ndex.network.set.systemProperties <- function(ndexcon, nuuid, readOnly=NULL, vis
 
 #' Get Network Sample			
 #' @export
-ndex.network.get.samples <- function(ndexcon, nuuid){	#!!ToDo: Implement!
+ndex.network.get.samples <- function(ndexcon, nuuid){	# TODO! : Implement!
 	
 }
 
 
 #' Set Sample Network			
 #' @export
-ndex.network.set.samples <- function(ndexcon, nuuid){	#!!ToDo: Implement!
+ndex.network.set.samples <- function(ndexcon, nuuid){	# TODO! : Implement!
 	
 }
 
 
 ####################################################
-## Network Profiles
+## Network Profile and Properties
 ####################################################
 
-#' Update Network Profile		
+#' Update Network Profile	
+#' 
+#' Updates the profile information of the network. Any profile attributes specified will be updated but attributes that are not specified will have no effect – omission of an attribute does not mean deletion of that attribute.
+#' 
+#' @param ndexcon object of class NDEXConnection
+#' @param nuuid unique ID of the network
+#' @param name character (optional); Changes the name the network. At least one of name, description or version have to be set!
+#' @param description character (optional); Changes the description the network. At least one of name, description or version have to be set!
+#' @param version character (optional); Changes the version the network. At least one of name, description or version have to be set!
+#' @section REST query:
+#' GET: ndex.api.config$api$network$profile$update
+#' @note Compatible to NDEx server version 1.3 and 2.0
+#' @examples 
+#' \dontrun{
+#' ndex.network.update.profile(ndexcon, nuuid, name="Some fancy name for the network")
+#' ndex.network.update.profile(ndexcon, nuuid, description="Description of the network")
+#' ndex.network.update.profile(ndexcon, nuuid, version="1.2.3.4")
+#' ndex.network.update.profile(ndexcon, nuuid, name="Special test network", description="Nothing to see here", version="1.3")
+#' }	
 #' @export
-ndex.network.update.profile <- function(ndexcon, nuuid){	#!!ToDo: Implement!
+ndex.network.update.profile <- function(ndexcon, nuuid, name=NULL, description=NULL, version=NULL){	# TODO! : Implement!
+	if (is.null(name) && is.null(description) && is.null(version)) stop(paste0('ndex.network.update.profile: Neither name, description nor version has been set, but at least one is required!'))
 	
+	api = ndex.helper.getApi(ndexcon, 'network$profile$update')
+	
+	data <- list()
+	data$name=name
+	data$description=description
+	data$version=version
+	
+	route <- ndex.helper.encodeParams(api$url, api$params, network=nuuid)
+	data = jsonlite::toJSON(data, auto_unbox=T)
+	
+	if(ndexcon$apiConfig$version=='1.3'){
+		response = ndex_rest_POST(ndexcon, route, data, raw=T)
+	}else{
+		response = ndex_rest_PUT(ndexcon, route, data, raw=T)
+	}
+	return(NULL)
 }
 
 
 #' Set Network Properties		
 #' @export
-ndex.network.set.properties <- function(ndexcon, nuuid){	#!!ToDo: Implement!
-	
-}
-
-
-####################################################
-## Network Provenance
-## For structure and documentation see:  http://www.home.ndexbio.org/network-provenance-history/
-####################################################
-
-
-#' Get Network Provenance
-#' 
-#' This function retrieves the provenance of the network identified by the supplied network UUID string.
-#' 
-#' @param ndexcon object of class NDEXConnection
-#' @param nuuid unique ID of the network
-#' @return List of network metadata: ID, name, whether it is public, edge and node count; source and format of network
-#' @section REST query:
-#' This function runs GET query /network/{networkUUID}/provenance    and returns Provenance
-#' @examples 
-#' \dontrun{
-#' ndexcon = ndex.connect(verbose=T)
-#' pws = ndex.find.networks(ndexcon,"p53")
-#' ndex.network.get.provenance(ndexcon,pws[1,"externalId"]) }
-#' @export
-ndex.network.get.provenance <- function(ndexcon, nuuid){	#!!ToDo: Check and update to api 2.0
-	route <- paste0("/network/", nuuid,"/provenance")
-	response <- ndex_rest_GET(ndexcon, route)
-	return(response)
-}
-
-
-#' Set Network Provenance		
-#' @export
-ndex.network.set.provenance <- function(ndexcon, nuuid){	#!!ToDo: Implement!
+ndex.network.set.properties <- function(ndexcon, nuuid){	# TODO! : Implement!
 	
 }

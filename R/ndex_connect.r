@@ -132,7 +132,7 @@ ndex_rest_GET <- function(ndexcon, route, raw = FALSE){
   
   try(response <- httr::GET(url, auth))
   ndex.helper.httpResponseHandler(response, paste("GET: [", url, "]"), ndexcon$verbose)
-  content <- content(response, as='text')
+  content <- content(response, as='text', encoding='UTF-8')
   
   if(ndexcon$verbose) message('Response:', substring(content, 1, 300), '...', sep = '\n')
   if(raw) return(content)
@@ -168,13 +168,13 @@ ndex_rest_POST <- function(ndexcon, route, data, multipart = FALSE, raw = FALSE)
   auth <- NULL
   if(! ndexcon$anonymous) auth <- httr::authenticate(ndexcon$username, ndexcon$password)
   encode <- ifelse(multipart, 'multipart', 'json')
-  contenttype <- content_type_json()
-  if(multipart) contenttype <- content_type('multipart/form-data')
+  contenttype <- httr::content_type_json()
+  if(multipart) contenttype <- httr::content_type('multipart/form-data')
   
   try(response <- httr::POST(url, auth, contenttype, body = data, encode = encode))
   
   ndex.helper.httpResponseHandler(response, paste("POST: [", url, "]\ndata:\n",substring(data, 1, 300),'\n...'), ndexcon$verbose)
-  content <- content(response, as='text')
+  content <- content(response, as='text', encoding='UTF-8')
   
   if(ndexcon$verbose) message('Response:', substring(content, 1, 300), '...', sep = '\n')
   if(raw) return(content)
@@ -212,13 +212,13 @@ ndex_rest_PUT <- function(ndexcon, route, data=NULL, multipart = FALSE, raw = FA
 	auth <- NULL
 	if(! ndexcon$anonymous) auth <- httr::authenticate(ndexcon$username, ndexcon$password)
 	encode <- ifelse(multipart, 'multipart', 'json')
-	contenttype <- content_type_json()
-	if(multipart) contenttype <- content_type('multipart/form-data')
+	contenttype <- httr::content_type_json()
+	if(multipart) contenttype <- httr::content_type('multipart/form-data')
 	
 	try(response <- httr::PUT(url, auth, contenttype, body = data, encode = encode))
 	
 	ndex.helper.httpResponseHandler(response, paste("PUT: [", url, "]\ndata:\n",substring(data, 1, 300),'\n...'), ndexcon$verbose)
-	content <- content(response, as='text')
+	content <- content(response, as='text', encoding='UTF-8')
 	
 	if(ndexcon$verbose) message('Response:', substring(content, 1, 300), '...', sep = '\n')
 	if(raw) return(content)
@@ -253,7 +253,7 @@ ndex_rest_DELETE <- function(ndexcon, route, raw = FALSE){
   
   try(response <- httr::DELETE(url, auth, encode = 'json'))
   ndex.helper.httpResponseHandler(response, paste("DELETE: [", url, "]"), ndexcon$verbose)
-  content <- content(response, as='text')
+  content <- content(response, as='text', encoding='UTF-8')
   
   if(ndexcon$verbose) message('Response:', substring(content, 1, 300), '...', sep = '\n')
   if(raw) return(content)

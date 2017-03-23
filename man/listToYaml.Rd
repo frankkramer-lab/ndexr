@@ -39,4 +39,3 @@ listToYaml(test)
 #[1] "bla: some text\\nblubb:\\n  a: more text\\n  version: '2.0'\\njustANumber: 123456.0\\n"
 }
 }
-

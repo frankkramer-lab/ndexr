@@ -25,4 +25,3 @@ only for package maintenance!
 \examples{
 \dontrun{updateConfigFromYaml('R/ndex_api_config.yml', 'R/ndex_api_config.r', ndex.api.config.header)}
 }
-

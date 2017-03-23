@@ -12,4 +12,3 @@ Create ngraph object from RCX object
 \note{
 Wrapper function for \code{\link{ngraph.fromRCX}}
 }
-

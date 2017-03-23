@@ -50,6 +50,220 @@ ndex.api.config = list(
 							default="true"
 						)
 					)
+				),
+				create=list(
+					description="Create a new user",
+					url="/user",
+					method="POST"
+				),
+				delete=list(
+					description="Deletes the authenticated user, removing any other objects in the database that depend on the user",
+					url="/user/#USERID#",
+					method="DELETE",
+					params=list(
+						user=list(
+							tag="#USERID#",
+							method="replace"
+						)
+					)
+				),
+				update=list(
+					description="Updates the authenticated user based on the serialized user object in the PUT data",
+					url="/user/#USERID#",
+					method="PUT",
+					params=list(
+						user=list(
+							tag="#USERID#",
+							method="replace"
+						)
+					)
+				),
+				get=list(
+					byName=list(
+						description="Get User By userName",
+						url="/user",
+						method="GET",
+						params=list(
+							userName=list(
+								method="parameter",
+								tag="username"
+							)
+						)
+					),
+					byId=list(
+						description="Get User By UUID",
+						url="/user/#USERID#",
+						method="GET",
+						params=list(
+							user=list(
+								method="replace",
+								tag="#USERID#"
+							)
+						)
+					)
+				),
+				password=list(
+					change=list(
+						description="Changes the authenticated user’s password to the new password",
+						url="/user/#USERID#/password",
+						method="PUT",
+						params=list(
+							user=list(
+								method="replace",
+								tag="#USERID#"
+							)
+						)
+					),
+					mail=list(
+						description="Causes a new password to be generated for the given user account and then emailed to the user’s emailAddress",
+						url="/user/#USERID#/password",
+						method="PUT",
+						params=list(
+							user=list(
+								method="replace",
+								tag="#USERID#"
+							),
+							forgot=list(
+								method="parameter",
+								tag="forgot",
+								default="true"
+							)
+						)
+					)
+				),
+				verify=list(
+					description="Verify a User with verificationCode",
+					url="/user/#USERID#/verification",
+					method="GET",
+					params=list(
+						user=list(
+							tag="#USERID#",
+							method="replace"
+						),
+						code=list(
+							method="parameter",
+							tag="verificationCode"
+						)
+					)
+				),
+				group=list(
+					get=list(
+						description="Get User’s Permissions in Group",
+						url="/user/#USERID#/membership",
+						method="GET",
+						params=list(
+							user=list(
+								tag="#USERID#",
+								method="replace"
+							),
+							group=list(
+								method="parameter",
+								tag="groupid"
+							)
+						)
+					),
+					list=list(
+						description="List Groups for which a user has the specified permission types",
+						url="/user/#USERID#/membership",
+						method="GET",
+						params=list(
+							user=list(
+								tag="#USERID#",
+								method="replace"
+							),
+							type=list(
+								method="parameter",
+								tag="type",
+								optional=TRUE
+							),
+							start=list(
+								method="parameter",
+								tag="start",
+								optional=TRUE
+							),
+							size=list(
+								method="parameter",
+								tag="size",
+								optional=TRUE
+							)
+						)
+					)
+				),
+				permission=list(
+					get=list(
+						description="Get User’s Permission for Network",
+						url="/user/#USERID#/permission",
+						method="GET",
+						params=list(
+							user=list(
+								tag="#USERID#",
+								method="replace"
+							),
+							network=list(
+								method="parameter",
+								tag="networkid",
+								optional=TRUE
+							),
+							directonly=list(
+								method="parameter",
+								tag="directonly",
+								default="false"
+							)
+						)
+					),
+					list=list(
+						description="List User’s Network Permissions",
+						url="/user/#USERID#/permission?permission={permission}&start={startPage}&size={pageSize}&directonly={true|false}",
+						method="GET",
+						params=list(
+							user=list(
+								tag="#USERID#",
+								method="replace"
+							),
+							permission=list(
+								method="parameter",
+								tag="permission",
+								optional=TRUE
+							),
+							start=list(
+								method="parameter",
+								tag="start",
+								optional=TRUE
+							),
+							size=list(
+								method="parameter",
+								tag="size",
+								optional=TRUE
+							),
+							directonly=list(
+								method="parameter",
+								tag="directonly",
+								default="false"
+							)
+						)
+					)
+				),
+				showcase=list(
+					description="Get User’s Showcase Networks",
+					url="/user/#USERID#/showcase",
+					method="GET",
+					params=list(
+						user=list(
+							tag="#USERID#",
+							method="replace"
+						)
+					)
+				),
+				networksummary=list(
+					description="Verify a User with verificationCode",
+					url="/user/#USERID#/networksummary",
+					method="GET",
+					params=list(
+						user=list(
+							tag="#USERID#",
+							method="replace"
+						)
+					)
 				)
 			),
 			network=list(
@@ -561,6 +775,19 @@ ndex.api.config = list(
 							),
 							user=list(
 								tag="#USERID#",
+								method="replace"
+							)
+						)
+					)
+				),
+				profile=list(
+					update=list(
+						description="Update Network Profile",
+						url="/network/#NETWORKID#/summary",
+						method="PUT",
+						params=list(
+							network=list(
+								tag="#NETWORKID#",
 								method="replace"
 							)
 						)

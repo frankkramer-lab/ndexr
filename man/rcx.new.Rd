@@ -26,7 +26,6 @@ rcx = rcx.new(data.frame('@id'=c(1)), check.names=F) 	#same as one before
 rcx = rcx.new(c('@id'=1, n='Some Name'))
 rcx = rcx.new(c('@id'=1, n='Some Name', r='HGNC:Symbol'))
 rcx = rcx.new(data.frame('@id'=c(1),n=c('Some Name'), r=c('HGNC:Symbol'), check.names=F))	#same as one before
-rcx = rcx.new(data.frame('@id'=c(1,2,3),n=c('Some Name','And another name',NA), r=c('HGNC:Symbol',NA,'UniProt:C3P0'), check.names=F))}
-#!ToDo: add parameters for edges and other core aspects
+rcx = rcx.new(data.frame('@id'=c(1,2,3),n=c('Some Name','And another name',NA), r=c('HGNC:Symbol',NA,'UniProt:C3P0'), check.names=F))
 }
-
+}

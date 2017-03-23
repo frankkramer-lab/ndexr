@@ -14,4 +14,3 @@ Default header for the ndex.api.conf.r file
 only for package maintenance!
 }
 \keyword{datasets}
-

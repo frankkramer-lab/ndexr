@@ -28,6 +28,7 @@ Compatible to NDEx server version 1.3 and 2.0, but doesn't work for version 1.3
 
 GET: ndex.api.config$api$network$aspect$getMetaDataByName
 }
+
 \examples{
 \dontrun{
 ndexcon = ndex.connect(verbose=T)
@@ -35,4 +36,3 @@ pws = ndex.find.networks(ndexcon,"p53")
 aspect = ndex.network.get.aspect(ndexcon,pws[1,"externalId"], 'nodeAttributes')
 aspect = ndex.network.get.aspect(ndexcon,pws[1,"externalId"], 'nodeAttributes', 10)	# limit the returned elemets of the aspect to the first 10 elements}
 }
-

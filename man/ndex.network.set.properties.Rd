@@ -9,4 +9,3 @@ ndex.network.set.properties(ndexcon, nuuid)
 \description{
 Set Network Properties
 }
-

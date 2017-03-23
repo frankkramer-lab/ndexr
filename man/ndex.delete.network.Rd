@@ -24,10 +24,10 @@ Compatible to NDEx server version 1.3 and 2.0
 
 DELETE: ndex.api.config$api$network$delete
 }
+
 \examples{
 \dontrun{
 ndexcon = ndex.connect('MyAccountName', 'MyPassword', verbose=T)
 pws = ndex.find.networks(ndexcon,"SomeNetwork", accountName='MyAccountName')
 response = ndex.delete.network(ndexcon, pws[1,"externalId")}
 }
-

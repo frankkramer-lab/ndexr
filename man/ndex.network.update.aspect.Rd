@@ -23,12 +23,12 @@ This function updates an aspect with the provided CX for the aspect.
 }
 \note{
 Compatible to NDEx server version 2.0
-#!!!ToDo: Error on server!
 }
 \section{REST query}{
 
 PUT: ndex.api.config$api$network$aspect$update
 }
+
 \examples{
 \dontrun{
 ndexcon = ndex.connect(verbose=T)
@@ -37,4 +37,3 @@ aspect = ndex.network.get.aspect(ndexcon,pws[1,"externalId"], 'nodeAttributes')
 aspectModified = aspect[1:5,]
 ndex.network.update.aspect(ndexcon,pws[1,"externalId"], 'nodeAttributes', aspectModified)}
 }
-

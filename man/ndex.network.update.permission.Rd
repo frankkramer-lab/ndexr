@@ -33,15 +33,15 @@ In version 1.3 the function only works for user permissions!
 
 GET: ndex.api.config$api$network$permission$update
 }
+
 \examples{
 \dontrun{
 ndexcon = ndex.connect('MyAccountName', 'MyPassword', verbose=T)
 networks = ndex.find.networks(ndexcon,"p53")
 nuuid = networks[1,"externalId"]
 ## get the permissions
-permissions = ndex.network.update.permission(ndexcon, nuuid, user=someUserUuid, 'WRITE')
-permissions = ndex.network.update.permission(ndexcon, nuuid, group=someGroupUuid, 'READ')
-permissions = ndex.network.update.permission(ndexcon, nuuid, user=someUserUuid, 'ADMIN')	# sets a new admin
+ndex.network.update.permission(ndexcon, nuuid, user=someUserUuid, 'WRITE')
+ndex.network.update.permission(ndexcon, nuuid, group=someGroupUuid, 'READ')
+ndex.network.update.permission(ndexcon, nuuid, user=someUserUuid, 'ADMIN')	# sets a new admin
 }
 }
-

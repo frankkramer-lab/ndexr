@@ -1,9 +1,24 @@
+################################################################################
+## Authors:
+##   Florian Auer [florian.auer@med.uni-goettingen.de]
+##
+## History:
+##   Created on 05 February 2017 by Auer
+## 	
+## Description:
+##	Tests for Finding networks:
+##    Get list of networks from a server (ndex.find.networks)
+##
+## Usage:
+##  devtools::test(filter='02_*')
+################################################################################
+
 library(ndexr)
 context('Finding networks')
 
 
 
-test_that('Get list of networks from a server', {
+test_that('Get list of networks from a server (ndex.find.networks)', {
   nms = names(ndex.api.config)
   apiVersions = nms[nms!='defaultVersion']
   netColNames = c("ownerUUID", "isReadOnly", "subnetworkIds", "errorMessage", "isValid", "warnings", "isShowcase", "visibility", "edgeCount", "nodeCount", "uri", "version", "owner", "description", "name", "properties", "externalId", "isDeleted", "modificationTime", "creationTime")
