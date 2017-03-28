@@ -2,16 +2,41 @@
 % Please edit documentation in R/ndex_users.R
 \name{ndex.user.show.group}
 \alias{ndex.user.show.group}
-\title{Name}
+\title{Get User's Membership in Group}
 \usage{
-ndex.user.show.group(uuid)
+ndex.user.show.group(ndexcon, userId, groupId)
+}
+\arguments{
+\item{ndexcon}{object of class NDEXConnection}
+
+\item{userId}{character; unique ID (UUID) of the user}
+
+\item{groupId}{character; unique ID (UUID) of the group}
 }
 \value{
-result
+List of permissions of that user or empty object
 }
 \description{
-Description
+Returns the permission that the user specified in the URL has on the given group. Returns an empty object if the authenticated user is not a member of this group.
 }
-\examples{
+\note{
+Compatible to NDEx server version 2.0
+}
+\section{REST query}{
 
+GET: ndex.api.config$api$user$group$get
+}
+
+\examples{
+\dontrun{
+## get user by name to get UUID
+user = ndex.find.user.byName(ndexcon, 'some.ndex.account')
+groupId = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
+
+## get users's permission in the group
+userPermissions = ndex.user.show.group(ndexcon, user$externalId, groupId)
+userPermissions
+## $`aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee`
+## [1] "MEMBER"
+}
 }

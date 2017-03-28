@@ -27,5 +27,5 @@ rcx = ndex.get.network(ndexcon,pws[1,"externalId"])
 rcxNodesJson = rcx.aspect.toJSON(rcx$nodes) }
 }
 \seealso{
-\code{\link{ngraph.toJSON}}, \code{\link{ngraph.fromRCX}}, \code{\link{ngraph.toRCX}} and \code{\link{rcx.fromJSON}}
+\code{\link{rcx.toJSON}} and \code{\link{rcx.fromJSON}}
 }

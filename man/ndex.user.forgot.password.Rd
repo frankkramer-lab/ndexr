@@ -2,16 +2,33 @@
 % Please edit documentation in R/ndex_users.R
 \name{ndex.user.forgot.password}
 \alias{ndex.user.forgot.password}
-\title{Name}
+\title{Forgot Password}
 \usage{
-ndex.user.forgot.password(uuid)
+ndex.user.forgot.password(ndexcon, uuid)
+}
+\arguments{
+\item{ndexcon}{object of class NDEXConnection}
+
+\item{uuid}{character; unique ID of the user}
 }
 \value{
-result
+Empty string on success, else error
 }
 \description{
-Description
+Causes a new password to be generated for the given user account and then emailed to the user's emailAddress
 }
-\examples{
+\note{
+Compatible to NDEx server version 2.0
+}
+\section{REST query}{
 
+GET: ndex.api.config$api$user$password$mail
+Wrapper for ndex.user.mail.password()
+}
+
+\examples{
+\dontrun{
+user = ndex.find.user.byName(ndexcon, 'some.ndex.account')
+ndex.user.forgot.password(ndexcon, user$externalId)
+}
 }

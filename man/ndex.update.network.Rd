@@ -4,14 +4,14 @@
 \alias{ndex.update.network}
 \title{Update an Entire Network as CX}
 \usage{
-ndex.update.network(ndexcon, rcx, nuuid)
+ndex.update.network(ndexcon, rcx, networkId)
 }
 \arguments{
 \item{ndexcon}{object of class NDEXConnection}
 
 \item{rcx}{\code{\link{RCX}} object}
 
-\item{nuuid}{(optional); unique ID of the network}
+\item{networkId}{(optional); unique ID of the network}
 }
 \value{
 UUID of the updated network
@@ -38,6 +38,6 @@ ndexcon = ndex.connect('MyAccountName', 'MyPassword', verbose=T)
 pws = ndex.find.networks(ndexcon,"p53")
 rcx = ndex.get.network(ndexcon,pws[1,"externalId"]) 
 ## do some changes to rcx
-nuuid = ndex.update.network(ndexcon, rcx, nuuid)
-nuuid = ndex.update.network(ndexcon, rcx) ## same as previous}
+networkId = ndex.update.network(ndexcon, rcx, networkId)
+networkId = ndex.update.network(ndexcon, rcx) ## same as previous}
 }

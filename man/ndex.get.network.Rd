@@ -4,12 +4,12 @@
 \alias{ndex.get.network}
 \title{Get complete network}
 \usage{
-ndex.get.network(ndexcon, nuuid)
+ndex.get.network(ndexcon, networkId)
 }
 \arguments{
 \item{ndexcon}{object of class NDEXConnection}
 
-\item{nuuid}{unique ID of the network}
+\item{networkId}{unique ID of the network}
 }
 \value{
 \code{\link{RCX}} object

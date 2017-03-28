@@ -4,13 +4,13 @@
 \alias{ndex.network.update.profile}
 \title{Update Network Profile}
 \usage{
-ndex.network.update.profile(ndexcon, nuuid, name = NULL, description = NULL,
-  version = NULL)
+ndex.network.update.profile(ndexcon, networkId, name = NULL,
+  description = NULL, version = NULL)
 }
 \arguments{
 \item{ndexcon}{object of class NDEXConnection}
 
-\item{nuuid}{unique ID of the network}
+\item{networkId}{unique ID of the network}
 
 \item{name}{character (optional); Changes the name the network. At least one of name, description or version have to be set!}
 
@@ -19,7 +19,7 @@ ndex.network.update.profile(ndexcon, nuuid, name = NULL, description = NULL,
 \item{version}{character (optional); Changes the version the network. At least one of name, description or version have to be set!}
 }
 \description{
-Updates the profile information of the network. Any profile attributes specified will be updated but attributes that are not specified will have no effect – omission of an attribute does not mean deletion of that attribute.
+Updates the profile information of the network. Any profile attributes specified will be updated but attributes that are not specified will have no effect - omission of an attribute does not mean deletion of that attribute.
 }
 \note{
 Compatible to NDEx server version 1.3 and 2.0
@@ -31,9 +31,9 @@ GET: ndex.api.config$api$network$profile$update
 
 \examples{
 \dontrun{
-ndex.network.update.profile(ndexcon, nuuid, name="Some fancy name for the network")
-ndex.network.update.profile(ndexcon, nuuid, description="Description of the network")
-ndex.network.update.profile(ndexcon, nuuid, version="1.2.3.4")
-ndex.network.update.profile(ndexcon, nuuid, name="Special test network", description="Nothing to see here", version="1.3")
+ndex.network.update.profile(ndexcon, networkId, name="Some fancy name for the network")
+ndex.network.update.profile(ndexcon, networkId, description="Description of the network")
+ndex.network.update.profile(ndexcon, networkId, version="1.2.3.4")
+ndex.network.update.profile(ndexcon, networkId, name="Special test network", description="Nothing to see here", version="1.3")
 }	
 }

@@ -4,8 +4,7 @@
 \alias{rcx.new}
 \title{Create a blank rcx object}
 \usage{
-rcx.new(nodes = c(`@id` = 1), edges, nodeAttributes, edgeAttributes,
-  networkAttributes)
+rcx.new(nodes = c(`@id` = 1))
 }
 \arguments{
 \item{nodes}{vector or data.frame (default: c('@id'=1) ) node(s)}

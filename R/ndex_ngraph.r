@@ -4,11 +4,10 @@
 ##
 ## History:
 ##   Created on 20 September 2016 by Kramer
-## 	
+##     
 ## Description:
-##	Base functions to create, parse, modify ngraph/igraph objects from/to CX networks
+##    Base functions to create, parse, modify ngraph/igraph objects from/to CX networks
 ################################################################################
-# TODO!! [fauer:20.03.2017]: nGraph or iGraph?! No new functionality to iGraph! 
 
 #' Create ngraph object from RCX object
 #' 
@@ -54,7 +53,9 @@
 #' 
 #' @param rcx RCX object
 #' @param verbose logical; whether to print out extended feedback 
+#' 
 #' @return returns object of class ngraph if successfull, NULL otherwise
+#' 
 #' @seealso \code{\link{ngraph.toRCX}} \code{\link{rcx.fromJSON}} \code{\link{rcx.toJSON}} \code{\link{RCX}} \code{\link[igraph]{igraph}}   
 #' @aliases ngraph
 #' @examples 
@@ -118,6 +119,12 @@ ngraph.fromRCX <- function(rcx, verbose = FALSE){
 
 
 #' Create ngraph object from RCX object
+#' 
+#' @param rcx RCX object
+#' @param verbose logical; whether to print out extended feedback 
+#' 
+#' @return returns object of class ngraph if successfull, NULL otherwise
+#' 
 #' @note Wrapper function for \code{\link{ngraph.fromRCX}}
 #' @export
 rcx.toNGraph <- ngraph.fromRCX

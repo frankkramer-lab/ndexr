@@ -4,7 +4,15 @@
 \alias{ndex.network.get.samples}
 \title{Get Network Sample}
 \usage{
-ndex.network.get.samples(ndexcon, nuuid)
+ndex.network.get.samples(ndexcon, networkId)
+}
+\arguments{
+\item{ndexcon}{object of class NDEXConnection}
+
+\item{networkId}{character; unique ID (UUID) of the network}
+}
+\value{
+Network sample
 }
 \description{
 Get Network Sample

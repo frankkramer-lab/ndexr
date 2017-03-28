@@ -2,16 +2,41 @@
 % Please edit documentation in R/ndex_users.R
 \name{ndex.user.get.showcase}
 \alias{ndex.user.get.showcase}
-\title{Name}
+\title{Get User's Showcase Networks}
 \usage{
-ndex.user.get.showcase(uuid)
+ndex.user.get.showcase(ndexcon, userId)
+}
+\arguments{
+\item{ndexcon}{object of class NDEXConnection}
+
+\item{userId}{character; unique ID (UUID) of the user}
 }
 \value{
-result
+data.frame of networks (name, description, externalId, uri, etc.) in the showcase of the specified user
 }
 \description{
-Description
+This is a convenience function to support "user pages" in NDEx applications. 
+This function returns a list of network summary objects that the user who is specified by userid chose to display in his or her home page. 
+For authenticated users, this function returns the networks that the authenticated user can read, for anonymous users, this function returns only public networks.
 }
-\examples{
+\note{
+Compatible to NDEx server version 2.0
+}
+\section{REST query}{
 
+GET: ndex.api.config$api$user$showcase
+}
+
+\examples{
+\dontrun{
+## get user by name to get UUID
+user = ndex.find.user.byName(ndexcon, 'some.ndex.account')
+
+showcase = ndex.user.get.showcase(con, user$externalId)
+names(showcase)
+## [1] "ownerUUID"        "isReadOnly"       "subnetworkIds"    "errorMessage"     "isValid"         
+## [6] "warnings"         "isShowcase"       "visibility"       "edgeCount"        "nodeCount"       
+##[11] "uri"              "version"          "owner"            "name"             "properties"      
+##[16] "description"      "externalId"       "isDeleted"        "modificationTime" "creationTime"
+}   
 }

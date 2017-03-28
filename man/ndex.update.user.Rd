@@ -2,16 +2,50 @@
 % Please edit documentation in R/ndex_users.R
 \name{ndex.update.user}
 \alias{ndex.update.user}
-\title{Name}
+\title{Update User}
 \usage{
-ndex.update.user(uuid)
+ndex.update.user(ndexcon, uuid, emailAddress, isIndividual, displayName,
+  firstName, lastName, image, website, description, verbose = FALSE)
+}
+\arguments{
+\item{ndexcon}{object of class NDEXConnection}
+
+\item{uuid}{character; unique ID of the user}
+
+\item{emailAddress}{character (optional); email address (used for verification if enabled)}
+
+\item{isIndividual}{boolean (default:True); True if this account is for an individual user. False means this account is for an organization or a project etc.}
+
+\item{displayName}{character (optional); Display name of this account, only applied to non-individual accounts.}
+
+\item{firstName}{character (optional); Account owner's first name, only applies to individual accounts.}
+
+\item{lastName}{character (optional); Account owner's last name, only appliies to individual accounts.}
+
+\item{image}{character (optional); URL of the account owner's image.}
+
+\item{website}{character (optional); URL of the account owner's web site}
+
+\item{description}{character (optional); Short description of this user.}
+
+\item{verbose}{logical (optional); whether to print out extended feedback}
 }
 \value{
-result
+Empty string ("") on success, else error
 }
 \description{
-Description
+Updates the authenticated user based on the data. Errors, if the user for ndexcon and uuid are different.
 }
-\examples{
+\note{
+Compatible to NDEx server version 2.0
+}
+\section{REST query}{
 
+GET: ndex.api.config$api$user$update
+}
+
+\examples{
+\dontrun{
+ndex.update.user(ndexcon, user$externalId, firstName = 'Homer Jay', lastName = 'Simpson')
+}
 }

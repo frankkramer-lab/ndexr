@@ -4,7 +4,7 @@
 ##
 ## History:
 ##   Created on 05 October 2016 by Kramer
-## 	
+##     
 ## Description:
 ##   Base functions to create CBDD-like data from RCX and ngraph objects
 ################################################################################

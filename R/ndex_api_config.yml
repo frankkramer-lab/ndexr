@@ -13,7 +13,7 @@ Version_2.0:
     user:
       authenticate:
         description: "Authenticate a User"
-        url: "/user?valid=true"
+        url: "/user"
         method: "GET"
         params:
           valid:
@@ -59,7 +59,7 @@ Version_2.0:
               tag: "#USERID#"
       password:
         change:
-          description: "Changes the authenticated user’s password to the new password"
+          description: "Changes the authenticated user's password to the new password"
           url: "/user/#USERID#/password"
           method: "PUT"
           params:
@@ -67,7 +67,7 @@ Version_2.0:
               method: "replace"
               tag: "#USERID#"
         mail:
-          description: "Causes a new password to be generated for the given user account and then emailed to the user’s emailAddress"
+          description: "Causes a new password to be generated for the given user account and then emailed to the user's emailAddress"
           url: "/user/#USERID#/password"
           method: "PUT"
           params:
@@ -91,7 +91,7 @@ Version_2.0:
               tag: "verificationCode"
       group:
         get:
-          description: "Get User’s Permissions in Group"
+          description: "Get User's Permissions in Group"
           url: "/user/#USERID#/membership"
           method: "GET"
           params:
@@ -123,7 +123,7 @@ Version_2.0:
                 optional: true
       permission:
         get:
-          description: "Get User’s Permission for Network"
+          description: "Get User's Permission for Network"
           url: "/user/#USERID#/permission"
           method: "GET"
           params:
@@ -139,8 +139,8 @@ Version_2.0:
                 tag: "directonly"
                 default: "false"
         list:
-          description: "List User’s Network Permissions"
-          url: "/user/#USERID#/permission?permission={permission}&start={startPage}&size={pageSize}&directonly={true|false}"
+          description: "List User's Network Permissions"
+          url: "/user/#USERID#/permission"
           method: "GET"
           params:
             user: 
@@ -163,7 +163,7 @@ Version_2.0:
                 tag: "directonly"
                 default: "false"
       showcase:
-        description: "Get User’s Showcase Networks"
+        description: "Get User's Showcase Networks"
         url: "/user/#USERID#/showcase"
         method: "GET"
         params:
@@ -178,6 +178,113 @@ Version_2.0:
           user: 
             tag: "#USERID#"
             method: "replace"
+    group:
+      create:
+        description: "Create Group"
+        url: "/group"
+        method: "POST"
+      delete:
+        description: "Delete the group specified by groupId"
+        url: "/group/#GROUPID#"
+        method: "DELETE"
+        params:
+          group: 
+            tag: "#GROUPID#"
+            method: "replace"
+      update:
+        description: "Updates the authenticated user based on the serialized user object in the PUT data"
+        url: "/group/#GROUPID#"
+        method: "PUT"
+        params:
+          group: 
+            tag: "#GROUPID#"
+            method: "replace"
+      get:
+        description: "Get a Group"
+        url: "/group/#GROUPID#"
+        method: "GET"
+        params:
+          group:
+            method: "replace"
+            tag: "#GROUPID#"
+      user:
+        list:
+          description: "Get Members of a Group"
+          url: "/group/#GROUPID#/membership"
+          method: "GET"
+          params:
+            group: 
+              tag: "#GROUPID#"
+              method: "replace"
+            type:
+              method: "parameter"
+              tag: "type"
+              optional: true
+            start:
+              method: "parameter"
+              tag: "start"
+              optional: true
+            size:
+              method: "parameter"
+              tag: "size"
+              optional: true
+      network:
+        list:
+          description: "Get Network Permissions of a Group"
+          url: "/group/#GROUPID#/permission"
+          method: "GET"
+          params:
+            group: 
+              tag: "#GROUPID#"
+              method: "replace"
+            permission:
+              method: "parameter"
+              tag: "permission"
+              default: "READ"
+            start:
+              method: "parameter"
+              tag: "start"
+              optional: true
+            size:
+              method: "parameter"
+              tag: "size"
+              optional: true
+        get:
+          description: "Get Members of a Group"
+          url: "/group/#GROUPID#/permission"
+          method: "GET"
+          params:
+            group: 
+              tag: "#GROUPID#"
+              method: "replace"
+            network:
+              method: "parameter"
+              tag: "networkid"
+        update:
+          description: "Add or Update a Group Member"
+          url: "/group/#GROUPID#/membership"
+          method: "PUT"
+          params:
+            group: 
+              tag: "#GROUPID#"
+              method: "replace"
+            user:
+              method: "parameter"
+              tag: "userid"
+            type:
+              method: "parameter"
+              tag: "type"
+        delete:
+          description: "Delete the group specified by groupId"
+          url: "/group/#GROUPID#/membership"
+          method: "DELETE"
+          params:
+            group: 
+              tag: "#GROUPID#"
+              method: "replace"
+            user:
+              method: "parameter"
+              tag: "userid"
     network:
       create:
         description: "Create a CX Network"

@@ -6,9 +6,9 @@
 ## History:
 ##   Created on 20 September 2016 by Kramer
 ##   Restructured on 10 January 2017 by Auer
-## 	
+##     
 ## Description:
-##	Base functions to create, parse, modify CX networks from/to JSON data
+##    Base functions to create, parse, modify CX networks from/to JSON data
 ################################################################################
 
 
@@ -26,7 +26,7 @@
 #' > str(rcx)
 #' 
 #' List of 12
-#' $ metaData          :'data.frame':	11 obs. of  7 variables:
+#' $ metaData          :'data.frame':    11 obs. of  7 variables:
 #'   ..$ name            : chr [1:11] "citations" "@context" "edgeAttributes" "edgeCitations" ...
 #'   ..$ consistencyGroup: int [1:11] 1 1 1 1 1 1 1 1 1 1 ...
 #'   ..$ elementCount    : int [1:11] 4 23 NA NA 11 1 NA NA NA 5 ...
@@ -34,9 +34,9 @@
 #'   ..$ version         : chr [1:11] "1.0" "1.0" "1.0" "1.0" ...
 #'   ..$ idCounter       : int [1:11] 60714397 NA NA NA 60714399 NA NA NA NA 60714395 ...
 #'   ..$ properties      :List of 11
-#' $ numberVerification:'data.frame':	1 obs. of  1 variable:
+#' $ numberVerification:'data.frame':    1 obs. of  1 variable:
 #'   ..$ longNumber: num 2.81e+14
-#' $ ndexStatus        :'data.frame':	1 obs. of  10 variables:
+#' $ ndexStatus        :'data.frame':    1 obs. of  10 variables:
 #'   ..$ externalId      : chr "eac8a4b8-6194-11e5-8ac5-06603eb7f303"
 #'   ..$ creationTime    : num 1.44e+12
 #'   ..$ modificationTime: num 1.44e+12
@@ -47,23 +47,23 @@
 #'   ..$ owner           : chr "nci-pid"
 #'   ..$ ndexServerURI   : chr "http://public.ndexbio.org"
 #'   ..$ readOnly        : logi FALSE
-#' $ @context          :'data.frame':	1 obs. of  23 variables:
+#' $ @context          :'data.frame':    1 obs. of  23 variables:
 #'   ..$ GENPEPT                      : chr "http://www.ncbi.nlm.nih.gov/protein/"
 #'   ..$ NCBI GENE                    : chr "http://identifiers.org/ncbigene/"
 #'   ..$ ENSEMBL                      : chr "http://identifiers.org/ensembl/"
 #'   [...]
-#' $ networkAttributes :'data.frame':	4 obs. of  2 variables:
+#' $ networkAttributes :'data.frame':    4 obs. of  2 variables:
 #'   ..$ n: chr [1:4] "name" "description" "version" "ndex:sourceFormat"
 #'   ..$ v: chr [1:4] "PLK3 signaling events" "This network ..." [...]
-#' $ citations         :'data.frame':	4 obs. of  7 variables:
+#' $ citations         :'data.frame':    4 obs. of  7 variables:
 #'  ..$ @id           : int [1:4] 60714380 60714383 60714386 60714397
 #'  ..$ dc:identifier : chr [1:4] "pmid:17264206" "pmid:14968113" "pmid:12242661" "pmid:11551930"
 #'  ..$ dc:type       : chr [1:4] "URI" "URI" "URI" "URI"
 #'  ..$ attributes    :List of 4 [...]
-#' $ nodes             :'data.frame':	5 obs. of  2 variables:
+#' $ nodes             :'data.frame':    5 obs. of  2 variables:
 #'  ..$ @id: int [1:5] 60714376 60714377 60714381 60714384 60714395
 #'  ..$ n  : chr [1:5] "CCNE1" "PLK3" "MPIP3" "CHK2" ...
-#' $ nodeAttributes    :'data.frame':	10 obs. of  4 variables:
+#' $ nodeAttributes    :'data.frame':    10 obs. of  4 variables:
 #'   ..$ po: int [1:10] 60714376 60714376 60714377 60714377 60714381 60714381 60714384 60714384 60714395 60714395
 #'   ..$ n : chr [1:10] "alias" "relatedTo" "alias" "relatedTo" ...
 #'   ..$ v :List of 10
@@ -71,12 +71,12 @@
 #'     .. ..$ : chr [1:98] "GENE ONTOLOGY:GO:0003713" "GENE ONTOLOGY:GO:0005515"  ...
 #'     [...]
 #'   ..$ d : chr [1:10] "list_of_string"  ...
-#' $ edges             :'data.frame':	11 obs. of  4 variables:
+#' $ edges             :'data.frame':    11 obs. of  4 variables:
 #'   ..$ @id: int [1:11] 60714379 60714382  ...
 #'   ..$ s  : int [1:11] 60714376 60714381  ...
 #'   ..$ t  : int [1:11] 60714377 60714377  ...
 #'   ..$ i  : chr [1:11] "neighbor-of" "neighbor-of"  ...
-#' $ edgeCitations     :'data.frame':	11 obs. of  2 variables:
+#' $ edgeCitations     :'data.frame':    11 obs. of  2 variables:
 #'   ..$ po       :List of 11
 #'   .. ..$ : int 60714379
 #'   .. ..$ : int 60714382
@@ -85,7 +85,7 @@
 #' .. ..$ : int 60714380
 #' .. ..$ : int 60714383
 #'   [...]
-#' $ status            :'data.frame':	1 obs. of  2 variables:
+#' $ status            :'data.frame':    1 obs. of  2 variables:
 #'   ..$ error  : chr ""
 #'   ..$ success: logi TRUE
 #'- attr(*, "class")= chr [1:2] "RCX" "list"
@@ -189,7 +189,6 @@ rcx.fromJSON <- function(json, verbose = FALSE){
 #' pws = ndex.find.networks(ndexcon,"p53")
 #' rcx = ndex.get.network(ndexcon,pws[1,"externalId"]) 
 #' rcxjson = rcx.toJSON(rcx) }
-#' #!:ToDo: add pretty to aspects
 #' @export
 rcx.toJSON <- function(rcx, verbose = FALSE, pretty = FALSE){
   if(is.null(rcx) || !("RCX" %in% class(rcx))) {
@@ -206,7 +205,7 @@ rcx.toJSON <- function(rcx, verbose = FALSE, pretty = FALSE){
   rcxNames = rcxNames[rcxNames!="metaData"]
   rcxNames = c("numberVerification", "metaData", rcxNames)
   for(aspect in rcxNames){
-	  jsonCol = c(jsonCol,paste0('{"',aspect,'":',rcx.aspect.toJSON(rcx[[aspect]], verbose, pretty),'}'))
+      jsonCol = c(jsonCol,paste0('{"',aspect,'":',rcx.aspect.toJSON(rcx[[aspect]], verbose, pretty),'}'))
   }
   return(paste0('[',paste0(jsonCol, collapse=','),']'))
 }
@@ -218,7 +217,7 @@ rcx.toJSON <- function(rcx, verbose = FALSE, pretty = FALSE){
 #' @param verbose logical; whether to print out extended feedback
 #' @param pretty logical; adds indentation whitespace to JSON output
 #' @return json object if successfull, empty string otherwise
-#' @seealso \code{\link{ngraph.toJSON}}, \code{\link{ngraph.fromRCX}}, \code{\link{ngraph.toRCX}} and \code{\link{rcx.fromJSON}}
+#' @seealso \code{\link{rcx.toJSON}} and \code{\link{rcx.fromJSON}}
 #' @examples 
 #' \dontrun{
 #' ndexcon = ndex.connect(verbose=T)
@@ -226,42 +225,42 @@ rcx.toJSON <- function(rcx, verbose = FALSE, pretty = FALSE){
 #' rcx = ndex.get.network(ndexcon,pws[1,"externalId"]) 
 #' rcxNodesJson = rcx.aspect.toJSON(rcx$nodes) }
 rcx.aspect.toJSON <- function(rcxAspect, verbose = FALSE, pretty = FALSE){
-	result = ''
-	## if any of the aspects has a datatype ('d') property, at least one of the datatypes is not of 'string' (default datatype).
-	## this means, the corresponding values ('v') have to be wrapped in arrays, if they are defined as kind of list (e.g. 'list_of_string', 'list_of_integer',...)
-	if(('v' %in% names(rcxAspect))&&('d' %in% names(rcxAspect))){
-		tmp = rcxAspect
-		isListVector = (!is.na(tmp$d)&(substr(tmp[,'d'],1,nchar("list_of_"))=="list_of_"))
-		tmpList = rcxAspect[isListVector,]       # has to be wrapped
-		tmpNoList = rcxAspect[!isListVector,]    # doesn't have to be wrapped
-		tmpList$v = as.list(tmpList$v)     		 # forces toJSON to encode the elements as arrays
-		jsonCol = c()
-		
-		## don't add an empty aspect, if all v's are lists
-		if(dim(tmpNoList)[1]!=0){
-			tmpNoList$v <- unlist(tmpNoList$v)
-#			tmpTxt = jsonlite::toJSON(tmpNoList, na='string', pretty = pretty) # TODO!! [fauer:20.03.2017]: NA as string or NULL? for citations$`dc:contributor` it has to be NULL!
-			tmpTxt = jsonlite::toJSON(tmpNoList, na=NULL, pretty = pretty)
-			tmpTxt = sub('\n*$','',substr(tmpTxt,2,nchar(tmpTxt)-1))		
-			jsonCol = c(jsonCol, tmpTxt)
-		}
-		
-		## don't add an empty aspect, if none v is a list (but might be an integer)
-		if(dim(tmpList)[1]!=0){
-#			tmpTxt = jsonlite::toJSON(tmpList, na='string', pretty = pretty)
-			tmpTxt = jsonlite::toJSON(tmpList, na=NULL, pretty = pretty)
-			tmpTxt = substr(tmpTxt,2,nchar(tmpTxt)-1)
-			jsonCol = c(jsonCol, tmpTxt)
-		}
-		
-		result = paste0('[',paste0(jsonCol, collapse=','),']')
-	}else{
-		tmpList = rcxAspect
-#		result = jsonlite::toJSON(tmpList, na='string', pretty = pretty)
-		result = jsonlite::toJSON(tmpList, na=NULL, pretty = pretty)
-	}
+    result = ''
+    ## if any of the aspects has a datatype ('d') property, at least one of the datatypes is not of 'string' (default datatype).
+    ## this means, the corresponding values ('v') have to be wrapped in arrays, if they are defined as kind of list (e.g. 'list_of_string', 'list_of_integer',...)
+    if(('v' %in% names(rcxAspect))&&('d' %in% names(rcxAspect))){
+        tmp = rcxAspect
+        isListVector = (!is.na(tmp$d)&(substr(tmp[,'d'],1,nchar("list_of_"))=="list_of_"))
+        tmpList = rcxAspect[isListVector,]       # has to be wrapped
+        tmpNoList = rcxAspect[!isListVector,]    # doesn't have to be wrapped
+        tmpList$v = as.list(tmpList$v)              # forces toJSON to encode the elements as arrays
+        jsonCol = c()
+        
+        ## don't add an empty aspect, if all v's are lists
+        if(dim(tmpNoList)[1]!=0){
+            tmpNoList$v <- unlist(tmpNoList$v)
+#            tmpTxt = jsonlite::toJSON(tmpNoList, na='string', pretty = pretty) # TODO!! [fauer:20.03.2017]: NA as string or NULL? for citations$`dc:contributor` it has to be NULL!
+            tmpTxt = jsonlite::toJSON(tmpNoList, na=NULL, pretty = pretty)
+            tmpTxt = sub('\n*$','',substr(tmpTxt,2,nchar(tmpTxt)-1))        
+            jsonCol = c(jsonCol, tmpTxt)
+        }
+        
+        ## don't add an empty aspect, if none v is a list (but might be an integer)
+        if(dim(tmpList)[1]!=0){
+#            tmpTxt = jsonlite::toJSON(tmpList, na='string', pretty = pretty)
+            tmpTxt = jsonlite::toJSON(tmpList, na=NULL, pretty = pretty)
+            tmpTxt = substr(tmpTxt,2,nchar(tmpTxt)-1)
+            jsonCol = c(jsonCol, tmpTxt)
+        }
+        
+        result = paste0('[',paste0(jsonCol, collapse=','),']')
+    }else{
+        tmpList = rcxAspect
+#        result = jsonlite::toJSON(tmpList, na='string', pretty = pretty)
+        result = jsonlite::toJSON(tmpList, na=NULL, pretty = pretty)
+    }
 
-	return(result)
+    return(result)
 }
 
 ####################################################
@@ -298,32 +297,35 @@ rcx.asNewNetwork = function(rcx){
 #' Ids have to be unique (in nodes) and may not contain 'NA' values. For names and represents attributes, 'NA' values are allowed.
 #' 
 #' @param nodes vector or data.frame (default: c('@id'=1) ) node(s)
+#' 
 #' @return RCX object
+#' 
 #' @examples 
 #' \dontrun{
 #' rcx = rcx.new()
-#' rcx = rcx.new(c('@id'=1))        						#same as one before
-#' rcx = rcx.new(nodes=c('@id'=1))  						#same as one before
-#' rcx = rcx.new(data.frame('@id'=c(1)), check.names=F) 	#same as one before
+#' rcx = rcx.new(c('@id'=1))                                #same as one before
+#' rcx = rcx.new(nodes=c('@id'=1))                          #same as one before
+#' rcx = rcx.new(data.frame('@id'=c(1)), check.names=F)     #same as one before
 #' rcx = rcx.new(c('@id'=1, n='Some Name'))
 #' rcx = rcx.new(c('@id'=1, n='Some Name', r='HGNC:Symbol'))
-#' rcx = rcx.new(data.frame('@id'=c(1),n=c('Some Name'), r=c('HGNC:Symbol'), check.names=F))	#same as one before
+#' rcx = rcx.new(data.frame('@id'=c(1),n=c('Some Name'), r=c('HGNC:Symbol'), check.names=F))    #same as one before
 #' rcx = rcx.new(data.frame('@id'=c(1,2,3),n=c('Some Name','And another name',NA), r=c('HGNC:Symbol',NA,'UniProt:C3P0'), check.names=F))
 #' }
 #' @export
-rcx.new = function(nodes=c('@id'=1), edges, nodeAttributes, edgeAttributes, networkAttributes){
+rcx.new = function(nodes=c('@id'=1)){
 # TODO : add parameters for edges and other core aspects
-	if(is.null(nodes)) stop('rcx.new: At least one node is necessary!')
-	if(!'@id' %in% names(nodes)) stop('rcx.new: No "@id" column in nodes!')
-	ids = as.character(nodes[['@id']])
-	if(length(unique(ids)) != length(ids)) stop('rcx.new: Some ids in "@id" column are duplicated!')
-	if(any(NA %in% nodes[['@id']])) stop('rcx.new: Some ids in "@id" column have "NA" value!')
-	rcx <- list(nodes=data.frame('@id'=ids, stringsAsFactors=F, check.names=F))
-	if('n' %in% names(nodes)) rcx$nodes$n = as.character(nodes[['n']])
-	if('r' %in% names(nodes)) rcx$nodes$r = as.character(nodes[['r']])
-	class(rcx) = c("RCX",class(rcx))
-	rcx = rcx.updateMetaData(rcx)
-	return(rcx)
+# rcx.new = function(nodes=c('@id'=1), edges, nodeAttributes, edgeAttributes, networkAttributes){
+    if(is.null(nodes)) stop('rcx.new: At least one node is necessary!')
+    if(!'@id' %in% names(nodes)) stop('rcx.new: No "@id" column in nodes!')
+    ids = as.character(nodes[['@id']])
+    if(length(unique(ids)) != length(ids)) stop('rcx.new: Some ids in "@id" column are duplicated!')
+    if(any(NA %in% nodes[['@id']])) stop('rcx.new: Some ids in "@id" column have "NA" value!')
+    rcx <- list(nodes=data.frame('@id'=ids, stringsAsFactors=F, check.names=F))
+    if('n' %in% names(nodes)) rcx$nodes$n = as.character(nodes[['n']])
+    if('r' %in% names(nodes)) rcx$nodes$r = as.character(nodes[['r']])
+    class(rcx) = c("RCX",class(rcx))
+    rcx = rcx.updateMetaData(rcx)
+    return(rcx)
 }
 
 
@@ -344,88 +346,88 @@ rcx.new = function(nodes=c('@id'=1), edges, nodeAttributes, edgeAttributes, netw
 #' rcx = rcx.updateMetaData(rcx, mandatoryAspects=c('nodes'), excludeAspects=c("metaData", "numberVerification", "status"), force=FALSE, verbose=FALSE)
 #' }
 #' @export
-rcx.updateMetaData = function(rcx, mandatoryAspects=c('nodes'), excludeAspects=c("metaData", "numberVerification", "status"), force=FALSE, verbose=FALSE){		
+rcx.updateMetaData = function(rcx, mandatoryAspects=c('nodes'), excludeAspects=c("metaData", "numberVerification", "status"), force=FALSE, verbose=FALSE){        
 # TODO : Check if it works and all cases are covered
-	if(missing(rcx) || is.null(rcx) || !("RCX" %in% class(rcx))) stop("rcx.updateMetaData: Parameter rcx does not contain RCX object")
-	
-	# check if mandatoryAspects are present in the RCX object
-	if(any(!(mandatoryAspects %in% names(rcx)))) stop(paste0("rcx.updateMetaData: Mandatory aspects are missing in the RCX object: ", paste0(mandatoryAspects[!(mandatoryAspects %in% names(rcx))], collapse=', ')))
-	
-	
-	# get meta data from RCX object
-	# create it, if it doesn't exist (or if it is forced)
-	metaData = rcx$metaData
-	if(is.null(metaData) || force) {
-		if(verbose) print('rcx.updateMetaData: MetaData will be created')
-		metaData = data.frame(consistencyGroup=1, elementCount=0, lastUpdate=1, name = sort(names(rcx)[!(names(rcx) %in% excludeAspects)]), version='1.0', idCounter=NA, stringsAsFactors = F)
-	}else{
-		if(verbose) print('rcx.updateMetaData: Existing metaData will be updated')
-		
-		if(!('consistencyGroup' %in% names(metaData))){
-			metaData$consistencyGroup = 1
-			if(verbose) warning('rcx.updateMetaData: No consistancy groups specified (Set by default to "1")!  Check manually for consistency!')
-		}
-		if(!('elementCount' %in% names(metaData))) metaData$elementCount = 0
-		if(!('lastUpdate' %in% names(metaData))) metaData$lastUpdate = 1
-		if(!('version' %in% names(metaData))) metaData$version = '1.0'
-		if(!('idCounter' %in% names(metaData))) metaData$idCounter = NA
-		properties = NULL
-		if('properties' %in% names(metaData)){
-			properties = metaData$properties
-			metaData$properties = NULL
-		}else{
-			properties = rep(list(), length.out=dim(metaData)[1])
-		}
-		
-		aspects = names(rcx)[!(names(rcx) %in% excludeAspects)]
-		aspectsAlreadyInMDIndex = which(metaData$name %in% aspects)
-		
-		# exclude rows, that are no aspects and order columns
-		metaData = metaData[aspectsAlreadyInMDIndex,sort(colnames(metaData))]
-		properties = properties[aspectsAlreadyInMDIndex]
-		
-		# find aspects missing in meta-data
-		aspectsNotYetInMD = aspects[!aspects %in% metaData$name]
-		
-		# add missing aspects to metaData
-		if(length(aspectsNotYetInMD)!=0) {
-			metaData = rbind(metaData, data.frame(consistencyGroup=1, elementCount=0, idCounter=NA, lastUpdate=1, name = aspectsNotYetInMD, version='1.0', stringsAsFactors = F))
-			properties = c(properties,rep(list(),length.out=length(aspectsNotYetInMD)))
-		}
-		
-		# add the properties column again
-		metaData$properties = properties
-	}
-	
-	if(verbose) print('rcx.updateMetaData: idCounter will be updated')
-	# id exporting aspects are required to have specified an id counter (max id in the aspect)
-	metaData$idCounter = sapply(metaData$name, function(x){return(ifelse('@id' %in% colnames(rcx[[x]]), max(rcx[[x]]$'@id'), NA))})
-	
-	
-	if(verbose) print('rcx.updateMetaData: Consistency groups will be checked')
-	# get the current consistency group(s)
-	consistencyGroups = unique(metaData$consistencyGroup)
-	if(verbose && (length(consistencyGroups)>1)){
-		warn = paste0("rcx.updateMetaData: RCX object contains ",length(consistencyGroups), " consistency groups! Check the groups manually for consistency!\n")
-		for(cgNr in consistencyGroups){
-			warn = paste0(warn, 'Group ',cgNr, ': ', paste0(metaData$name[metaData$consistencyGroup==cgNr], collapse = ', '),'\n')
-		}
-		warning(warn)
-	}
-	
-	# update element count
-	metaData$elementCount = sapply(metaData$name, function(x){return(max(dim(rcx[[x]])[1],0))})	# max(0,NULL) = 0 to set default value to 0
-	
-	# set properties (if not already set)
-	if(!('list' %in% class(metaData$properties))){
-		metaData$properties=rep(list(), length.out=dim(metaData)[1])
-	}
-	
-	# order meta-data elements by names and correct the row numbering
-	metaData = metaData[order(metaData$name),order(colnames(metaData))]
-	rownames(metaData) = 1:dim(metaData)[1]
-	
-	rcx$metaData = metaData
-	return(rcx)
+    if(missing(rcx) || is.null(rcx) || !("RCX" %in% class(rcx))) stop("rcx.updateMetaData: Parameter rcx does not contain RCX object")
+    
+    # check if mandatoryAspects are present in the RCX object
+    if(any(!(mandatoryAspects %in% names(rcx)))) stop(paste0("rcx.updateMetaData: Mandatory aspects are missing in the RCX object: ", paste0(mandatoryAspects[!(mandatoryAspects %in% names(rcx))], collapse=', ')))
+    
+    
+    # get meta data from RCX object
+    # create it, if it doesn't exist (or if it is forced)
+    metaData = rcx$metaData
+    if(is.null(metaData) || force) {
+        if(verbose) print('rcx.updateMetaData: MetaData will be created')
+        metaData = data.frame(consistencyGroup=1, elementCount=0, lastUpdate=1, name = sort(names(rcx)[!(names(rcx) %in% excludeAspects)]), version='1.0', idCounter=NA, stringsAsFactors = F)
+    }else{
+        if(verbose) print('rcx.updateMetaData: Existing metaData will be updated')
+        
+        if(!('consistencyGroup' %in% names(metaData))){
+            metaData$consistencyGroup = 1
+            if(verbose) warning('rcx.updateMetaData: No consistancy groups specified (Set by default to "1")!  Check manually for consistency!')
+        }
+        if(!('elementCount' %in% names(metaData))) metaData$elementCount = 0
+        if(!('lastUpdate' %in% names(metaData))) metaData$lastUpdate = 1
+        if(!('version' %in% names(metaData))) metaData$version = '1.0'
+        if(!('idCounter' %in% names(metaData))) metaData$idCounter = NA
+        properties = NULL
+        if('properties' %in% names(metaData)){
+            properties = metaData$properties
+            metaData$properties = NULL
+        }else{
+            properties = rep(list(), length.out=dim(metaData)[1])
+        }
+        
+        aspects = names(rcx)[!(names(rcx) %in% excludeAspects)]
+        aspectsAlreadyInMDIndex = which(metaData$name %in% aspects)
+        
+        # exclude rows, that are no aspects and order columns
+        metaData = metaData[aspectsAlreadyInMDIndex,sort(colnames(metaData))]
+        properties = properties[aspectsAlreadyInMDIndex]
+        
+        # find aspects missing in meta-data
+        aspectsNotYetInMD = aspects[!aspects %in% metaData$name]
+        
+        # add missing aspects to metaData
+        if(length(aspectsNotYetInMD)!=0) {
+            metaData = rbind(metaData, data.frame(consistencyGroup=1, elementCount=0, idCounter=NA, lastUpdate=1, name = aspectsNotYetInMD, version='1.0', stringsAsFactors = F))
+            properties = c(properties,rep(list(),length.out=length(aspectsNotYetInMD)))
+        }
+        
+        # add the properties column again
+        metaData$properties = properties
+    }
+    
+    if(verbose) print('rcx.updateMetaData: idCounter will be updated')
+    # id exporting aspects are required to have specified an id counter (max id in the aspect)
+    metaData$idCounter = sapply(metaData$name, function(x){return(ifelse('@id' %in% colnames(rcx[[x]]), max(rcx[[x]]$'@id'), NA))})
+    
+    
+    if(verbose) print('rcx.updateMetaData: Consistency groups will be checked')
+    # get the current consistency group(s)
+    consistencyGroups = unique(metaData$consistencyGroup)
+    if(verbose && (length(consistencyGroups)>1)){
+        warn = paste0("rcx.updateMetaData: RCX object contains ",length(consistencyGroups), " consistency groups! Check the groups manually for consistency!\n")
+        for(cgNr in consistencyGroups){
+            warn = paste0(warn, 'Group ',cgNr, ': ', paste0(metaData$name[metaData$consistencyGroup==cgNr], collapse = ', '),'\n')
+        }
+        warning(warn)
+    }
+    
+    # update element count
+    metaData$elementCount = sapply(metaData$name, function(x){return(max(dim(rcx[[x]])[1],0))})    # max(0,NULL) = 0 to set default value to 0
+    
+    # set properties (if not already set)
+    if(!('list' %in% class(metaData$properties))){
+        metaData$properties=rep(list(), length.out=dim(metaData)[1])
+    }
+    
+    # order meta-data elements by names and correct the row numbering
+    metaData = metaData[order(metaData$name),order(colnames(metaData))]
+    rownames(metaData) = 1:dim(metaData)[1]
+    
+    rcx$metaData = metaData
+    return(rcx)
 }
 

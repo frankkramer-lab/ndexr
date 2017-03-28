@@ -4,12 +4,12 @@
 \alias{ndex.network.get.metadata}
 \title{Get Network CX Metadata Collection}
 \usage{
-ndex.network.get.metadata(ndexcon, nuuid)
+ndex.network.get.metadata(ndexcon, networkId)
 }
 \arguments{
 \item{ndexcon}{object of class NDEXConnection}
 
-\item{nuuid}{unique ID of the network}
+\item{networkId}{character; unique ID (UUID) of the network}
 }
 \value{
 metadata as list: consistencyGroup, elementCount, lastUpdate, name, properties, version and idCounter
@@ -29,5 +29,6 @@ GET: ndex.api.config$api$network$aspect$getMetaData
 \dontrun{
 ndexcon = ndex.connect(verbose=T)
 pws = ndex.find.networks(ndexcon,"p53")
-ndex.network.get.metadata(ndexcon,pws[1,"externalId"]) }
+ndex.network.get.metadata(ndexcon,pws[1,"externalId"]) 
+}
 }

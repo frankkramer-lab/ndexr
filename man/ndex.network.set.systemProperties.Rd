@@ -4,13 +4,13 @@
 \alias{ndex.network.set.systemProperties}
 \title{Set Network System Properties}
 \usage{
-ndex.network.set.systemProperties(ndexcon, nuuid, readOnly = NULL,
+ndex.network.set.systemProperties(ndexcon, networkId, readOnly = NULL,
   visibility = NULL, showcase = NULL)
 }
 \arguments{
 \item{ndexcon}{object of class NDEXConnection}
 
-\item{nuuid}{unique ID of the network}
+\item{networkId}{unique ID of the network}
 
 \item{readOnly}{boolean (optional); Sets the network to only readable. At least one of readOnly, visibility or showcase have to be set!}
 
@@ -19,7 +19,7 @@ ndex.network.set.systemProperties(ndexcon, nuuid, readOnly = NULL,
 \item{showcase}{boolean (optional); Authenticated user can use this property to control whether this network will display in his or her home page. Caller will receive an error if the user does not have explicit permission to that network. At least one of readOnly, visibility or showcase have to be set!}
 }
 \description{
-Network System properties are the properties that describe the network’s status in a particular NDEx server but that are not part of the corresponding CX network object.
+Network System properties are the properties that describe the network's status in a particular NDEx server but that are not part of the corresponding CX network object.
 }
 \note{
 Compatible to NDEx server version 1.3 and 2.0
@@ -35,11 +35,11 @@ GET: ndex.api.config$api$network$systemproperties$set
 \dontrun{
 ndexcon = ndex.connect('MyAccountName', 'MyPassword', verbose=T)
 networks = ndex.find.networks(ndexcon,"p53")
-nuuid = networks[1,"externalId"]
+networkId = networks[1,"externalId"]
 ## set network system properties
-ndex.network.set.systemProperties(ndexcon, nuuid, readOnly=TRUE)
-ndex.network.set.systemProperties(ndexcon, nuuid, visibility="PUBLIC")
-ndex.network.set.systemProperties(ndexcon, nuuid, showcase=TRUE)
-ndex.network.set.systemProperties(ndexcon, nuuid, readOnly=FALSE, visibility="PRIVATE", showcase=FALSE)
+ndex.network.set.systemProperties(ndexcon, networkId, readOnly=TRUE)
+ndex.network.set.systemProperties(ndexcon, networkId, visibility="PUBLIC")
+ndex.network.set.systemProperties(ndexcon, networkId, showcase=TRUE)
+ndex.network.set.systemProperties(ndexcon, networkId, readOnly=FALSE, visibility="PRIVATE", showcase=FALSE)
 }
 }

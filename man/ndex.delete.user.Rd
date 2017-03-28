@@ -2,16 +2,33 @@
 % Please edit documentation in R/ndex_users.R
 \name{ndex.delete.user}
 \alias{ndex.delete.user}
-\title{Name}
+\title{Delete User}
 \usage{
-ndex.delete.user(uuid)
+ndex.delete.user(ndexcon, uuid)
+}
+\arguments{
+\item{ndexcon}{object of class NDEXConnection}
+
+\item{uuid}{unique ID of the user}
 }
 \value{
-result
+NULL if successfull, else an error is thrown
 }
 \description{
-Description
+Deletes the authenticated user, removing any other objects in the database that depend on the user
 }
-\examples{
+\note{
+Compatible to NDEx server version 2.0
+}
+\section{REST query}{
 
+GET: ndex.api.config$api$user$delete
+}
+
+\examples{
+\dontrun{
+ndexcon = ndex.connect('some.ndex.account','password')
+user = ndex.find.user.byName(ndexcon, 'some.ndex.account')
+ndexr.delete.user(ndexcon,user$externalId)
+}
 }

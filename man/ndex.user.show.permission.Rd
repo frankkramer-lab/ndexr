@@ -2,16 +2,42 @@
 % Please edit documentation in R/ndex_users.R
 \name{ndex.user.show.permission}
 \alias{ndex.user.show.permission}
-\title{Name}
+\title{Get User's Permission for Network}
 \usage{
-ndex.user.show.permission(uuid)
+ndex.user.show.permission(ndexcon, userId, networkId, directonly = FALSE)
+}
+\arguments{
+\item{ndexcon}{object of class NDEXConnection}
+
+\item{userId}{character; unique ID (UUID) of the user}
+
+\item{networkId}{character; unique ID (UUID) of the group}
+
+\item{directonly}{logical (default: FALSE); If directonly is set to true, permissions granted through groups are not included in the result}
 }
 \value{
-result
+List of permissions of that user ("READ"|"WRITE"|"ADMIN") or empty object
 }
 \description{
-Description
+Get the type(s) of permission assigned to the authenticated user for the specified network. Returns a map which maps a network UUID to the highest permission assigned to the authenticated user.
 }
-\examples{
+\note{
+Compatible to NDEx server version 2.0
+}
+\section{REST query}{
 
+GET: ndex.api.config$api$user$permission$get
+}
+
+\examples{
+\dontrun{
+## get user by name to get UUID
+user = ndex.find.user.byName(ndexcon, 'some.ndex.account')
+networkId = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
+
+## get users's permission to a network
+networkPermissions = ndex.user.show.permission(ndexcon, user$externalId, networkId, directonly=TRUE)
+## $`aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee`
+## [1] "ADMIN"
+}
 }

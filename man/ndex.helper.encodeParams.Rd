@@ -9,46 +9,74 @@ ndex.helper.encodeParams(url, params, ...)
 \arguments{
 \item{url}{character}
 
-\item{params}{(named) character vector;}
+\item{params}{(nested) list; "params" section of a api function definition in the api configuration (See \link{ndex.api.config})}
 
-\item{values}{character vector (optional if params are named);}
-
-\item{encoding}{character (optional); Method to encode the parameter: 'asParams', 'asNamedParams', 'asPath', 'withinURL';}
+\item{...}{parameters defined by name used in the config}
 }
 \value{
 URL with encoded parameters as character
 }
 \description{
-Encodes the given parameter and adds it to the url. The methods can be 'asParams', 'asPath' and 'withinURL'.
-The methods are chosen automatically depending on the provided parameter:
-if only values are provided, the values are encoded as url (e.g. "url/value1/value2/...")[encoding='asPath']
-if the params are unnamed and values are provided, it is encoded as params (e.g. "url?param1=value1&param2=value2&...")[encoding='asParams']
-if the params are named an no values are provided, it is encoded as params (e.g. "url?param1=value1&param2=value2&...")[encoding='asNamedParams']
-if named params and values are given, the value of params is used to replace it in the url with the corresponding value (e.g. url="abc.de/#test#/else", params=(bla='#test#') and value=('blubb') becomes to "abc.de/blubb/else")[encoding='withinURL']
-}
-\note{
-params and values must have the same length
+Encodes a given parameter within the url accordingly to the parameter configuration for the api. 
+The single parameter definitions are given as list by the "params" parameter. Each parameter is defined by a method, and, if applicable, a tag, a default value and/or an optional flag.
+There are three keywords defining the method: replace, append or parameter.
+replace: The String defined by "tag" can be found wihtin the url and will be replaced by the given value of the parameter. E.g. the tag "#NETWORKID#" in the url "/network/#NETWORKID#/provenance" is replaced by a value (e.g. "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee") given as network id, which leads to the url "/network/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee/provenance". 
+append: The given value of the parameter is appended to an url. Therefore the order of the parameters in the params definition is used. E.g. the url "/network/search" and the given values for "start" = 0 and "size" = 100 generates the following url: "/network/search/0/100"
+parameter: Encodes the given parameters as url parameter using the specified tag as parameter descriptor. E.g. a parameter with the tag "username" and the value "SomeName" is encoded in the url "/user" as follows: "/user?username=SomeName"
+It is also possible to set parameter as optional (except for replace), or define default values. Values are assigned to the parameters using the parameter name in the ... parameter.
 }
 \examples{
 \dontrun{
+## replace
+url = "http://en.wikipedia.org/#NETWORKID#/index.php"
+params = list(	network=list(	tag="#NETWORKID#", method="replace"))
+values = c(network='aaaa-bb-cc-dddddd', bla='This is not used!')
+ndex.helper.encodeParams(url, params=params, values)
+## "http://en.wikipedia.org/aaaa-bb-cc-dddddd/index.php"
+
+params = list(	network=list(	tag="#NETWORKID#", method="replace", default="xxxx-xx-xx-xxxxxx"))
+values = c(bla='This is not used!')
+ndex.helper.encodeParams(url, params=params, values)
+## "http://en.wikipedia.org/xxxx-xx-xx-xxxxxx/index.php"
+ 
+## parameter
 url = "http://en.wikipedia.org/w/index.php"
-values = c("Train", "5", "90", "history")
-ndex.helper.encodeParams(url, values=values)
-#[1] "http://en.wikipedia.org/w/index.php/Train/5/90/history"
-
-params = c("title", "limit", "offset", "action") 
-namedParams = c(title="Train", limit="5", offset="90", action="history")
-ndex.helper.encodeParams(url, params=params, values=values)
-ndex.helper.encodeParams(url, params, values)          ## same as above, but shorter
-ndex.helper.encodeParams(url, params=namedParams)      ## same as above, but with named params
-ndex.helper.encodeParams(url, namedParams)             ## same as above, but shorter
-#[1] "http://en.wikipedia.org/w/index.php?title=Train&limit=5&offset=90&action=history"
-
-url = "http://en.wikipedia.org/w/index.php/#Train#/somethingElse/#Number#"
-namedParams = c(train="#Train#", someNumber="#Number#")
-values = c("ICE200", 12345)
-ndex.helper.encodeParams(url, params=namedParams, values=values)
-ndex.helper.encodeParams(url, namedParams, values)
-#[1] "http://en.wikipedia.org/w/index.php/ICE200/somethingElse/12345"
+params = list(	network=list(	tag="network", method="parameter"))
+values = c(network='aaaa-bb-cc-dddddd', bla='This is not used!')
+ndex.helper.encodeParams(url, params=params, values)
+## "http://en.wikipedia.org/w/index.php?network=aaaa-bb-cc-dddddd"
+  
+values = c(bla='This is not used!')
+params = list(	network=list(	tag="network", method="parameter", optional=TRUE))
+ndex.helper.encodeParams(url, params=params, values)
+## "http://en.wikipedia.org/w/index.php"
+  
+params = list(	network=list(	tag="network", method="parameter", default="xxxx-xx-xx-xxxxxx"))
+ndex.helper.encodeParams(url, params=params, values)
+## "http://en.wikipedia.org/w/index.php?network=xxxx-xx-xx-xxxxxx"
+  
+ndex.helper.encodeParams(url, params=params, values)
+values = c(network='aaaa-bb-cc-dddddd', bla='This is not used!')
+## "http://en.wikipedia.org/w/index.php?network=aaaa-bb-cc-dddddd"
+  
+## append
+url = "http://en.wikipedia.org/w/index.php"
+params = list(	network=list(	method="append"))
+values = c(network='aaaa-bb-cc-dddddd', bla='This is not used!')
+ndex.helper.encodeParams(url, params=params, values)
+## "http://en.wikipedia.org/w/index.php/aaaa-bb-cc-dddddd"
+  
+values = c(bla='This is not used!')
+params = list(	network=list(	method="append", optional=TRUE))
+ndex.helper.encodeParams(url, params=params, values)
+## "http://en.wikipedia.org/w/index.php"
+  
+params = list(	network=list(	method="append", default="xxxx-xx-xx-xxxxxx"))
+ndex.helper.encodeParams(url, params=params, values)
+## "http://en.wikipedia.org/w/index.php/xxxx-xx-xx-xxxxxx"
+  
+values = c(network='aaaa-bb-cc-dddddd', bla='This is not used!')
+ndex.helper.encodeParams(url, params=params, values)
+## "http://en.wikipedia.org/w/index.php/aaaa-bb-cc-dddddd"
 }
 }

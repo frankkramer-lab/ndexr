@@ -4,12 +4,13 @@
 \alias{ndex.network.delete.permission}
 \title{Delete Network Permission}
 \usage{
-ndex.network.delete.permission(ndexcon, nuuid, user = NULL, group = NULL)
+ndex.network.delete.permission(ndexcon, networkId, user = NULL,
+  group = NULL)
 }
 \arguments{
 \item{ndexcon}{object of class NDEXConnection}
 
-\item{nuuid}{unique ID of the network}
+\item{networkId}{unique ID of the network}
 
 \item{user}{character (optional); uuid of the user. Only either user or group may be set!}
 
@@ -33,10 +34,10 @@ GET: ndex.api.config$api$network$permission$delete
 \dontrun{
 ndexcon = ndex.connect('MyAccountName', 'MyPassword', verbose=T)
 networks = ndex.find.networks(ndexcon,"p53")
-nuuid = networks[1,"externalId"]
+networkId = networks[1,"externalId"]
 ## get the permissions
-ndex.network.delete.permission(ndexcon, nuuid, user=someUserUuid)	# returns 1
-ndex.network.delete.permission(ndexcon, nuuid, user=someUserUuid)	# returns 0, because user already lost permission on network
-ndex.network.delete.permission(ndexcon, nuuid, group=someGroupUuid)
+ndex.network.delete.permission(ndexcon, networkId, user=someUserUuid)	# returns 1
+ndex.network.delete.permission(ndexcon, networkId, user=someUserUuid)	# returns 0, because user already lost permission on network
+ndex.network.delete.permission(ndexcon, networkId, group=someGroupUuid)
 }
 }

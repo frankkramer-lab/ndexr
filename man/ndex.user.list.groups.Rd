@@ -2,16 +2,47 @@
 % Please edit documentation in R/ndex_users.R
 \name{ndex.user.list.groups}
 \alias{ndex.user.list.groups}
-\title{Name}
+\title{Get User's Group Memberships}
 \usage{
-ndex.user.list.groups(uuid)
+ndex.user.list.groups(ndexcon, userId, type = NULL, start = NULL,
+  size = NULL)
+}
+\arguments{
+\item{ndexcon}{object of class NDEXConnection}
+
+\item{userId}{character; unique ID (UUID) of the user}
+
+\item{type}{character (optional); constrains the type of the returned membership. If not set (or NULL), all permission types will be returned.}
+
+\item{start}{integer (optional); specifies that the result is the nth page of the requested data.}
+
+\item{size}{integer (optional); specifies the number of data items in each page.}
 }
 \value{
-result
+List of permissions of that user or empty object
 }
 \description{
-Description
+Query finds groups for which the current user has the specified membership type. If the "type' parameter is omitted, all membership types will be returned. Returns a map which maps a group UUID to the membership type the authenticated user has.
 }
-\examples{
+\note{
+Compatible to NDEx server version 2.0
+}
+\section{REST query}{
 
+GET: ndex.api.config$api$user$group$list
+}
+
+\examples{
+\dontrun{
+## get user by name to get UUID
+user = ndex.find.user.byName(ndexcon, 'some.ndex.account')
+
+## get all group memberships of the user to get the group UUID 
+groupPermissions = ndex.user.list.groups(ndexcon, user$externalId)
+## $`aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee`
+## [1] "MEMBER"
+
+groupIds = names(permissions)
+## [1] "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
+}
 }

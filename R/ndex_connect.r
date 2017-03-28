@@ -7,7 +7,7 @@
 ##
 ## History:
 ##   Created on 1 June 2014 by Ishkin
-## 	
+##     
 ## Description:
 ##   Base functions to perform HTTP transactions to an NDEX server via the NDEx REST API
 ##   Updated to NDEX v1.0 API 1 November 2014
@@ -23,19 +23,23 @@
 #' 
 #' @param username character (optional); username
 #' @param password character (optional); password
-#' @param host character (optional); URL of NDEx REST server; Set in apiConfig$defaults$connection$host. By default the host is "http://www.ndexbio.org"
-#' @param apiConfig config object (neste list, optional); Configuration of NDEx REST server; Set in ndex.api.config (or ndex.api.yml): It contains specifications for NDEx server api version 1.3 and 2.0. The default api is specified by 'defaultVersion'
+#' @param host character (default: "apiConfig$connection$host"); Host address of NDEx server; By default the url set in apiConfig$defaults$connection$host is used. ("http://www.ndexbio.org")
+#' @param apiPath character (default: "apiConfig$connection$api"); URL path of the REST api; By default the url set in apiConfig$defaults$connection$api is used. ("http://www.ndexbio.org")
+#' @param apiConfig config object (nested list, default: ndex.api.conf); Configuration of NDEx REST server; Set in ndex.api.config (set in ndex_api_config.r or ndex_api_config.yml): It contains specifications for NDEx server api version 1.3 and 2.0. The default api is specified by 'defaultVersion'
 #' @param verbose logical (optional); whether to print out extended feedback 
+#' 
 #' @return returns object of class NDEXConnection which stores options, authentication and api configuration if successfull, NULL otherwise
-#' @export
+#' 
 #' @examples
 #' \dontrun{ndexcon = ndex.connect()   ## log in anonymously
 #' ndexcon = ndex.connect(verbose=T)   ## same as above
 #' ndexcon = ndex.connect('user','password')   ## log in with credentials
 #' ndexcon = ndex.connect(host='localhost:8765')   ## running some NDEx server locally
-#' ndexcon = ndex.connect(apiConfig=ndex.api.config$Version2.0)   ## manually change the api and connection configuration}
+#' ndexcon = ndex.connect(apiConfig=ndex.api.config$Version2.0)   ## manually change the api and connection configuration
+#' }
 #' @seealso  \code{\link{ndex.api.config}}, \code{\link{updateConfigFromYaml}}
-ndex.connect <- function(username, password, host = "apiConfig$connection$host", apiPath = 'apiConfig$connection$api', apiConfig=ndex.api.config, verbose = T){
+#' @export
+ndex.connect <- function(username, password, host = "apiConfig$connection$host", apiPath = 'apiConfig$connection$api', apiConfig=ndex.api.config, verbose = FALSE){
 
   ##Check parameters and set defaults by config
   credentials = TRUE
@@ -53,23 +57,24 @@ ndex.connect <- function(username, password, host = "apiConfig$connection$host",
   }
   
   if(missing(apiPath)){
-	  apiPath = apiConfig$connection$api
-	  if(verbose) message(paste("ndex.connect: apiPath not specified, using default: [", apiPath, "]" ))
+      apiPath = apiConfig$connection$api
+      if(verbose) message(paste("ndex.connect: apiPath not specified, using default: [", apiPath, "]" ))
   }
   
   if(missing(host)){
-	  host = paste0(apiConfig$connection$host, apiPath)
-	  if(verbose) message(paste("ndex.connect: Host not specified, using default: [", host, "]" ))
+      host = paste0(apiConfig$connection$host, apiPath)
+      if(verbose) message(paste("ndex.connect: Host not specified, using default: [", host, "]" ))
   } else {
-	  host = paste0(host, apiPath)
-	  if(verbose) message(paste("ndex.connect: Using host: [", host, "]" ))
+      host = paste0(host, apiPath)
+      if(verbose) message(paste("ndex.connect: Using host: [", host, "]" ))
   }
   
   ##Setup server connection, with and without credentials
   ##Check if server is available
   auth_param = NULL
   api = ndex.helper.getApi(list(apiConfig=apiConfig), 'serverStatus')
-  url <- paste0(host, api$url)
+  route <- ndex.helper.encodeParams(api$url, api$params)
+  url <- paste0(host, route)
   log_txt = paste0("ndex.connect: Tried to check the server status of [", host, "]")
 
   ##Try to connect to the server; throws error if something went wrong
@@ -80,16 +85,17 @@ ndex.connect <- function(username, password, host = "apiConfig$connection$host",
   
   ##Checkt the provided credentials
   if (credentials){
-	  api = ndex.helper.getApi(list(apiConfig=apiConfig), 'user$authenticate')
-	  url <- paste0(host, api$url)
-	  auth_param = httr::authenticate(username, password)
-    log_txt = paste0("ndex.connect: Tried to autheticate user: ", username)
-    response = ndex.helper.httpResponseHandler(httr::GET(url=url, config=auth_param), 
+      api = ndex.helper.getApi(list(apiConfig=apiConfig), 'user$authenticate')
+      route <- ndex.helper.encodeParams(api$url, api$params)
+      url <- paste0(host, route)
+      auth_param = httr::authenticate(username, password)
+      log_txt = paste0("ndex.connect: Tried to autheticate user: ", username,' @ ',url)
+      response = ndex.helper.httpResponseHandler(httr::GET(url=url, config=auth_param), 
                                                log_txt, 
                                                verbose)
-    if(verbose) message(paste("ndex.connect: Server response: ", response))	
+      if(verbose) message(paste("ndex.connect: Server response: ", response))    
   }
-						 
+                         
   
   ##Create ndexcon object
   ndexcon = list(anonymous=TRUE, host=host, apiConfig=apiConfig, verbose=verbose)
@@ -208,25 +214,25 @@ ndex_rest_POST <- function(ndexcon, route, data, multipart = FALSE, raw = FALSE)
 #' ndex_rest_PUT(ndexcon, "/networks/api", list(some=data, other=data2), multipart=T)
 #' }
 ndex_rest_PUT <- function(ndexcon, route, data=NULL, multipart = FALSE, raw = FALSE){
-	url <- paste0(ndexcon$host, route)
-	auth <- NULL
-	if(! ndexcon$anonymous) auth <- httr::authenticate(ndexcon$username, ndexcon$password)
-	encode <- ifelse(multipart, 'multipart', 'json')
-	contenttype <- httr::content_type_json()
-	if(multipart) contenttype <- httr::content_type('multipart/form-data')
-	
-	try(response <- httr::PUT(url, auth, contenttype, body = data, encode = encode))
-	
-	ndex.helper.httpResponseHandler(response, paste("PUT: [", url, "]\ndata:\n",substring(data, 1, 300),'\n...'), ndexcon$verbose)
-	content <- content(response, as='text', encoding='UTF-8')
-	
-	if(ndexcon$verbose) message('Response:', substring(content, 1, 300), '...', sep = '\n')
-	if(raw) return(content)
-	if(jsonlite::validate(content)) {
-		return(jsonlite::fromJSON(content))
-	} else {
-		return(NULL)
-	}
+    url <- paste0(ndexcon$host, route)
+    auth <- NULL
+    if(! ndexcon$anonymous) auth <- httr::authenticate(ndexcon$username, ndexcon$password)
+    encode <- ifelse(multipart, 'multipart', 'json')
+    contenttype <- httr::content_type_json()
+    if(multipart) contenttype <- httr::content_type('multipart/form-data')
+    
+    try(response <- httr::PUT(url, auth, contenttype, body = data, encode = encode))
+    
+    ndex.helper.httpResponseHandler(response, paste("PUT: [", url, "]\ndata:\n",substring(data, 1, 300),'\n...'), ndexcon$verbose)
+    content <- content(response, as='text', encoding='UTF-8')
+    
+    if(ndexcon$verbose) message('Response:', substring(content, 1, 300), '...', sep = '\n')
+    if(raw) return(content)
+    if(jsonlite::validate(content)) {
+        return(jsonlite::fromJSON(content))
+    } else {
+        return(NULL)
+    }
 }
 
 

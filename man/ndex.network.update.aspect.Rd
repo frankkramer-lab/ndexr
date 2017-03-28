@@ -4,19 +4,19 @@
 \alias{ndex.network.update.aspect}
 \title{Update an Aspect of a Network}
 \usage{
-ndex.network.update.aspect(ndexcon, nuuid, aspectName, aspectAsRCX)
+ndex.network.update.aspect(ndexcon, networkId, aspectName, aspectAsRCX)
 }
 \arguments{
 \item{ndexcon}{object of class NDEXConnection}
 
-\item{nuuid}{unique ID of the network}
+\item{networkId}{unique ID of the network}
 
 \item{aspectName}{name of the aspect}
 
 \item{aspectAsRCX}{rcx data for the aspect (rcx[[aspectName]])}
 }
 \value{
-nuuid unique ID of the modified network
+networkId unique ID of the modified network
 }
 \description{
 This function updates an aspect with the provided CX for the aspect.

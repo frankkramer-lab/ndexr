@@ -6,16 +6,18 @@
 \usage{
 ndex.connect(username, password, host = "apiConfig$connection$host",
   apiPath = "apiConfig$connection$api", apiConfig = ndex.api.config,
-  verbose = T)
+  verbose = FALSE)
 }
 \arguments{
 \item{username}{character (optional); username}
 
 \item{password}{character (optional); password}
 
-\item{host}{character (optional); URL of NDEx REST server; Set in apiConfig$defaults$connection$host. By default the host is "http://www.ndexbio.org"}
+\item{host}{character (default: "apiConfig$connection$host"); Host address of NDEx server; By default the url set in apiConfig$defaults$connection$host is used. ("http://www.ndexbio.org")}
 
-\item{apiConfig}{config object (neste list, optional); Configuration of NDEx REST server; Set in ndex.api.config (or ndex.api.yml): It contains specifications for NDEx server api version 1.3 and 2.0. The default api is specified by 'defaultVersion'}
+\item{apiPath}{character (default: "apiConfig$connection$api"); URL path of the REST api; By default the url set in apiConfig$defaults$connection$api is used. ("http://www.ndexbio.org")}
+
+\item{apiConfig}{config object (nested list, default: ndex.api.conf); Configuration of NDEx REST server; Set in ndex.api.config (set in ndex_api_config.r or ndex_api_config.yml): It contains specifications for NDEx server api version 1.3 and 2.0. The default api is specified by 'defaultVersion'}
 
 \item{verbose}{logical (optional); whether to print out extended feedback}
 }
@@ -31,7 +33,8 @@ If username and password are missing an anonymous connection is created, which a
 ndexcon = ndex.connect(verbose=T)   ## same as above
 ndexcon = ndex.connect('user','password')   ## log in with credentials
 ndexcon = ndex.connect(host='localhost:8765')   ## running some NDEx server locally
-ndexcon = ndex.connect(apiConfig=ndex.api.config$Version2.0)   ## manually change the api and connection configuration}
+ndexcon = ndex.connect(apiConfig=ndex.api.config$Version2.0)   ## manually change the api and connection configuration
+}
 }
 \seealso{
 \code{\link{ndex.api.config}}, \code{\link{updateConfigFromYaml}}

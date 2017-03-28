@@ -4,9 +4,9 @@
 ##
 ## History:
 ##   Created on 05 February 2017 by Auer
-## 	
+##     
 ## Description:
-##	Test the connection to NDEx server:
+##    Test the connection to NDEx server:
 ##    Establish connection to a server (ndex.connect)
 ##
 ## Usage:

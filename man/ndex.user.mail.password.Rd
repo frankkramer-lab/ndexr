@@ -2,16 +2,32 @@
 % Please edit documentation in R/ndex_users.R
 \name{ndex.user.mail.password}
 \alias{ndex.user.mail.password}
-\title{Name}
+\title{Email New Password}
 \usage{
-ndex.user.mail.password(uuid)
+ndex.user.mail.password(ndexcon, uuid)
+}
+\arguments{
+\item{ndexcon}{object of class NDEXConnection}
+
+\item{uuid}{character; unique ID of the user}
 }
 \value{
-result
+Empty string on success, else error
 }
 \description{
-Description
+Causes a new password to be generated for the given user account and then emailed to the user's emailAddress
 }
-\examples{
+\note{
+Compatible to NDEx server version 2.0
+}
+\section{REST query}{
 
+GET: ndex.api.config$api$user$password$mail
+}
+
+\examples{
+\dontrun{
+user = ndex.find.user.byName(ndexcon, 'some.ndex.account')
+ndex.user.mail.password(ndexcon, user$externalId)
+}
 }

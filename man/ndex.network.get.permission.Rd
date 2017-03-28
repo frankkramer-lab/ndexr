@@ -4,12 +4,12 @@
 \alias{ndex.network.get.permission}
 \title{Get All Permissions on a Network}
 \usage{
-ndex.network.get.permission(ndexcon, nuuid, type, permission, start, size)
+ndex.network.get.permission(ndexcon, networkId, type, permission, start, size)
 }
 \arguments{
 \item{ndexcon}{object of class NDEXConnection}
 
-\item{nuuid}{unique ID of the network}
+\item{networkId}{unique ID of the network}
 
 \item{type}{character ("user"|"group"); specifies whether user or group permissions should be returned}
 
@@ -39,11 +39,11 @@ GET: ndex.api.config$api$network$permission$get
 \dontrun{
 ndexcon = ndex.connect('MyAccountName', 'MyPassword', verbose=T)
 networks = ndex.find.networks(ndexcon,"p53")
-nuuid = networks[1,"externalId"]
+networkId = networks[1,"externalId"]
 ## get the permissions
-permissions = ndex.network.get.permission(ndexcon, nuuid, 'user')
-permissions = ndex.network.get.permission(ndexcon, nuuid, 'user', NULL)	# same as previous
-permissions = ndex.network.get.permission(ndexcon, nuuid, 'user', 'READ', 0, 10)
-permissions = ndex.network.get.permission(ndexcon, nuuid, 'group')
+permissions = ndex.network.get.permission(ndexcon, networkId, 'user')
+permissions = ndex.network.get.permission(ndexcon, networkId, 'user', NULL)	# same as previous
+permissions = ndex.network.get.permission(ndexcon, networkId, 'user', 'READ', 0, 10)
+permissions = ndex.network.get.permission(ndexcon, networkId, 'group')
 }
 }

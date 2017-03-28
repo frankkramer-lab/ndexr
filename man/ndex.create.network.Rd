@@ -34,5 +34,5 @@ data: CXNetworkStream = data
 ndexcon = ndex.connect('MyAccountName', 'MyPassword', verbose=T)
 pws = ndex.find.networks(ndexcon,"p53")
 rcx = ndex.get.network(ndexcon,pws[1,"externalId"]) 
-nuuid = ndex.create.network(ndexcon, rcx)}
+networkId = ndex.create.network(ndexcon, rcx)}
 }

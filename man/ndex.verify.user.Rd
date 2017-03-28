@@ -2,16 +2,35 @@
 % Please edit documentation in R/ndex_users.R
 \name{ndex.verify.user}
 \alias{ndex.verify.user}
-\title{Name}
+\title{Verify a User}
 \usage{
-ndex.verify.user(uuid, code)
+ndex.verify.user(ndexcon, uuid, code)
+}
+\arguments{
+\item{ndexcon}{object of class NDEXConnection}
+
+\item{uuid}{character; unique ID of the user}
+
+\item{code}{character; Verification code sent by email}
 }
 \value{
-result
+string "User account XXX has been activated." when this user's account is successfully activated.
 }
 \description{
-Description
+Verify the given user with UUID and verification code, which is set by email
 }
-\examples{
+\note{
+Compatible to NDEx server version 2.0
+}
+\section{REST query}{
 
+GET: ndex.api.config$api$user$verify
+}
+
+\examples{
+\dontrun{
+user = ndex.find.user.byName(ndexcon, 'some.ndex.account')
+ndex.verify.user(ndexcon, user$externalId, 'Osqy11mRZ9')
+## [1] "User account XXX has been activated."
+}
 }

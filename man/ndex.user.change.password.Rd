@@ -2,16 +2,34 @@
 % Please edit documentation in R/ndex_users.R
 \name{ndex.user.change.password}
 \alias{ndex.user.change.password}
-\title{Name}
+\title{Change Password}
 \usage{
-ndex.user.change.password(uuid, password)
+ndex.user.change.password(ndexcon, uuid, password)
+}
+\arguments{
+\item{ndexcon}{object of class NDEXConnection}
+
+\item{uuid}{character; unique ID of the user}
+
+\item{password}{character; New password}
 }
 \value{
-result
+Empty string on success, else error
 }
 \description{
-Description
+Changes the authenticated user's password to the new password
 }
-\examples{
+\note{
+Compatible to NDEx server version 2.0
+}
+\section{REST query}{
 
+GET: ndex.api.config$api$user$password$change
+}
+
+\examples{
+\dontrun{
+user = ndex.find.user.byName(ndexcon, 'some.ndex.account')
+ndex.user.change.password(ndexcon, user$externalId, 'SuperSaveNewPassword')
+}
 }

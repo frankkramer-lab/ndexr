@@ -2,16 +2,59 @@
 % Please edit documentation in R/ndex_users.R
 \name{ndex.user.list.permissions}
 \alias{ndex.user.list.permissions}
-\title{Name}
+\title{Get User's Network Permissions}
 \usage{
-ndex.user.list.permissions(uuid)
+ndex.user.list.permissions(ndexcon, userId, type = NULL, directonly = FALSE,
+  start = NULL, size = NULL)
+}
+\arguments{
+\item{ndexcon}{object of class NDEXConnection}
+
+\item{userId}{character; unique ID (UUID) of the user}
+
+\item{type}{character (optional)("READ"|"WRITE"|"ADMIN"); constrains the type of the returned permission. If not set (or NULL), all permission types will be returned.}
+
+\item{directonly}{logical (default: FALSE); If directonly is set to true, permissions granted through groups are not included in the result}
+
+\item{start}{integer (optional); specifies that the result is the nth page of the requested data.}
+
+\item{size}{integer (optional); specifies the number of data items in each page.}
 }
 \value{
-result
+List of highest permissions of that user or empty object
 }
 \description{
-Description
+This function returns networks for which the authenticated user is assigned the specified permission. Userid is the UUID of the authenticated user. Returns a JSON map in which the keys are network UUIDs and values are the highest permission assigned to the authenticated user.#'
 }
-\examples{
+\note{
+Compatible to NDEx server version 2.0
+}
+\section{REST query}{
 
+GET: ndex.api.config$api$user$permission$list
+}
+
+\examples{
+\dontrun{
+## get user by name to get UUID
+user = ndex.find.user.byName(ndexcon, 'some.ndex.account')
+
+## get all network permissions of the user
+networkPermissions = ndex.user.list.permissions(ndexcon, user$externalId)
+## $`aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee`
+## [1] "ADMIN"
+
+networkIds = names(permissions)
+## [1] "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
+
+## get all networks for which the user has Admin permissions
+networkPermissions = ndex.user.list.permissions(ndexcon, user$externalId, type='ADMIN')
+## $`aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee`
+## [1] "ADMIN"
+
+## get all networks for which the user has direct access
+networkPermissions = ndex.user.list.permissions(ndexcon, user$externalId, directonly=TRUE)
+## $`aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee`
+## [1] "ADMIN"
+}
 }

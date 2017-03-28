@@ -4,12 +4,12 @@
 \alias{ndex.delete.network}
 \title{Delete a network}
 \usage{
-ndex.delete.network(ndexcon, nuuid)
+ndex.delete.network(ndexcon, networkId)
 }
 \arguments{
 \item{ndexcon}{object of class NDEXConnection}
 
-\item{nuuid}{unique ID of the network}
+\item{networkId}{unique ID of the network}
 }
 \value{
 NULL on success; Error else

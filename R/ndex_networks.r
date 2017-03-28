@@ -8,9 +8,9 @@
 ## History:
 ##   Created on 6 June 2014 by Ishkin
 ##   Split on 25 January 2017 by Auer
-## 	
+##     
 ## Description:
-##	Contains functions to search and retrieve networks
+##    Contains functions to search and retrieve networks
 ################################################################################
 
 
@@ -31,14 +31,17 @@
 #' @param accountName string (optional); constrain search to networks administered by this account
 #' @param start integer (optional); specifies that the result is the nth page of the requested data. The default value is 0
 #' @param size integer (optional); specifies the number of data items in each page. The default value is 100
+#' 
 #' @return Data frame with network information: ID, name, whether it is public, edge and node count; source and format of network. NULL if no networks are found.
+#' 
 #' @section REST query:
-#' GET: ndex.api.config$api$search$network$search    returns list of NetworkSummary
+#' GET: ndex.api.config$api$search$network$search
+#' @note Compatible to NDEx server version 1.3 and 2.0
 #' @note Search strings may be structured
+#' 
 #' @examples 
-#' \dontrun{
-#' ndexcon = ndex.connect(verbose=T)
-#' pws1 = ndex.find.networks(ndexcon1,"p53") }
+#' ndexcon = ndex.connect()
+#' networks = ndex.find.networks(ndexcon,"p53") 
 #' @export
 ndex.find.networks <- function(ndexcon, searchString="", accountName, start, size){
   

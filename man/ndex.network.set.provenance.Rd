@@ -4,12 +4,14 @@
 \alias{ndex.network.set.provenance}
 \title{Set Network Provenance}
 \usage{
-ndex.network.set.provenance(ndexcon, nuuid, provenance)
+ndex.network.set.provenance(ndexcon, networkId, provenance)
 }
 \arguments{
 \item{ndexcon}{object of class NDEXConnection}
 
-\item{nuuid}{unique ID of the network}
+\item{networkId}{character; unique ID (UUID) of the network}
+
+\item{provenance}{NDEx provanance object}
 }
 \value{
 List of network metadata: ID, name, whether it is public, edge and node count; source and format of network
@@ -29,6 +31,7 @@ GET: ndex.api.config$api$network$provenance$get
 \dontrun{
 ndexcon = ndex.connect('MyAccountName', 'MyPassword', verbose=T)
 networks = ndex.find.networks(ndexcon,"p53")
-nuuid = networks[1,"externalId"]
-provenance = ndex.network.set.provenance(ndexcon, nuuid, provenance) }
+networkId = networks[1,"externalId"]
+provenance = ndex.network.set.provenance(ndexcon, networkId, provenance) 
+}
 }

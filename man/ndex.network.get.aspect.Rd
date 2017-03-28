@@ -4,12 +4,12 @@
 \alias{ndex.network.get.aspect}
 \title{Get a Network Aspect As CX}
 \usage{
-ndex.network.get.aspect(ndexcon, nuuid, aspect, size)
+ndex.network.get.aspect(ndexcon, networkId, aspect, size)
 }
 \arguments{
 \item{ndexcon}{object of class NDEXConnection}
 
-\item{nuuid}{character; unique ID of the network}
+\item{networkId}{character; unique ID of the network}
 
 \item{aspect}{character; name of the aspect}
 

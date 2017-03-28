@@ -12,13 +12,13 @@ ndex.find.user.byId(ndexcon, uuuid)
 \item{uuuid}{unique ID of the user}
 }
 \value{
-result
+list of properties describing the user (externalId, emailAddress, website, etc.). Throws error (404) if user isn't found!
 }
 \description{
 Get User By UUID
 }
 \note{
-Compatible to NDEx server version 1.3 and 2.0
+Compatible to NDEx server version 2.0
 }
 \section{REST query}{
 
@@ -26,5 +26,8 @@ GET: ndex.api.config$api$user$get$byId
 }
 
 \examples{
-
+\dontrun{
+user = ndex.find.user.byName(ndexcon, 'someAccountName')
+user = ndex.find.user.byId(ndexcon, user$externalId)
+}
 }

@@ -6,6 +6,14 @@
 \usage{
 rcx.toNGraph(rcx, verbose = FALSE)
 }
+\arguments{
+\item{rcx}{RCX object}
+
+\item{verbose}{logical; whether to print out extended feedback}
+}
+\value{
+returns object of class ngraph if successfull, NULL otherwise
+}
 \description{
 Create ngraph object from RCX object
 }

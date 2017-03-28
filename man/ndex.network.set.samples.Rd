@@ -4,7 +4,15 @@
 \alias{ndex.network.set.samples}
 \title{Set Sample Network}
 \usage{
-ndex.network.set.samples(ndexcon, nuuid)
+ndex.network.set.samples(ndexcon, networkId)
+}
+\arguments{
+\item{ndexcon}{object of class NDEXConnection}
+
+\item{networkId}{character; unique ID (UUID) of the network}
+}
+\value{
+NULL on success
 }
 \description{
 Set Sample Network

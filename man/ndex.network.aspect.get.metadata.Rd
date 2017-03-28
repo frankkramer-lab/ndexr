@@ -4,12 +4,14 @@
 \alias{ndex.network.aspect.get.metadata}
 \title{Get the Metadata Associated with a Network UUID}
 \usage{
-ndex.network.aspect.get.metadata(ndexcon, nuuid, aspect)
+ndex.network.aspect.get.metadata(ndexcon, networkId, aspect)
 }
 \arguments{
 \item{ndexcon}{object of class NDEXConnection}
 
-\item{nuuid}{unique ID of the network}
+\item{networkId}{character; unique ID (UUID) of the network}
+
+\item{aspect}{character; aspect name}
 }
 \value{
 metadata for an aspect as list: consistencyGroup, elementCount, lastUpdate, data, name, properties, version and idCounter
@@ -31,5 +33,6 @@ GET: ndex.api.config$api$network$aspect$getMetaDataByName
 \dontrun{
 ndexcon = ndex.connect(verbose=T)
 pws = ndex.find.networks(ndexcon,"p53")
-ndex.network.aspect.get.metadata(ndexcon,pws[1,"externalId"]) }
+ndex.network.aspect.get.metadata(ndexcon,pws[1,"externalId"]) 
+}
 }

@@ -4,7 +4,15 @@
 \alias{ndex.network.set.properties}
 \title{Set Network Properties}
 \usage{
-ndex.network.set.properties(ndexcon, nuuid)
+ndex.network.set.properties(ndexcon, networkId)
+}
+\arguments{
+\item{ndexcon}{object of class NDEXConnection}
+
+\item{networkId}{character; unique ID (UUID) of the network}
+}
+\value{
+NULL on success
 }
 \description{
 Set Network Properties
