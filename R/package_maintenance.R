@@ -67,8 +67,8 @@ ndex.conf.header = paste0(    "#################################################
 #' #[1] "2.0"
 #' #$justANumber
 #' #[1] 123456
-#' 
-#' listToRCode(test)
+#' #
+#' #listToRCode(test)
 #' #[1] "list(\n\tbla=\"some text\",\n\tblubb=list(\n\t\ta=\"more text\",\n\t\tversion=\"2.0\"\n\t)\n)"
 listToRCode = function(obj, indent='    ', indentShift=''){
     newIndent = paste0(indentShift, indent)
