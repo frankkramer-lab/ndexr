@@ -38,7 +38,7 @@
 #' ndexcon = ndex.connect(host='localhost:8765')   ## running some NDEx server locally
 #' ndexcon = ndex.connect(ndexConf=ndex.conf$Version_2.0)   ## manually change the api and connection configuration
 #' }
-#' @seealso  \code{\link{ndex.conf}}, \code{\link{updateConfigFromYaml}}
+#' @seealso  \code{\link{ndex.conf}}
 #' @export
 ndex.connect <- function(username, password, host = "ndexConf$connection$host", apiPath = 'ndexConf$connection$api', ndexConf=ndex.conf, verbose = FALSE){
 
