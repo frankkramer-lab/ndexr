@@ -21,3 +21,5 @@ Suggests: BiocStyle,
     knitr,
     rmarkdown
 VignetteBuilder: knitr
+URL: https://github.com/frankkramer-lab/ndexr
+BugReports: https://github.com/frankkramer-lab/ndexr/issues
