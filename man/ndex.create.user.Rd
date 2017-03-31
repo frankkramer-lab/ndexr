@@ -9,7 +9,7 @@ ndex.create.user(ndexcon, userName, password, emailAddress,
   description, verbose = FALSE)
 }
 \arguments{
-\item{ndexcon}{object of class NDEXConnection}
+\item{ndexcon}{object of class NDEXConnection link{ndex.connect}}
 
 \item{userName}{character; name of the new user}
 
@@ -43,18 +43,21 @@ If email verification is turned on on the server, this call returns code 220 (Ac
 If email verification is turned on off on the server, this function returns 201 (Created). The URL for getting the newly created user is in the response body and the Location header.
 }
 \note{
+Requires an authorized user! (ndex.connect with credentials)
+
 Compatible to NDEx server version 2.0
 }
 \section{REST query}{
 
-GET: ndex.api.config$api$user$create
+GET: ndex.conf$api$user$create
 }
 
 \examples{
-\dontrun{
-userId = ndex.create.user(ndexcon, 'SomeUserName', 'SecretPassword', 'SomeUserName@ndex.org')
-## [1] "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
-
-userId = ndex.create.user(ndexcon, 'ASpecialProject', 'SecretPassword', 'ASpecialProject@ndex.org', isIndividual=TRUE, displayName='Area51', firstName='John', lastName='Doe', website='www.gidf.com', description='Nothing to see here..')
-}
+## Establish a server connection with credentials 
+# ndexcon = ndex.connect('MyAccountName', 'MyPassword')
+## Create a new user
+# userId = ndex.create.user(ndexcon, 'SomeUserName', 'SecretPassword', 'SomeUserName@ndex.org')
+## [1] "uuuuuuuu-ssss-eeee-rrrr-123456789abc"
+# userId = ndex.create.user(ndexcon, 'ASpecialProject', 'SecretPassword', 'ASpecialProject@ndex.org', isIndividual=TRUE, displayName='Area51', firstName='John', lastName='Doe', website='www.gidf.com', description='Nothing to see here..')
+NULL
 }

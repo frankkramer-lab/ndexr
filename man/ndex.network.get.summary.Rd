@@ -7,7 +7,7 @@
 ndex.network.get.summary(ndexcon, networkId)
 }
 \arguments{
-\item{ndexcon}{object of class NDEXConnection}
+\item{ndexcon}{object of class NDEXConnection link{ndex.connect}}
 
 \item{networkId}{unique ID of the network}
 }
@@ -22,12 +22,15 @@ Compatible to NDEx server version 1.3 and 2.0
 }
 \section{REST query}{
 
-GET: ndex.api.config$api$network$summary$get
+GET: ndex.conf$api$network$summary$get
 }
 
 \examples{
-\dontrun{
-ndexcon = ndex.connect(verbose=T)
-pws = ndex.find.networks(ndexcon,"p53")
-ndex.network.get.summary(ndexcon,pws[1,"externalId"]) }
+## Establish a server connection
+ndexcon = ndex.connect()
+## Find a network and get its UUID
+networks = ndex.find.networks(ndexcon,"p53")
+networkId = networks[1,"externalId"]
+## Get the network summary
+summary = ndex.network.get.summary(ndexcon, networkId)
 }

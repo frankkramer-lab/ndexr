@@ -119,14 +119,20 @@
 #' 
 #' @param json JSON data
 #' @param verbose logical; whether to print out extended feedback 
+#' 
 #' @return returns object of class RCX if successfull, NULL otherwise
+#' 
 #' @seealso \code{\link{ngraph.fromRCX}} \code{\link{ngraph.toRCX}} \code{\link{rcx.toJSON}} 
 #' @aliases RCX
+#' 
 #' @examples 
-#' \dontrun{
-#' ndexcon = ndex.connect(verbose=T)
-#' pws = ndex.find.networks(ndexcon,"p53")
-#' rcx = ndex.get.network(ndexcon,pws[1,"externalId"]) }
+#' ## Establish a server connection
+#' ndexcon = ndex.connect()
+#' ## Find a network and get its UUID
+#' networks = ndex.find.networks(ndexcon,"p53")
+#' networkId = networks[1,"externalId"]
+#' ## Get the network data 
+#' rcx = ndex.get.network(ndexcon, networkId) 
 #' @export
 rcx.fromJSON <- function(json, verbose = FALSE){
   
@@ -152,7 +158,7 @@ rcx.fromJSON <- function(json, verbose = FALSE){
     aspectlist[["metaData"]] = jsonlist[["metaData"]][[sel[1]]]
   }
   if(length(sel)==2) {
-    aspectlist[["metaData"]] = merge(jsonlist[["metaData"]][[sel[1]]],jsonlist[["metaData"]][[sel[2]]],by="name",all = T)
+    aspectlist[["metaData"]] = merge(jsonlist[["metaData"]][[sel[1]]],jsonlist[["metaData"]][[sel[2]]],by="name",all = TRUE)
     if("properties.x" %in% names(aspectlist$metaData)) {
       aspectlist[["metaData"]]$properties = aspectlist$metaData$properties.x
       aspectlist[["metaData"]]$properties.x = NULL
@@ -181,14 +187,20 @@ rcx.fromJSON <- function(json, verbose = FALSE){
 #' @param rcx RCX object
 #' @param verbose logical; whether to print out extended feedback
 #' @param pretty logical; adds indentation whitespace to JSON output
+#' 
 #' @return json jsonlite json object if successfull, NULL otherwise
 #' @seealso \code{\link{ngraph.fromRCX}} \code{\link{ngraph.toRCX}} \code{\link{rcx.fromJSON}}
+#' 
 #' @examples 
-#' \dontrun{
-#' ndexcon = ndex.connect(verbose=T)
-#' pws = ndex.find.networks(ndexcon,"p53")
-#' rcx = ndex.get.network(ndexcon,pws[1,"externalId"]) 
-#' rcxjson = rcx.toJSON(rcx) }
+#' ## Establish a server connection
+#' ndexcon = ndex.connect()
+#' ## Find a network and get its UUID
+#' networks = ndex.find.networks(ndexcon,"p53")
+#' networkId = networks[1,"externalId"]
+#' ## Get the network data 
+#' rcx = ndex.get.network(ndexcon, networkId)
+#' ## Convert RCX to JSON
+#' rcxjson = rcx.toJSON(rcx)
 #' @export
 rcx.toJSON <- function(rcx, verbose = FALSE, pretty = FALSE){
   if(is.null(rcx) || !("RCX" %in% class(rcx))) {
@@ -216,14 +228,20 @@ rcx.toJSON <- function(rcx, verbose = FALSE, pretty = FALSE){
 #' @param rcxAspect aspect in RCX object (rcx[[aspectName]])
 #' @param verbose logical; whether to print out extended feedback
 #' @param pretty logical; adds indentation whitespace to JSON output
+#' 
 #' @return json object if successfull, empty string otherwise
 #' @seealso \code{\link{rcx.toJSON}} and \code{\link{rcx.fromJSON}}
+#' 
 #' @examples 
-#' \dontrun{
-#' ndexcon = ndex.connect(verbose=T)
-#' pws = ndex.find.networks(ndexcon,"p53")
-#' rcx = ndex.get.network(ndexcon,pws[1,"externalId"]) 
-#' rcxNodesJson = rcx.aspect.toJSON(rcx$nodes) }
+#' ## Establish a server connection
+#' ndexcon = ndex.connect()
+#' ## Find a network and get its UUID
+#' networks = ndex.find.networks(ndexcon,"p53")
+#' networkId = networks[1,"externalId"]
+#' ## Get the network data 
+#' rcx = ndex.get.network(ndexcon, networkId)
+#' ## Convert RCX aspect to JSON
+#' rcxNodesJson = rcx.aspect.toJSON(rcx$nodes)
 rcx.aspect.toJSON <- function(rcxAspect, verbose = FALSE, pretty = FALSE){
     result = ''
     ## if any of the aspects has a datatype ('d') property, at least one of the datatypes is not of 'string' (default datatype).
@@ -271,18 +289,27 @@ rcx.aspect.toJSON <- function(rcxAspect, verbose = FALSE, pretty = FALSE){
 #' Remove all interfering NDEx artefacts from RCX object
 #' 
 #' @param rcx RCX object
+#' 
 #' @return \code{\link{RCX}} object
 #' @seealso \code{\link{rcx.fromJSON}} \code{\link{ndex.get.network}}
+#' 
 #' @details After a RCX object is downloaded from an NDEx server, it will contain some aspects that are not present in a newly generated network, i.e. ndexStatus', provenanceHistory' and 'status'.
 #' Removing those aspects might be useful in some cases.
+#' 
 #' @examples 
-#' \dontrun{
-#' ndexcon = ndex.connect(verbose=T)
-#' pws = ndex.find.networks(ndexcon,"p53")
-#' rcx = ndex.get.network(ndexcon,pws[1,"externalId"]) 
+#' ## Establish a server connection
+#' ndexcon = ndex.connect()
+#' ## Find a network and get its UUID
+#' networks = ndex.find.networks(ndexcon,"p53")
+#' networkId = networks[1,"externalId"]
+#' ## Get the network data 
+#' rcx = ndex.get.network(ndexcon, networkId)
+#' ## Remove NDEx artefacts
 #' rcx = rcx.asNewNetwork(rcx)
+#' \dontrun{
 #' rcxjson = rcx.toJSON(rcx)
-#' ndex.create.network(ndexcon, rcxjson) }
+#' ndex.create.network(ndexcon, rcxjson) 
+#' }
 #' @export
 rcx.asNewNetwork = function(rcx){
   rcx['ndexStatus'] = NULL          # a newly created network doesn't have an ndex-status yet
@@ -301,16 +328,14 @@ rcx.asNewNetwork = function(rcx){
 #' @return RCX object
 #' 
 #' @examples 
-#' \dontrun{
 #' rcx = rcx.new()
 #' rcx = rcx.new(c('@id'=1))                                #same as one before
 #' rcx = rcx.new(nodes=c('@id'=1))                          #same as one before
-#' rcx = rcx.new(data.frame('@id'=c(1)), check.names=F)     #same as one before
+#' rcx = rcx.new(data.frame('@id'=c(1)), check.names=FALSE)     #same as one before
 #' rcx = rcx.new(c('@id'=1, n='Some Name'))
 #' rcx = rcx.new(c('@id'=1, n='Some Name', r='HGNC:Symbol'))
-#' rcx = rcx.new(data.frame('@id'=c(1),n=c('Some Name'), r=c('HGNC:Symbol'), check.names=F))    #same as one before
-#' rcx = rcx.new(data.frame('@id'=c(1,2,3),n=c('Some Name','And another name',NA), r=c('HGNC:Symbol',NA,'UniProt:C3P0'), check.names=F))
-#' }
+#' rcx = rcx.new(data.frame('@id'=c(1),n=c('Some Name'), r=c('HGNC:Symbol'), check.names=FALSE))    #same as one before
+#' rcx = rcx.new(data.frame('@id'=c(1,2,3),n=c('Some Name','And another name',NA), r=c('HGNC:Symbol',NA,'UniProt:C3P0'), check.names=FALSE))
 #' @export
 rcx.new = function(nodes=c('@id'=1)){
 # TODO : add parameters for edges and other core aspects
@@ -320,7 +345,7 @@ rcx.new = function(nodes=c('@id'=1)){
     ids = as.character(nodes[['@id']])
     if(length(unique(ids)) != length(ids)) stop('rcx.new: Some ids in "@id" column are duplicated!')
     if(any(NA %in% nodes[['@id']])) stop('rcx.new: Some ids in "@id" column have "NA" value!')
-    rcx <- list(nodes=data.frame('@id'=ids, stringsAsFactors=F, check.names=F))
+    rcx <- list(nodes=data.frame('@id'=ids, stringsAsFactors=FALSE, check.names=FALSE))
     if('n' %in% names(nodes)) rcx$nodes$n = as.character(nodes[['n']])
     if('r' %in% names(nodes)) rcx$nodes$r = as.character(nodes[['r']])
     class(rcx) = c("RCX",class(rcx))
@@ -336,18 +361,18 @@ rcx.new = function(nodes=c('@id'=1)){
 #' @param excludeAspects character vector; Aspects, that are excluded for generating metaData (by default: "metaData", "numberVerification" and "status")
 #' @param force logical; force the creation of new metaData (even if the RCX object already contains metaData)
 #' @param verbose logical; whether to print out extended feedback
+#' 
 #' @return \code{\link{RCX}} object
+#' 
 #' @details For a given RCX object the meta-data is updated, i.e. the counted elements and id counter are updated. If an aspect was added/removed, it will also added/removed from the meta-data.
 #' If mandatory aspects (specified in mandatoryAspects parameter) are missing in the RCX object, an error is thrown.
+#' 
 #' @examples 
-#' \dontrun{
 #' rcx = rcx.updateMetaData(rcx)
 #' # or with explicitly set default values
 #' rcx = rcx.updateMetaData(rcx, mandatoryAspects=c('nodes'), excludeAspects=c("metaData", "numberVerification", "status"), force=FALSE, verbose=FALSE)
-#' }
 #' @export
 rcx.updateMetaData = function(rcx, mandatoryAspects=c('nodes'), excludeAspects=c("metaData", "numberVerification", "status"), force=FALSE, verbose=FALSE){        
-# TODO : Check if it works and all cases are covered
     if(missing(rcx) || is.null(rcx) || !("RCX" %in% class(rcx))) stop("rcx.updateMetaData: Parameter rcx does not contain RCX object")
     
     # check if mandatoryAspects are present in the RCX object
@@ -359,7 +384,7 @@ rcx.updateMetaData = function(rcx, mandatoryAspects=c('nodes'), excludeAspects=c
     metaData = rcx$metaData
     if(is.null(metaData) || force) {
         if(verbose) print('rcx.updateMetaData: MetaData will be created')
-        metaData = data.frame(consistencyGroup=1, elementCount=0, lastUpdate=1, name = sort(names(rcx)[!(names(rcx) %in% excludeAspects)]), version='1.0', idCounter=NA, stringsAsFactors = F)
+        metaData = data.frame(consistencyGroup=1, elementCount=0, lastUpdate=1, name = sort(names(rcx)[!(names(rcx) %in% excludeAspects)]), version='1.0', idCounter=NA, stringsAsFactors = FALSE)
     }else{
         if(verbose) print('rcx.updateMetaData: Existing metaData will be updated')
         
@@ -391,7 +416,7 @@ rcx.updateMetaData = function(rcx, mandatoryAspects=c('nodes'), excludeAspects=c
         
         # add missing aspects to metaData
         if(length(aspectsNotYetInMD)!=0) {
-            metaData = rbind(metaData, data.frame(consistencyGroup=1, elementCount=0, idCounter=NA, lastUpdate=1, name = aspectsNotYetInMD, version='1.0', stringsAsFactors = F))
+            metaData = rbind(metaData, data.frame(consistencyGroup=1, elementCount=0, idCounter=NA, lastUpdate=1, name = aspectsNotYetInMD, version='1.0', stringsAsFactors = FALSE))
             properties = c(properties,rep(list(),length.out=length(aspectsNotYetInMD)))
         }
         

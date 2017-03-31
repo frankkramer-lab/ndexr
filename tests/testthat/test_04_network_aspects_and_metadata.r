@@ -19,7 +19,7 @@ context('Aspects and meta-data')
 
 
 test_that('Get network meta-data (ndex.network.get.metadata)', {
-    nms = names(ndex.api.config)
+    nms = names(ndex.conf)
     apiVersions = nms[nms!='defaultVersion']
     netColNames = c("consistencyGroup", "elementCount", "lastUpdate", "name", "properties", "version", "idCounter")
   
@@ -30,10 +30,10 @@ test_that('Get network meta-data (ndex.network.get.metadata)', {
     uuid = ndexTestConf$uuidPublicNetwork
     
     for(apiVersion in apiVersions){
-        api = ndex.api.config[[apiVersion]]
-        con = ndex.connect(apiConfig = api)
+        api = ndex.conf[[apiVersion]]
+        con = ndex.connect(ndexConf = api)
         rcx = ndex.network.get.metadata(con, uuid)
-        if(con$apiConfig$version == '1.3'){
+        if(con$ndexConf$version == '1.3'){
             expect_null(rcx, info=paste0('Aspect meta-data should work, but for some reason for api 1.3 only returns NULL!'))
         }else{
             expect_is(rcx, 'data.frame', info=paste0('Checking class of aspect meta-data (api ', apiVersion, ')'))
@@ -46,7 +46,7 @@ test_that('Get network meta-data (ndex.network.get.metadata)', {
 ## Error on server side!
 #
 #test_that('Get network aspect meta-data (ndex.network.aspect.get.metaData)', {
-#    nms = names(ndex.api.config)
+#    nms = names(ndex.conf)
 #    apiVersions = nms[nms!='defaultVersion']
 #    metColNames = c("consistencyGroup", "elementCount", "data", "lastUpdate", "name", "properties", "version", "idCounter")
 #    aspects = c("provenanceHistory", "nodes", "edges", "supports", "citations", "edgeAttributes", "edgeCitations", "edgeSupports", "networkAttributes", "nodeAttributes")
@@ -61,10 +61,10 @@ test_that('Get network meta-data (ndex.network.get.metadata)', {
 #    metDataNames = metData$metaData$name
 #    
 #    for(apiVersion in apiVersions){
-#        api = ndex.api.config[[apiVersion]]
-#        con = ndex.connect(apiConfig = api)
+#        api = ndex.conf[[apiVersion]]
+#        con = ndex.connect(ndexConf = api)
 #        for(asp in metDataNames){
-#            if(con$apiConfig$version == '1.3'){
+#            if(con$ndexConf$version == '1.3'){
 #                expect_error(ndex.network.aspect.get.metadata(con, uuid, asp), info=paste0('In api version 1.3 is no method for getting meta-data for single aspects ("', asp,'")'))
 #            }else{
 #                rcx = ndex.network.aspect.get.metadata(con, uuid, asp)
@@ -77,7 +77,7 @@ test_that('Get network meta-data (ndex.network.get.metadata)', {
 
 
 test_that('Get network aspect as CX (ndex.network.get.aspect)', {
-    nms = names(ndex.api.config)
+    nms = names(ndex.conf)
     apiVersions = nms[nms!='defaultVersion']
     con = ndex.connect()
     
@@ -88,9 +88,9 @@ test_that('Get network aspect as CX (ndex.network.get.aspect)', {
     metDataNames = metData$metaData$name[metData$metaData$elementCount>0]
     
     for(apiVersion in apiVersions){
-        api = ndex.api.config[[apiVersion]]
-        con = ndex.connect(apiConfig = api)
-        if(con$apiConfig$version != '1.3'){
+        api = ndex.conf[[apiVersion]]
+        con = ndex.connect(ndexConf = api)
+        if(con$ndexConf$version != '1.3'){
             for(asp in metDataNames){
                 rcx = ndex.network.get.aspect(con, uuid, asp)
                 expect_is(rcx, 'data.frame', info=paste0('Checking class of aspect (api ', apiVersion, ', aspect ', asp, ')'))
@@ -102,7 +102,7 @@ test_that('Get network aspect as CX (ndex.network.get.aspect)', {
 ## Error on server side!
 #
 #test_that('Update network aspect (ndex.network.update.aspect)', {
-#    nms = names(ndex.api.config)
+#    nms = names(ndex.conf)
 #    apiVersions = nms[nms!='defaultVersion']
 #    con = ndex.connect(ndexTestConf$user, ndexTestConf$password)
 #    
@@ -115,11 +115,11 @@ test_that('Get network aspect as CX (ndex.network.get.aspect)', {
 #    aspectNames = aspectNames[aspectNames != 'metaData']
 #    
 #    for(apiVersion in apiVersions){
-#        api = ndex.api.config[[apiVersion]]
-#        con = ndex.connect(ndexTestConf$user, ndexTestConf$password, apiConfig = api)
+#        api = ndex.conf[[apiVersion]]
+#        con = ndex.connect(ndexTestConf$user, ndexTestConf$password, ndexConf = api)
 #        uuidCreated = ndex.create.network(con,rcx)
 #        
-#        if(con$apiConfig$version != '1.3'){
+#        if(con$ndexConf$version != '1.3'){
 #            prevUuid = uuidCreated
 #            for(asp in aspectNames){
 #                aspData= rcx[[asp]]

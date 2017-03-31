@@ -19,7 +19,7 @@ library(ndexr)
 context('Simple network operations')
 
 test_that('Get a network from server (ndex.get.network)', {
-    nms = names(ndex.api.config)
+    nms = names(ndex.conf)
       apiVersions = nms[nms!='defaultVersion']
       netColNames = c("metaData", "numberVerification", "ndexStatus", "@context", "citations", "edgeCitations", "edges", "networkAttributes", "nodeAttributes", "nodes", "status")
 
@@ -36,8 +36,8 @@ test_that('Get a network from server (ndex.get.network)', {
 
   
       for(apiVersion in apiVersions){
-        api = ndex.api.config[[apiVersion]]
-        con = ndex.connect(apiConfig = api)
+        api = ndex.conf[[apiVersion]]
+        con = ndex.connect(ndexConf = api)
         rcx = ndex.get.network(con, uuid)
         expect_is(rcx, 'list', info=paste0('Checking class of found network (api ', apiVersion, ')'))
         expect_is(rcx, 'RCX', info=paste0('Checking class of found network (api ', apiVersion, ')'))
@@ -51,7 +51,7 @@ test_that('Get a network from server (ndex.get.network)', {
 
 
 test_that('Get network summary from server (ndex.network.get.summary)', {
-    nms = names(ndex.api.config)
+    nms = names(ndex.conf)
     apiVersions = nms[nms!='defaultVersion']
     netColNames = c("ownerUUID", "isReadOnly", "visibility", "edgeCount", "nodeCount", "uri", "version", "owner", "description", "name", "externalId","modificationTime", "creationTime")
     
@@ -68,8 +68,8 @@ test_that('Get network summary from server (ndex.network.get.summary)', {
     uuid = ndexTestConf$uuidPublicNetwork
       
     for(apiVersion in apiVersions){
-        api = ndex.api.config[[apiVersion]]
-        con = ndex.connect(apiConfig = api)
+        api = ndex.conf[[apiVersion]]
+        con = ndex.connect(ndexConf = api)
         netSum = ndex.network.get.summary(con, uuid)
         expect_is(netSum, 'list', info=paste0('Checking class of found network (api ', apiVersion, ')'))
         expect_object_conains_names(netSum, netColNames, info=paste0('Checking column names of found network (api ', apiVersion, ')'))
@@ -83,7 +83,7 @@ test_that('Get network summary from server (ndex.network.get.summary)', {
 
 
 test_that('Create, update and delete a network on the server (ndex.create.network, ndex.update.network, ndex.delete.network)', {
-    nms = names(ndex.api.config)
+    nms = names(ndex.conf)
     apiVersions = nms[nms!='defaultVersion']
     netColNames = c("ownerUUID", "isReadOnly", "visibility", "edgeCount", "nodeCount", "uri", "version", "owner", "description", "name", "externalId","modificationTime", "creationTime")
   
@@ -102,8 +102,8 @@ test_that('Create, update and delete a network on the server (ndex.create.networ
     networks = list()
   
     for(apiVersion in apiVersions){
-        api = ndex.api.config[[apiVersion]]
-        con = ndex.connect(ndexTestConf$user, ndexTestConf$password, apiConfig = api)
+        api = ndex.conf[[apiVersion]]
+        con = ndex.connect(ndexTestConf$user, ndexTestConf$password, ndexConf = api)
         rcx$networkAttributes[1,'v']=paste0('Testing CRUD (create) with testthat (api ', apiVersion, ')')
 
         uuidCreated = ndex.create.network(con,rcx)
@@ -127,8 +127,8 @@ test_that('Create, update and delete a network on the server (ndex.create.networ
     Sys.sleep(sec)    ## Wait some time until the updating of the network on the server is done
     
     for(apiVersion in apiVersions){
-        api = ndex.api.config[[apiVersion]]
-        con = ndex.connect(ndexTestConf$user, ndexTestConf$password, apiConfig = api)
+        api = ndex.conf[[apiVersion]]
+        con = ndex.connect(ndexTestConf$user, ndexTestConf$password, ndexConf = api)
         
         expect_null(ndex.delete.network(con, networks[[apiVersion]]), info=paste0('Returns NULL if network is successfully deleted (api ', apiVersion, ')'))
         expect_error(ndex.delete.network(con, networks[[apiVersion]]), info=paste0('Deleting the same network again should throw an error (api ', apiVersion, ')'))

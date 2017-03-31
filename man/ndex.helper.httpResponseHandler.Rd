@@ -4,7 +4,7 @@
 \alias{ndex.helper.httpResponseHandler}
 \title{Handles the http server response}
 \usage{
-ndex.helper.httpResponseHandler(response, description, verbose = F)
+ndex.helper.httpResponseHandler(response, description, verbose = FALSE)
 }
 \arguments{
 \item{response}{object of class response (httr)}
@@ -13,11 +13,15 @@ ndex.helper.httpResponseHandler(response, description, verbose = F)
 
 \item{verbose}{logical; whether to print out extended feedback}
 }
+\value{
+returns the given respons, if it doesn't contain any HTTP error
+}
 \description{
 This function handles the response from a server. If some response code different from success (200) is returned, the execution stops and the reason is shown.
 }
+\note{
+This function is internal.
+}
 \examples{
-\dontrun{
- ndex.helper.httpResponseHandler(httr::GET('http://www.ndexbio.org'), 'Tried to connect to NDEx server', T)
- }
+ndex.helper.httpResponseHandler(httr::GET('http://www.ndexbio.org'), 'Tried to connect to NDEx server', TRUE)
 }

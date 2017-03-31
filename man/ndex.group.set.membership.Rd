@@ -7,7 +7,7 @@
 ndex.group.set.membership(ndexcon, groupId, userId, type = "MEMBER")
 }
 \arguments{
-\item{ndexcon}{object of class NDEXConnection}
+\item{ndexcon}{object of class NDEXConnection link{ndex.connect}}
 
 \item{groupId}{character; unique ID (UUID) of the group}
 
@@ -22,19 +22,32 @@ Empty string ("") on success, else error
 Updates the membership corresponding to the GroupMembership type specified in the URL parameter.
 }
 \note{
+Requires an authorized user! (ndex.connect with credentials)
+
 Compatible to NDEx server version 2.0
 }
 \section{REST query}{
 
-PUT: ndex.api.config$api$user$membership$update
+PUT: ndex.conf$api$user$membership$update
 }
 
 \examples{
-\dontrun{
-groupId = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
-userId = "ffffffff-gggg-hhhh-iiii-jjjjjjjjjjjj"
-ndex.group.set.membership(ndexcon, groupId, userId)
-ndex.group.set.membership(ndexcon, groupId, userId, type='MEMBER')	## same as before
-ndex.group.set.membership(ndexcon, groupId, userId, type='GROUPADMIN')
-}
+## Establish a server connection with credentials 
+# ndexcon = ndex.connect('MyAccountName', 'MyPassword')
+## Find user and get own id
+# user = ndex.find.user.byName(ndexcon, 'MyAccountName')
+# userId = user$externalId
+## Find own groups and get one group id
+# groups = ndex.user.list.groups(ndexcon, userId)
+# groupId = groups[1,"externalId"]
+## Find an other user and get the id
+# user = ndex.find.user.byName(ndexcon, 'SomeOtherAccountName')
+# userId = user$externalId
+## Add other user to the group
+# ndex.group.set.membership(ndexcon, groupId, userId)
+## Update other user's group permission
+# ndex.group.set.membership(ndexcon, groupId, userId, type='MEMBER')    ## same as before
+## Make other user to group admin (lose own admin permission)
+# ndex.group.set.membership(ndexcon, groupId, userId, type='GROUPADMIN')
+NULL
 }

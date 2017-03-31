@@ -17,15 +17,19 @@ ndex_rest_GET(ndexcon, route, raw = FALSE)
 JSON response from REST server, NULL if no valid JSON was received. if parameter raw is TRUE, the raw response is returned without a call to jsonlite::fromJSON.
 }
 \description{
-This functions is internal.
+Generic GET query to API.
 }
 \details{
 Simply execute HTTP GET on URL host/route and fetch whatever data REST server returns 
 Making sure the route is well-formed is the job of calling function
 }
+\note{
+This function is internal.
+}
 \examples{
+## Establish a server connection
+ndexcon = ndex.connect()
 \dontrun{
-ndexcon = ndex.connect(verbose=T)
 ndex_rest_GET(ndexcon, "/networks/api")
 }
 }

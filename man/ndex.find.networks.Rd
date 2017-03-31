@@ -7,7 +7,7 @@
 ndex.find.networks(ndexcon, searchString = "", accountName, start, size)
 }
 \arguments{
-\item{ndexcon}{object of class NDEXConnection}
+\item{ndexcon}{object of class NDEXConnection link{ndex.connect}}
 
 \item{searchString}{string by which to search}
 
@@ -25,15 +25,16 @@ This functions searches the public networks on an NDEx server for networks conta
 his search can be limited to certain accounts as well as in length.
 }
 \note{
+Compatible to NDEx server version 1.3 and 2.0
+
 Search strings may be structured
 }
 \section{REST query}{
 
-GET: ndex.api.config$api$search$network$search    returns list of NetworkSummary
+GET: ndex.conf$api$search$network$search
 }
 
 \examples{
-\dontrun{
-ndexcon = ndex.connect(verbose=T)
-pws1 = ndex.find.networks(ndexcon1,"p53") }
+ndexcon = ndex.connect()
+networks = ndex.find.networks(ndexcon,"p53") 
 }

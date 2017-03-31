@@ -7,7 +7,7 @@
 ndex.find.user.byName(ndexcon, name)
 }
 \arguments{
-\item{ndexcon}{object of class NDEXConnection}
+\item{ndexcon}{object of class NDEXConnection link{ndex.connect}}
 
 \item{name}{name of the user}
 }
@@ -22,11 +22,12 @@ Compatible to NDEx server version 2.0
 }
 \section{REST query}{
 
-GET: ndex.api.config$api$user$get$byName
+GET: ndex.conf$api$user$get$byName
 }
 
 \examples{
-\dontrun{
-user = ndex.find.user.byName(ndexcon, 'someAccountName')
-}
+## Establish a server connection
+ndexcon = ndex.connect()
+## Find user by name
+user = ndex.find.user.byName(ndexcon, 'ndextutorials')
 }

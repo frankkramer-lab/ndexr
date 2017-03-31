@@ -28,12 +28,16 @@ Simply execute HTTP POST on URL host/route and fetch whatever data REST server r
 Making sure the route is well-formed is the job of calling function
 Making sure the data is well-formed is also the job of calling function
 }
+\note{
+This function is internal.
+}
 \examples{
+## Establish a server connection
+ndexcon = ndex.connect()
 \dontrun{
-ndexcon = ndex.connect(verbose=T)
 ndex_rest_POST(ndexcon, "/networks/api", data)
-ndex_rest_POST(ndexcon, "/networks/api", data, raw=T)
-ndex_rest_POST(ndexcon, "/networks/api", list(some=data, other=data2), multipart=T)
+ndex_rest_POST(ndexcon, "/networks/api", data, raw=TRUE)
+ndex_rest_POST(ndexcon, "/networks/api", list(some=data, other=data2), multipart=TRUE)
 }
 }
 \seealso{

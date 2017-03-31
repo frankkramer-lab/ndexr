@@ -19,9 +19,13 @@ Returns CBDD-like data as defined at https://cbdd.thomsonreuterslifesciences.com
 The identifiers used are (in this order, if applicable) the namespace ids, the "r"epresents field, the "n"ame field or the @id field of the CX data
 }
 \examples{
-\dontrun{
-ndexcon = ndex.connect(verbose=T)
-pws = ndex.find.networks(ndexcon,"p53")
-rcx = ndex.get.network(ndexcon,pws[1,"externalId"]) 
-cbdd = cbdd.fromRCX(rcx)}
+## Establish a server connection
+ndexcon = ndex.connect()
+## Find a network and get its UUID
+networks = ndex.find.networks(ndexcon,"p53")
+networkId = networks[1,"externalId"]
+## Get the network data 
+rcx = ndex.get.network(ndexcon, networkId) 
+## Convert to cbbd
+cbdd = cbdd.fromRCX(rcx)
 }

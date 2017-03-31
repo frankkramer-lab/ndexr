@@ -7,7 +7,7 @@
 ndex.get.group(ndexcon, groupId)
 }
 \arguments{
-\item{ndexcon}{object of class NDEXConnection}
+\item{ndexcon}{object of class NDEXConnection link{ndex.connect}}
 
 \item{groupId}{character; unique ID (UUID) of the group}
 }
@@ -22,12 +22,15 @@ Compatible to NDEx server version 2.0
 }
 \section{REST query}{
 
-GET: ndex.api.config$api$group$get
+GET: ndex.conf$api$group$get
 }
 
 \examples{
-\dontrun{
-groupId = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
+## Establish a server connection
+ndexcon = ndex.connect()
+## Find a group
+groups = ndex.find.groups(ndexcon,"Ideker Lab")
+groupId = groups[1,"externalId"]
+## Get group information
 group = ndex.get.group(ndexcon, groupId)
-}
 }

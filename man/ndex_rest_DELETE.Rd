@@ -2,7 +2,7 @@
 % Please edit documentation in R/ndex_connect.r
 \name{ndex_rest_DELETE}
 \alias{ndex_rest_DELETE}
-\title{Generic GET query to API.}
+\title{Generic DELETE query to API.}
 \usage{
 ndex_rest_DELETE(ndexcon, route, raw = FALSE)
 }
@@ -17,15 +17,19 @@ ndex_rest_DELETE(ndexcon, route, raw = FALSE)
 JSON response from REST server, NULL if no valid JSON was received. if parameter raw is TRUE, the raw response is returned without a call to jsonlite::fromJSON.
 }
 \description{
-This functions is internal.
+Generic DELETE query to API.
 }
 \details{
 Simply execute HTTP DELETE on URL host/route and fetch whatever data REST server returns 
 Making sure the route is well-formed is the job of calling function
 }
+\note{
+This function is internal.
+}
 \examples{
+## Establish a server connection
+ndexcon = ndex.connect()
 \dontrun{
-ndexcon = ndex.connect(verbose=T)
 ndex_rest_DELETE(ndexcon, "/networks/api")
 }
 }

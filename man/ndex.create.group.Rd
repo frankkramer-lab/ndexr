@@ -7,7 +7,7 @@
 ndex.create.group(ndexcon, groupName, image, website, description, properties)
 }
 \arguments{
-\item{ndexcon}{object of class NDEXConnection}
+\item{ndexcon}{object of class NDEXConnection link{ndex.connect}}
 
 \item{groupName}{character; name of the new graoup}
 
@@ -26,18 +26,20 @@ url (including the UUID) of the newly created group
 Create a group owned by the authenticated user based on the supplied group JSON object.
 }
 \note{
+Requires an authorized user! (ndex.connect with credentials)
+
 Compatible to NDEx server version 2.0
 }
 \section{REST query}{
 
-POST: ndex.api.config$api$group$create
+POST: ndex.conf$api$group$create
 }
 
 \examples{
-\dontrun{
-groupId = ndex.create.group(ndexcon, 'SomeGroupName')
+## Establish a server connection with credentials 
+# ndexcon = ndex.connect('MyAccountName', 'MyPassword')
+# groupURL = ndex.create.group(ndexcon, 'SomeGroupName')
 ## [1] "http://public.ndexbio.org/v2/group/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
-
-groupId = ndex.create.group(ndexcon, 'SomeGroupName', image='http://bit.ly/1M3NoQZ', website='www.gidf.com', description='A very special group..')
-}
+# groupURL = ndex.create.group(ndexcon, 'SomeGroupName', image='http://bit.ly/1M3NoQZ', website='www.gidf.com', description='A very special group..')
+NULL
 }

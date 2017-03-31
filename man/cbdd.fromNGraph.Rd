@@ -22,10 +22,15 @@ The identifiers used are (in this order, if applicable) the namespace ids, the "
 Internally this function calls ngraph.toRCX and then cbdd.fromRCX.
 }
 \examples{
-\dontrun{
-ndexcon = ndex.connect(verbose=T)
-pws = ndex.find.networks(ndexcon,"p53")
-rcx = ndex.get.network(ndexcon,pws[1,"externalId"]) 
+## Establish a server connection
+ndexcon = ndex.connect()
+## Find a network and get its UUID
+networks = ndex.find.networks(ndexcon,"p53")
+networkId = networks[1,"externalId"]
+## Get the network data 
+rcx = ndex.get.network(ndexcon, networkId) 
+## Convert RCX to NGraph
 ngraph = ngraph.fromRCX(rcx) 
-cbdd = cbdd.fromNGraph(ngraph)}
+## Convert NGraph to cbdd
+cbdd = cbdd.fromNGraph(ngraph)
 }

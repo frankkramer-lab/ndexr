@@ -6,16 +6,18 @@
 ##   Created on 02 February 2017 by Auer
 ##     
 ## Description:
-##   Contains functions to easily generate the ndex.api.conf.r file from an yml file
+##   Contains functions to easily generate the ndex.conf.r file from an yml file
 ##   This functions only should be used for package maintenance!
 ##    
 ## Dependencies:
 ##   yaml
 #######################################################################################
 
-#' Default header for the ndex.api.conf.r file
-#' only for package maintenance!
-ndex.api.config.header = paste0(    "################################################################################\n",
+#' Default header for the ndex.conf.r file
+#' @note only for package maintenance!
+#' @examples
+#' ndex.conf.header
+ndex.conf.header = paste0(    "################################################################################\n",
                                 "## Authors:\n",
                                 "##   Florian Auer [florian.auer@med.uni-goettingen.de]\n",
                                 "##\n",
@@ -33,27 +35,29 @@ ndex.api.config.header = paste0(    "###########################################
                                 "\n",
                                 "#' NDEx server api configuration\n",
                                 "#' \n",
-                                "#' This nested list contains the url and methods for accessing the NDEx server via its REST full api\n",
-                                "#' It contains specifications for NDEx server api version 1.3 and 2.0. The default api is specified by 'defaultVersion'\n",
-                                "#' If possible, the version 2.0 should be used\n",
+                                "#' This nested list contains the url and methods for accessing the NDEx server via its REST full api.\n",
+                                "#' It contains specifications for NDEx server api version 1.3 and 2.0. The default api is specified by 'defaultVersion'.\n",
+                                "#' If possible, the version 2.0 should be used.\n",
                                 "#' Own configurations must contain a 'version' entry!\n",
                                 "#' \n",
                                 "#' @return Nested list resembling the NDEx server REST API structure\n", 
+                                "#' @examples \n", 
+                                "#' names(ndex.conf$Version_2.0) \n", 
                                 "#' @export\n", 
-                                "ndex.api.config = ")
+                                "ndex.conf = ")
 
 
 #' Translates a nested list (as provided by a yaml file) into R code defining the lists
-#' only for package maintenance!
+#' @note only for package maintenance!
 #'
-#' @param obj list; Nested list to be translated. The allowed list elements are: list, character, numeric
-#' @param indent character (optional); Character(s) used for the indentation. Default: <tab>
-#' @param indentShift character (optional); Shifts the block to the right by putting the characters before each line (mostly used in internal recursion)
+#' @param obj list; Nested list to be translated. The allowed list elements are: list, character, numeric, logical
+#' @param indent character (optional) (default: '    '[4 whitespaces]); Character(s) used for the indentation. Default: <tab>
+#' @param indentShift character (optional) (default: ''); Shifts the block to the right by putting the characters before each line (mostly used in internal recursion)
 #'
 #' @return character; R code for generating the nested list
 #'
 #' @examples
-#' \dontrun{test = list(bla='some text',blubb=list(a='more text', version='2.0'),justANumber=123456)
+#' test = list(bla='some text',blubb=list(a='more text', version='2.0'),justANumber=123456)
 #' #$bla
 #' #[1] "some text"
 #' #$blubb
@@ -66,7 +70,6 @@ ndex.api.config.header = paste0(    "###########################################
 #' 
 #' listToRCode(test)
 #' #[1] "list(\n\tbla=\"some text\",\n\tblubb=list(\n\t\ta=\"more text\",\n\t\tversion=\"2.0\"\n\t)\n)"
-#' }
 listToRCode = function(obj, indent='    ', indentShift=''){
     newIndent = paste0(indentShift, indent)
     txts = character()
@@ -89,69 +92,73 @@ listToRCode = function(obj, indent='    ', indentShift=''){
     return(txt)
 }
 
-#' Convert an R object into a YAML string
-#' same as yaml::as.yaml(obj)
-#' only for package maintenance!
-#'
-#' @param obj list; Nested list to be translated. The allowed list elements are: list, character, numeric
-#' @param indent character (optional); Character(s) used for the indentation. Default: <tab>
-#' @param indentShift character (optional); Shifts the block to the right by putting the characters before each line (mostly used in internal recursion)
-#'
-#' @return character; R code for generating the nested list
-#'
-#' @examples
-#' \dontrun{test = list(bla='some text',blubb=list(a='more text', version='2.0'),justANumber=123456)
-#' #$bla
-#' #[1] "some text"
-#' #$blubb
-#' #$blubb$a
-#' #[1] "more text"
-#' #$blubb$version
-#' #[1] "2.0"
-#' #$justANumber
-#' #[1] 123456
-#' 
-#' listToYaml(test)
-#' #[1] "bla: some text\nblubb:\n  a: more text\n  version: '2.0'\njustANumber: 123456.0\n"
-#' }
-listToYaml = function(obj, indent='  ', indentShift=''){
-  txts = character()
-  for(n in names(obj)){
-    if('list' %in% class(obj[[n]])){
-      txts = c(txts, paste0(indentShift, n, ':\n', listToYaml(obj[[n]], indent = indent, indentShift = paste0(indentShift, indent))))
-    }else if('character' %in% class(obj[[n]])){
-      if(length(obj[[n]])>1){
-        txts = c(txts, paste0(indentShift, n, ': '))
-        for(li in obj[[n]]){
-          txts = c(txts, paste0(indentShift, indent, n, '- "', obj[[n]],'"'))
-        }
-      }else{
-        txts = c(txts, paste0(indentShift, n, ': "', obj[[n]],'"'))
-      }
-    }else if('numeric' %in% class(obj[[n]])){
-      txts = c(txts, paste0(indentShift, n, ': ', obj[[n]]))
-    }
-  }
-  txt = paste(txts, collapse = "\n")
-  return(txt)
-}
 
+##' Translates a YAML file to a R config script
+##' Run this manually if you want to update the ndex.conf
+##' @note only for package maintenance!
+##'
+##' @param yamlFile character (default: 'R/ndex_api_config.yml'); input file in YAML format
+##' @param rScriptFile character (default: 'R/ndex_api_config.r'); output file for the R script
+##' @param defaultHeader character (optional) (default: ndex.conf.header); text that will be put in front of the R script
+##'
+##' @examples
+##' # yamlToRConfig('R/ndex_api_config.yml', 'R/ndex_api_config.r', ndex.conf.header)
+##' NULL
+#yamlToRConfig = function(yamlFile='R/ndex_api_config.yml', rScriptFile='R/ndex_api_config.r', defaultHeader=ndex.conf.header){
+#  yamlObj = yaml::yaml.load_file(yamlFile)
+#  rCodeTxt = paste0(defaultHeader, listToRCode(yamlObj))
+#  outFile = file(rScriptFile)
+#  writeLines(rCodeTxt, outFile)
+#  close(outFile)
+#}
 
-#' Translates a YAML file to a R script
-#' Run this manually if you want to update the ndex.api.conf
-#' only for package maintenance!
-#'
-#' @param yamlFile character; input file in YAML format
-#' @param rScriptFile character; output file for the R script
-#' @param defaultHeader character (optional); text that will be put in front of the R script
-#'
-#' @examples
-#' \dontrun{updateConfigFromYaml('R/ndex_api_config.yml', 'R/ndex_api_config.r', ndex.api.config.header)}
-updateConfigFromYaml = function(yamlFile='R/ndex_api_config.yml', rScriptFile='R/ndex_api_config.r', defaultHeader=ndex.api.config.header){
-  yamlObj = yaml::yaml.load_file(yamlFile)
-  rCodeTxt = paste0(defaultHeader, listToRCode(yamlObj))
-  outFile = file(rScriptFile)
-  writeLines(rCodeTxt, outFile)
-  close(outFile)
-}
+####################################################
+##   Unused stuff
+####################################################
 
+##' Convert an R object into a YAML string
+##' same as yaml::as.yaml(obj)
+##' @note only for package maintenance!
+##'
+##' @param obj list; Nested list to be translated. The allowed list elements are: list, character, numeric
+##' @param indent character (optional); Character(s) used for the indentation. Default: <tab>
+##' @param indentShift character (optional); Shifts the block to the right by putting the characters before each line (mostly used in internal recursion)
+##'
+##' @return character; R code for generating the nested list
+##'
+##' @examples
+##' \dontrun{test = list(bla='some text',blubb=list(a='more text', version='2.0'),justANumber=123456)
+##' #$bla
+##' #[1] "some text"
+##' #$blubb
+##' #$blubb$a
+##' #[1] "more text"
+##' #$blubb$version
+##' #[1] "2.0"
+##' #$justANumber
+##' #[1] 123456
+##' 
+##' listToYaml(test)
+##' #[1] "bla: some text\nblubb:\n  a: more text\n  version: '2.0'\njustANumber: 123456.0\n"
+##' }
+#listToYaml = function(obj, indent='  ', indentShift=''){
+#  txts = character()
+#  for(n in names(obj)){
+#    if('list' %in% class(obj[[n]])){
+#      txts = c(txts, paste0(indentShift, n, ':\n', listToYaml(obj[[n]], indent = indent, indentShift = paste0(indentShift, indent))))
+#    }else if('character' %in% class(obj[[n]])){
+#      if(length(obj[[n]])>1){
+#        txts = c(txts, paste0(indentShift, n, ': '))
+#        for(li in obj[[n]]){
+#          txts = c(txts, paste0(indentShift, indent, n, '- "', obj[[n]],'"'))
+#        }
+#      }else{
+#        txts = c(txts, paste0(indentShift, n, ': "', obj[[n]],'"'))
+#      }
+#    }else if('numeric' %in% class(obj[[n]])){
+#      txts = c(txts, paste0(indentShift, n, ': ', obj[[n]]))
+#    }
+#  }
+#  txt = paste(txts, collapse = "\n")
+#  return(txt)
+#}

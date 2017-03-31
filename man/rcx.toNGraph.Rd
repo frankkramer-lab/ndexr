@@ -20,3 +20,14 @@ Create ngraph object from RCX object
 \note{
 Wrapper function for \code{\link{ngraph.fromRCX}}
 }
+\examples{
+## Establish a server connection with credentials 
+# ndexcon = ndex.connect('MyAccountName', 'MyPassword')
+## Find one of your networks and get its UUID
+# networks = ndex.find.networks(ndexcon, accountName='MyAccountName')
+# networkId = networks[1,"externalId"]
+## Get the network data 
+rcx = ndex.get.network(ndexcon, networkId) 
+## Convert to nGraph
+ngraph = rcx.toNGraph(rcx) 
+}

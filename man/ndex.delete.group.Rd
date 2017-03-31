@@ -7,7 +7,7 @@
 ndex.delete.group(ndexcon, groupId)
 }
 \arguments{
-\item{ndexcon}{object of class NDEXConnection}
+\item{ndexcon}{object of class NDEXConnection link{ndex.connect}}
 
 \item{groupId}{character; unique ID (UUID) of the group}
 }
@@ -18,16 +18,24 @@ NULL if successfull, else an error is thrown
 Delete the group specified by groupId
 }
 \note{
+Requires an authorized user! (ndex.connect with credentials)
+
 Compatible to NDEx server version 2.0
 }
 \section{REST query}{
 
-DELETE: ndex.api.config$api$group$delete
+DELETE: ndex.conf$api$group$delete
 }
 
 \examples{
-\dontrun{
-groupId = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
-ndexr.delete.group(ndexcon,groupId)
-}
+## Establish a server connection with credentials 
+# ndexcon = ndex.connect('MyAccountName', 'MyPassword')
+## Find user and get its id
+# user = ndex.find.user.byName(ndexcon, 'MyAccountName')
+# userId = user$externalId
+## Find the user's groups and get one group id
+# groups = ndex.user.list.groups(ndexcon, userId)
+# groupId = groups[1,"externalId"]
+#ndexr.delete.group(ndexcon,groupId)
+NULL
 }

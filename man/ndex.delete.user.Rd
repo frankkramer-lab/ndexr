@@ -4,12 +4,12 @@
 \alias{ndex.delete.user}
 \title{Delete User}
 \usage{
-ndex.delete.user(ndexcon, uuid)
+ndex.delete.user(ndexcon, userId)
 }
 \arguments{
-\item{ndexcon}{object of class NDEXConnection}
+\item{ndexcon}{object of class NDEXConnection link{ndex.connect}}
 
-\item{uuid}{unique ID of the user}
+\item{userId}{character; unique ID (UUID) of the user}
 }
 \value{
 NULL if successfull, else an error is thrown
@@ -18,17 +18,22 @@ NULL if successfull, else an error is thrown
 Deletes the authenticated user, removing any other objects in the database that depend on the user
 }
 \note{
+Requires an authorized user! (ndex.connect with credentials)
+
 Compatible to NDEx server version 2.0
 }
 \section{REST query}{
 
-GET: ndex.api.config$api$user$delete
+GET: ndex.conf$api$user$delete
 }
 
 \examples{
-\dontrun{
-ndexcon = ndex.connect('some.ndex.account','password')
-user = ndex.find.user.byName(ndexcon, 'some.ndex.account')
-ndexr.delete.user(ndexcon,user$externalId)
-}
+## Establish a server connection with credentials 
+# ndexcon = ndex.connect('MyAccountName', 'MyPassword')
+## Find user and get its id
+# user = ndex.find.user.byName(ndexcon, 'SomeUserName')
+# userId = user$externalId
+## Delete user
+# ndexr.delete.user(ndexcon, userId)
+NULL
 }

@@ -2,27 +2,28 @@
 % Please edit documentation in R/package_maintenance.R
 \name{listToRCode}
 \alias{listToRCode}
-\title{Translates a nested list (as provided by a yaml file) into R code defining the lists
-only for package maintenance!}
+\title{Translates a nested list (as provided by a yaml file) into R code defining the lists}
 \usage{
-listToRCode(obj, indent = "\\t", indentShift = "")
+listToRCode(obj, indent = "    ", indentShift = "")
 }
 \arguments{
-\item{obj}{list; Nested list to be translated. The allowed list elements are: list, character, numeric}
+\item{obj}{list; Nested list to be translated. The allowed list elements are: list, character, numeric, logical}
 
-\item{indent}{character (optional); Character(s) used for the indentation. Default: <tab>}
+\item{indent}{character (optional) (default: '    '[4 whitespaces]); Character(s) used for the indentation. Default: <tab>}
 
-\item{indentShift}{character (optional); Shifts the block to the right by putting the characters before each line (mostly used in internal recursion)}
+\item{indentShift}{character (optional) (default: ''); Shifts the block to the right by putting the characters before each line (mostly used in internal recursion)}
 }
 \value{
 character; R code for generating the nested list
 }
 \description{
 Translates a nested list (as provided by a yaml file) into R code defining the lists
+}
+\note{
 only for package maintenance!
 }
 \examples{
-\dontrun{test = list(bla='some text',blubb=list(a='more text', version='2.0'),justANumber=123456)
+test = list(bla='some text',blubb=list(a='more text', version='2.0'),justANumber=123456)
 #$bla
 #[1] "some text"
 #$blubb
@@ -35,5 +36,4 @@ only for package maintenance!
 
 listToRCode(test)
 #[1] "list(\\n\\tbla=\\"some text\\",\\n\\tblubb=list(\\n\\t\\ta=\\"more text\\",\\n\\t\\tversion=\\"2.0\\"\\n\\t)\\n)"
-}
 }

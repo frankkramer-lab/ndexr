@@ -7,7 +7,7 @@
 ndex.network.get.aspect(ndexcon, networkId, aspect, size)
 }
 \arguments{
-\item{ndexcon}{object of class NDEXConnection}
+\item{ndexcon}{object of class NDEXConnection link{ndex.connect}}
 
 \item{networkId}{character; unique ID of the network}
 
@@ -26,13 +26,16 @@ Compatible to NDEx server version 1.3 and 2.0, but doesn't work for version 1.3
 }
 \section{REST query}{
 
-GET: ndex.api.config$api$network$aspect$getMetaDataByName
+GET: ndex.conf$api$network$aspect$getMetaDataByName
 }
 
 \examples{
-\dontrun{
-ndexcon = ndex.connect(verbose=T)
-pws = ndex.find.networks(ndexcon,"p53")
-aspect = ndex.network.get.aspect(ndexcon,pws[1,"externalId"], 'nodeAttributes')
-aspect = ndex.network.get.aspect(ndexcon,pws[1,"externalId"], 'nodeAttributes', 10)	# limit the returned elemets of the aspect to the first 10 elements}
+## Establish a server connection
+ndexcon = ndex.connect()
+## Find a network and get its UUID
+networks = ndex.find.networks(ndexcon,"p53")
+networkId = networks[1,"externalId"]
+## Get the aspect of a network
+aspect = ndex.network.get.aspect(ndexcon, networkId, 'nodeAttributes')
+aspect = ndex.network.get.aspect(ndexcon, networkId, 'nodeAttributes', 10)    # limit the returned elemets of the aspect to the first 10 elements
 }

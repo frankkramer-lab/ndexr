@@ -16,14 +16,16 @@
 
 #' NDEx server api configuration
 #' 
-#' This nested list contains the url and methods for accessing the NDEx server via its REST full api
-#' It contains specifications for NDEx server api version 1.3 and 2.0. The default api is specified by 'defaultVersion'
-#' If possible, the version 2.0 should be used
+#' This nested list contains the url and methods for accessing the NDEx server via its REST full api.
+#' It contains specifications for NDEx server api version 1.3 and 2.0. The default api is specified by 'defaultVersion'.
+#' If possible, the version 2.0 should be used.
 #' Own configurations must contain a 'version' entry!
 #' 
 #' @return Nested list resembling the NDEx server REST API structure
+#' @examples 
+#' names(ndex.conf$Version_2.0) 
 #' @export
-ndex.api.config = list(
+ndex.conf = list(
     defaultVersion="Version_2.0",
     Version_2.0=list(
         version="2.0",

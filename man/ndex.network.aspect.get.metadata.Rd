@@ -7,7 +7,7 @@
 ndex.network.aspect.get.metadata(ndexcon, networkId, aspect)
 }
 \arguments{
-\item{ndexcon}{object of class NDEXConnection}
+\item{ndexcon}{object of class NDEXConnection link{ndex.connect}}
 
 \item{networkId}{character; unique ID (UUID) of the network}
 
@@ -26,13 +26,15 @@ Server error (version 2.0) since March 13th 2017
 }
 \section{REST query}{
 
-GET: ndex.api.config$api$network$aspect$getMetaDataByName
+GET: ndex.conf$api$network$aspect$getMetaDataByName
 }
 
 \examples{
-\dontrun{
-ndexcon = ndex.connect(verbose=T)
-pws = ndex.find.networks(ndexcon,"p53")
-ndex.network.aspect.get.metadata(ndexcon,pws[1,"externalId"]) 
-}
+## Establish a server connection
+ndexcon = ndex.connect()
+## Find a network and get its UUID
+networks = ndex.find.networks(ndexcon,"p53")
+networkId = networks[1,"externalId"]
+## Get the meta-data of an aspect of a network
+ndex.network.aspect.get.metadata(ndexcon, networkId, 'nodeAttributes') 
 }

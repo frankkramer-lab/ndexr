@@ -8,7 +8,7 @@ ndex.network.update.permission(ndexcon, networkId, user = NULL,
   group = NULL, permission)
 }
 \arguments{
-\item{ndexcon}{object of class NDEXConnection}
+\item{ndexcon}{object of class NDEXConnection link{ndex.connect}}
 
 \item{networkId}{unique ID of the network}
 
@@ -25,23 +25,30 @@ ndex.network.update.permission(ndexcon, networkId, user = NULL,
 Updates the permission of a user specified by userid or group specified by groupid for the network
 }
 \note{
+Requires an authorized user! (ndex.connect with credentials)
+
 Compatible to NDEx server version 1.3 and 2.0, but doesn't work for version 1.3
 
 In version 1.3 the function only works for user permissions!
 }
 \section{REST query}{
 
-GET: ndex.api.config$api$network$permission$update
+GET: ndex.conf$api$network$permission$update
 }
 
 \examples{
-\dontrun{
-ndexcon = ndex.connect('MyAccountName', 'MyPassword', verbose=T)
-networks = ndex.find.networks(ndexcon,"p53")
-networkId = networks[1,"externalId"]
-## get the permissions
-ndex.network.update.permission(ndexcon, networkId, user=someUserUuid, 'WRITE')
-ndex.network.update.permission(ndexcon, networkId, group=someGroupUuid, 'READ')
-ndex.network.update.permission(ndexcon, networkId, user=someUserUuid, 'ADMIN')	# sets a new admin
-}
+## Establish a server connection with credentials 
+# ndexcon = ndex.connect('MyAccountName', 'MyPassword')
+## Find one of your networks and get its UUID
+# networks = ndex.find.networks(ndexcon, accountName='MyAccountName')
+# networkId = networks[1,"externalId"]
+## Get the UUID for a user and group
+# someUserUuid = "uuuuuuuu-ssss-eeee-rrrr-111111111111"
+# someGroupUuid = "ggggggg-rrrr-oooo-uuuu-pppppppppppp"
+## Change the permissions
+# ndex.network.update.permission(ndexcon, networkId, user=someUserUuid, 'WRITE')
+# ndex.network.update.permission(ndexcon, networkId, group=someGroupUuid, 'READ')
+## Set a new admin (lose own admin status)
+# ndex.network.update.permission(ndexcon, networkId, user=someUserUuid, 'ADMIN')
+NULL
 }

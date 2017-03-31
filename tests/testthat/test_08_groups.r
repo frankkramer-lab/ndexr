@@ -9,7 +9,7 @@
 ##    Tests for NDEx group settings:
 ##    CRUD functions of groups (ndex.create.group, ndex.update.group, ndex.get.group, ndex.delete.group)
 ##    Update user information (ndex.group.list.users)
-##    Check group network permissions (ndex.group.list.networks, ndex.group.get.network)
+##    Check group network permissions (ndex.group.list.networks, ndex.group.network.get.permission)
 ##
 ## Usage:
 ##  devtools::test(filter='08_*')
@@ -40,12 +40,12 @@ test_that('Update user information (ndex.group.list.users)', {
     expect_true(ndexTestConf$user %in% users$memberAccountName, info='The user must be member of the group')
 })
 
-test_that('Check group network permissions (ndex.group.list.networks, ndex.group.get.network)', {      
+test_that('Check group network permissions (ndex.group.list.networks, ndex.group.network.get.permission)', {      
     con = ndex.connect(ndexTestConf$user, ndexTestConf$password)
     networks = ndex.group.list.networks(con, ndexTestConf$uuidGroup)
     expect_true(ndexTestConf$uuidPrivateNetwork %in% names(networks), info=paste0('The list of groups has to contain the defined groupId'))
     
-    network = ndex.group.get.network(con, ndexTestConf$uuidGroup, ndexTestConf$uuidPrivateNetwork)
+    network = ndex.group.network.get.permission(con, ndexTestConf$uuidGroup, ndexTestConf$uuidPrivateNetwork)
     expect_identical(networks[ndexTestConf$uuidPrivateNetwork], network, info=paste0('The result for a single network permission should be the same as for the same network permission in the list of network permissions!'))
 })
 

@@ -7,7 +7,7 @@
 ndex.create.network(ndexcon, rcx)
 }
 \arguments{
-\item{ndexcon}{object of class NDEXConnection}
+\item{ndexcon}{object of class NDEXConnection link{ndex.connect}}
 
 \item{rcx}{\code{\link{RCX}} object}
 }
@@ -15,24 +15,29 @@ ndex.create.network(ndexcon, rcx)
 UUID of the newly created network
 }
 \description{
-Create a Network at a server from RCX data
-}
-\details{
 This method creates a new network on the NDEx server from the given RCX object
 }
 \note{
+Requires an authorized user! (ndex.connect with credentials)
+
 Compatible to NDEx server version 1.3 and 2.0
 }
 \section{REST query}{
 
-POST (multipart/form-data): ndex.api.config$api$network$create$url
+POST (multipart/form-data): ndex.conf$api$network$create$url
 data: CXNetworkStream = data
 }
 
 \examples{
-\dontrun{
-ndexcon = ndex.connect('MyAccountName', 'MyPassword', verbose=T)
-pws = ndex.find.networks(ndexcon,"p53")
-rcx = ndex.get.network(ndexcon,pws[1,"externalId"]) 
-networkId = ndex.create.network(ndexcon, rcx)}
+## Establish a server connection with credentials 
+# ndexcon = ndex.connect('MyAccountName', 'MyPassword')
+## Find a network and get its UUID
+# networks = ndex.find.networks(ndexcon,"p53")
+# networkId = networks[1,"externalId"]
+## Get the network data 
+# rcx = ndex.get.network(ndexcon, networkId) 
+## Do some changes to rcx..
+## and create a new network
+# networkId = ndex.create.network(ndexcon, rcx)
+NULL
 }

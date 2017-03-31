@@ -4,12 +4,12 @@
 \alias{ndex.verify.user}
 \title{Verify a User}
 \usage{
-ndex.verify.user(ndexcon, uuid, code)
+ndex.verify.user(ndexcon, userId, code)
 }
 \arguments{
-\item{ndexcon}{object of class NDEXConnection}
+\item{ndexcon}{object of class NDEXConnection link{ndex.connect}}
 
-\item{uuid}{character; unique ID of the user}
+\item{userId}{character; unique ID of the user}
 
 \item{code}{character; Verification code sent by email}
 }
@@ -24,13 +24,17 @@ Compatible to NDEx server version 2.0
 }
 \section{REST query}{
 
-GET: ndex.api.config$api$user$verify
+GET: ndex.conf$api$user$verify
 }
 
 \examples{
-\dontrun{
-user = ndex.find.user.byName(ndexcon, 'some.ndex.account')
-ndex.verify.user(ndexcon, user$externalId, 'Osqy11mRZ9')
+## Establish a server connection
+# ndexcon = ndex.connect()
+## Find user and get its id
+# user = ndex.find.user.byName(ndexcon, 'SomeUserName')
+# userId = user$externalId
+## Verify user with verification code
+# ndex.verify.user(ndexcon, userId, 'Osqy11mRZ9')
 ## [1] "User account XXX has been activated."
-}
+NULL
 }

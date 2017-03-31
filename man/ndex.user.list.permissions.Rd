@@ -8,7 +8,7 @@ ndex.user.list.permissions(ndexcon, userId, type = NULL, directonly = FALSE,
   start = NULL, size = NULL)
 }
 \arguments{
-\item{ndexcon}{object of class NDEXConnection}
+\item{ndexcon}{object of class NDEXConnection link{ndex.connect}}
 
 \item{userId}{character; unique ID (UUID) of the user}
 
@@ -27,34 +27,39 @@ List of highest permissions of that user or empty object
 This function returns networks for which the authenticated user is assigned the specified permission. Userid is the UUID of the authenticated user. Returns a JSON map in which the keys are network UUIDs and values are the highest permission assigned to the authenticated user.#'
 }
 \note{
+Requires an authorized user! (ndex.connect with credentials)
+
 Compatible to NDEx server version 2.0
 }
 \section{REST query}{
 
-GET: ndex.api.config$api$user$permission$list
+GET: ndex.conf$api$user$permission$list
 }
 
 \examples{
-\dontrun{
+## Establish a server connection with credentials 
+# ndexcon = ndex.connect('MyAccountName', 'MyPassword')
 ## get user by name to get UUID
-user = ndex.find.user.byName(ndexcon, 'some.ndex.account')
-
+# user = ndex.find.user.byName(ndexcon, 'MyAccountName')
+# userId = user$externalId
 ## get all network permissions of the user
-networkPermissions = ndex.user.list.permissions(ndexcon, user$externalId)
-## $`aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee`
+# networkPermissions = ndex.user.list.permissions(ndexcon, userId)
+## $`nnneeett-wwww-oooo-rrrr-kkkkkkk11111`
 ## [1] "ADMIN"
-
-networkIds = names(permissions)
-## [1] "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
-
+## $`nnneeett-wwww-oooo-rrrr-kkkkkkk22222`
+## [1] "WRITE"
+## $`nnneeett-wwww-oooo-rrrr-kkkkkkk33333`
+## [1] "READ"
+# networkIds = names(networkPermissions)
+## [1] "nnneeett-wwww-oooo-rrrr-kkkkkkk11111" "nnneeett-wwww-oooo-rrrr-kkkkkkk22222"
+## [3] "nnneeett-wwww-oooo-rrrr-kkkkkkk33333" 
 ## get all networks for which the user has Admin permissions
-networkPermissions = ndex.user.list.permissions(ndexcon, user$externalId, type='ADMIN')
-## $`aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee`
+# networkPermissions = ndex.user.list.permissions(ndexcon, userId, type='ADMIN')
+## $`nnneeett-wwww-oooo-rrrr-kkkkkkk11111`
 ## [1] "ADMIN"
-
 ## get all networks for which the user has direct access
-networkPermissions = ndex.user.list.permissions(ndexcon, user$externalId, directonly=TRUE)
-## $`aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee`
+# networkPermissions = ndex.user.list.permissions(ndexcon, user$externalId, directonly=TRUE)
+## $`nnneeett-wwww-oooo-rrrr-kkkkkkk11111`
 ## [1] "ADMIN"
-}
+NULL
 }

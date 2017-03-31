@@ -4,12 +4,12 @@
 \alias{ndex.user.forgot.password}
 \title{Forgot Password}
 \usage{
-ndex.user.forgot.password(ndexcon, uuid)
+ndex.user.forgot.password(ndexcon, userId)
 }
 \arguments{
-\item{ndexcon}{object of class NDEXConnection}
+\item{ndexcon}{object of class NDEXConnection link{ndex.connect}}
 
-\item{uuid}{character; unique ID of the user}
+\item{userId}{character; unique ID of the user}
 }
 \value{
 Empty string on success, else error
@@ -22,13 +22,17 @@ Compatible to NDEx server version 2.0
 }
 \section{REST query}{
 
-GET: ndex.api.config$api$user$password$mail
+GET: ndex.conf$api$user$password$mail
 Wrapper for ndex.user.mail.password()
 }
 
 \examples{
-\dontrun{
-user = ndex.find.user.byName(ndexcon, 'some.ndex.account')
-ndex.user.forgot.password(ndexcon, user$externalId)
-}
+## Establish a server connection
+# ndexcon = ndex.connect()
+## Find user and get its id
+# user = ndex.find.user.byName(ndexcon, 'SomeUserName')
+# userId = user$externalId
+## Request new password via email
+# ndex.user.forgot.password(ndexcon, userId)
+NULL
 }

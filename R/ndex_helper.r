@@ -13,21 +13,27 @@
 #' Adds Parameters to an url
 #' 
 #' Encodes a given parameter within the url accordingly to the parameter configuration for the api. 
-#' The single parameter definitions are given as list by the "params" parameter. Each parameter is defined by a method, and, if applicable, a tag, a default value and/or an optional flag.
+#' 
+#' @note This function is internal.
+#' 
+#' @details The single parameter definitions are given as list by the "params" parameter. Each parameter is defined by a method, and, if applicable, a tag, a default value and/or an optional flag.
 #' There are three keywords defining the method: replace, append or parameter.
-#' replace: The String defined by "tag" can be found wihtin the url and will be replaced by the given value of the parameter. E.g. the tag "#NETWORKID#" in the url "/network/#NETWORKID#/provenance" is replaced by a value (e.g. "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee") given as network id, which leads to the url "/network/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee/provenance". 
+#' 
+#' replace: The String defined by "tag" can be found within the url and will be replaced by the given value of the parameter. E.g. the tag "#NETWORKID#" in the url "/network/#NETWORKID#/provenance" is replaced by a value (e.g. "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee") given as network id, which leads to the url "/network/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee/provenance". 
+#' 
 #' append: The given value of the parameter is appended to an url. Therefore the order of the parameters in the params definition is used. E.g. the url "/network/search" and the given values for "start" = 0 and "size" = 100 generates the following url: "/network/search/0/100"
+#' 
 #' parameter: Encodes the given parameters as url parameter using the specified tag as parameter descriptor. E.g. a parameter with the tag "username" and the value "SomeName" is encoded in the url "/user" as follows: "/user?username=SomeName"
+#' 
 #' It is also possible to set parameter as optional (except for replace), or define default values. Values are assigned to the parameters using the parameter name in the ... parameter.
 #'  
 #' @param url character
-#' @param params (nested) list; "params" section of a api function definition in the api configuration (See \link{ndex.api.config})
+#' @param params (nested) list; "params" section of a api function definition in the api configuration (See \link{ndex.conf})
 #' @param ... parameters defined by name used in the config
 #' 
 #' @return URL with encoded parameters as character
 #' 
 #' @examples 
-#' \dontrun{
 #' ## replace
 #' url = "http://en.wikipedia.org/#NETWORKID#/index.php"
 #' params = list(    network=list(    tag="#NETWORKID#", method="replace"))
@@ -79,7 +85,6 @@
 #' values = c(network='aaaa-bb-cc-dddddd', bla='This is not used!')
 #' ndex.helper.encodeParams(url, params=params, values)
 #' ## "http://en.wikipedia.org/w/index.php/aaaa-bb-cc-dddddd"
-#' }
 ndex.helper.encodeParams = function(url, params, ...){
   urlParamAppend = c()
   urlParamKeyValue = c()
@@ -127,15 +132,17 @@ ndex.helper.encodeParams = function(url, params, ...){
 #' Handles the http server response 
 #' 
 #' This function handles the response from a server. If some response code different from success (200) is returned, the execution stops and the reason is shown.
+#' @note This function is internal.
 #' 
 #' @param response object of class response (httr)
 #' @param description character; description of the action performed
 #' @param verbose logical; whether to print out extended feedback
+#' 
+#' @return returns the given respons, if it doesn't contain any HTTP error 
+#' 
 #' @examples
-#' \dontrun{
-#'  ndex.helper.httpResponseHandler(httr::GET('http://www.ndexbio.org'), 'Tried to connect to NDEx server', T)
-#'  }
-ndex.helper.httpResponseHandler <- function(response, description, verbose=F){
+#' ndex.helper.httpResponseHandler(httr::GET('http://www.ndexbio.org'), 'Tried to connect to NDEx server', TRUE)
+ndex.helper.httpResponseHandler <- function(response, description, verbose=FALSE){
     if(missing(response) || is.null(response)){
         stop(paste0('ndex.helper.httpResponseHandler: No server response',description))
     }
@@ -172,14 +179,31 @@ ndex.helper.httpResponseHandler <- function(response, description, verbose=F){
     return(response)
 }
 
+#' Get the Api configuration for a function
+#' 
+#' This function extracts the function definition from the ndex configuration within a ndex-connection object.
+#' It follows the given path down the list.
+#' @note This function is internal.
+#' 
+#' @param ndexcon object of class NDEXConnection \code{\link{ndex.connect}}
+#' @param apiPath character; paht to follow in the nested list
+#' 
+#' @return configuration of the function
+#' 
+#' @examples
+#' ## Establish a server connection
+#' ndexcon = ndex.connect()
+#' ## Get the function definition for ndex.network.get.summary
+#' ## ndex.conf[[ndex.conf$defaultVersion]]$api$network$summary$get
+#' ndex.helper.getApi(ndexcon, 'network$summary$get')
 ndex.helper.getApi <- function(ndexcon, apiPath){
-    if(is.null(ndexcon)||is.null(ndexcon$apiConfig)||is.null(ndexcon$apiConfig$api)){
+    if(is.null(ndexcon)||is.null(ndexcon$ndexConf)||is.null(ndexcon$ndexConf$api)){
         stop('API: No or no valid API definition found within the ndex.connection!')
     }
-    version = ndexcon$apiConfig$version
-    cur = ndexcon$apiConfig$api
+    version = ndexcon$ndexConf$version
+    cur = ndexcon$ndexConf$api
     curPath = c()
-    for(word in unlist(strsplit(apiPath,'$', fixed = T))){
+    for(word in unlist(strsplit(apiPath,'$', fixed = TRUE))){
         curPath = c(curPath, word)
         cur = cur[[word]]
         if(is.null(cur)) stop('API: The method "',paste0(curPath, collapse='->'), ' is not defined for this API (version: ', version, ')')

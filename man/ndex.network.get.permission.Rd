@@ -7,7 +7,7 @@
 ndex.network.get.permission(ndexcon, networkId, type, permission, start, size)
 }
 \arguments{
-\item{ndexcon}{object of class NDEXConnection}
+\item{ndexcon}{object of class NDEXConnection link{ndex.connect}}
 
 \item{networkId}{unique ID of the network}
 
@@ -29,21 +29,31 @@ This function retrieves the user or group permissions for a network
 Compatible to NDEx server version 1.3 and 2.0
 
 In version 1.3 the function only returns user permissions and differs in the returned data (more columns)!
+
+Requires an authorized user! (ndex.connect with credentials)
 }
 \section{REST query}{
 
-GET: ndex.api.config$api$network$permission$get
+GET: ndex.conf$api$network$permission$get
 }
 
 \examples{
-\dontrun{
-ndexcon = ndex.connect('MyAccountName', 'MyPassword', verbose=T)
-networks = ndex.find.networks(ndexcon,"p53")
-networkId = networks[1,"externalId"]
-## get the permissions
-permissions = ndex.network.get.permission(ndexcon, networkId, 'user')
-permissions = ndex.network.get.permission(ndexcon, networkId, 'user', NULL)	# same as previous
-permissions = ndex.network.get.permission(ndexcon, networkId, 'user', 'READ', 0, 10)
-permissions = ndex.network.get.permission(ndexcon, networkId, 'group')
-}
+## Establish a server connection with credentials 
+# ndexcon = ndex.connect('MyAccountName', 'MyPassword')
+## Find one of your networks and get its UUID
+# networks = ndex.find.networks(ndexcon, accountName='MyAccountName')
+# networkId = networks[1,"externalId"]
+## Get the permissions
+# permissions = ndex.network.get.permission(ndexcon, networkId, 'user')
+## Version 2.0:
+## names(permission)
+## [1] "memberUUID" "permission"
+## Version 1.3:
+## names(permission)
+## [1] "membershipType"    "memberUUID"  "resourceUUID"      
+## [4] "memberAccountName" "permissions" "resourceName" 
+# permissions = ndex.network.get.permission(ndexcon, networkId, 'user', NULL)    # same as previous
+# permissions = ndex.network.get.permission(ndexcon, networkId, 'user', 'READ', 0, 10)
+# permissions = ndex.network.get.permission(ndexcon, networkId, 'group')
+NULL
 }

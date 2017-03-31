@@ -4,13 +4,13 @@
 \alias{ndex.update.user}
 \title{Update User}
 \usage{
-ndex.update.user(ndexcon, uuid, emailAddress, isIndividual, displayName,
+ndex.update.user(ndexcon, userId, emailAddress, isIndividual, displayName,
   firstName, lastName, image, website, description, verbose = FALSE)
 }
 \arguments{
-\item{ndexcon}{object of class NDEXConnection}
+\item{ndexcon}{object of class NDEXConnection link{ndex.connect}}
 
-\item{uuid}{character; unique ID of the user}
+\item{userId}{character; unique ID of the user}
 
 \item{emailAddress}{character (optional); email address (used for verification if enabled)}
 
@@ -37,15 +37,23 @@ Empty string ("") on success, else error
 Updates the authenticated user based on the data. Errors, if the user for ndexcon and uuid are different.
 }
 \note{
+Requires an authorized user! (ndex.connect with credentials)
+
 Compatible to NDEx server version 2.0
 }
 \section{REST query}{
 
-GET: ndex.api.config$api$user$update
+GET: ndex.conf$api$user$update
 }
 
 \examples{
-\dontrun{
-ndex.update.user(ndexcon, user$externalId, firstName = 'Homer Jay', lastName = 'Simpson')
-}
+## Establish a server connection with credentials 
+# ndexcon = ndex.connect('MyAccountName', 'MyPassword')
+## Find user and get its id
+# user = ndex.find.user.byName(ndexcon, 'SomeUserName')
+# userId = user$externalId
+## Update user
+# ndex.update.user(ndexcon, userId, firstName = 'Homer Jay', lastName = 'Simpson')
+# ndex.update.user(ndexcon, userId, displayName = 'Max Power', image='https://upload.wikimedia.org/wikipedia/en/0/02/Homer_Simpson_2006.png', description='One of the most influential characters in the history of television')
+NULL
 }

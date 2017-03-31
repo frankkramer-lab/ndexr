@@ -7,7 +7,7 @@
 ndex.user.get.showcase(ndexcon, userId)
 }
 \arguments{
-\item{ndexcon}{object of class NDEXConnection}
+\item{ndexcon}{object of class NDEXConnection link{ndex.connect}}
 
 \item{userId}{character; unique ID (UUID) of the user}
 }
@@ -24,19 +24,20 @@ Compatible to NDEx server version 2.0
 }
 \section{REST query}{
 
-GET: ndex.api.config$api$user$showcase
+GET: ndex.conf$api$user$showcase
 }
 
 \examples{
-\dontrun{
+## Establish a server connection
+ndexcon = ndex.connect()
 ## get user by name to get UUID
-user = ndex.find.user.byName(ndexcon, 'some.ndex.account')
-
-showcase = ndex.user.get.showcase(con, user$externalId)
+user = ndex.find.user.byName(ndexcon, 'ndextutorials')
+userId = user$externalId
+## get all network permissions of the user
+showcase = ndex.user.get.showcase(con, userId)
 names(showcase)
 ## [1] "ownerUUID"        "isReadOnly"       "subnetworkIds"    "errorMessage"     "isValid"         
 ## [6] "warnings"         "isShowcase"       "visibility"       "edgeCount"        "nodeCount"       
 ##[11] "uri"              "version"          "owner"            "name"             "properties"      
 ##[16] "description"      "externalId"       "isDeleted"        "modificationTime" "creationTime"
-}   
 }

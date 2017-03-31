@@ -8,7 +8,7 @@ ndex.group.list.users(ndexcon, groupId, type = NULL, start = NULL,
   size = NULL)
 }
 \arguments{
-\item{ndexcon}{object of class NDEXConnection}
+\item{ndexcon}{object of class NDEXConnection link{ndex.connect}}
 
 \item{groupId}{character; unique ID (UUID) of the group}
 
@@ -29,13 +29,16 @@ Compatible to NDEx server version 2.0
 }
 \section{REST query}{
 
-GET: ndex.api.config$api$group$membership$get
+GET: ndex.conf$api$group$membership$get
 }
 
 \examples{
-\dontrun{
-groupId = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
-users = ndex.group.list.users (ndexcon, groupId)
-users = ndex.group.list.users (ndexcon, groupId, type='ADMIN', start=0, size=10)
-}
+## Establish a server connection
+ndexcon = ndex.connect()
+## Find a group
+groups = ndex.find.groups(ndexcon,"Ideker Lab")
+groupId = groups[1,"externalId"]
+## Find other users of the group
+# users = ndex.group.list.users(ndexcon, groupId)
+# users = ndex.group.list.users (ndexcon, groupId, type='ADMIN', start=0, size=10)
 }

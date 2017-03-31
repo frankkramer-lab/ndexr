@@ -25,7 +25,7 @@ The structure of an RCX object, as shown via str(rcx) could be a list like this:
 > str(rcx)
 
 List of 12
-$ metaData          :'data.frame':	11 obs. of  7 variables:
+$ metaData          :'data.frame':    11 obs. of  7 variables:
   ..$ name            : chr [1:11] "citations" "@context" "edgeAttributes" "edgeCitations" ...
   ..$ consistencyGroup: int [1:11] 1 1 1 1 1 1 1 1 1 1 ...
   ..$ elementCount    : int [1:11] 4 23 NA NA 11 1 NA NA NA 5 ...
@@ -33,9 +33,9 @@ $ metaData          :'data.frame':	11 obs. of  7 variables:
   ..$ version         : chr [1:11] "1.0" "1.0" "1.0" "1.0" ...
   ..$ idCounter       : int [1:11] 60714397 NA NA NA 60714399 NA NA NA NA 60714395 ...
   ..$ properties      :List of 11
-$ numberVerification:'data.frame':	1 obs. of  1 variable:
+$ numberVerification:'data.frame':    1 obs. of  1 variable:
   ..$ longNumber: num 2.81e+14
-$ ndexStatus        :'data.frame':	1 obs. of  10 variables:
+$ ndexStatus        :'data.frame':    1 obs. of  10 variables:
   ..$ externalId      : chr "eac8a4b8-6194-11e5-8ac5-06603eb7f303"
   ..$ creationTime    : num 1.44e+12
   ..$ modificationTime: num 1.44e+12
@@ -46,23 +46,23 @@ $ ndexStatus        :'data.frame':	1 obs. of  10 variables:
   ..$ owner           : chr "nci-pid"
   ..$ ndexServerURI   : chr "http://public.ndexbio.org"
   ..$ readOnly        : logi FALSE
-$ @context          :'data.frame':	1 obs. of  23 variables:
+$ @context          :'data.frame':    1 obs. of  23 variables:
   ..$ GENPEPT                      : chr "http://www.ncbi.nlm.nih.gov/protein/"
   ..$ NCBI GENE                    : chr "http://identifiers.org/ncbigene/"
   ..$ ENSEMBL                      : chr "http://identifiers.org/ensembl/"
   [...]
-$ networkAttributes :'data.frame':	4 obs. of  2 variables:
+$ networkAttributes :'data.frame':    4 obs. of  2 variables:
   ..$ n: chr [1:4] "name" "description" "version" "ndex:sourceFormat"
   ..$ v: chr [1:4] "PLK3 signaling events" "This network ..." [...]
-$ citations         :'data.frame':	4 obs. of  7 variables:
+$ citations         :'data.frame':    4 obs. of  7 variables:
  ..$ @id           : int [1:4] 60714380 60714383 60714386 60714397
  ..$ dc:identifier : chr [1:4] "pmid:17264206" "pmid:14968113" "pmid:12242661" "pmid:11551930"
  ..$ dc:type       : chr [1:4] "URI" "URI" "URI" "URI"
  ..$ attributes    :List of 4 [...]
-$ nodes             :'data.frame':	5 obs. of  2 variables:
+$ nodes             :'data.frame':    5 obs. of  2 variables:
  ..$ @id: int [1:5] 60714376 60714377 60714381 60714384 60714395
  ..$ n  : chr [1:5] "CCNE1" "PLK3" "MPIP3" "CHK2" ...
-$ nodeAttributes    :'data.frame':	10 obs. of  4 variables:
+$ nodeAttributes    :'data.frame':    10 obs. of  4 variables:
   ..$ po: int [1:10] 60714376 60714376 60714377 60714377 60714381 60714381 60714384 60714384 60714395 60714395
   ..$ n : chr [1:10] "alias" "relatedTo" "alias" "relatedTo" ...
   ..$ v :List of 10
@@ -70,12 +70,12 @@ $ nodeAttributes    :'data.frame':	10 obs. of  4 variables:
     .. ..$ : chr [1:98] "GENE ONTOLOGY:GO:0003713" "GENE ONTOLOGY:GO:0005515"  ...
     [...]
   ..$ d : chr [1:10] "list_of_string"  ...
-$ edges             :'data.frame':	11 obs. of  4 variables:
+$ edges             :'data.frame':    11 obs. of  4 variables:
   ..$ @id: int [1:11] 60714379 60714382  ...
   ..$ s  : int [1:11] 60714376 60714381  ...
   ..$ t  : int [1:11] 60714377 60714377  ...
   ..$ i  : chr [1:11] "neighbor-of" "neighbor-of"  ...
-$ edgeCitations     :'data.frame':	11 obs. of  2 variables:
+$ edgeCitations     :'data.frame':    11 obs. of  2 variables:
   ..$ po       :List of 11
   .. ..$ : int 60714379
   .. ..$ : int 60714382
@@ -84,7 +84,7 @@ $ edgeCitations     :'data.frame':	11 obs. of  2 variables:
 .. ..$ : int 60714380
 .. ..$ : int 60714383
   [...]
-$ status            :'data.frame':	1 obs. of  2 variables:
+$ status            :'data.frame':    1 obs. of  2 variables:
   ..$ error  : chr ""
   ..$ success: logi TRUE
 - attr(*, "class")= chr [1:2] "RCX" "list"
@@ -116,10 +116,13 @@ The data.frames representing nodes and edges could look like this:\cr
 }
 }
 \examples{
-\dontrun{
-ndexcon = ndex.connect(verbose=T)
-pws = ndex.find.networks(ndexcon,"p53")
-rcx = ndex.get.network(ndexcon,pws[1,"externalId"]) }
+## Establish a server connection
+ndexcon = ndex.connect()
+## Find a network and get its UUID
+networks = ndex.find.networks(ndexcon,"p53")
+networkId = networks[1,"externalId"]
+## Get the network data 
+rcx = ndex.get.network(ndexcon, networkId) 
 }
 \seealso{
 \code{\link{ngraph.fromRCX}} \code{\link{ngraph.toRCX}} \code{\link{rcx.toJSON}}

@@ -30,9 +30,7 @@ For a given RCX object the meta-data is updated, i.e. the counted elements and i
 If mandatory aspects (specified in mandatoryAspects parameter) are missing in the RCX object, an error is thrown.
 }
 \examples{
-\dontrun{
 rcx = rcx.updateMetaData(rcx)
 # or with explicitly set default values
 rcx = rcx.updateMetaData(rcx, mandatoryAspects=c('nodes'), excludeAspects=c("metaData", "numberVerification", "status"), force=FALSE, verbose=FALSE)
-}
 }

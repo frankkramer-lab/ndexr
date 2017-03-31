@@ -59,14 +59,15 @@
 #' @seealso \code{\link{ngraph.toRCX}} \code{\link{rcx.fromJSON}} \code{\link{rcx.toJSON}} \code{\link{RCX}} \code{\link[igraph]{igraph}}   
 #' @aliases ngraph
 #' @examples 
-#' \dontrun{
-#' ndexcon = ndex.connect(verbose=T)
-#' pws = ndex.find.networks(ndexcon,"p53")
-#' rcx = ndex.get.network(ndexcon,pws[1,"externalId"]) 
-#' rcx$edges
+#' ## Establish a server connection with credentials 
+#' # ndexcon = ndex.connect('MyAccountName', 'MyPassword')
+#' ## Find one of your networks and get its UUID
+#' # networks = ndex.find.networks(ndexcon, accountName='MyAccountName')
+#' # networkId = networks[1,"externalId"]
+#' ## Get the network data 
+#' rcx = ndex.get.network(ndexcon, networkId) 
+#' ## Convert to nGraph
 #' ngraph = ngraph.fromRCX(rcx) 
-#' ngraph
-#' E(ngraph) }
 #' @export
 ngraph.fromRCX <- function(rcx, verbose = FALSE){
   
@@ -126,6 +127,16 @@ ngraph.fromRCX <- function(rcx, verbose = FALSE){
 #' @return returns object of class ngraph if successfull, NULL otherwise
 #' 
 #' @note Wrapper function for \code{\link{ngraph.fromRCX}}
+#' @examples 
+#' ## Establish a server connection with credentials 
+#' # ndexcon = ndex.connect('MyAccountName', 'MyPassword')
+#' ## Find one of your networks and get its UUID
+#' # networks = ndex.find.networks(ndexcon, accountName='MyAccountName')
+#' # networkId = networks[1,"externalId"]
+#' ## Get the network data 
+#' rcx = ndex.get.network(ndexcon, networkId) 
+#' ## Convert to nGraph
+#' ngraph = rcx.toNGraph(rcx) 
 #' @export
 rcx.toNGraph <- ngraph.fromRCX
 
@@ -176,20 +187,17 @@ ndex.internal_addAspects <- function(ngraph, rcx, verbose = FALSE){
 #' @return returns object of class RCX if successfull, NULL otherwise
 #' @seealso \code{\link{ngraph}} \code{\link{ngraph.fromRCX}} \code{\link{rcx.fromJSON}} \code{\link{rcx.toJSON}}   
 #' @examples 
-#' \dontrun{
-#' ndexcon = ndex.connect(verbose=T)
-#' pws = ndex.find.networks(ndexcon,"p53")
-#' rcx = ndex.get.network(ndexcon,pws[1,"externalId"]) 
-#' ngraph = ngraph.fromRCX(rcx) 
-#' rcxback = ngraph.toRCX(ngraph)
-#' 
-#' #test equalness
-#' for(i in names(rcx)) {
-#' cat(i)
-#' cat(all.equal(rcx[[i]], rcxback[[i]]))
-#' cat("\n")
-#' }
-#' }
+#' ## Establish a server connection with credentials 
+#' # ndexcon = ndex.connect('MyAccountName', 'MyPassword')
+#' ## Find one of your networks and get its UUID
+#' # networks = ndex.find.networks(ndexcon, accountName='MyAccountName')
+#' # networkId = networks[1,"externalId"]
+#' ## Get the network data 
+#' rcx = ndex.get.network(ndexcon, networkId) 
+#' ## Convert to nGraph
+#' ngraph = rcx.toNGraph(rcx) 
+#' ## Convert it back to rcx
+#' rcx = ngraph.toRCX(ngraph)
 #' @export
 ngraph.toRCX <- function(ngraph, verbose = FALSE){
   
@@ -252,7 +260,7 @@ ngraph.toRCX <- function(ngraph, verbose = FALSE){
     if(any(sel)) {
       tmp2 = as.data.frame(tmp$edges[,"@id"], stringsAsFactors=F, row.names = NULL)
       colnames(tmp2) = c("po")
-      tmp2 = as.data.frame(cbind(tmp2, tmp$edges[,sel,drop=FALSE]), stringsAsFactors=F)
+      tmp2 = as.data.frame(cbind(tmp2, tmp$edges[,sel,drop=FALSE]), stringsAsFactors=FALSE)
       row.names(tmp2) = NULL
       tmp2 = tidyr::gather_(tmp2,"n","v",colnames(tmp$edges)[sel])
       tmp2 = plyr::arrange(tmp2,po)

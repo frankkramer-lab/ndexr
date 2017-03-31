@@ -20,7 +20,7 @@ context('NDEx properties')
 
 
 test_that('Set network network system properties (ndex.network.set.systemProperties)', {
-    nms = names(ndex.api.config)
+    nms = names(ndex.conf)
     apiVersions = nms[nms!='defaultVersion']
       
     con = ndex.connect(ndexTestConf$user, ndexTestConf$password)
@@ -29,15 +29,15 @@ test_that('Set network network system properties (ndex.network.set.systemPropert
     uuid = ndexTestConf$uuidPrivateNetwork
     
     for(apiVersion in apiVersions){
-        api = ndex.api.config[[apiVersion]]
-        con = ndex.connect(ndexTestConf$user, ndexTestConf$password, apiConfig = api)
+        api = ndex.conf[[apiVersion]]
+        con = ndex.connect(ndexTestConf$user, ndexTestConf$password, ndexConf = api)
     
         expect_error(ndex.network.set.systemProperties(con, uuid), info=paste0('At least one property has to be specified! (api ', apiVersion, ')'))
         
         result = ndex.network.set.systemProperties(con, uuid, readOnly=TRUE)
         expect_null(result, info=paste0('If everything works "NULL" should be returned (api ', apiVersion, ')'))
     
-        if(con$apiConfig$version == '1.3'){
+        if(con$ndexConf$version == '1.3'){
             result = ndex.network.set.systemProperties(con, uuid, readOnly=FALSE)
             expect_null(result, info=paste0('If everything works "NULL" should be returned (api ', apiVersion, ')'))
         }else{
@@ -51,7 +51,7 @@ test_that('Set network network system properties (ndex.network.set.systemPropert
 })
 
 test_that('Update network profile (ndex.network.set.systemProperties)', {
-    nms = names(ndex.api.config)
+    nms = names(ndex.conf)
     apiVersions = nms[nms!='defaultVersion']
     
     con = ndex.connect(ndexTestConf$user, ndexTestConf$password)
@@ -63,8 +63,8 @@ test_that('Update network profile (ndex.network.set.systemProperties)', {
     summ = ndex.network.get.summary(con, uuid)
     
     for(apiVersion in apiVersions){
-        api = ndex.api.config[[apiVersion]]
-        con = ndex.connect(ndexTestConf$user, ndexTestConf$password, apiConfig = api)
+        api = ndex.conf[[apiVersion]]
+        con = ndex.connect(ndexTestConf$user, ndexTestConf$password, ndexConf = api)
         
         expect_error(ndex.network.update.profile(con, uuid), info=paste0('At least one property has to be specified! (api ', apiVersion, ')'))
         
@@ -84,7 +84,7 @@ test_that('Update network profile (ndex.network.set.systemProperties)', {
 
 
 test_that('Get network provenance (ndex.network.get.provenance)', {
-    nms = names(ndex.api.config)
+    nms = names(ndex.conf)
     apiVersions = nms[nms!='defaultVersion']
     
     con = ndex.connect()
@@ -95,8 +95,8 @@ test_that('Get network provenance (ndex.network.get.provenance)', {
 #    uuid = ndex.create.network(con,rcx)    ## and upload it as own one
     
     for(apiVersion in apiVersions){
-        api = ndex.api.config[[apiVersion]]
-        con = ndex.connect(apiConfig = api)
+        api = ndex.conf[[apiVersion]]
+        con = ndex.connect(ndexConf = api)
         
         provenance = ndex.network.get.provenance(con, uuid)
         expect_object_conains_names(provenance, c("uri","creationEvent","properties"), info=paste0('Checking attribute names of network provenance (api ', apiVersion, ')'))

@@ -4,12 +4,12 @@
 \alias{ndex.user.change.password}
 \title{Change Password}
 \usage{
-ndex.user.change.password(ndexcon, uuid, password)
+ndex.user.change.password(ndexcon, userId, password)
 }
 \arguments{
-\item{ndexcon}{object of class NDEXConnection}
+\item{ndexcon}{object of class NDEXConnection link{ndex.connect}}
 
-\item{uuid}{character; unique ID of the user}
+\item{userId}{character; unique ID of the user}
 
 \item{password}{character; New password}
 }
@@ -20,16 +20,22 @@ Empty string on success, else error
 Changes the authenticated user's password to the new password
 }
 \note{
+Requires an authorized user! (ndex.connect with credentials)
+
 Compatible to NDEx server version 2.0
 }
 \section{REST query}{
 
-GET: ndex.api.config$api$user$password$change
+GET: ndex.conf$api$user$password$change
 }
 
 \examples{
-\dontrun{
-user = ndex.find.user.byName(ndexcon, 'some.ndex.account')
-ndex.user.change.password(ndexcon, user$externalId, 'SuperSaveNewPassword')
-}
+## Establish a server connection with credentials 
+# ndexcon = ndex.connect('MyAccountName', 'MyPassword')
+## Find user and get its id
+# user = ndex.find.user.byName(ndexcon, 'SomeUserName')
+# userId = user$externalId
+## Change user password
+# ndex.user.change.password(ndexcon, userId, 'SuperSaveNewPassword')
+NULL
 }

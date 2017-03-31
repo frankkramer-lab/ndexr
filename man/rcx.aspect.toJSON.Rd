@@ -20,11 +20,15 @@ json object if successfull, empty string otherwise
 Generate JSON data for a single aspect of a RCX object
 }
 \examples{
-\dontrun{
-ndexcon = ndex.connect(verbose=T)
-pws = ndex.find.networks(ndexcon,"p53")
-rcx = ndex.get.network(ndexcon,pws[1,"externalId"]) 
-rcxNodesJson = rcx.aspect.toJSON(rcx$nodes) }
+## Establish a server connection
+ndexcon = ndex.connect()
+## Find a network and get its UUID
+networks = ndex.find.networks(ndexcon,"p53")
+networkId = networks[1,"externalId"]
+## Get the network data 
+rcx = ndex.get.network(ndexcon, networkId)
+## Convert RCX aspect to JSON
+rcxNodesJson = rcx.aspect.toJSON(rcx$nodes)
 }
 \seealso{
 \code{\link{rcx.toJSON}} and \code{\link{rcx.fromJSON}}

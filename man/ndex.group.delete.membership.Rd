@@ -7,7 +7,7 @@
 ndex.group.delete.membership(ndexcon, groupId, userId)
 }
 \arguments{
-\item{ndexcon}{object of class NDEXConnection}
+\item{ndexcon}{object of class NDEXConnection link{ndex.connect}}
 
 \item{groupId}{character; unique ID (UUID) of the group}
 
@@ -20,17 +20,29 @@ Empty string ("") on success, else error
 Removes the member from the group
 }
 \note{
+Requires an authorized user! (ndex.connect with credentials)
+
 Compatible to NDEx server version 2.0
 }
 \section{REST query}{
 
-DELETE: ndex.api.config$api$user$membership$delete
+DELETE: ndex.conf$api$user$membership$delete
 }
 
 \examples{
-\dontrun{
-groupId = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
-userId = "ffffffff-gggg-hhhh-iiii-jjjjjjjjjjjj"
-ndex.group.delete.membership(ndexcon, groupId, userId)
-}
+## Establish a server connection with credentials 
+# ndexcon = ndex.connect('MyAccountName', 'MyPassword')
+## Find user and get own id
+# user = ndex.find.user.byName(ndexcon, 'MyAccountName')
+# userId = user$externalId
+## Find own groups and get one group id
+# groups = ndex.user.list.groups(ndexcon, userId)
+# groupId = groups[1,"externalId"]
+## Find an other user of the group and get the id
+# users = ndex.group.list.users(ndexcon, groupId)
+## Choose one user 
+# userId = users[1,"externalId"]
+## Remove user from the group
+# ndex.group.delete.membership(ndexcon, groupId, userId)
+NULL
 }

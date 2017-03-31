@@ -7,7 +7,7 @@
 ndex.network.update.aspect(ndexcon, networkId, aspectName, aspectAsRCX)
 }
 \arguments{
-\item{ndexcon}{object of class NDEXConnection}
+\item{ndexcon}{object of class NDEXConnection link{ndex.connect}}
 
 \item{networkId}{unique ID of the network}
 
@@ -22,18 +22,26 @@ networkId unique ID of the modified network
 This function updates an aspect with the provided CX for the aspect.
 }
 \note{
+Requires an authorized user! (ndex.connect with credentials)
+
 Compatible to NDEx server version 2.0
 }
 \section{REST query}{
 
-PUT: ndex.api.config$api$network$aspect$update
+PUT: ndex.conf$api$network$aspect$update
 }
 
 \examples{
-\dontrun{
-ndexcon = ndex.connect(verbose=T)
-pws = ndex.find.networks(ndexcon,"p53")
-aspect = ndex.network.get.aspect(ndexcon,pws[1,"externalId"], 'nodeAttributes') 
+## Establish a server connection with credentials 
+# ndexcon = ndex.connect('MyAccountName', 'MyPassword')
+## Find one of your networks and get its UUID
+# networks = ndex.find.networks(ndexcon, accountName='MyAccountName')
+# networkId = networks[1,"externalId"]
+## Get the network data 
+# aspect = ndex.network.get.aspect(ndexcon, networkId, 'nodeAttributes') 
+## Do some changes to the aspect..
 aspectModified = aspect[1:5,]
-ndex.network.update.aspect(ndexcon,pws[1,"externalId"], 'nodeAttributes', aspectModified)}
+## and update the aspect
+# ndex.network.update.aspect(ndexcon,pws[1,"externalId"], 'nodeAttributes', aspectModified)
+NULL
 }

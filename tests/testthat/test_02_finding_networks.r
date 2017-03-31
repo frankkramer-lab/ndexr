@@ -19,15 +19,15 @@ context('Finding networks')
 
 
 test_that('Get list of networks from a server (ndex.find.networks)', {
-  nms = names(ndex.api.config)
+  nms = names(ndex.conf)
   apiVersions = nms[nms!='defaultVersion']
   netColNames = c("ownerUUID", "isReadOnly", "subnetworkIds", "errorMessage", "isValid", "warnings", "isShowcase", "visibility", "edgeCount", "nodeCount", "uri", "version", "owner", "description", "name", "properties", "externalId", "isDeleted", "modificationTime", "creationTime")
   
   expect_error(ndex.find.networks(), info='No connection provided')
   
   for(apiVersion in apiVersions){
-    api = ndex.api.config[[apiVersion]]
-    con = ndex.connect(apiConfig = api)
+    api = ndex.conf[[apiVersion]]
+    con = ndex.connect(ndexConf = api)
     
     networks = ndex.find.networks(con)
     expect_is(networks, 'data.frame', info=paste0('Checking class of found network list using api ', apiVersion))

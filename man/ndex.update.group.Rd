@@ -8,7 +8,7 @@ ndex.update.group(ndexcon, groupId, groupName, image, website, description,
   properties)
 }
 \arguments{
-\item{ndexcon}{object of class NDEXConnection}
+\item{ndexcon}{object of class NDEXConnection link{ndex.connect}}
 
 \item{groupId}{character; unique ID (UUID) of the group}
 
@@ -29,16 +29,25 @@ Empty string ("") on success, else error
 Updates the group based on the data.
 }
 \note{
+Requires an authorized user! (ndex.connect with credentials)
+
 Compatible to NDEx server version 2.0
 }
 \section{REST query}{
 
-PUT: ndex.api.config$api$user$update
+PUT: ndex.conf$api$user$update
 }
 
 \examples{
-\dontrun{
-groupId = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
-ndex.update.group(ndexcon, groupId, description='A really nice group!')
-}
+## Establish a server connection with credentials 
+# ndexcon = ndex.connect('MyAccountName', 'MyPassword')
+## Find user and get its id
+# user = ndex.find.user.byName(ndexcon, 'MyAccountName')
+# userId = user$externalId
+## Find the user's groups and get one group id
+# groups = ndex.user.list.groups(ndexcon, userId)
+# groupId = groups[1,"externalId"]
+## Update the group
+# ndex.update.group(ndexcon, groupId, description='A really nice group!')
+NULL
 }

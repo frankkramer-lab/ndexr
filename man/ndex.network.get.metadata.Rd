@@ -7,7 +7,7 @@
 ndex.network.get.metadata(ndexcon, networkId)
 }
 \arguments{
-\item{ndexcon}{object of class NDEXConnection}
+\item{ndexcon}{object of class NDEXConnection link{ndex.connect}}
 
 \item{networkId}{character; unique ID (UUID) of the network}
 }
@@ -22,13 +22,15 @@ Compatible to NDEx server version 1.3 and 2.0, but doesn't work for version 1.3
 }
 \section{REST query}{
 
-GET: ndex.api.config$api$network$aspect$getMetaData
+GET: ndex.conf$api$network$aspect$getMetaData
 }
 
 \examples{
-\dontrun{
-ndexcon = ndex.connect(verbose=T)
-pws = ndex.find.networks(ndexcon,"p53")
-ndex.network.get.metadata(ndexcon,pws[1,"externalId"]) 
-}
+## Establish a server connection
+ndexcon = ndex.connect()
+## Find a network and get its UUID
+networks = ndex.find.networks(ndexcon,"p53")
+networkId = networks[1,"externalId"]
+## Get the network meta-data
+ndex.network.get.metadata(ndexcon, networkId) 
 }

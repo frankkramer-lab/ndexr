@@ -7,7 +7,7 @@
 ndex.get.network(ndexcon, networkId)
 }
 \arguments{
-\item{ndexcon}{object of class NDEXConnection}
+\item{ndexcon}{object of class NDEXConnection link{ndex.connect}}
 
 \item{networkId}{unique ID of the network}
 }
@@ -15,9 +15,8 @@ ndex.get.network(ndexcon, networkId)
 \code{\link{RCX}} object
 }
 \description{
-Get complete network
-}
-\details{
+Returns the specified network as CX. 
+This is performed as a monolithic operation, so it is typically advisable for applications to first use the getNetworkSummary method to check the node and edge counts for a network before retrieving the network.
 Uses getEdges (this procedure will return complete network with all elements)
 Nodes use primary ID of the base term ('represents' element)
 Edges use primary ID of the base term ('predicate', or 'p' element)
@@ -28,12 +27,15 @@ Compatible to NDEx server version 1.3 and 2.0
 }
 \section{REST query}{
 
-GET: ndex.api.config$api$network$get
+GET: ndex.conf$api$network$get
 }
 
 \examples{
-\dontrun{
-ndexcon = ndex.connect(verbose=T)
-pws = ndex.find.networks(ndexcon,"p53")
-rcx = ndex.get.network(ndexcon,pws[1,"externalId"]) }
+## Establish a server connection
+ndexcon = ndex.connect()
+## Find a network and get its UUID
+networks = ndex.find.networks(ndexcon,"p53")
+networkId = networks[1,"externalId"]
+## Get the network data 
+rcx = ndex.get.network(ndexcon, networkId) 
 }

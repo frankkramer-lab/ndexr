@@ -7,7 +7,7 @@
 ndex.network.get.provenance(ndexcon, networkId)
 }
 \arguments{
-\item{ndexcon}{object of class NDEXConnection}
+\item{ndexcon}{object of class NDEXConnection link{ndex.connect}}
 
 \item{networkId}{unique ID of the network}
 }
@@ -22,13 +22,15 @@ Compatible to NDEx server version 1.3 and 2.0
 }
 \section{REST query}{
 
-GET: ndex.api.config$api$network$provenance$get
+GET: ndex.conf$api$network$provenance$get
 }
 
 \examples{
-\dontrun{
-ndexcon = ndex.connect('MyAccountName', 'MyPassword', verbose=T)
+## Establish a server connection
+ndexcon = ndex.connect()
+## Find a network and get its UUID
 networks = ndex.find.networks(ndexcon,"p53")
 networkId = networks[1,"externalId"]
-provenance = ndex.network.get.provenance(ndexcon, networkId) }
+## Get the network provenace
+provenance = ndex.network.get.provenance(ndexcon, networkId) 
 }

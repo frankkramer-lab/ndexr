@@ -7,7 +7,7 @@
 ndex.user.get.networksummary(ndexcon, userId)
 }
 \arguments{
-\item{ndexcon}{object of class NDEXConnection}
+\item{ndexcon}{object of class NDEXConnection link{ndex.connect}}
 
 \item{userId}{character; unique ID (UUID) of the user}
 }
@@ -19,23 +19,27 @@ This is a convenience function designed to support "My Account" pages in NDEx ap
 It returns a list of NetworkSummary objects to display.
 }
 \note{
+Requires an authorized user! (ndex.connect with credentials)
+
 Compatible to NDEx server version 2.0
 }
 \section{REST query}{
 
-GET: ndex.api.config$api$user$networksummary
+GET: ndex.conf$api$user$networksummary
 }
 
 \examples{
-\dontrun{
+## Establish a server connection with credentials 
+# ndexcon = ndex.connect('MyAccountName', 'MyPassword')
 ## get user by name to get UUID
-user = ndex.find.user.byName(ndexcon, 'some.ndex.account')
-
-networkSummary = ndex.user.get.networksummary(con, user$externalId)
-names(networkSummary)
+# user = ndex.find.user.byName(ndexcon, 'MyAccountName')
+# userId = user$externalId
+## get all network permissions of the user
+# networkSummary = ndex.user.get.networksummary(con, user$externalId)
+# names(networkSummary)
 ## [1] "ownerUUID"        "isReadOnly"       "subnetworkIds"    "errorMessage"     "isValid"         
 ## [6] "warnings"         "isShowcase"       "visibility"       "edgeCount"        "nodeCount"       
 ##[11] "uri"              "version"          "owner"            "name"             "properties"      
 ##[16] "description"      "externalId"       "isDeleted"        "modificationTime" "creationTime"
-}  
+NULL
 }

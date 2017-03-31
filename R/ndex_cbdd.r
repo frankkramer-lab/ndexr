@@ -19,11 +19,15 @@
 #' @param useNamespace string (optional) name of the namespace for nodes
 #' @return data.frame with two columns containing IDs of interacting nodes. Returns NULL if rcx object does not contain edge information.
 #' @examples 
-#' \dontrun{
-#' ndexcon = ndex.connect(verbose=T)
-#' pws = ndex.find.networks(ndexcon,"p53")
-#' rcx = ndex.get.network(ndexcon,pws[1,"externalId"]) 
-#' cbdd = cbdd.fromRCX(rcx)}
+#' ## Establish a server connection
+#' ndexcon = ndex.connect()
+#' ## Find a network and get its UUID
+#' networks = ndex.find.networks(ndexcon,"p53")
+#' networkId = networks[1,"externalId"]
+#' ## Get the network data 
+#' rcx = ndex.get.network(ndexcon, networkId) 
+#' ## Convert to cbbd
+#' cbdd = cbdd.fromRCX(rcx)
 #' @export
 cbdd.fromRCX <- function(rcx, useNamespace = NULL){
 
@@ -74,12 +78,17 @@ cbdd.fromRCX <- function(rcx, useNamespace = NULL){
 #' @param useNamespace string (optional) name of the namespace for nodes
 #' @return data.frame with two columns containing IDs of interacting nodes. Returns NULL if ngraph object does not contain edge information.
 #' @examples 
-#' \dontrun{
-#' ndexcon = ndex.connect(verbose=T)
-#' pws = ndex.find.networks(ndexcon,"p53")
-#' rcx = ndex.get.network(ndexcon,pws[1,"externalId"]) 
+#' ## Establish a server connection
+#' ndexcon = ndex.connect()
+#' ## Find a network and get its UUID
+#' networks = ndex.find.networks(ndexcon,"p53")
+#' networkId = networks[1,"externalId"]
+#' ## Get the network data 
+#' rcx = ndex.get.network(ndexcon, networkId) 
+#' ## Convert RCX to NGraph
 #' ngraph = ngraph.fromRCX(rcx) 
-#' cbdd = cbdd.fromNGraph(ngraph)}
+#' ## Convert NGraph to cbdd
+#' cbdd = cbdd.fromNGraph(ngraph)
 #' @export
 cbdd.fromNGraph <- function(ngraph, useNamespace = NULL){
   

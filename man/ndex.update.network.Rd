@@ -7,7 +7,7 @@
 ndex.update.network(ndexcon, rcx, networkId)
 }
 \arguments{
-\item{ndexcon}{object of class NDEXConnection}
+\item{ndexcon}{object of class NDEXConnection link{ndex.connect}}
 
 \item{rcx}{\code{\link{RCX}} object}
 
@@ -17,27 +17,31 @@ ndex.update.network(ndexcon, rcx, networkId)
 UUID of the updated network
 }
 \description{
-This method updates/replaces a existing network on the NDEx server with new content.
+This method updates/replaces a existing network on the NDEx server with new content from the given RCX object.
 The UUID can either be specified manually or it will be extracted from the RCX object (i.e. from rcx$ndexStatus$externalId).
 }
-\details{
-This method updates a network on the NDEx server with new content from the given RCX object
-}
 \note{
+Requires an authorized user! (ndex.connect with credentials)
+
 Compatible to NDEx server version 1.3 and 2.0
 }
 \section{REST query}{
 
-PUT (multipart/form-data): ndex.api.config$api$network$update$url
+PUT (multipart/form-data): ndex.conf$api$network$update$url
 data: CXNetworkStream = data
 }
 
 \examples{
-\dontrun{
-ndexcon = ndex.connect('MyAccountName', 'MyPassword', verbose=T)
-pws = ndex.find.networks(ndexcon,"p53")
-rcx = ndex.get.network(ndexcon,pws[1,"externalId"]) 
-## do some changes to rcx
-networkId = ndex.update.network(ndexcon, rcx, networkId)
-networkId = ndex.update.network(ndexcon, rcx) ## same as previous}
+## Establish a server connections with credentials 
+# ndexcon = ndex.connect('MyAccountName', 'MyPassword')
+## Find one of your networks and get its UUID
+# networks = ndex.find.networks(ndexcon, accountName='MyAccountName')
+# networkId = networks[1,"externalId"]
+## Get the network data 
+# rcx = ndex.get.network(ndexcon, networkId) 
+## Do some changes to rcx..
+## and update the network
+# networkId = ndex.update.network(ndexcon, rcx, networkId)
+# networkId = ndex.update.network(ndexcon, rcx) ## same as previous
+NULL
 }

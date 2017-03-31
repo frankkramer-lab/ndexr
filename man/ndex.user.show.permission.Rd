@@ -7,7 +7,7 @@
 ndex.user.show.permission(ndexcon, userId, networkId, directonly = FALSE)
 }
 \arguments{
-\item{ndexcon}{object of class NDEXConnection}
+\item{ndexcon}{object of class NDEXConnection link{ndex.connect}}
 
 \item{userId}{character; unique ID (UUID) of the user}
 
@@ -22,22 +22,30 @@ List of permissions of that user ("READ"|"WRITE"|"ADMIN") or empty object
 Get the type(s) of permission assigned to the authenticated user for the specified network. Returns a map which maps a network UUID to the highest permission assigned to the authenticated user.
 }
 \note{
+Requires an authorized user! (ndex.connect with credentials)
+
 Compatible to NDEx server version 2.0
 }
 \section{REST query}{
 
-GET: ndex.api.config$api$user$permission$get
+GET: ndex.conf$api$user$permission$get
 }
 
 \examples{
-\dontrun{
+## Establish a server connection with credentials 
+# ndexcon = ndex.connect('MyAccountName', 'MyPassword')
 ## get user by name to get UUID
-user = ndex.find.user.byName(ndexcon, 'some.ndex.account')
-networkId = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
-
+# user = ndex.find.user.byName(ndexcon, 'MyAccountName')
+# userId = user$externalId
+## Find one of your networks and get its UUID
+# networks = ndex.find.networks(ndexcon, accountName='MyAccountName')
+# networkId = networks[1,"externalId"]
 ## get users's permission to a network
-networkPermissions = ndex.user.show.permission(ndexcon, user$externalId, networkId, directonly=TRUE)
-## $`aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee`
+# networkPermissions = ndex.user.show.permission(ndexcon, userId, networkId, directonly=TRUE)
+## $`nnneeett-wwww-oooo-rrrr-kkkkkkk11111`
 ## [1] "ADMIN"
+NULL
 }
+\seealso{
+\link{ndex.network.get.permission}
 }

@@ -23,23 +23,24 @@
 #' 
 #' @param username character (optional); username
 #' @param password character (optional); password
-#' @param host character (default: "apiConfig$connection$host"); Host address of NDEx server; By default the url set in apiConfig$defaults$connection$host is used. ("http://www.ndexbio.org")
-#' @param apiPath character (default: "apiConfig$connection$api"); URL path of the REST api; By default the url set in apiConfig$defaults$connection$api is used. ("http://www.ndexbio.org")
-#' @param apiConfig config object (nested list, default: ndex.api.conf); Configuration of NDEx REST server; Set in ndex.api.config (set in ndex_api_config.r or ndex_api_config.yml): It contains specifications for NDEx server api version 1.3 and 2.0. The default api is specified by 'defaultVersion'
+#' @param host character (default: "ndexConf$connection$host"); Host address of NDEx server; By default the url set in ndexConf$defaults$connection$host is used. ("http://www.ndexbio.org")
+#' @param apiPath character (default: "ndexConf$connection$api"); URL path of the REST api; By default the url set in ndexConf$defaults$connection$api is used. ("http://www.ndexbio.org")
+#' @param ndexConf config object (nested list, default: ndex.conf); Configuration of NDEx REST server; Set in ndex.conf (set in ndex_api_config.r or ndex_api_config.yml): It contains specifications for NDEx server api version 1.3 and 2.0. The default api is specified by 'defaultVersion'
 #' @param verbose logical (optional); whether to print out extended feedback 
 #' 
 #' @return returns object of class NDEXConnection which stores options, authentication and api configuration if successfull, NULL otherwise
 #' 
 #' @examples
-#' \dontrun{ndexcon = ndex.connect()   ## log in anonymously
-#' ndexcon = ndex.connect(verbose=T)   ## same as above
+#' ndexcon = ndex.connect()   ## log in anonymously
+#' ndexcon = ndex.connect(verbose=TRUE)   ## same as above with extended feedback
+#' \dontrun{
 #' ndexcon = ndex.connect('user','password')   ## log in with credentials
 #' ndexcon = ndex.connect(host='localhost:8765')   ## running some NDEx server locally
-#' ndexcon = ndex.connect(apiConfig=ndex.api.config$Version2.0)   ## manually change the api and connection configuration
+#' ndexcon = ndex.connect(ndexConf=ndex.conf$Version_2.0)   ## manually change the api and connection configuration
 #' }
-#' @seealso  \code{\link{ndex.api.config}}, \code{\link{updateConfigFromYaml}}
+#' @seealso  \code{\link{ndex.conf}}, \code{\link{updateConfigFromYaml}}
 #' @export
-ndex.connect <- function(username, password, host = "apiConfig$connection$host", apiPath = 'apiConfig$connection$api', apiConfig=ndex.api.config, verbose = FALSE){
+ndex.connect <- function(username, password, host = "ndexConf$connection$host", apiPath = 'ndexConf$connection$api', ndexConf=ndex.conf, verbose = FALSE){
 
   ##Check parameters and set defaults by config
   credentials = TRUE
@@ -48,21 +49,21 @@ ndex.connect <- function(username, password, host = "apiConfig$connection$host",
     credentials = FALSE
   }
   
-  if(missing(apiConfig)){
-    defaultVersion = apiConfig$defaultVersion
-    apiConfig=apiConfig[[defaultVersion]]
-    if(verbose) message(paste("ndex.connect: apiConfig not specified, using default version ", apiConfig$version, " [", defaultVersion, "]" ))
+  if(missing(ndexConf)||('defaultVersion' %in% names(ndexConf))){
+    defaultVersion = ndexConf$defaultVersion
+    ndexConf=ndexConf[[defaultVersion]]
+    if(verbose) message(paste("ndex.connect: ndexConf not specified, using default version ", ndexConf$version, " [", defaultVersion, "]" ))
   } else {
-    if(verbose) message(paste("ndex.connect: Using apiConfig for version ", apiConfig$version))
+    if(verbose) message(paste("ndex.connect: Using ndexConf for version ", ndexConf$version))
   }
   
   if(missing(apiPath)){
-      apiPath = apiConfig$connection$api
+      apiPath = ndexConf$connection$api
       if(verbose) message(paste("ndex.connect: apiPath not specified, using default: [", apiPath, "]" ))
   }
   
   if(missing(host)){
-      host = paste0(apiConfig$connection$host, apiPath)
+      host = paste0(ndexConf$connection$host, apiPath)
       if(verbose) message(paste("ndex.connect: Host not specified, using default: [", host, "]" ))
   } else {
       host = paste0(host, apiPath)
@@ -72,7 +73,7 @@ ndex.connect <- function(username, password, host = "apiConfig$connection$host",
   ##Setup server connection, with and without credentials
   ##Check if server is available
   auth_param = NULL
-  api = ndex.helper.getApi(list(apiConfig=apiConfig), 'serverStatus')
+  api = ndex.helper.getApi(list(ndexConf=ndexConf), 'serverStatus')
   route <- ndex.helper.encodeParams(api$url, api$params)
   url <- paste0(host, route)
   log_txt = paste0("ndex.connect: Tried to check the server status of [", host, "]")
@@ -85,7 +86,7 @@ ndex.connect <- function(username, password, host = "apiConfig$connection$host",
   
   ##Checkt the provided credentials
   if (credentials){
-      api = ndex.helper.getApi(list(apiConfig=apiConfig), 'user$authenticate')
+      api = ndex.helper.getApi(list(ndexConf=ndexConf), 'user$authenticate')
       route <- ndex.helper.encodeParams(api$url, api$params)
       url <- paste0(host, route)
       auth_param = httr::authenticate(username, password)
@@ -98,9 +99,9 @@ ndex.connect <- function(username, password, host = "apiConfig$connection$host",
                          
   
   ##Create ndexcon object
-  ndexcon = list(anonymous=TRUE, host=host, apiConfig=apiConfig, verbose=verbose)
+  ndexcon = list(anonymous=TRUE, host=host, ndexConf=ndexConf, verbose=verbose)
   if(credentials) {
-    ndexcon$anonymous = F
+    ndexcon$anonymous = FALSE
     ndexcon$username = username
     ndexcon$password = password
   }
@@ -117,18 +118,22 @@ ndex.connect <- function(username, password, host = "apiConfig$connection$host",
 
 #' Generic GET query to API. 
 #' 
-#' This functions is internal.
+#' @note This function is internal.
 #' 
 #' @param ndexcon object of class NDEXConnection \code{\link{ndex.connect}}
 #' @param route Character (route to specific REST query)
 #' @param raw Specifies if server response should be returned in raw, or if jsonlite::fromJSON is called first. Defaults to FALSE.
+#' 
 #' @return JSON response from REST server, NULL if no valid JSON was received. if parameter raw is TRUE, the raw response is returned without a call to jsonlite::fromJSON.
+#' 
 #' @details Simply execute HTTP GET on URL host/route and fetch whatever data REST server returns 
 #' Making sure the route is well-formed is the job of calling function
 #' @seealso \code{\link{ndex_rest_GET}},  \code{\link{ndex_rest_POST}},  \code{\link{ndex_rest_PUT}} and \code{\link{ndex_rest_DELETE}}
+#' 
 #' @examples
+#' ## Establish a server connection
+#' ndexcon = ndex.connect()
 #' \dontrun{
-#' ndexcon = ndex.connect(verbose=T)
 #' ndex_rest_GET(ndexcon, "/networks/api")
 #' }
 ndex_rest_GET <- function(ndexcon, route, raw = FALSE){
@@ -152,22 +157,28 @@ ndex_rest_GET <- function(ndexcon, route, raw = FALSE){
 
 #' Generic POST query to API
 #' 
+#' @note This function is internal.
+#' 
 #' @param ndexcon object of class NDEXConnection \code{\link{ndex.connect}}
 #' @param route Character (route to specific REST query)
 #' @param data Whatever data to be supplied with query. Should be valid JSON
 #' @param multipart Whatever data to be supplied with query. Should be valid JSON
 #' @param raw Specifies if server response should be returned in raw, or if jsonlite::fromJSON is called first. Defaults to FALSE.
+#' 
 #' @return JSON response from REST server, NULL if no valid JSON was received. if parameter raw is TRUE, the raw response is returned without a call to jsonlite::fromJSON.
+#' 
 #' @details Simply execute HTTP POST on URL host/route and fetch whatever data REST server returns 
 #' Making sure the route is well-formed is the job of calling function
 #' Making sure the data is well-formed is also the job of calling function
 #' @seealso \code{\link{ndex_rest_GET}},  \code{\link{ndex_rest_POST}},  \code{\link{ndex_rest_PUT}} and \code{\link{ndex_rest_DELETE}}
+#' 
 #' @examples
+#' ## Establish a server connection
+#' ndexcon = ndex.connect()
 #' \dontrun{
-#' ndexcon = ndex.connect(verbose=T)
 #' ndex_rest_POST(ndexcon, "/networks/api", data)
-#' ndex_rest_POST(ndexcon, "/networks/api", data, raw=T)
-#' ndex_rest_POST(ndexcon, "/networks/api", list(some=data, other=data2), multipart=T)
+#' ndex_rest_POST(ndexcon, "/networks/api", data, raw=TRUE)
+#' ndex_rest_POST(ndexcon, "/networks/api", list(some=data, other=data2), multipart=TRUE)
 #' }
 ndex_rest_POST <- function(ndexcon, route, data, multipart = FALSE, raw = FALSE){
   url <- paste0(ndexcon$host, route)
@@ -194,24 +205,28 @@ ndex_rest_POST <- function(ndexcon, route, data, multipart = FALSE, raw = FALSE)
 
 #' Generic PUT query to API
 #' 
-#' This functions is internal.
+#' @note This function is internal.
 #' 
 #' @param ndexcon object of class NDEXConnection \code{\link{ndex.connect}}
 #' @param route Character (route to specific REST query)
 #' @param data Whatever data to be supplied with query. Should be valid JSON
 #' @param multipart Whatever data to be supplied with query. Should be valid JSON
 #' @param raw Specifies if server response should be returned in raw, or if jsonlite::fromJSON is called first. Defaults to FALSE.
+#' 
 #' @return JSON response from REST server, NULL if no valid JSON was received. if parameter raw is TRUE, the raw response is returned without a call to jsonlite::fromJSON.
+#' 
 #' @details Simply execute HTTP PUT on URL host/route and fetch whatever data REST server returns 
 #' Making sure the route is well-formed is the job of calling function
 #' Making sure the data is well-formed is also the job of calling function
 #' @seealso \code{\link{ndex_rest_GET}},  \code{\link{ndex_rest_POST}},  \code{\link{ndex_rest_PUT}} and \code{\link{ndex_rest_DELETE}}
+#' 
 #' @examples
+#' ## Establish a server connection
+#' ndexcon = ndex.connect()
 #' \dontrun{
-#' ndexcon = ndex.connect(verbose=T)
 #' ndex_rest_PUT(ndexcon, "/networks/api", data)
-#' ndex_rest_PUT(ndexcon, "/networks/api", data, raw=T)
-#' ndex_rest_PUT(ndexcon, "/networks/api", list(some=data, other=data2), multipart=T)
+#' ndex_rest_PUT(ndexcon, "/networks/api", data, raw=TRUE)
+#' ndex_rest_PUT(ndexcon, "/networks/api", list(some=data, other=data2), multipart=TRUE)
 #' }
 ndex_rest_PUT <- function(ndexcon, route, data=NULL, multipart = FALSE, raw = FALSE){
     url <- paste0(ndexcon$host, route)
@@ -236,20 +251,24 @@ ndex_rest_PUT <- function(ndexcon, route, data=NULL, multipart = FALSE, raw = FA
 }
 
 
-#' Generic GET query to API. 
+#' Generic DELETE query to API. 
 #' 
-#' This functions is internal.
+#' @note This function is internal.
 #' 
 #' @param ndexcon object of class NDEXConnection \code{\link{ndex.connect}}
 #' @param route Character (route to specific REST query)
 #' @param raw Specifies if server response should be returned in raw, or if jsonlite::fromJSON is called first. Defaults to FALSE.
+#' 
 #' @return JSON response from REST server, NULL if no valid JSON was received. if parameter raw is TRUE, the raw response is returned without a call to jsonlite::fromJSON.
+#' 
 #' @details Simply execute HTTP DELETE on URL host/route and fetch whatever data REST server returns 
 #' Making sure the route is well-formed is the job of calling function
 #' @seealso \code{\link{ndex_rest_GET}},  \code{\link{ndex_rest_POST}},  \code{\link{ndex_rest_PUT}} and \code{\link{ndex_rest_DELETE}}
+#' 
 #' @examples
+#' ## Establish a server connection
+#' ndexcon = ndex.connect()
 #' \dontrun{
-#' ndexcon = ndex.connect(verbose=T)
 #' ndex_rest_DELETE(ndexcon, "/networks/api")
 #' }
 ndex_rest_DELETE <- function(ndexcon, route, raw = FALSE){

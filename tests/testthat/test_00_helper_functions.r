@@ -80,7 +80,7 @@ test_that('Encode parameters in urls (ndex.helper.encodeParams)', {
 
 test_that('Get the right api object (ndex.helper.getApi)', {
   con = ndex.connect()
-  expect_identical(ndex.helper.getApi(con,'serverStatus'), con$apiConfig$api$serverStatus, info='The server status should work, else establishing an connection should have thrown an error!')
-  expect_identical(ndex.helper.getApi(con,'network$summary$get'), con$apiConfig$api$network$summary$get, info='Testing some more complex query..')
-  expect_error(ndex.helper.getApi(con,'network$aspect$create'), con$apiConfig$api$network$aspect$create, info='There should be no create function for aspects!!')
+  expect_identical(ndex.helper.getApi(con,'serverStatus'), con$ndexConf$api$serverStatus, info='The server status should work, else establishing an connection should have thrown an error!')
+  expect_identical(ndex.helper.getApi(con,'network$summary$get'), con$ndexConf$api$network$summary$get, info='Testing some more complex query..')
+  expect_error(ndex.helper.getApi(con,'network$aspect$create'), con$ndexConf$api$network$aspect$create, info='There should be no create function for aspects!!')
 })

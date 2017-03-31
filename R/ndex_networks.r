@@ -26,7 +26,7 @@
 #' This functions searches the public networks on an NDEx server for networks containing the supplied search string. T
 #' his search can be limited to certain accounts as well as in length.
 #' 
-#' @param ndexcon object of class NDEXConnection
+#' @param ndexcon object of class NDEXConnection link{ndex.connect}
 #' @param searchString string by which to search
 #' @param accountName string (optional); constrain search to networks administered by this account
 #' @param start integer (optional); specifies that the result is the nth page of the requested data. The default value is 0
@@ -35,7 +35,7 @@
 #' @return Data frame with network information: ID, name, whether it is public, edge and node count; source and format of network. NULL if no networks are found.
 #' 
 #' @section REST query:
-#' GET: ndex.api.config$api$search$network$search
+#' GET: ndex.conf$api$search$network$search
 #' @note Compatible to NDEx server version 1.3 and 2.0
 #' @note Search strings may be structured
 #' 
@@ -53,7 +53,7 @@ ndex.find.networks <- function(ndexcon, searchString="", accountName, start, siz
   if (!missing(accountName)){
     query$accountName=accountName
   }
-  query <- jsonlite::toJSON(query, auto_unbox = T)
+  query <- jsonlite::toJSON(query, auto_unbox = TRUE)
   
   ##Form route
   ## ToDo: somehow the 1.3 api changed?! old version:

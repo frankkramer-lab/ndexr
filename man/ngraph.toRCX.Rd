@@ -28,20 +28,17 @@ The following rules apply to convert from \code{\link{ngraph}} to \code{\link{RC
 }
 }
 \examples{
-\dontrun{
-ndexcon = ndex.connect(verbose=T)
-pws = ndex.find.networks(ndexcon,"p53")
-rcx = ndex.get.network(ndexcon,pws[1,"externalId"]) 
-ngraph = ngraph.fromRCX(rcx) 
-rcxback = ngraph.toRCX(ngraph)
-
-#test equalness
-for(i in names(rcx)) {
-cat(i)
-cat(all.equal(rcx[[i]], rcxback[[i]]))
-cat("\\n")
-}
-}
+## Establish a server connection with credentials 
+# ndexcon = ndex.connect('MyAccountName', 'MyPassword')
+## Find one of your networks and get its UUID
+# networks = ndex.find.networks(ndexcon, accountName='MyAccountName')
+# networkId = networks[1,"externalId"]
+## Get the network data 
+rcx = ndex.get.network(ndexcon, networkId) 
+## Convert to nGraph
+ngraph = rcx.toNGraph(rcx) 
+## Convert it back to rcx
+rcx = ngraph.toRCX(ngraph)
 }
 \seealso{
 \code{\link{ngraph}} \code{\link{ngraph.fromRCX}} \code{\link{rcx.fromJSON}} \code{\link{rcx.toJSON}}

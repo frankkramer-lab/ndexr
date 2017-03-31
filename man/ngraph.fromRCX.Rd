@@ -57,14 +57,15 @@ An ngraph object could look like this:\cr
 }
 }
 \examples{
-\dontrun{
-ndexcon = ndex.connect(verbose=T)
-pws = ndex.find.networks(ndexcon,"p53")
-rcx = ndex.get.network(ndexcon,pws[1,"externalId"]) 
-rcx$edges
+## Establish a server connection with credentials 
+# ndexcon = ndex.connect('MyAccountName', 'MyPassword')
+## Find one of your networks and get its UUID
+# networks = ndex.find.networks(ndexcon, accountName='MyAccountName')
+# networkId = networks[1,"externalId"]
+## Get the network data 
+rcx = ndex.get.network(ndexcon, networkId) 
+## Convert to nGraph
 ngraph = ngraph.fromRCX(rcx) 
-ngraph
-E(ngraph) }
 }
 \seealso{
 \code{\link{ngraph.toRCX}} \code{\link{rcx.fromJSON}} \code{\link{rcx.toJSON}} \code{\link{RCX}} \code{\link[igraph]{igraph}}
