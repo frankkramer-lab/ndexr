@@ -35,7 +35,7 @@ groups = ndex.find.groups(ndexcon,"Ideker Lab")
 groupId = groups[1,"externalId"]
 ## List networks of the group
 networks = ndex.group.list.networks(ndexcon, groupId)
-networkId = networks[1,"externalId"]
+networkId = names(networks)[1]
 ## Get group's permission to the network
-group = ndex.group.network.get.permission(ndexcon, groupId, networkId)
+#group = ndex.group.network.get.permission(ndexcon, groupId, networkId)
 }

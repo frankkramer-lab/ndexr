@@ -52,28 +52,28 @@ ndex.network.get.provenance <- function(ndexcon, networkId){
 ##   Experimental and unfinished
 ####################################################
 
-##' Set Network Provenance    
-##' 
-##' Updates the 'provenance' field of the network specified by 'networkId' to be the ProvenanceEntity object in the PUT data. The ProvenanceEntity object is expected to represent the current state of the network and to contain a tree-structure of ProvenanceEvent and ProvenanceEntity objects that describe the networks provenance history.
-##' 
-##' @param ndexcon object of class NDEXConnection link{ndex.connect}
-##' @param networkId character; unique ID (UUID) of the network
-##' @param provenance NDEx provanance object
-##' 
-##' @return List of network metadata: ID, name, whether it is public, edge and node count; source and format of network
-##' 
-##' @section REST query:
-##' GET: ndex.conf$api$network$provenance$get
-##' @note Compatible to NDEx server version 1.3 and 2.0
-##' 
-##' @examples 
-##' \dontrun{
-##' ndexcon = ndex.connect('MyAccountName', 'MyPassword', verbose=T)
-##' networks = ndex.find.networks(ndexcon,"p53")
-##' networkId = networks[1,"externalId"]
-##' provenance = ndex.network.set.provenance(ndexcon, networkId, provenance) 
-##' }
-##' NULL
+## Set Network Provenance    
+## 
+## Updates the 'provenance' field of the network specified by 'networkId' to be the ProvenanceEntity object in the PUT data. The ProvenanceEntity object is expected to represent the current state of the network and to contain a tree-structure of ProvenanceEvent and ProvenanceEntity objects that describe the networks provenance history.
+## 
+## @param ndexcon object of class NDEXConnection link{ndex.connect}
+## @param networkId character; unique ID (UUID) of the network
+## @param provenance NDEx provanance object
+## 
+## @return List of network metadata: ID, name, whether it is public, edge and node count; source and format of network
+## 
+## @section REST query:
+## GET: ndex.conf$api$network$provenance$get
+## @note Compatible to NDEx server version 1.3 and 2.0
+## 
+## @examples 
+## \dontrun{
+## ndexcon = ndex.connect('MyAccountName', 'MyPassword', verbose=T)
+## networks = ndex.find.networks(ndexcon,"p53")
+## networkId = networks[1,"externalId"]
+## provenance = ndex.network.set.provenance(ndexcon, networkId, provenance) 
+## }
+## NULL
 #ndex.network.set.provenance <- function(ndexcon, networkId, provenance){    
 ## TODO! : Implement! Needs some way to construct ProvenanceEntity and ProvenanceEvent objects (see http://www.home.ndexbio.org/network-provenance-history/ ). How to encode merge in JSON/R?
 #    
@@ -89,19 +89,19 @@ ndex.network.get.provenance <- function(ndexcon, networkId){
 #}
 #
 #
-##' Create Network Provenance Event
-##'
-##' @param inputs array of ProvenanceEntity objects - Has semantics of PROV:used
-##' @param startedAtTime timestamp - Has semantics of PROV:startingAtTime
-##' @param endedAtTime timestamp - Has semantics of PROV:endingAtTime
-##' @param eventType name or description of the event (e.g. "File Upload")
-##' @param property.name array of names for name-value pairs
-##' @param property.value array of values for name-value pairs
-##' 
-##' @return Network ProvenanceEvent Object
-##' @examples 
-##' \dontrun{}
-##' NULL
+## Create Network Provenance Event
+##
+## @param inputs array of ProvenanceEntity objects - Has semantics of PROV:used
+## @param startedAtTime timestamp - Has semantics of PROV:startingAtTime
+## @param endedAtTime timestamp - Has semantics of PROV:endingAtTime
+## @param eventType name or description of the event (e.g. "File Upload")
+## @param property.name array of names for name-value pairs
+## @param property.value array of values for name-value pairs
+## 
+## @return Network ProvenanceEvent Object
+## @examples 
+## \dontrun{}
+## NULL
 #ndex.create.provenance.event <- function(inputs=NA, startedAtTime, endedAtTime, eventType, property.name, property.value){
 #    event = data.frame(inputs=inputs, startedAtTime=startedAtTime, endedAtTime=endedAtTime, eventType=eventType, properties=NA)
 #    event$properties = as.list(event$properties)
@@ -110,17 +110,17 @@ ndex.network.get.provenance <- function(ndexcon, networkId){
 #}
 #
 #
-##' Create Network Provenance Entity
-##'
-##' @param uri URI of the resource described by the ProvenanceEntity. This field will not be set in some cases, such as a file upload or an algorithmic event that generates a network without a prior network as input.
-##' @param creationEvent ProvenanceEvent - Has semantics of PROV:wasGeneratedBy
-##' @param property.name array of names for name-value pairs
-##' @param property.value array of values for name-value pairs
-##' 
-##' @return Network ProvenanceEntity Object
-##' @examples 
-##' \dontrun{}
-##' NULL
+## Create Network Provenance Entity
+##
+## @param uri URI of the resource described by the ProvenanceEntity. This field will not be set in some cases, such as a file upload or an algorithmic event that generates a network without a prior network as input.
+## @param creationEvent ProvenanceEvent - Has semantics of PROV:wasGeneratedBy
+## @param property.name array of names for name-value pairs
+## @param property.value array of values for name-value pairs
+## 
+## @return Network ProvenanceEntity Object
+## @examples 
+## \dontrun{}
+## NULL
 #ndex.create.provenance.entity <- function(uri=NA, creationEvent, property.name, property.value){
 #    entity = data.frame(uri=uri, creationEvent=NA, properties=NA)
 #    entity$creationEvent = as.list(entity$creationEvent)
@@ -130,12 +130,12 @@ ndex.network.get.provenance <- function(ndexcon, networkId){
 #    return(entity)
 #}
 #
-##' Create a default Network ProvenanceEntity object for upload
-##'
-##' @return Network ProvenanceEntity Object
-##' @examples 
-##' \dontrun{}
-##' NULL
+## Create a default Network ProvenanceEntity object for upload
+##
+## @return Network ProvenanceEntity Object
+## @examples 
+## \dontrun{}
+## NULL
 #ndex.create.provenance.entity.upload <- function(){
 ##ProvenanceEntity : data.frame
 ##    uri : String

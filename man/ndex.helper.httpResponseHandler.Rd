@@ -23,5 +23,5 @@ This function handles the response from a server. If some response code differen
 This function is internal.
 }
 \examples{
-ndex.helper.httpResponseHandler(httr::GET('http://www.ndexbio.org'), 'Tried to connect to NDEx server', TRUE)
+ndexr:::ndex.helper.httpResponseHandler(httr::GET('http://www.ndexbio.org'), 'Tried to connect to NDEx server', TRUE)
 }

@@ -33,7 +33,7 @@ GET: ndex.conf$api$network$aspect$getMetaDataByName
 ## Establish a server connection
 ndexcon = ndex.connect()
 ## Find a network and get its UUID
-networks = ndex.find.networks(ndexcon,"p53")
+networks = ndex.find.networks(ndexcon)
 networkId = networks[1,"externalId"]
 ## Get the aspect of a network
 aspect = ndex.network.get.aspect(ndexcon, networkId, 'nodeAttributes')

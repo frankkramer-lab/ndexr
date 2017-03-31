@@ -28,15 +28,15 @@ The following rules apply to convert from \code{\link{ngraph}} to \code{\link{RC
 }
 }
 \examples{
-## Establish a server connection with credentials 
-# ndexcon = ndex.connect('MyAccountName', 'MyPassword')
+## Establish a server connection
+ndexcon = ndex.connect()
 ## Find one of your networks and get its UUID
-# networks = ndex.find.networks(ndexcon, accountName='MyAccountName')
-# networkId = networks[1,"externalId"]
+networks = ndex.find.networks(ndexcon)
+networkId = networks[1,"externalId"]
 ## Get the network data 
 rcx = ndex.get.network(ndexcon, networkId) 
 ## Convert to nGraph
-ngraph = rcx.toNGraph(rcx) 
+ngraph = ngraph.fromRCX(rcx) 
 ## Convert it back to rcx
 rcx = ngraph.toRCX(ngraph)
 }

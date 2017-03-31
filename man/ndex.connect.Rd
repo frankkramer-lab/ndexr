@@ -38,5 +38,5 @@ ndexcon = ndex.connect(ndexConf=ndex.conf$Version_2.0)   ## manually change the 
 }
 }
 \seealso{
-\code{\link{ndex.conf}}, \code{\link{updateConfigFromYaml}}
+\code{\link{ndex.conf}}
 }

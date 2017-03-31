@@ -28,7 +28,7 @@ networkId = networks[1,"externalId"]
 ## Get the network data 
 rcx = ndex.get.network(ndexcon, networkId)
 ## Convert RCX aspect to JSON
-rcxNodesJson = rcx.aspect.toJSON(rcx$nodes)
+rcxNodesJson = ndexr:::rcx.aspect.toJSON(rcx$nodes)
 }
 \seealso{
 \code{\link{rcx.toJSON}} and \code{\link{rcx.fromJSON}}

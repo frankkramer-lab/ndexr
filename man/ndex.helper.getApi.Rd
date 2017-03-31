@@ -26,5 +26,5 @@ This function is internal.
 ndexcon = ndex.connect()
 ## Get the function definition for ndex.network.get.summary
 ## ndex.conf[[ndex.conf$defaultVersion]]$api$network$summary$get
-ndex.helper.getApi(ndexcon, 'network$summary$get')
+ndexr:::ndex.helper.getApi(ndexcon, 'network$summary$get')
 }

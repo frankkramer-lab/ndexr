@@ -2,7 +2,7 @@
 % Please edit documentation in R/ndex_networks_ndex_properties.r
 \name{ndex.network.update.profile}
 \alias{ndex.network.update.profile}
-\title{Get Network Sample}
+\title{Update Network Profile}
 \usage{
 ndex.network.update.profile(ndexcon, networkId, name = NULL,
   description = NULL, version = NULL)
@@ -10,35 +10,19 @@ ndex.network.update.profile(ndexcon, networkId, name = NULL,
 \arguments{
 \item{ndexcon}{object of class NDEXConnection link{ndex.connect}}
 
-\item{networkId}{character; unique ID (UUID) of the network}
+\item{networkId}{unique ID of the network}
 
 \item{name}{character (optional); Changes the name the network. At least one of name, description or version have to be set!}
 
 \item{description}{character (optional); Changes the description the network. At least one of name, description or version have to be set!}
 
 \item{version}{character (optional); Changes the version the network. At least one of name, description or version have to be set!}
-
-\item{ndexcon}{object of class NDEXConnection link{ndex.connect}}
-
-\item{networkId}{character; unique ID (UUID) of the network}
-
-\item{ndexcon}{object of class NDEXConnection link{ndex.connect}}
-
-\item{networkId}{unique ID of the network}
 }
 \value{
-Network sample            
-Set Sample Network
-
-NULL on success        
-Update Network Profile    
-
-Updates the profile information of the network. Any profile attributes specified will be updated but attributes that are not specified will have no effect - omission of an attribute does not mean deletion of that attribute.
-
 NULL on success; Error else
 }
 \description{
-Get Network Sample
+Updates the profile information of the network. Any profile attributes specified will be updated but attributes that are not specified will have no effect - omission of an attribute does not mean deletion of that attribute.
 }
 \note{
 Requires an authorized user! (ndex.connect with credentials)

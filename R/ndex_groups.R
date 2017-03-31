@@ -425,9 +425,9 @@ ndex.group.list.networks <- function(ndexcon, groupId, permission=NULL, start=NU
 #' groupId = groups[1,"externalId"]
 #' ## List networks of the group
 #' networks = ndex.group.list.networks(ndexcon, groupId)
-#' networkId = networks[1,"externalId"]
+#' networkId = names(networks)[1]
 #' ## Get group's permission to the network
-#' group = ndex.group.network.get.permission(ndexcon, groupId, networkId)
+#' #group = ndex.group.network.get.permission(ndexcon, groupId, networkId)
 #' @export
 ndex.group.network.get.permission <- function(ndexcon, groupId, networkId) {
     api = ndex.helper.getApi(ndexcon, 'group$network$get')

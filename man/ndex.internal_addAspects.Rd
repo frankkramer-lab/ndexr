@@ -19,3 +19,6 @@ returns object of class ngraph
 \description{
 ndex.internal_addAspects
 }
+\examples{
+NULL
+}

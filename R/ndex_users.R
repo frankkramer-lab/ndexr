@@ -622,7 +622,7 @@ ndex.user.list.permissions <- function(ndexcon, userId, type=NULL, directonly=FA
 #' user = ndex.find.user.byName(ndexcon, 'ndextutorials')
 #' userId = user$externalId
 #' ## get all network permissions of the user
-#' showcase = ndex.user.get.showcase(con, userId)
+#' showcase = ndex.user.get.showcase(ndexcon, userId)
 #' names(showcase)
 #' ## [1] "ownerUUID"        "isReadOnly"       "subnetworkIds"    "errorMessage"     "isValid"         
 #' ## [6] "warnings"         "isShowcase"       "visibility"       "edgeCount"        "nodeCount"       

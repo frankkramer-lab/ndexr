@@ -16,7 +16,7 @@
 #' Default header for the ndex.conf.r file
 #' @note only for package maintenance!
 #' @examples
-#' ndex.conf.header
+#' NULL
 ndex.conf.header = paste0(    "################################################################################\n",
                                 "## Authors:\n",
                                 "##   Florian Auer [florian.auer@med.uni-goettingen.de]\n",

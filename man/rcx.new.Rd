@@ -20,7 +20,7 @@ Ids have to be unique (in nodes) and may not contain 'NA' values. For names and 
 rcx = rcx.new()
 rcx = rcx.new(c('@id'=1))                                #same as one before
 rcx = rcx.new(nodes=c('@id'=1))                          #same as one before
-rcx = rcx.new(data.frame('@id'=c(1)), check.names=FALSE)     #same as one before
+rcx = rcx.new(data.frame('@id'=c(1), check.names=FALSE))     #same as one before
 rcx = rcx.new(c('@id'=1, n='Some Name'))
 rcx = rcx.new(c('@id'=1, n='Some Name', r='HGNC:Symbol'))
 rcx = rcx.new(data.frame('@id'=c(1),n=c('Some Name'), r=c('HGNC:Symbol'), check.names=FALSE))    #same as one before

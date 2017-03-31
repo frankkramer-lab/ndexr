@@ -15,6 +15,6 @@ Default header for the ndex.conf.r file
 only for package maintenance!
 }
 \examples{
-ndex.conf.header
+NULL
 }
 \keyword{datasets}

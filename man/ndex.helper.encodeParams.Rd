@@ -39,31 +39,31 @@ This function is internal.
 url = "http://en.wikipedia.org/#NETWORKID#/index.php"
 params = list(    network=list(    tag="#NETWORKID#", method="replace"))
 values = c(network='aaaa-bb-cc-dddddd', bla='This is not used!')
-ndex.helper.encodeParams(url, params=params, values)
+ndexr:::ndex.helper.encodeParams(url, params=params, values)
 ## "http://en.wikipedia.org/aaaa-bb-cc-dddddd/index.php"
 
 params = list(    network=list(    tag="#NETWORKID#", method="replace", default="xxxx-xx-xx-xxxxxx"))
 values = c(bla='This is not used!')
-ndex.helper.encodeParams(url, params=params, values)
+ndexr:::ndex.helper.encodeParams(url, params=params, values)
 ## "http://en.wikipedia.org/xxxx-xx-xx-xxxxxx/index.php"
  
 ## parameter
 url = "http://en.wikipedia.org/w/index.php"
 params = list(    network=list(    tag="network", method="parameter"))
 values = c(network='aaaa-bb-cc-dddddd', bla='This is not used!')
-ndex.helper.encodeParams(url, params=params, values)
+ndexr:::ndex.helper.encodeParams(url, params=params, values)
 ## "http://en.wikipedia.org/w/index.php?network=aaaa-bb-cc-dddddd"
   
 values = c(bla='This is not used!')
 params = list(    network=list(    tag="network", method="parameter", optional=TRUE))
-ndex.helper.encodeParams(url, params=params, values)
+ndexr:::ndex.helper.encodeParams(url, params=params, values)
 ## "http://en.wikipedia.org/w/index.php"
   
 params = list(    network=list(    tag="network", method="parameter", default="xxxx-xx-xx-xxxxxx"))
-ndex.helper.encodeParams(url, params=params, values)
+ndexr:::ndex.helper.encodeParams(url, params=params, values)
 ## "http://en.wikipedia.org/w/index.php?network=xxxx-xx-xx-xxxxxx"
   
-ndex.helper.encodeParams(url, params=params, values)
+ndexr:::ndex.helper.encodeParams(url, params=params, values)
 values = c(network='aaaa-bb-cc-dddddd', bla='This is not used!')
 ## "http://en.wikipedia.org/w/index.php?network=aaaa-bb-cc-dddddd"
   
@@ -71,19 +71,19 @@ values = c(network='aaaa-bb-cc-dddddd', bla='This is not used!')
 url = "http://en.wikipedia.org/w/index.php"
 params = list(    network=list(    method="append"))
 values = c(network='aaaa-bb-cc-dddddd', bla='This is not used!')
-ndex.helper.encodeParams(url, params=params, values)
+ndexr:::ndex.helper.encodeParams(url, params=params, values)
 ## "http://en.wikipedia.org/w/index.php/aaaa-bb-cc-dddddd"
   
 values = c(bla='This is not used!')
 params = list(    network=list(    method="append", optional=TRUE))
-ndex.helper.encodeParams(url, params=params, values)
+ndexr:::ndex.helper.encodeParams(url, params=params, values)
 ## "http://en.wikipedia.org/w/index.php"
   
 params = list(    network=list(    method="append", default="xxxx-xx-xx-xxxxxx"))
-ndex.helper.encodeParams(url, params=params, values)
+ndexr:::ndex.helper.encodeParams(url, params=params, values)
 ## "http://en.wikipedia.org/w/index.php/xxxx-xx-xx-xxxxxx"
   
 values = c(network='aaaa-bb-cc-dddddd', bla='This is not used!')
-ndex.helper.encodeParams(url, params=params, values)
+ndexr:::ndex.helper.encodeParams(url, params=params, values)
 ## "http://en.wikipedia.org/w/index.php/aaaa-bb-cc-dddddd"
 }

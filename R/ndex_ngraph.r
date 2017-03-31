@@ -59,11 +59,11 @@
 #' @seealso \code{\link{ngraph.toRCX}} \code{\link{rcx.fromJSON}} \code{\link{rcx.toJSON}} \code{\link{RCX}} \code{\link[igraph]{igraph}}   
 #' @aliases ngraph
 #' @examples 
-#' ## Establish a server connection with credentials 
-#' # ndexcon = ndex.connect('MyAccountName', 'MyPassword')
+#' ## Establish a server connection
+#' ndexcon = ndex.connect()
 #' ## Find one of your networks and get its UUID
-#' # networks = ndex.find.networks(ndexcon, accountName='MyAccountName')
-#' # networkId = networks[1,"externalId"]
+#' networks = ndex.find.networks(ndexcon)
+#' networkId = networks[1,"externalId"]
 #' ## Get the network data 
 #' rcx = ndex.get.network(ndexcon, networkId) 
 #' ## Convert to nGraph
@@ -128,11 +128,11 @@ ngraph.fromRCX <- function(rcx, verbose = FALSE){
 #' 
 #' @note Wrapper function for \code{\link{ngraph.fromRCX}}
 #' @examples 
-#' ## Establish a server connection with credentials 
-#' # ndexcon = ndex.connect('MyAccountName', 'MyPassword')
+#' ## Establish a server connection
+#' ndexcon = ndex.connect()
 #' ## Find one of your networks and get its UUID
-#' # networks = ndex.find.networks(ndexcon, accountName='MyAccountName')
-#' # networkId = networks[1,"externalId"]
+#' networks = ndex.find.networks(ndexcon)
+#' networkId = networks[1,"externalId"]
 #' ## Get the network data 
 #' rcx = ndex.get.network(ndexcon, networkId) 
 #' ## Convert to nGraph
@@ -147,6 +147,8 @@ rcx.toNGraph <- ngraph.fromRCX
 #' @param rcx RCX object
 #' @param verbose logical; whether to print out extended feedback 
 #' @return returns object of class ngraph
+#' @examples 
+#' NULL
 ndex.internal_addAspects <- function(ngraph, rcx, verbose = FALSE){
   
   ### add all non-core aspects to the graph:
@@ -187,15 +189,15 @@ ndex.internal_addAspects <- function(ngraph, rcx, verbose = FALSE){
 #' @return returns object of class RCX if successfull, NULL otherwise
 #' @seealso \code{\link{ngraph}} \code{\link{ngraph.fromRCX}} \code{\link{rcx.fromJSON}} \code{\link{rcx.toJSON}}   
 #' @examples 
-#' ## Establish a server connection with credentials 
-#' # ndexcon = ndex.connect('MyAccountName', 'MyPassword')
+#' ## Establish a server connection
+#' ndexcon = ndex.connect()
 #' ## Find one of your networks and get its UUID
-#' # networks = ndex.find.networks(ndexcon, accountName='MyAccountName')
-#' # networkId = networks[1,"externalId"]
+#' networks = ndex.find.networks(ndexcon)
+#' networkId = networks[1,"externalId"]
 #' ## Get the network data 
 #' rcx = ndex.get.network(ndexcon, networkId) 
 #' ## Convert to nGraph
-#' ngraph = rcx.toNGraph(rcx) 
+#' ngraph = ngraph.fromRCX(rcx) 
 #' ## Convert it back to rcx
 #' rcx = ngraph.toRCX(ngraph)
 #' @export

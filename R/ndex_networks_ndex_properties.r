@@ -170,9 +170,9 @@ ndex.network.update.permission <- function(ndexcon, networkId, user=NULL, group=
 #' # someUserUuid = "uuuuuuuu-ssss-eeee-rrrr-111111111111"
 #' # someGroupUuid = "ggggggg-rrrr-oooo-uuuu-pppppppppppp"
 #' ## Delete the permissions
-#' ndex.network.delete.permission(ndexcon, networkId, user=someUserUuid)    # returns 1
-#' ndex.network.delete.permission(ndexcon, networkId, user=someUserUuid)    # returns 0, because user already lost permission on network
-#' ndex.network.delete.permission(ndexcon, networkId, group=someGroupUuid)
+#' #ndex.network.delete.permission(ndexcon, networkId, user=someUserUuid)    # returns 1
+#' #ndex.network.delete.permission(ndexcon, networkId, user=someUserUuid)    # returns 0, because user already lost permission on network
+#' #ndex.network.delete.permission(ndexcon, networkId, group=someGroupUuid)
 #' NULL
 #' @export
 ndex.network.delete.permission <- function(ndexcon, networkId, user=NULL, group=NULL){
@@ -252,23 +252,23 @@ ndex.network.set.systemProperties <- function(ndexcon, networkId, readOnly=NULL,
 ## Network Samples
 ####################################################
 
-##' Get Network Sample
-##' 
-##' @param ndexcon object of class NDEXConnection link{ndex.connect}
-##' @param networkId character; unique ID (UUID) of the network
-##' 
-##' @return Network sample            
+## Get Network Sample
+## 
+## @param ndexcon object of class NDEXConnection link{ndex.connect}
+## @param networkId character; unique ID (UUID) of the network
+## 
+## @return Network sample            
 #ndex.network.get.samples <- function(ndexcon, networkId){    # TODO! : Implement!
 #    
 #}
 #
 #
-##' Set Sample Network    
-##' 
-##' @param ndexcon object of class NDEXConnection link{ndex.connect}
-##' @param networkId character; unique ID (UUID) of the network
-##' 
-##' @return NULL on success        
+## Set Sample Network    
+## 
+## @param ndexcon object of class NDEXConnection link{ndex.connect}
+## @param networkId character; unique ID (UUID) of the network
+## 
+## @return NULL on success        
 #ndex.network.set.samples <- function(ndexcon, networkId){    # TODO! : Implement!
 #    
 #}
@@ -330,12 +330,12 @@ ndex.network.update.profile <- function(ndexcon, networkId, name=NULL, descripti
 }
 
 
-##' Set Network Properties
-##' 
-##' @param ndexcon object of class NDEXConnection link{ndex.connect}
-##' @param networkId character; unique ID (UUID) of the network
-##' 
-##' @return NULL on success        
+## Set Network Properties
+## 
+## @param ndexcon object of class NDEXConnection link{ndex.connect}
+## @param networkId character; unique ID (UUID) of the network
+## 
+## @return NULL on success        
 #ndex.network.set.properties <- function(ndexcon, networkId){    # TODO! : Implement!
 #    
 #}

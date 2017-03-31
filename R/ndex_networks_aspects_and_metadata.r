@@ -102,7 +102,7 @@ ndex.network.aspect.get.metadata <- function(ndexcon, networkId, aspect){
 #' ## Establish a server connection
 #' ndexcon = ndex.connect()
 #' ## Find a network and get its UUID
-#' networks = ndex.find.networks(ndexcon,"p53")
+#' networks = ndex.find.networks(ndexcon)
 #' networkId = networks[1,"externalId"]
 #' ## Get the aspect of a network
 #' aspect = ndex.network.get.aspect(ndexcon, networkId, 'nodeAttributes')
@@ -143,7 +143,7 @@ ndex.network.get.aspect <- function(ndexcon, networkId, aspect, size){
 #' ## Get the network data 
 #' # aspect = ndex.network.get.aspect(ndexcon, networkId, 'nodeAttributes') 
 #' ## Do some changes to the aspect..
-#' aspectModified = aspect[1:5,]
+#' # aspectModified = aspect[1:5,]
 #' ## and update the aspect
 #' # ndex.network.update.aspect(ndexcon,pws[1,"externalId"], 'nodeAttributes', aspectModified)
 #' NULL

@@ -40,7 +40,7 @@ PUT: ndex.conf$api$network$aspect$update
 ## Get the network data 
 # aspect = ndex.network.get.aspect(ndexcon, networkId, 'nodeAttributes') 
 ## Do some changes to the aspect..
-aspectModified = aspect[1:5,]
+# aspectModified = aspect[1:5,]
 ## and update the aspect
 # ndex.network.update.aspect(ndexcon,pws[1,"externalId"], 'nodeAttributes', aspectModified)
 NULL

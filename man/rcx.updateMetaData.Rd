@@ -30,6 +30,14 @@ For a given RCX object the meta-data is updated, i.e. the counted elements and i
 If mandatory aspects (specified in mandatoryAspects parameter) are missing in the RCX object, an error is thrown.
 }
 \examples{
+## Establish a server connection
+ndexcon = ndex.connect()
+## Find a network and get its UUID
+networks = ndex.find.networks(ndexcon)
+networkId = networks[1,"externalId"]
+## Get the network data 
+rcx = ndex.get.network(ndexcon, networkId) 
+## update meta-data
 rcx = rcx.updateMetaData(rcx)
 # or with explicitly set default values
 rcx = rcx.updateMetaData(rcx, mandatoryAspects=c('nodes'), excludeAspects=c("metaData", "numberVerification", "status"), force=FALSE, verbose=FALSE)

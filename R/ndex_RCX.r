@@ -241,7 +241,7 @@ rcx.toJSON <- function(rcx, verbose = FALSE, pretty = FALSE){
 #' ## Get the network data 
 #' rcx = ndex.get.network(ndexcon, networkId)
 #' ## Convert RCX aspect to JSON
-#' rcxNodesJson = rcx.aspect.toJSON(rcx$nodes)
+#' rcxNodesJson = ndexr:::rcx.aspect.toJSON(rcx$nodes)
 rcx.aspect.toJSON <- function(rcxAspect, verbose = FALSE, pretty = FALSE){
     result = ''
     ## if any of the aspects has a datatype ('d') property, at least one of the datatypes is not of 'string' (default datatype).
@@ -331,7 +331,7 @@ rcx.asNewNetwork = function(rcx){
 #' rcx = rcx.new()
 #' rcx = rcx.new(c('@id'=1))                                #same as one before
 #' rcx = rcx.new(nodes=c('@id'=1))                          #same as one before
-#' rcx = rcx.new(data.frame('@id'=c(1)), check.names=FALSE)     #same as one before
+#' rcx = rcx.new(data.frame('@id'=c(1), check.names=FALSE))     #same as one before
 #' rcx = rcx.new(c('@id'=1, n='Some Name'))
 #' rcx = rcx.new(c('@id'=1, n='Some Name', r='HGNC:Symbol'))
 #' rcx = rcx.new(data.frame('@id'=c(1),n=c('Some Name'), r=c('HGNC:Symbol'), check.names=FALSE))    #same as one before
@@ -368,6 +368,14 @@ rcx.new = function(nodes=c('@id'=1)){
 #' If mandatory aspects (specified in mandatoryAspects parameter) are missing in the RCX object, an error is thrown.
 #' 
 #' @examples 
+#' ## Establish a server connection
+#' ndexcon = ndex.connect()
+#' ## Find a network and get its UUID
+#' networks = ndex.find.networks(ndexcon)
+#' networkId = networks[1,"externalId"]
+#' ## Get the network data 
+#' rcx = ndex.get.network(ndexcon, networkId) 
+#' ## update meta-data
 #' rcx = rcx.updateMetaData(rcx)
 #' # or with explicitly set default values
 #' rcx = rcx.updateMetaData(rcx, mandatoryAspects=c('nodes'), excludeAspects=c("metaData", "numberVerification", "status"), force=FALSE, verbose=FALSE)
