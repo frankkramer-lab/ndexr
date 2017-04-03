@@ -1,54 +1,99 @@
-##Authors:
-#   Alex Ishkin [aleksandr.ishkin@thomsonreuters.com]
-##Created: 6 June 2014
-# Contains functions to connect with CBDD
+################################################################################
+## Authors:
+##   Frank Kramer [frank.kramer@med.uni-goettingen.de]
+##
+## History:
+##   Created on 05 October 2016 by Kramer
+##     
+## Description:
+##   Base functions to create CBDD-like data from RCX and ngraph objects
+################################################################################
 
-#' Get basic network eligible for CBDD from \code{\link{ndexgraph}} object
+
+#' Create CBDD-like data from \code{\link{RCX}} object
 #' 
-#' @param g \code{\link{ndexgraph}} object
-#' @param useNamespace (optional) name of the namespace for nodes
-#' @return data frame with two columns containing IDs of interacting nodes
-#' @details
-#' By default, node IDs will be the references from the basic terms ('represents' component of Node)
-#' If useNamespace is supplied, function will try to reencode nodes with given namespace using aliases and related terms stored in \code{node_annot} slot of input
+#' Returns CBDD-like data as defined at https://cbdd.thomsonreuterslifesciences.com/cbdd/help_algorithms/
+#' The identifiers used are (in this order, if applicable) the namespace ids, the "r"epresents field, the "n"ame field or the @id field of the CX data
+#' 
+#' @param rcx \code{\link{RCX}} object
+#' @param useNamespace string (optional) name of the namespace for nodes
+#' @return data.frame with two columns containing IDs of interacting nodes. Returns NULL if rcx object does not contain edge information.
+#' @examples 
+#' ## Establish a server connection
+#' ndexcon = ndex.connect()
+#' ## Find a network and get its UUID
+#' networks = ndex.find.networks(ndexcon,"p53")
+#' networkId = networks[1,"externalId"]
+#' ## Get the network data 
+#' rcx = ndex.get.network(ndexcon, networkId) 
+#' ## Convert to cbbd
+#' cbdd = cbdd.fromRCX(rcx)
 #' @export
-ndexgraph2cbdd <- function(g, useNamespace){
-  if(class(g) != 'ndexgraph') stop("ndexgraph object expected")
+cbdd.fromRCX <- function(rcx, useNamespace = NULL){
+
+  if(!("RCX" %in% class(rcx))) stop("cbdd.fromRCX: supplied parameter rcx not of class RCX")
   
-  edges <- g@edges[,c('s', 'o')]
-  nodes <- g@nodes
-  
-  ##Reencode the numeric IDs with the default term IDs for nodes
-  #This may not make sense for complicated networks which contain tons of IDs from disparate namespaces
-  edges_annot <- data.frame(node1 = nodes$ref[match(edges$s, nodes$node_id)],
-                            node2 = nodes$ref[match(edges$o, nodes$node_id)],
-                            stringsAsFactors = FALSE)
-  
-  if(!missing(useNamespace)){
-    ##Check if this namespace exists
-    g_n <- unique(c(nodes$namespace_name, g@node_annot$namespace_name))
-    if(!useNamespace %in% g_n) stop("No such namespace")
-    ##Get all terms within this namespace
-    all_node_annot <- subset(g@node_annot, namespace_name == useNamespace)
-    idx_to_reannot <- !nodes$namespace_name %in% useNamespace
-    nodes_to_reannot <- nodes$node_id[idx_to_reannot]
-    ##Get all nodes which can in principle be reannotated
-    nodes_to_update <- intersect(nodes_to_reannot, all_node_annot$node_id)
-    cat(length(nodes_to_update), "nodes of", length(nodes_to_reannot), 
-        "can be reannotated in", useNamespace, "terms\n")
-    
-    cat(length(nodes_to_reannot) - length(nodes_to_update), "nodes lack", useNamespace, "terms\n")
-    new_annot <- subset(all_node_annot, node_id %in% nodes_to_update)
-    
-    ##Get positions of these nodes in edges
-    efrom.idx <- match(edges$s, new_annot$node_id)
-    
-    eto.idx <- match(edges$o, new_annot$node_id)
-    ##Replace node IDs in the found positions with refs from new_annot
-    edges_annot[!is.na(efrom.idx), 1] <- new_annot$ref[efrom.idx[!is.na(efrom.idx)]]
-    edges_annot[!is.na(eto.idx), 2] <- new_annot$ref[eto.idx[!is.na(eto.idx)]]
-    
+  if(is.null(rcx$edges) || dim(rcx$edges[,c("s","t")])[1] == 0) {
+    warning("cbdd.fromRCX: rcx object does not contain edge information. Returning NULL.")
+    return(NULL)
   }
   
-  return(edges_annot)
+  if("i" %in% colnames(rcx$edges)) { # if CX data contains interaction type information put this into mechanism column
+    cbdd <- rcx$edges[,c("s","t","i")]
+    colnames(cbdd) = c("node1","node2","mechanism")
+  } else {
+    cbdd <- rcx$edges[,c("s","t")]
+    colnames(cbdd) = c("node1","node2")
+  }
+  
+  ## reencode numeric ids
+  usedNamespace = FALSE
+  if(!is.null(useNamespace)) {
+    ## getting namespace info doesnt work atm
+    
+    usedNamespace = FALSE
+  }
+  
+  if(!usedNamespace) {
+    if ("r" %in% colnames(rcx$nodes)) {
+      cbdd$node1 = rcx$nodes$r[match(cbdd$node1, rcx$nodes[,"@id"])]
+      cbdd$node2 = rcx$nodes$r[match(cbdd$node2, rcx$nodes[,"@id"])]
+    } else if ("n" %in% colnames(rcx$nodes)) {
+      cbdd$node1 = rcx$nodes$n[match(cbdd$node1, rcx$nodes[,"@id"])]
+      cbdd$node2 = rcx$nodes$n[match(cbdd$node2, rcx$nodes[,"@id"])]
+    }
+  }
+
+  return(cbdd)
+}
+
+#' Create CBDD-like data from \code{\link{ngraph}} object
+#' 
+#' Returns CBDD-like data as defined at https://cbdd.thomsonreuterslifesciences.com/cbdd/help_algorithms/
+#' The identifiers used are (in this order, if applicable) the namespace ids, the "r"epresents field, the "n"ame field or the @id field of the CX data
+#' 
+#' Internally this function calls ngraph.toRCX and then cbdd.fromRCX.
+#' 
+#' @param ngraph \code{\link{ngraph}} object
+#' @param useNamespace string (optional) name of the namespace for nodes
+#' @return data.frame with two columns containing IDs of interacting nodes. Returns NULL if ngraph object does not contain edge information.
+#' @examples 
+#' ## Establish a server connection
+#' ndexcon = ndex.connect()
+#' ## Find a network and get its UUID
+#' networks = ndex.find.networks(ndexcon,"p53")
+#' networkId = networks[1,"externalId"]
+#' ## Get the network data 
+#' rcx = ndex.get.network(ndexcon, networkId) 
+#' ## Convert RCX to NGraph
+#' ngraph = ngraph.fromRCX(rcx) 
+#' ## Convert NGraph to cbdd
+#' cbdd = cbdd.fromNGraph(ngraph)
+#' @export
+cbdd.fromNGraph <- function(ngraph, useNamespace = NULL){
+  
+  if(!("igraph" %in% class(ngraph))) stop("cbdd.fromNGraph: supplied parameter ngraph not of class igraph or ngraph")
+  
+  return( cbdd.fromRCX(ngraph.toRCX(ngraph),useNamespace) )
+
 }
