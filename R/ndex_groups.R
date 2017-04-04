@@ -52,7 +52,7 @@ ndex.find.groups <- function(ndexcon, searchString="", start, size){
     
     ##Form JSON to post
     query = list(searchString=searchString)
-    query <- jsonlite::toJSON(query, auto_unbox = T)
+    query <- jsonlite::toJSON(query, auto_unbox = TRUE)
     
     ##Form route
     api = ndex.helper.getApi(ndexcon, 'search$group')
