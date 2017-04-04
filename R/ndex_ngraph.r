@@ -223,7 +223,7 @@ ngraph.toRCX <- function(ngraph, verbose = FALSE){
   if(!is.null(tmp$vertices) && dim(tmp$vertices)[1] > 0) {
     
     #nodes
-    tmp2 = as.data.frame(tmp$vertices[,"name"], stringsAsFactors=F, row.names = NULL)
+    tmp2 = as.data.frame(tmp$vertices[,"name"], stringsAsFactors=FALSE, row.names = NULL)
     colnames(tmp2) = c("@id")
     if("n" %in% colnames(tmp$vertices)) {
       tmp2$n = tmp$vertices$n
@@ -236,7 +236,7 @@ ngraph.toRCX <- function(ngraph, verbose = FALSE){
     #nodeAttributes
     sel = !(colnames(tmp$vertices) %in% c("name","@id","n","r"))
     if(any(sel)) {
-      tmp2 = as.data.frame(tmp$vertices[,"name"], stringsAsFactors=F, row.names = NULL)
+      tmp2 = as.data.frame(tmp$vertices[,"name"], stringsAsFactors=FALSE, row.names = NULL)
       colnames(tmp2) = c("po")
       tmp2 = as.data.frame(cbind(tmp2, tmp$vertices[,sel,drop=FALSE]), stringsAsFactors=FALSE)
       row.names(tmp2) = NULL
