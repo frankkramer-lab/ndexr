@@ -238,7 +238,7 @@ ngraph.toRCX <- function(ngraph, verbose = FALSE){
     if(any(sel)) {
       tmp2 = as.data.frame(tmp$vertices[,"name"], stringsAsFactors=F, row.names = NULL)
       colnames(tmp2) = c("po")
-      tmp2 = as.data.frame(cbind(tmp2, tmp$vertices[,sel,drop=FALSE]), stringsAsFactors=F)
+      tmp2 = as.data.frame(cbind(tmp2, tmp$vertices[,sel,drop=FALSE]), stringsAsFactors=FALSE)
       row.names(tmp2) = NULL
       tmp2 = tidyr::gather_(tmp2,"n","v",colnames(tmp$vertices)[sel])
       tmp2 = plyr::arrange(tmp2,po)
