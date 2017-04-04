@@ -82,56 +82,56 @@ test_that('Get network summary from server (ndex.network.get.summary)', {
 })
 
 
-test_that('Create, update and delete a network on the server (ndex.create.network, ndex.update.network, ndex.delete.network)', {
-    nms = names(ndex.conf)
-    apiVersions = nms[nms!='defaultVersion']
-    netColNames = c("ownerUUID", "isReadOnly", "visibility", "edgeCount", "nodeCount", "uri", "version", "owner", "description", "name", "externalId","modificationTime", "creationTime")
-  
-    con = ndex.connect()
-    expect_error(ndex.create.network(), info='No connection provided for creating a network')
-    expect_error(ndex.create.network(con), info='No CX object provided for creating a network')
-    expect_error(ndex.update.network(), info='No connection provided for updating a network')
-    expect_error(ndex.update.network(con), info='No CX object provided for updating a network')
-    expect_error(ndex.delete.network(), info='No connection provided for deleting a network')
-    expect_error(ndex.delete.network(con), info='No UUID provided for deleting a network')
-  
-#  networks = ndex.find.networks(con, accountName = 'ndextutorials')  ## public ndex account networks
-#  uuid = networks[1,'externalId']
-    uuid = ndexTestConf$uuidPublicNetwork
-      rcx = ndex.get.network(con, uuid)
-    networks = list()
-  
-    for(apiVersion in apiVersions){
-        api = ndex.conf[[apiVersion]]
-        con = ndex.connect(ndexTestConf$user, ndexTestConf$password, ndexConf = api)
-        rcx$networkAttributes[1,'v']=paste0('Testing CRUD (create) with testthat (api ', apiVersion, ')')
-
-        uuidCreated = ndex.create.network(con,rcx)
-        networks[[apiVersion]] = uuidCreated
-        expect_that(uuidCreated, matches('?[0-9abcdef]{8}-[0-9abcdef]{4}-[0-9abcdef]{4}-[0-9abcdef]{4}-[0-9abcdef]{12}$'), info=paste0('Validate the returned uuid of created network (api ', apiVersion, ')'))
-        
-        rcx$networkAttributes[1,'v']=paste0('Testing CRUD (update by manually set UUID) with testthat (api ', apiVersion, ')')
-        uuidUpdated =  ndex.update.network(con, rcx, uuidCreated)
-        expect_that(uuidUpdated, matches('?[0-9abcdef]{8}-[0-9abcdef]{4}-[0-9abcdef]{4}-[0-9abcdef]{4}-[0-9abcdef]{12}$'), info=paste0('Validate the returned uuid of updated network (api ', apiVersion, ')'))
-        
-        rcx$networkAttributes[1,'v']=paste0('Testing CRUD (update by rcx UUID) with testthat (api ', apiVersion, ')')
-        rcx$ndexStatus$externalId = uuidCreated
-        uuidUpdatedRcx =  ndex.update.network(con,rcx)
-        expect_that(uuidUpdatedRcx, matches('?[0-9abcdef]{8}-[0-9abcdef]{4}-[0-9abcdef]{4}-[0-9abcdef]{4}-[0-9abcdef]{12}$'), info=paste0('Validate the returned uuid of updated network by rcx (api ', apiVersion, ')'))
-        expect_equal(uuidCreated, uuidUpdated, info=paste0('Create and Update should have the same uuid (api ', apiVersion, ')'))
-        expect_equal(uuidUpdated, uuidUpdatedRcx, info=paste0('Update by rcx and manually set should have the same uuid (api ', apiVersion, ')'))
-    }
-    
-    sec = 10
-    cat(paste0('(wait ',sec,'sec)'))
-    Sys.sleep(sec)    ## Wait some time until the updating of the network on the server is done
-    
-    for(apiVersion in apiVersions){
-        api = ndex.conf[[apiVersion]]
-        con = ndex.connect(ndexTestConf$user, ndexTestConf$password, ndexConf = api)
-        
-        expect_null(ndex.delete.network(con, networks[[apiVersion]]), info=paste0('Returns NULL if network is successfully deleted (api ', apiVersion, ')'))
-        expect_error(ndex.delete.network(con, networks[[apiVersion]]), info=paste0('Deleting the same network again should throw an error (api ', apiVersion, ')'))
-        expect_error(ndex.delete.network(con, 'not-a-network-at-all'), info=paste0('Deleting the not existing network should throw an error (api ', apiVersion, ')'))
-    }
-})
+# test_that('Create, update and delete a network on the server (ndex.create.network, ndex.update.network, ndex.delete.network)', {
+#     nms = names(ndex.conf)
+#     apiVersions = nms[nms!='defaultVersion']
+#     netColNames = c("ownerUUID", "isReadOnly", "visibility", "edgeCount", "nodeCount", "uri", "version", "owner", "description", "name", "externalId","modificationTime", "creationTime")
+#   
+#     con = ndex.connect()
+#     expect_error(ndex.create.network(), info='No connection provided for creating a network')
+#     expect_error(ndex.create.network(con), info='No CX object provided for creating a network')
+#     expect_error(ndex.update.network(), info='No connection provided for updating a network')
+#     expect_error(ndex.update.network(con), info='No CX object provided for updating a network')
+#     expect_error(ndex.delete.network(), info='No connection provided for deleting a network')
+#     expect_error(ndex.delete.network(con), info='No UUID provided for deleting a network')
+#   
+# #  networks = ndex.find.networks(con, accountName = 'ndextutorials')  ## public ndex account networks
+# #  uuid = networks[1,'externalId']
+#     uuid = ndexTestConf$uuidPublicNetwork
+#       rcx = ndex.get.network(con, uuid)
+#     networks = list()
+#   
+#     for(apiVersion in apiVersions){
+#         api = ndex.conf[[apiVersion]]
+#         con = ndex.connect(ndexTestConf$user, ndexTestConf$password, ndexConf = api)
+#         rcx$networkAttributes[1,'v']=paste0('Testing CRUD (create) with testthat (api ', apiVersion, ')')
+# 
+#         uuidCreated = ndex.create.network(con,rcx)
+#         networks[[apiVersion]] = uuidCreated
+#         expect_that(uuidCreated, matches('?[0-9abcdef]{8}-[0-9abcdef]{4}-[0-9abcdef]{4}-[0-9abcdef]{4}-[0-9abcdef]{12}$'), info=paste0('Validate the returned uuid of created network (api ', apiVersion, ')'))
+#         
+#         rcx$networkAttributes[1,'v']=paste0('Testing CRUD (update by manually set UUID) with testthat (api ', apiVersion, ')')
+#         uuidUpdated =  ndex.update.network(con, rcx, uuidCreated)
+#         expect_that(uuidUpdated, matches('?[0-9abcdef]{8}-[0-9abcdef]{4}-[0-9abcdef]{4}-[0-9abcdef]{4}-[0-9abcdef]{12}$'), info=paste0('Validate the returned uuid of updated network (api ', apiVersion, ')'))
+#         
+#         rcx$networkAttributes[1,'v']=paste0('Testing CRUD (update by rcx UUID) with testthat (api ', apiVersion, ')')
+#         rcx$ndexStatus$externalId = uuidCreated
+#         uuidUpdatedRcx =  ndex.update.network(con,rcx)
+#         expect_that(uuidUpdatedRcx, matches('?[0-9abcdef]{8}-[0-9abcdef]{4}-[0-9abcdef]{4}-[0-9abcdef]{4}-[0-9abcdef]{12}$'), info=paste0('Validate the returned uuid of updated network by rcx (api ', apiVersion, ')'))
+#         expect_equal(uuidCreated, uuidUpdated, info=paste0('Create and Update should have the same uuid (api ', apiVersion, ')'))
+#         expect_equal(uuidUpdated, uuidUpdatedRcx, info=paste0('Update by rcx and manually set should have the same uuid (api ', apiVersion, ')'))
+#     }
+#     
+#     sec = 10
+#     cat(paste0('(wait ',sec,'sec)'))
+#     Sys.sleep(sec)    ## Wait some time until the updating of the network on the server is done
+#     
+#     for(apiVersion in apiVersions){
+#         api = ndex.conf[[apiVersion]]
+#         con = ndex.connect(ndexTestConf$user, ndexTestConf$password, ndexConf = api)
+#         
+#         expect_null(ndex.delete.network(con, networks[[apiVersion]]), info=paste0('Returns NULL if network is successfully deleted (api ', apiVersion, ')'))
+#         expect_error(ndex.delete.network(con, networks[[apiVersion]]), info=paste0('Deleting the same network again should throw an error (api ', apiVersion, ')'))
+#         expect_error(ndex.delete.network(con, 'not-a-network-at-all'), info=paste0('Deleting the not existing network should throw an error (api ', apiVersion, ')'))
+#     }
+# })
