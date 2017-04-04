@@ -146,7 +146,7 @@ ndex.create.group <- function(ndexcon, groupName, image, website, description, p
     route <- ndex.helper.encodeParams(api$url, api$params)
     data <- jsonlite::toJSON(data, auto_unbox = TRUE)
     
-    response = ndex_rest_POST(ndexcon, route, data, raw=T)
+    response = ndex_rest_POST(ndexcon, route, data, raw=TRUE)
     return(response)
 }
 
@@ -180,7 +180,7 @@ ndex.create.group <- function(ndexcon, groupName, image, website, description, p
 ndex.delete.group <- function(ndexcon, groupId) {
     api = ndex.helper.getApi(ndexcon, 'group$delete')
     route <- ndex.helper.encodeParams(api$url, api$params, group=groupId)
-    response = ndex_rest_DELETE(ndexcon, route, raw=T)
+    response = ndex_rest_DELETE(ndexcon, route, raw=TRUE)
     return(NULL)
 }
 
