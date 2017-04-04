@@ -32,9 +32,11 @@ to manipulate, store and exchange networks of various types and formats (Pratt e
 NDEx can be used to upload, share and publicly distribute networks, while providing
 an output in formats, that can be used by plenty of other applications.
 
-This package provides an interface to query the public NDEx
-server, as well as private installations, in order to upload, download or modify 
-biological networks. This document aims to help the user to install and benefit from the
+The public NDEx server is a network data commons which provides pathway collections like the Pathway Interaction Database of the NCI (http://www.ndexbio.org/#/user/301a91c6-a37b-11e4-bda0-000c29202374) and the Cancer Cell Maps Initiative (http://www.ndexbio.org/#/user/b47268a6-8112-11e6-b0a6-06603eb7f303). 
+
+This package provides an interface to query the public NDEx server, as well as private installations, in order to upload, download or modify biological networks. 
+
+This document aims to help the user to install and benefit from the
 wide range of funtionality of this implementation.
 The package also provides classes to implement the Cytoscape
 Cyberinfrastructure (CX) Format and to extend the [iGraph Package] (http://igraph.org/r/).
@@ -222,6 +224,45 @@ networks on the server. This operation cannot be undone, so be careful!
 ## deletes the network from the server
 ndex.delete.network(ndexcon, networkId)
 ```
+
+# Example Workflow
+
+This example workflow shows how to connect to the public NDEx server, browse and retrieve the pathways of the Pathway Interaction Database of the NCI which are hosted there.
+
+```{r, eval=FALSE}
+## load the library!
+library(ndexr)
+
+## login to the NDEx server
+ndexcon = ndex.connect()
+
+## retrieve pathways of user "nci-pid"
+networks_pid <- ndex.find.networks(ndexcon, accountName="nci-pid")
+
+## list retrieved network information
+networks_pid[,"name"]
+
+## show information on the first pathways listed
+networks_pid[1,]
+
+## retrieve network data
+mynetwork = ndex.get.network(ndexcon, networks_pid[1,"externalId"])
+
+## convert into R graph format
+mygraph = rcx.toNGraph(mynetwork)
+
+## show graph information
+mygraph
+
+## use readable node names instead of IDs and plot the graph
+V(mygraph)[as.character(mynetwork$nodes[,"@id"])]$name = mynetwork$nodes[,"n"]
+plot(mygraph)
+```
+
+This code snippet starts with loading the ndexr library and connecting to the server anonymously.
+Afterwards `ndex.find.networks` retrieves a list of networks of user `nci-pid`, which contains the data of the Pathway Interaction Database. The function `ndex.get.network` downloads the network data and stores in the `RCX` format (explained in the next section) and is then converted into an igraph-based object via `rcx.toNGraph`.
+Here, the node IDs of the graph are set to readable names and the graph is plotted. Naturally, this graph can be annotated and beautified as required for the specific use cases.
+
 
 # RCX
 
