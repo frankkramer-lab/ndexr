@@ -236,7 +236,7 @@ ndex.update.group <- function(ndexcon, groupId, groupName, image, website, descr
     route <- ndex.helper.encodeParams(api$url, api$params, group=groupId)
     data <- jsonlite::toJSON(data, auto_unbox = TRUE, null='null')
     
-    response = ndex_rest_PUT(ndexcon, route, data, raw=T)
+    response = ndex_rest_PUT(ndexcon, route, data, raw=TRUE)
     return(response)
 }
 
