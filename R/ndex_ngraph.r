@@ -260,7 +260,7 @@ ngraph.toRCX <- function(ngraph, verbose = FALSE){
     #edgeAttributes
     sel = !(colnames(tmp$edges) %in% c("@id","from","to","i"))
     if(any(sel)) {
-      tmp2 = as.data.frame(tmp$edges[,"@id"], stringsAsFactors=F, row.names = NULL)
+      tmp2 = as.data.frame(tmp$edges[,"@id"], stringsAsFactors=FALSE, row.names = NULL)
       colnames(tmp2) = c("po")
       tmp2 = as.data.frame(cbind(tmp2, tmp$edges[,sel,drop=FALSE]), stringsAsFactors=FALSE)
       row.names(tmp2) = NULL
