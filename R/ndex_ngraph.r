@@ -250,7 +250,7 @@ ngraph.toRCX <- function(ngraph, verbose = FALSE){
   
   if(!is.null(tmp$edges) && dim(tmp$edges)[1] > 0) {
     #edges
-    tmp2 = as.data.frame(cbind(tmp$edges[,"@id"],tmp$edges[,"from"],tmp$edges[,"to"]), stringsAsFactors=F, row.names = NULL)
+    tmp2 = as.data.frame(cbind(tmp$edges[,"@id"],tmp$edges[,"from"],tmp$edges[,"to"]), stringsAsFactors=FALSE, row.names = NULL)
     colnames(tmp2) = c("@id","s","t")
     if("i" %in% colnames(tmp$edges)) {
       tmp2$i = tmp$edges$i
