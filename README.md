@@ -30,13 +30,15 @@ The package is compatible with both NDEx versions 1.3 and 2.0.
 Installation
 ============
 
-## Installation from Bioconductor
+## Installation via Bioconductor
 
     source("https://bioconductor.org/biocLite.R")
     biocLite("ndexr")
     library(ndexr)
     
-## Installation using [*devtools*](http://cran.r-project.org/web/packages/devtools/index.html) R package)
+## Installation via GitHub
+
+using [*devtools*](http://cran.r-project.org/web/packages/devtools/index.html) R package)
 
     require(devtools)
     install_github("frankkramer-lab/ndexr")
