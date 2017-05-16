@@ -30,10 +30,16 @@ The package is compatible with both NDEx versions 1.3 and 2.0.
 Installation
 ============
 
-Installation instructions (from Bioconductor)
+## Installation from Bioconductor
 
     source("https://bioconductor.org/biocLite.R")
     biocLite("ndexr")
+    library(ndexr)
+    
+## Installation using [*devtools*](http://cran.r-project.org/web/packages/devtools/index.html) R package)
+
+    require(devtools)
+    install_github("frankkramer-lab/ndexr")
     library(ndexr)
 
 Quick Start
@@ -906,19 +912,19 @@ The easiest to write an own configuration is by simply copying an
 existing configuration and tailor it to the needs.
 
     # Copy an existing config
-    custom.ndex_config = ndex_config$Version_2.0
+    custom_ndex_config = ndex_config$Version_2.0
 
     # Change the host connection for a local NDEx server installation
-    custom.ndex_config$connection$host ="localhost:8090"
+    custom_ndex_config$connection$host ="localhost:8090"
 
     # Custom path to the REST api
-    custom.ndex_config$connection$api ="/api/rest"
+    custom_ndex_config$connection$api ="/api/rest"
 
     # Change the REST path for the ndex_get_network function
-    custom.ndex_config$api$network$get$url ="/custom/networks/#NETWORKID#"
+    custom_ndex_config$api$network$get$url ="/custom/networks/#NETWORKID#"
 
     # Add some (default) parameters to the function
-    custom.ndex_config$api$network$get$params$newParam = list(method="parameter", tag="someTag", default="someValue")
+    custom_ndex_config$api$network$get$params$newParam = list(method="parameter", tag="someTag", default="someValue")
 
 It is also possible to write an own configuration in yaml (or convert
 `ndex_config` to yaml, see above) and load it as object (`yaml::load` or
