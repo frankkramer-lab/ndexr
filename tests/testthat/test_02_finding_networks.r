@@ -7,7 +7,7 @@
 ##     
 ## Description:
 ##    Tests for Finding networks:
-##    Get list of networks from a server (ndex.find.networks)
+##    Get list of networks from a server (ndex_find_networks)
 ##
 ## Usage:
 ##  devtools::test(filter='02_*')
@@ -18,33 +18,33 @@ context('Finding networks')
 
 
 
-test_that('Get list of networks from a server (ndex.find.networks)', {
-  nms = names(ndex.conf)
+test_that('Get list of networks from a server (ndex_find_networks)', {
+  nms = names(ndex_config)
   apiVersions = nms[nms!='defaultVersion']
   netColNames = c("ownerUUID", "isReadOnly", "subnetworkIds", "errorMessage", "isValid", "warnings", "isShowcase", "visibility", "edgeCount", "nodeCount", "uri", "version", "owner", "description", "name", "properties", "externalId", "isDeleted", "modificationTime", "creationTime")
   
-  expect_error(ndex.find.networks(), info='No connection provided')
+  expect_error(ndex_find_networks(), info='No connection provided')
   
   for(apiVersion in apiVersions){
-    api = ndex.conf[[apiVersion]]
-    con = ndex.connect(ndexConf = api)
+    api = ndex_config[[apiVersion]]
+    con = ndex_connect(ndexConf = api)
     
-    networks = ndex.find.networks(con)
+    networks = ndex_find_networks(con)
     expect_is(networks, 'data.frame', info=paste0('Checking class of found network list using api ', apiVersion))
     expect_object_conains_names(networks, netColNames, info=paste0('Checking column names of found network list using api ', apiVersion))
     forLater = networks[6:10,]
     
-    networks = ndex.find.networks(con, searchString = 'egfr')
+    networks = ndex_find_networks(con, searchString = 'egfr')
     expect_is(networks, 'data.frame', info=paste0('Checking class of found network list ("egfr") using api ', apiVersion))
     expect_object_conains_names(networks, netColNames, info=paste0('Checking column names of found network list ("egfr") using api ', apiVersion))
     
-    expect_null(ndex.find.networks(con, accountName = 'aNonExistingAccountThatHasThereforeNoPublicNetworks'), info='No networks should be found and therefore the return value be NULL')
+    expect_null(ndex_find_networks(con, accountName = 'aNonExistingAccountThatHasThereforeNoPublicNetworks'), info='No networks should be found and therefore the return value be NULL')
     
-    networks = ndex.find.networks(con, accountName = 'ndextutorials')
+    networks = ndex_find_networks(con, accountName = 'ndextutorials')
     expect_is(networks, 'data.frame', info=paste0('Checking class of found network list ("egfr") of "ndextutorials" using api ', apiVersion))
     expect_object_conains_names(networks, netColNames, info=paste0('Checking column names of found network list ("egfr") of "ndextutorials" using api ', apiVersion))
     
-    networks = ndex.find.networks(con, start=1, size=5)
+    networks = ndex_find_networks(con, start=1, size=5)
     rownames(networks) = NULL
     rownames(forLater) = NULL
     columnsToBeEqual = c("ownerUUID", "isReadOnly", "visibility", "edgeCount", "nodeCount", "uri", "owner", "name", "externalId","modificationTime", "creationTime")

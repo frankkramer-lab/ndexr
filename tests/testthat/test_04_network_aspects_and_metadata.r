@@ -7,8 +7,8 @@
 ##     
 ## Description:
 ##    Tests Aspects and meta-data:
-##    Get network meta-data (ndex.network.get.metadata)
-##    Get network aspect as CX (ndex.network.get.aspect)
+##    Get network meta-data (ndex_network_get_metadata)
+##    Get network aspect as CX (ndex_network_get_aspect)
 ##
 ## Usage:
 ##  devtools::test(filter='04_*')
@@ -18,21 +18,21 @@ library(ndexr)
 context('Aspects and meta-data')
 
 
-test_that('Get network meta-data (ndex.network.get.metadata)', {
-    nms = names(ndex.conf)
+test_that('Get network meta-data (ndex_network_get_metadata)', {
+    nms = names(ndex_config)
     apiVersions = nms[nms!='defaultVersion']
     netColNames = c("consistencyGroup", "elementCount", "lastUpdate", "name", "properties", "version", "idCounter")
   
-#   con = ndex.connect()
+#   con = ndex_connect()
   
-#   networks = ndex.find.networks(con, accountName = 'ndextutorials')  ## public ndex account networks
+#   networks = ndex_find_networks(con, accountName = 'ndextutorials')  ## public ndex account networks
 #   uuid = networks[1,'externalId']
     uuid = ndexTestConf$uuidPublicNetwork
     
     for(apiVersion in apiVersions){
-        api = ndex.conf[[apiVersion]]
-        con = ndex.connect(ndexConf = api)
-        rcx = ndex.network.get.metadata(con, uuid)
+        api = ndex_config[[apiVersion]]
+        con = ndex_connect(ndexConf = api)
+        rcx = ndex_network_get_metadata(con, uuid)
         if(con$ndexConf$version == '1.3'){
             expect_null(rcx, info=paste0('Aspect meta-data should work, but for some reason for api 1.3 only returns NULL!'))
         }else{
@@ -45,29 +45,29 @@ test_that('Get network meta-data (ndex.network.get.metadata)', {
 
 ## Error on server side!
 #
-#test_that('Get network aspect meta-data (ndex.network.aspect.get.metaData)', {
-#    nms = names(ndex.conf)
+#test_that('Get network aspect meta-data (ndex_network_aspect_get_metadata)', {
+#    nms = names(ndex_config)
 #    apiVersions = nms[nms!='defaultVersion']
 #    metColNames = c("consistencyGroup", "elementCount", "data", "lastUpdate", "name", "properties", "version", "idCounter")
 #    aspects = c("provenanceHistory", "nodes", "edges", "supports", "citations", "edgeAttributes", "edgeCitations", "edgeSupports", "networkAttributes", "nodeAttributes")
 #    
-#    con = ndex.connect()
+#    con = ndex_connect()
 #    
-##    networks = ndex.find.networks(con, accountName = 'ndextutorials')  ## public ndex account networks
+##    networks = ndex_find_networks(con, accountName = 'ndextutorials')  ## public ndex account networks
 ##    uuid = networks[1,'externalId']
 #    uuid = ndexTestConf$uuidPublicNetwork
 #
-#    metData  = ndex.network.get.metadata(con, uuid)
+#    metData  = ndex_network_get_metadata(con, uuid)
 #    metDataNames = metData$metaData$name
 #    
 #    for(apiVersion in apiVersions){
-#        api = ndex.conf[[apiVersion]]
-#        con = ndex.connect(ndexConf = api)
+#        api = ndex_config[[apiVersion]]
+#        con = ndex_connect(ndexConf = api)
 #        for(asp in metDataNames){
 #            if(con$ndexConf$version == '1.3'){
-#                expect_error(ndex.network.aspect.get.metadata(con, uuid, asp), info=paste0('In api version 1.3 is no method for getting meta-data for single aspects ("', asp,'")'))
+#                expect_error(ndex_network_aspect_get_metadata(con, uuid, asp), info=paste0('In api version 1.3 is no method for getting meta-data for single aspects ("', asp,'")'))
 #            }else{
-#                rcx = ndex.network.aspect.get.metadata(con, uuid, asp)
+#                rcx = ndex_network_aspect_get_metadata(con, uuid, asp)
 #                expect_is(rcx, 'list', info=paste0('Checking class of aspect meta-data (api ', apiVersion, ', aspect ', asp, ')'))
 #                expect_object_conains_names(rcx, metColNames, info=paste0('Checking class of aspect meta-data (api ', apiVersion, ', aspect ', asp, ')'))
 #            }            
@@ -76,23 +76,23 @@ test_that('Get network meta-data (ndex.network.get.metadata)', {
 #})
 
 
-test_that('Get network aspect as CX (ndex.network.get.aspect)', {
-    nms = names(ndex.conf)
+test_that('Get network aspect as CX (ndex_network_get_aspect)', {
+    nms = names(ndex_config)
     apiVersions = nms[nms!='defaultVersion']
-    con = ndex.connect()
+    con = ndex_connect()
     
-#    networks = ndex.find.networks(con, accountName = 'ndextutorials')  ## public ndex account networks
+#    networks = ndex_find_networks(con, accountName = 'ndextutorials')  ## public ndex account networks
 #    uuid = networks[1,'externalId']
     uuid = ndexTestConf$uuidPublicNetwork
-    metData  = ndex.network.get.metadata(con, uuid)
+    metData  = ndex_network_get_metadata(con, uuid)
     metDataNames = metData$metaData$name[metData$metaData$elementCount>0]
     
     for(apiVersion in apiVersions){
-        api = ndex.conf[[apiVersion]]
-        con = ndex.connect(ndexConf = api)
+        api = ndex_config[[apiVersion]]
+        con = ndex_connect(ndexConf = api)
         if(con$ndexConf$version != '1.3'){
             for(asp in metDataNames){
-                rcx = ndex.network.get.aspect(con, uuid, asp)
+                rcx = ndex_network_get_aspect(con, uuid, asp)
                 expect_is(rcx, 'data.frame', info=paste0('Checking class of aspect (api ', apiVersion, ', aspect ', asp, ')'))
             }
         }
@@ -101,34 +101,34 @@ test_that('Get network aspect as CX (ndex.network.get.aspect)', {
 
 ## Error on server side!
 #
-#test_that('Update network aspect (ndex.network.update.aspect)', {
-#    nms = names(ndex.conf)
+#test_that('Update network aspect (ndex_network_update_aspect)', {
+#    nms = names(ndex_config)
 #    apiVersions = nms[nms!='defaultVersion']
-#    con = ndex.connect(ndexTestConf$user, ndexTestConf$password)
+#    con = ndex_connect(ndexTestConf$user, ndexTestConf$password)
 #    
-##    networks = ndex.find.networks(con, accountName = 'ndextutorials')  ## public ndex account networks
+##    networks = ndex_find_networks(con, accountName = 'ndextutorials')  ## public ndex account networks
 ##    uuid = networks[1,'externalId']
 #    uuid = ndexTestConf$uuidPrivateNetwork
-#    rcx = ndex.get.network(con, uuid)
+#    rcx = ndex_get_network(con, uuid)
 #    aspectNames = names(rcx)
 #    aspectNames = aspectNames[aspectNames != 'metaData']
 #    aspectNames = aspectNames[aspectNames != 'metaData']
 #    
 #    for(apiVersion in apiVersions){
-#        api = ndex.conf[[apiVersion]]
-#        con = ndex.connect(ndexTestConf$user, ndexTestConf$password, ndexConf = api)
-#        uuidCreated = ndex.create.network(con,rcx)
+#        api = ndex_config[[apiVersion]]
+#        con = ndex_connect(ndexTestConf$user, ndexTestConf$password, ndexConf = api)
+#        uuidCreated = ndex_create_network(con,rcx)
 #        
 #        if(con$ndexConf$version != '1.3'){
 #            prevUuid = uuidCreated
 #            for(asp in aspectNames){
 #                aspData= rcx[[asp]]
 #                aspDataMod = aspData[1:min(dim(aspData)[1],5),]
-#                uuidUpdated = ndex.network.update.aspect(con, uuidCreated, asp, aspDataMod)
+#                uuidUpdated = ndex_network_update_aspect(con, uuidCreated, asp, aspDataMod)
 #                expect_equal(uuidUpdated, prevUuid, info=paste0('All uuids (created and updated) should have the same uuid (api ', apiVersion, ')'))
 #                prevUuid = uuidUpdated
 #            }        
-#            rcxMod = ndex.get.network(con, uuidUpdated)
+#            rcxMod = ndex_get_network(con, uuidUpdated)
 #            for(asp in aspectNames){
 #                originalAspect = rcx[[asp]]
 #                originalAspectMod = originalAspect[1:min(dim(originalAspect)[1],5),]
@@ -139,7 +139,7 @@ test_that('Get network aspect as CX (ndex.network.get.aspect)', {
 #                expect_equal(sort(names(originalAspectMod)), sort(names(modAspect)), info=paste0('Modificated original and modificated aspects should have the same names (api ', apiVersion, ')'))
 #            }
 #            Sys.sleep(60)    ## Wait some time until the updating of the network on the server is done
-#            ndex.delete.network(con, uuidUpdated)
+#            ndex_delete_network(con, uuidUpdated)
 #        }
 #    }
 #})

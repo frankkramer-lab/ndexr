@@ -7,7 +7,7 @@
 ndex_rest_GET(ndexcon, route, raw = FALSE)
 }
 \arguments{
-\item{ndexcon}{object of class NDEXConnection \code{\link{ndex.connect}}}
+\item{ndexcon}{object of class NDExConnection \code{\link{ndex_connect}}}
 
 \item{route}{Character (route to specific REST query)}
 
@@ -28,7 +28,7 @@ This function is internal.
 }
 \examples{
 ## Establish a server connection
-ndexcon = ndex.connect()
+ndexcon = ndex_connect()
 \dontrun{
 ndex_rest_GET(ndexcon, "/networks/api")
 }

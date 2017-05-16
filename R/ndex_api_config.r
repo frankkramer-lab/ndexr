@@ -23,9 +23,9 @@
 #' 
 #' @return Nested list resembling the NDEx server REST API structure
 #' @examples 
-#' names(ndex.conf$Version_2.0) 
+#' names(ndex_config$Version_2.0) 
 #' @export
-ndex.conf = list(
+ndex_config = list(
     defaultVersion="Version_2.0",
     Version_2.0=list(
         version="2.0",

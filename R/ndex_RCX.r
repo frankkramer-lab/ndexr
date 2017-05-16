@@ -18,7 +18,7 @@
 
 #' Create RCX object from JSON data
 #' 
-#' This function creates an RCX object from a supplied JSON-encoded CX object. It is usually called from within \code{\link{ndex.get.network}}.
+#' This function creates an RCX object from a supplied JSON-encoded CX object. It is usually called from within \code{\link{ndex_get_network}}.
 #' RCX objects store the CX data as a named list of data.frames containing metaData and all aspects of the network.
 #' 
 #' The structure of an RCX object, as shown via str(rcx) could be a list like this:\cr
@@ -122,22 +122,22 @@
 #' 
 #' @return returns object of class RCX if successfull, NULL otherwise
 #' 
-#' @seealso \code{\link{ngraph.fromRCX}} \code{\link{ngraph.toRCX}} \code{\link{rcx.toJSON}} 
+#' @seealso \code{\link{ngraph_fromRCX}} \code{\link{ngraph_toRCX}} \code{\link{rcx_toJSON}} 
 #' @aliases RCX
 #' 
 #' @examples 
 #' ## Establish a server connection
-#' ndexcon = ndex.connect()
+#' ndexcon = ndex_connect()
 #' ## Find a network and get its UUID
-#' networks = ndex.find.networks(ndexcon,"p53")
+#' networks = ndex_find_networks(ndexcon,"p53")
 #' networkId = networks[1,"externalId"]
 #' ## Get the network data 
-#' rcx = ndex.get.network(ndexcon, networkId) 
+#' rcx = ndex_get_network(ndexcon, networkId) 
 #' @export
-rcx.fromJSON <- function(json, verbose = FALSE){
+rcx_fromJSON <- function(json, verbose = FALSE){
   
   if(!jsonlite::validate(json)) {
-    stop("rcx.fromJSON: parameter json does not contain valid JSON")
+    stop("rcx_fromJSON: parameter json does not contain valid JSON")
   }
 
   json = jsonlite::fromJSON(json)
@@ -189,22 +189,22 @@ rcx.fromJSON <- function(json, verbose = FALSE){
 #' @param pretty logical; adds indentation whitespace to JSON output
 #' 
 #' @return json jsonlite json object if successfull, NULL otherwise
-#' @seealso \code{\link{ngraph.fromRCX}} \code{\link{ngraph.toRCX}} \code{\link{rcx.fromJSON}}
+#' @seealso \code{\link{ngraph_fromRCX}} \code{\link{ngraph_toRCX}} \code{\link{rcx_fromJSON}}
 #' 
 #' @examples 
 #' ## Establish a server connection
-#' ndexcon = ndex.connect()
+#' ndexcon = ndex_connect()
 #' ## Find a network and get its UUID
-#' networks = ndex.find.networks(ndexcon,"p53")
+#' networks = ndex_find_networks(ndexcon,"p53")
 #' networkId = networks[1,"externalId"]
 #' ## Get the network data 
-#' rcx = ndex.get.network(ndexcon, networkId)
+#' rcx = ndex_get_network(ndexcon, networkId)
 #' ## Convert RCX to JSON
-#' rcxjson = rcx.toJSON(rcx)
+#' rcxjson = rcx_toJSON(rcx)
 #' @export
-rcx.toJSON <- function(rcx, verbose = FALSE, pretty = FALSE){
+rcx_toJSON <- function(rcx, verbose = FALSE, pretty = FALSE){
   if(is.null(rcx) || !("RCX" %in% class(rcx))) {
-    stop("rcx.toJSON: parameter rcx does not contain RCX object")
+    stop("rcx_toJSON: parameter rcx does not contain RCX object")
   }
   
   ## numberVerification has to be 2^48 = 281,474,976,710,655
@@ -217,7 +217,7 @@ rcx.toJSON <- function(rcx, verbose = FALSE, pretty = FALSE){
   rcxNames = rcxNames[rcxNames!="metaData"]
   rcxNames = c("numberVerification", "metaData", rcxNames)
   for(aspect in rcxNames){
-      jsonCol = c(jsonCol,paste0('{"',aspect,'":',rcx.aspect.toJSON(rcx[[aspect]], verbose, pretty),'}'))
+      jsonCol = c(jsonCol,paste0('{"',aspect,'":',rcx_aspect_toJSON(rcx[[aspect]], verbose, pretty),'}'))
   }
   return(paste0('[',paste0(jsonCol, collapse=','),']'))
 }
@@ -230,19 +230,19 @@ rcx.toJSON <- function(rcx, verbose = FALSE, pretty = FALSE){
 #' @param pretty logical; adds indentation whitespace to JSON output
 #' 
 #' @return json object if successfull, empty string otherwise
-#' @seealso \code{\link{rcx.toJSON}} and \code{\link{rcx.fromJSON}}
+#' @seealso \code{\link{rcx_toJSON}} and \code{\link{rcx_fromJSON}}
 #' 
 #' @examples 
 #' ## Establish a server connection
-#' ndexcon = ndex.connect()
+#' ndexcon = ndex_connect()
 #' ## Find a network and get its UUID
-#' networks = ndex.find.networks(ndexcon,"p53")
+#' networks = ndex_find_networks(ndexcon,"p53")
 #' networkId = networks[1,"externalId"]
 #' ## Get the network data 
-#' rcx = ndex.get.network(ndexcon, networkId)
+#' rcx = ndex_get_network(ndexcon, networkId)
 #' ## Convert RCX aspect to JSON
-#' rcxNodesJson = ndexr:::rcx.aspect.toJSON(rcx$nodes)
-rcx.aspect.toJSON <- function(rcxAspect, verbose = FALSE, pretty = FALSE){
+#' rcxNodesJson = ndexr:::rcx_aspect_toJSON(rcx$nodes)
+rcx_aspect_toJSON <- function(rcxAspect, verbose = FALSE, pretty = FALSE){
     result = ''
     ## if any of the aspects has a datatype ('d') property, at least one of the datatypes is not of 'string' (default datatype).
     ## this means, the corresponding values ('v') have to be wrapped in arrays, if they are defined as kind of list (e.g. 'list_of_string', 'list_of_integer',...)
@@ -291,27 +291,27 @@ rcx.aspect.toJSON <- function(rcxAspect, verbose = FALSE, pretty = FALSE){
 #' @param rcx RCX object
 #' 
 #' @return \code{\link{RCX}} object
-#' @seealso \code{\link{rcx.fromJSON}} \code{\link{ndex.get.network}}
+#' @seealso \code{\link{rcx_fromJSON}} \code{\link{ndex_get_network}}
 #' 
 #' @details After a RCX object is downloaded from an NDEx server, it will contain some aspects that are not present in a newly generated network, i.e. ndexStatus', provenanceHistory' and 'status'.
 #' Removing those aspects might be useful in some cases.
 #' 
 #' @examples 
 #' ## Establish a server connection
-#' ndexcon = ndex.connect()
+#' ndexcon = ndex_connect()
 #' ## Find a network and get its UUID
-#' networks = ndex.find.networks(ndexcon,"p53")
+#' networks = ndex_find_networks(ndexcon,"p53")
 #' networkId = networks[1,"externalId"]
 #' ## Get the network data 
-#' rcx = ndex.get.network(ndexcon, networkId)
+#' rcx = ndex_get_network(ndexcon, networkId)
 #' ## Remove NDEx artefacts
-#' rcx = rcx.asNewNetwork(rcx)
+#' rcx = rcx_asNewNetwork(rcx)
 #' \dontrun{
-#' rcxjson = rcx.toJSON(rcx)
-#' ndex.create.network(ndexcon, rcxjson) 
+#' rcxjson = rcx_toJSON(rcx)
+#' ndex_create_network(ndexcon, rcxjson) 
 #' }
 #' @export
-rcx.asNewNetwork = function(rcx){
+rcx_asNewNetwork = function(rcx){
   rcx['ndexStatus'] = NULL          # a newly created network doesn't have an ndex-status yet
   rcx['provenanceHistory'] = NULL   # ... also not an provenance history
   rcx['status'] = NULL              # fragment from retrieving the network from the server
@@ -328,28 +328,28 @@ rcx.asNewNetwork = function(rcx){
 #' @return RCX object
 #' 
 #' @examples 
-#' rcx = rcx.new()
-#' rcx = rcx.new(c('@id'=1))                                #same as one before
-#' rcx = rcx.new(nodes=c('@id'=1))                          #same as one before
-#' rcx = rcx.new(data.frame('@id'=c(1), check.names=FALSE))     #same as one before
-#' rcx = rcx.new(c('@id'=1, n='Some Name'))
-#' rcx = rcx.new(c('@id'=1, n='Some Name', r='HGNC:Symbol'))
-#' rcx = rcx.new(data.frame('@id'=c(1),n=c('Some Name'), r=c('HGNC:Symbol'), check.names=FALSE))    #same as one before
-#' rcx = rcx.new(data.frame('@id'=c(1,2,3),n=c('Some Name','And another name',NA), r=c('HGNC:Symbol',NA,'UniProt:C3P0'), check.names=FALSE))
+#' rcx = rcx_new()
+#' rcx = rcx_new(c('@id'=1))                                #same as one before
+#' rcx = rcx_new(nodes=c('@id'=1))                          #same as one before
+#' rcx = rcx_new(data.frame('@id'=c(1), check.names=FALSE))     #same as one before
+#' rcx = rcx_new(c('@id'=1, n='Some Name'))
+#' rcx = rcx_new(c('@id'=1, n='Some Name', r='HGNC:Symbol'))
+#' rcx = rcx_new(data.frame('@id'=c(1),n=c('Some Name'), r=c('HGNC:Symbol'), check.names=FALSE))    #same as one before
+#' rcx = rcx_new(data.frame('@id'=c(1,2,3),n=c('Some Name','And another name',NA), r=c('HGNC:Symbol',NA,'UniProt:C3P0'), check.names=FALSE))
 #' @export
-rcx.new = function(nodes=c('@id'=1)){
+rcx_new = function(nodes=c('@id'=1)){
 # TODO : add parameters for edges and other core aspects
-# rcx.new = function(nodes=c('@id'=1), edges, nodeAttributes, edgeAttributes, networkAttributes){
-    if(is.null(nodes)) stop('rcx.new: At least one node is necessary!')
-    if(!'@id' %in% names(nodes)) stop('rcx.new: No "@id" column in nodes!')
+# rcx_new = function(nodes=c('@id'=1), edges, nodeAttributes, edgeAttributes, networkAttributes){
+    if(is.null(nodes)) stop('rcx_new: At least one node is necessary!')
+    if(!'@id' %in% names(nodes)) stop('rcx_new: No "@id" column in nodes!')
     ids = as.character(nodes[['@id']])
-    if(length(unique(ids)) != length(ids)) stop('rcx.new: Some ids in "@id" column are duplicated!')
-    if(any(NA %in% nodes[['@id']])) stop('rcx.new: Some ids in "@id" column have "NA" value!')
+    if(length(unique(ids)) != length(ids)) stop('rcx_new: Some ids in "@id" column are duplicated!')
+    if(any(NA %in% nodes[['@id']])) stop('rcx_new: Some ids in "@id" column have "NA" value!')
     rcx <- list(nodes=data.frame('@id'=ids, stringsAsFactors=FALSE, check.names=FALSE))
     if('n' %in% names(nodes)) rcx$nodes$n = as.character(nodes[['n']])
     if('r' %in% names(nodes)) rcx$nodes$r = as.character(nodes[['r']])
     class(rcx) = c("RCX",class(rcx))
-    rcx = rcx.updateMetaData(rcx)
+    rcx = rcx_updateMetaData(rcx)
     return(rcx)
 }
 
@@ -369,36 +369,36 @@ rcx.new = function(nodes=c('@id'=1)){
 #' 
 #' @examples 
 #' ## Establish a server connection
-#' ndexcon = ndex.connect()
+#' ndexcon = ndex_connect()
 #' ## Find a network and get its UUID
-#' networks = ndex.find.networks(ndexcon)
+#' networks = ndex_find_networks(ndexcon)
 #' networkId = networks[1,"externalId"]
 #' ## Get the network data 
-#' rcx = ndex.get.network(ndexcon, networkId) 
+#' rcx = ndex_get_network(ndexcon, networkId) 
 #' ## update meta-data
-#' rcx = rcx.updateMetaData(rcx)
+#' rcx = rcx_updateMetaData(rcx)
 #' # or with explicitly set default values
-#' rcx = rcx.updateMetaData(rcx, mandatoryAspects=c('nodes'), excludeAspects=c("metaData", "numberVerification", "status"), force=FALSE, verbose=FALSE)
+#' rcx = rcx_updateMetaData(rcx, mandatoryAspects=c('nodes'), excludeAspects=c("metaData", "numberVerification", "status"), force=FALSE, verbose=FALSE)
 #' @export
-rcx.updateMetaData = function(rcx, mandatoryAspects=c('nodes'), excludeAspects=c("metaData", "numberVerification", "status"), force=FALSE, verbose=FALSE){        
-    if(missing(rcx) || is.null(rcx) || !("RCX" %in% class(rcx))) stop("rcx.updateMetaData: Parameter rcx does not contain RCX object")
+rcx_updateMetaData = function(rcx, mandatoryAspects=c('nodes'), excludeAspects=c("metaData", "numberVerification", "status"), force=FALSE, verbose=FALSE){        
+    if(missing(rcx) || is.null(rcx) || !("RCX" %in% class(rcx))) stop("rcx_updateMetaData: Parameter rcx does not contain RCX object")
     
     # check if mandatoryAspects are present in the RCX object
-    if(any(!(mandatoryAspects %in% names(rcx)))) stop(paste0("rcx.updateMetaData: Mandatory aspects are missing in the RCX object: ", paste0(mandatoryAspects[!(mandatoryAspects %in% names(rcx))], collapse=', ')))
+    if(any(!(mandatoryAspects %in% names(rcx)))) stop(paste0("rcx_updateMetaData: Mandatory aspects are missing in the RCX object: ", paste0(mandatoryAspects[!(mandatoryAspects %in% names(rcx))], collapse=', ')))
     
     
     # get meta data from RCX object
     # create it, if it doesn't exist (or if it is forced)
     metaData = rcx$metaData
     if(is.null(metaData) || force) {
-        if(verbose) print('rcx.updateMetaData: MetaData will be created')
+        if(verbose) print('rcx_updateMetaData: MetaData will be created')
         metaData = data.frame(consistencyGroup=1, elementCount=0, lastUpdate=1, name = sort(names(rcx)[!(names(rcx) %in% excludeAspects)]), version='1.0', idCounter=NA, stringsAsFactors = FALSE)
     }else{
-        if(verbose) print('rcx.updateMetaData: Existing metaData will be updated')
+        if(verbose) print('rcx_updateMetaData: Existing metaData will be updated')
         
         if(!('consistencyGroup' %in% names(metaData))){
             metaData$consistencyGroup = 1
-            if(verbose) warning('rcx.updateMetaData: No consistancy groups specified (Set by default to "1")!  Check manually for consistency!')
+            if(verbose) warning('rcx_updateMetaData: No consistancy groups specified (Set by default to "1")!  Check manually for consistency!')
         }
         if(!('elementCount' %in% names(metaData))) metaData$elementCount = 0
         if(!('lastUpdate' %in% names(metaData))) metaData$lastUpdate = 1
@@ -432,16 +432,16 @@ rcx.updateMetaData = function(rcx, mandatoryAspects=c('nodes'), excludeAspects=c
         metaData$properties = properties
     }
     
-    if(verbose) print('rcx.updateMetaData: idCounter will be updated')
+    if(verbose) print('rcx_updateMetaData: idCounter will be updated')
     # id exporting aspects are required to have specified an id counter (max id in the aspect)
     metaData$idCounter = sapply(metaData$name, function(x){return(ifelse('@id' %in% colnames(rcx[[x]]), max(rcx[[x]]$'@id'), NA))})
     
     
-    if(verbose) print('rcx.updateMetaData: Consistency groups will be checked')
+    if(verbose) print('rcx_updateMetaData: Consistency groups will be checked')
     # get the current consistency group(s)
     consistencyGroups = unique(metaData$consistencyGroup)
     if(verbose && (length(consistencyGroups)>1)){
-        warn = paste0("rcx.updateMetaData: RCX object contains ",length(consistencyGroups), " consistency groups! Check the groups manually for consistency!\n")
+        warn = paste0("rcx_updateMetaData: RCX object contains ",length(consistencyGroups), " consistency groups! Check the groups manually for consistency!\n")
         for(cgNr in consistencyGroups){
             warn = paste0(warn, 'Group ',cgNr, ': ', paste0(metaData$name[metaData$consistencyGroup==cgNr], collapse = ', '),'\n')
         }
@@ -462,5 +462,40 @@ rcx.updateMetaData = function(rcx, mandatoryAspects=c('nodes'), excludeAspects=c
     
     rcx$metaData = metaData
     return(rcx)
+}
+
+
+####################################################
+###
+###   Print functions
+###
+####################################################
+
+#' Print a RCX object
+#' 
+#' @param x RCX object; stores the CX data as a named list of data.frames containing metaData and all aspects of the network.
+#' @param ... further arguments passed to or from other methods.
+#' 
+#' @return Just prints the RCX object
+#' 
+#' @examples
+#' rcx = rcx_new(data.frame('@id'=c(1,2,3),n=c('Some Name','And another name',NA), r=c('HGNC:Symbol',NA,'UniProt:C3P0'), check.names=FALSE))
+#' print(rcx)
+#' @seealso  \code{\link{rcx_fromJSON}} and \code{\link{rcx_new}}
+#' @export
+print.RCX <- function(x,...){
+    cat('RCX object containing the following aspects:\n')
+    tmpColNames = colnames(x$metaData)
+    tmpColNames = tmpColNames[order(tmpColNames)]
+    tmpColNames = c('name',tmpColNames[tmpColNames!='name'])
+    print(x$metaData[tmpColNames])
+    tmpNames = names(x)
+    tmpAspects = x$metaData$name
+    metaAspects = tmpNames[!tmpNames %in% tmpAspects]
+    if(length(metaAspects)!=0){
+        cat('\nAdditionally the following aspects contain meta-data:\n')
+        print(metaAspects)
+    }
+    invisible(x)
 }
 

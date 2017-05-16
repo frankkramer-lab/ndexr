@@ -6,18 +6,19 @@
 ##   Created on 02 February 2017 by Auer
 ##     
 ## Description:
-##   Contains functions to easily generate the ndex.conf.r file from an yml file
+##   Contains functions to easily generate the ndex_api_config.r file from an yml file
 ##   This functions only should be used for package maintenance!
 ##    
 ## Dependencies:
 ##   yaml
 #######################################################################################
 
-#' Default header for the ndex.conf.r file
+#' Default header for the ndex_api_config.r file
+#' @return character containing the header
 #' @note only for package maintenance!
 #' @examples
 #' NULL
-ndex.conf.header = paste0(    "################################################################################\n",
+ndex_conf_header = paste0(    "################################################################################\n",
                                 "## Authors:\n",
                                 "##   Florian Auer [florian.auer@med.uni-goettingen.de]\n",
                                 "##\n",
@@ -42,9 +43,9 @@ ndex.conf.header = paste0(    "#################################################
                                 "#' \n",
                                 "#' @return Nested list resembling the NDEx server REST API structure\n", 
                                 "#' @examples \n", 
-                                "#' names(ndex.conf$Version_2.0) \n", 
+                                "#' names(ndex_config$Version_2.0) \n", 
                                 "#' @export\n", 
-                                "ndex.conf = ")
+                                "ndex_config = ")
 
 
 #' Translates a nested list (as provided by a yaml file) into R code defining the lists
@@ -94,17 +95,17 @@ listToRCode = function(obj, indent='    ', indentShift=''){
 
 
 ##' Translates a YAML file to a R config script
-##' Run this manually if you want to update the ndex.conf
+##' Run this manually if you want to update the ndex_config
 ##' @note only for package maintenance!
 ##'
 ##' @param yamlFile character (default: 'R/ndex_api_config.yml'); input file in YAML format
 ##' @param rScriptFile character (default: 'R/ndex_api_config.r'); output file for the R script
-##' @param defaultHeader character (optional) (default: ndex.conf.header); text that will be put in front of the R script
+##' @param defaultHeader character (optional) (default: ndex_conf_header); text that will be put in front of the R script
 ##'
 ##' @examples
-##' # yamlToRConfig('R/ndex_api_config.yml', 'R/ndex_api_config.r', ndex.conf.header)
+##' # yamlToRConfig('R/ndex_api_config.yml', 'R/ndex_api_config.r', ndex_conf_header)
 ##' NULL
-#yamlToRConfig = function(yamlFile='R/ndex_api_config.yml', rScriptFile='R/ndex_api_config.r', defaultHeader=ndex.conf.header){
+#yamlToRConfig = function(yamlFile='R/ndex_api_config.yml', rScriptFile='R/ndex_api_config.r', defaultHeader=ndex_conf_header){
 #  yamlObj = yaml::yaml.load_file(yamlFile)
 #  rCodeTxt = paste0(defaultHeader, listToRCode(yamlObj))
 #  outFile = file(rScriptFile)

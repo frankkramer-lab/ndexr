@@ -28,7 +28,7 @@
 #' It is also possible to set parameter as optional (except for replace), or define default values. Values are assigned to the parameters using the parameter name in the ... parameter.
 #'  
 #' @param url character
-#' @param params (nested) list; "params" section of a api function definition in the api configuration (See \link{ndex.conf})
+#' @param params (nested) list; "params" section of a api function definition in the api configuration (See \link{ndex_config})
 #' @param ... parameters defined by name used in the config
 #' 
 #' @return URL with encoded parameters as character
@@ -38,31 +38,31 @@
 #' url = "http://en.wikipedia.org/#NETWORKID#/index.php"
 #' params = list(    network=list(    tag="#NETWORKID#", method="replace"))
 #' values = c(network='aaaa-bb-cc-dddddd', bla='This is not used!')
-#' ndexr:::ndex.helper.encodeParams(url, params=params, values)
+#' ndexr:::ndex_helper_encodeParams(url, params=params, values)
 #' ## "http://en.wikipedia.org/aaaa-bb-cc-dddddd/index.php"
 #' 
 #' params = list(    network=list(    tag="#NETWORKID#", method="replace", default="xxxx-xx-xx-xxxxxx"))
 #' values = c(bla='This is not used!')
-#' ndexr:::ndex.helper.encodeParams(url, params=params, values)
+#' ndexr:::ndex_helper_encodeParams(url, params=params, values)
 #' ## "http://en.wikipedia.org/xxxx-xx-xx-xxxxxx/index.php"
 #'  
 #' ## parameter
 #' url = "http://en.wikipedia.org/w/index.php"
 #' params = list(    network=list(    tag="network", method="parameter"))
 #' values = c(network='aaaa-bb-cc-dddddd', bla='This is not used!')
-#' ndexr:::ndex.helper.encodeParams(url, params=params, values)
+#' ndexr:::ndex_helper_encodeParams(url, params=params, values)
 #' ## "http://en.wikipedia.org/w/index.php?network=aaaa-bb-cc-dddddd"
 #'   
 #' values = c(bla='This is not used!')
 #' params = list(    network=list(    tag="network", method="parameter", optional=TRUE))
-#' ndexr:::ndex.helper.encodeParams(url, params=params, values)
+#' ndexr:::ndex_helper_encodeParams(url, params=params, values)
 #' ## "http://en.wikipedia.org/w/index.php"
 #'   
 #' params = list(    network=list(    tag="network", method="parameter", default="xxxx-xx-xx-xxxxxx"))
-#' ndexr:::ndex.helper.encodeParams(url, params=params, values)
+#' ndexr:::ndex_helper_encodeParams(url, params=params, values)
 #' ## "http://en.wikipedia.org/w/index.php?network=xxxx-xx-xx-xxxxxx"
 #'   
-#' ndexr:::ndex.helper.encodeParams(url, params=params, values)
+#' ndexr:::ndex_helper_encodeParams(url, params=params, values)
 #' values = c(network='aaaa-bb-cc-dddddd', bla='This is not used!')
 #' ## "http://en.wikipedia.org/w/index.php?network=aaaa-bb-cc-dddddd"
 #'   
@@ -70,22 +70,22 @@
 #' url = "http://en.wikipedia.org/w/index.php"
 #' params = list(    network=list(    method="append"))
 #' values = c(network='aaaa-bb-cc-dddddd', bla='This is not used!')
-#' ndexr:::ndex.helper.encodeParams(url, params=params, values)
+#' ndexr:::ndex_helper_encodeParams(url, params=params, values)
 #' ## "http://en.wikipedia.org/w/index.php/aaaa-bb-cc-dddddd"
 #'   
 #' values = c(bla='This is not used!')
 #' params = list(    network=list(    method="append", optional=TRUE))
-#' ndexr:::ndex.helper.encodeParams(url, params=params, values)
+#' ndexr:::ndex_helper_encodeParams(url, params=params, values)
 #' ## "http://en.wikipedia.org/w/index.php"
 #'   
 #' params = list(    network=list(    method="append", default="xxxx-xx-xx-xxxxxx"))
-#' ndexr:::ndex.helper.encodeParams(url, params=params, values)
+#' ndexr:::ndex_helper_encodeParams(url, params=params, values)
 #' ## "http://en.wikipedia.org/w/index.php/xxxx-xx-xx-xxxxxx"
 #'   
 #' values = c(network='aaaa-bb-cc-dddddd', bla='This is not used!')
-#' ndexr:::ndex.helper.encodeParams(url, params=params, values)
+#' ndexr:::ndex_helper_encodeParams(url, params=params, values)
 #' ## "http://en.wikipedia.org/w/index.php/aaaa-bb-cc-dddddd"
-ndex.helper.encodeParams = function(url, params, ...){
+ndex_helper_encodeParams = function(url, params, ...){
   urlParamAppend = c()
   urlParamKeyValue = c()
   paramValues = c(...)
@@ -141,13 +141,13 @@ ndex.helper.encodeParams = function(url, params, ...){
 #' @return returns the given respons, if it doesn't contain any HTTP error 
 #' 
 #' @examples
-#' ndexr:::ndex.helper.httpResponseHandler(httr::GET('http://www.ndexbio.org'), 'Tried to connect to NDEx server', TRUE)
-ndex.helper.httpResponseHandler <- function(response, description, verbose=FALSE){
+#' ndexr:::ndex_helper_httpResponseHandler(httr::GET('http://www.ndexbio.org'), 'Tried to connect to NDEx server', TRUE)
+ndex_helper_httpResponseHandler <- function(response, description, verbose=FALSE){
     if(missing(response) || is.null(response)){
-        stop(paste0('ndex.helper.httpResponseHandler: No server response',description))
+        stop(paste0('ndex_helper_httpResponseHandler: No server response',description))
     }
     if( !('response' %in% class(response))){
-        stop(paste0('ndex.helper.httpResponseHandler: Parameter response does not contain response object!\nResponse:\n',response))
+        stop(paste0('ndex_helper_httpResponseHandler: Parameter response does not contain response object!\nResponse:\n',response))
     }
       if('status_code' %in% names(response)){
         if(response$status_code == 200){          ## Success: (200) OK
@@ -185,20 +185,20 @@ ndex.helper.httpResponseHandler <- function(response, description, verbose=FALSE
 #' It follows the given path down the list.
 #' @note This function is internal.
 #' 
-#' @param ndexcon object of class NDEXConnection \code{\link{ndex.connect}}
-#' @param apiPath character; paht to follow in the nested list
+#' @param ndexcon object of class NDExConnection \code{\link{ndex_connect}}
+#' @param apiPath character; path to follow in the nested list
 #' 
 #' @return configuration of the function
 #' 
 #' @examples
 #' ## Establish a server connection
-#' ndexcon = ndex.connect()
-#' ## Get the function definition for ndex.network.get.summary
-#' ## ndex.conf[[ndex.conf$defaultVersion]]$api$network$summary$get
-#' ndexr:::ndex.helper.getApi(ndexcon, 'network$summary$get')
-ndex.helper.getApi <- function(ndexcon, apiPath){
+#' ndexcon = ndex_connect()
+#' ## Get the function definition for ndex_network_get_summary
+#' ## ndex_config[[ndex_config$defaultVersion]]$api$network$summary$get
+#' ndexr:::ndex_helper_getApi(ndexcon, 'network$summary$get')
+ndex_helper_getApi <- function(ndexcon, apiPath){
     if(is.null(ndexcon)||is.null(ndexcon$ndexConf)||is.null(ndexcon$ndexConf$api)){
-        stop('API: No or no valid API definition found within the ndex.connection!')
+        stop('API: No or no valid API definition found within the ndex_connection!')
     }
     version = ndexcon$ndexConf$version
     cur = ndexcon$ndexConf$api

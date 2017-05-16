@@ -26,7 +26,7 @@
 #' This functions searches the public networks on an NDEx server for networks containing the supplied search string. T
 #' his search can be limited to certain accounts as well as in length.
 #' 
-#' @param ndexcon object of class NDEXConnection link{ndex.connect}
+#' @param ndexcon object of class NDExConnection link{ndex_connect}
 #' @param searchString string by which to search
 #' @param accountName string (optional); constrain search to networks administered by this account
 #' @param start integer (optional); specifies that the result is the nth page of the requested data. The default value is 0
@@ -35,15 +35,15 @@
 #' @return Data frame with network information: ID, name, whether it is public, edge and node count; source and format of network. NULL if no networks are found.
 #' 
 #' @section REST query:
-#' GET: ndex.conf$api$search$network$search
+#' GET: ndex_config$api$search$network$search
 #' @note Compatible to NDEx server version 1.3 and 2.0
 #' @note Search strings may be structured
 #' 
 #' @examples 
-#' ndexcon = ndex.connect()
-#' networks = ndex.find.networks(ndexcon,"p53") 
+#' ndexcon = ndex_connect()
+#' networks = ndex_find_networks(ndexcon,"p53") 
 #' @export
-ndex.find.networks <- function(ndexcon, searchString="", accountName, start, size){
+ndex_find_networks <- function(ndexcon, searchString="", accountName, start, size){
   
   if (missing(start)) start = NULL
   if (missing(size)) size = NULL
@@ -59,8 +59,8 @@ ndex.find.networks <- function(ndexcon, searchString="", accountName, start, siz
   ## ToDo: somehow the 1.3 api changed?! old version:
   ## route <- sprintf("/network/search/%s/%s", start, size)
   ## now somehow it changed to "http://public.ndexbio.org/rest/network/textsearch/0/1000" (from Chrome, 28.Nov.2016)
-  api = ndex.helper.getApi(ndexcon, 'search$network$search')
-  route <- ndex.helper.encodeParams(api$url, api$params, start=start, size=size)
+  api = ndex_helper_getApi(ndexcon, 'search$network$search')
+  route <- ndex_helper_encodeParams(api$url, api$params, start=start, size=size)
   
   ##Get a list of NetworkSummary objects
   response <- ndex_rest_POST(ndexcon, route=route, data=query)

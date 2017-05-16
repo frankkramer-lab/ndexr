@@ -19,28 +19,28 @@
 #' 
 #' This function retrieves the provenance of the network identified by the supplied network UUID string.
 #' 
-#' @param ndexcon object of class NDEXConnection link{ndex.connect}
+#' @param ndexcon object of class NDExConnection link{ndex_connect}
 #' @param networkId unique ID of the network
 #' 
 #' @return List of network metadata: ID, name, whether it is public, edge and node count; source and format of network
 #' 
 #' @section REST query:
-#' GET: ndex.conf$api$network$provenance$get
+#' GET: ndex_config$api$network$provenance$get
 #' @note Compatible to NDEx server version 1.3 and 2.0
 #' 
 #' @examples 
 #' ## Establish a server connection
-#' ndexcon = ndex.connect()
+#' ndexcon = ndex_connect()
 #' ## Find a network and get its UUID
-#' networks = ndex.find.networks(ndexcon,"p53")
+#' networks = ndex_find_networks(ndexcon,"p53")
 #' networkId = networks[1,"externalId"]
 #' ## Get the network provenace
-#' provenance = ndex.network.get.provenance(ndexcon, networkId) 
+#' provenance = ndex_network_get_provenance(ndexcon, networkId) 
 #' @export
-ndex.network.get.provenance <- function(ndexcon, networkId){
+ndex_network_get_provenance <- function(ndexcon, networkId){
     
-    api = ndex.helper.getApi(ndexcon, 'network$provenance$get')
-    route <- ndex.helper.encodeParams(api$url, api$params, network=networkId)
+    api = ndex_helper_getApi(ndexcon, 'network$provenance$get')
+    route <- ndex_helper_encodeParams(api$url, api$params, network=networkId)
     
     response <- ndex_rest_GET(ndexcon, route)
     return(response)
@@ -56,29 +56,29 @@ ndex.network.get.provenance <- function(ndexcon, networkId){
 ## 
 ## Updates the 'provenance' field of the network specified by 'networkId' to be the ProvenanceEntity object in the PUT data. The ProvenanceEntity object is expected to represent the current state of the network and to contain a tree-structure of ProvenanceEvent and ProvenanceEntity objects that describe the networks provenance history.
 ## 
-## @param ndexcon object of class NDEXConnection link{ndex.connect}
+## @param ndexcon object of class NDExConnection link{ndex_connect}
 ## @param networkId character; unique ID (UUID) of the network
 ## @param provenance NDEx provanance object
 ## 
 ## @return List of network metadata: ID, name, whether it is public, edge and node count; source and format of network
 ## 
 ## @section REST query:
-## GET: ndex.conf$api$network$provenance$get
+## GET: ndex_config$api$network$provenance$get
 ## @note Compatible to NDEx server version 1.3 and 2.0
 ## 
 ## @examples 
 ## \dontrun{
-## ndexcon = ndex.connect('MyAccountName', 'MyPassword', verbose=T)
-## networks = ndex.find.networks(ndexcon,"p53")
+## ndexcon = ndex_connect('MyAccountName', 'MyPassword', verbose=T)
+## networks = ndex_find_networks(ndexcon,"p53")
 ## networkId = networks[1,"externalId"]
-## provenance = ndex.network.set.provenance(ndexcon, networkId, provenance) 
+## provenance = ndex_network_set_provenance(ndexcon, networkId, provenance) 
 ## }
 ## NULL
-#ndex.network.set.provenance <- function(ndexcon, networkId, provenance){    
+#ndex_network_set_provenance <- function(ndexcon, networkId, provenance){    
 ## TODO! : Implement! Needs some way to construct ProvenanceEntity and ProvenanceEvent objects (see http://www.home.ndexbio.org/network-provenance-history/ ). How to encode merge in JSON/R?
 #    
-#    api = ndex.helper.getApi(ndexcon, 'network$provenance$set')
-#    route <- ndex.helper.encodeParams(api$url, api$params, network=networkId)
+#    api = ndex_helper_getApi(ndexcon, 'network$provenance$set')
+#    route <- ndex_helper_encodeParams(api$url, api$params, network=networkId)
 #    
 #    tmpFile = tempfile()
 #    writeLines(jsonlite::toJSON(provenance), tmpFile)
@@ -102,7 +102,7 @@ ndex.network.get.provenance <- function(ndexcon, networkId){
 ## @examples 
 ## \dontrun{}
 ## NULL
-#ndex.create.provenance.event <- function(inputs=NA, startedAtTime, endedAtTime, eventType, property.name, property.value){
+#ndex_create_provenance_event <- function(inputs=NA, startedAtTime, endedAtTime, eventType, property.name, property.value){
 #    event = data.frame(inputs=inputs, startedAtTime=startedAtTime, endedAtTime=endedAtTime, eventType=eventType, properties=NA)
 #    event$properties = as.list(event$properties)
 #    event$properties = list(data.frame(name=property.name, value=property.value, stringsAsFactors = FALSE))
@@ -121,7 +121,7 @@ ndex.network.get.provenance <- function(ndexcon, networkId){
 ## @examples 
 ## \dontrun{}
 ## NULL
-#ndex.create.provenance.entity <- function(uri=NA, creationEvent, property.name, property.value){
+#ndex_create_provenance_entity <- function(uri=NA, creationEvent, property.name, property.value){
 #    entity = data.frame(uri=uri, creationEvent=NA, properties=NA)
 #    entity$creationEvent = as.list(entity$creationEvent)
 #    entity$creationEvent = list(creationEvent)
@@ -136,7 +136,7 @@ ndex.network.get.provenance <- function(ndexcon, networkId){
 ## @examples 
 ## \dontrun{}
 ## NULL
-#ndex.create.provenance.entity.upload <- function(){
+#ndex_create_provenance_entity_upload <- function(){
 ##ProvenanceEntity : data.frame
 ##    uri : String
 ##    creationEvent (ProvenanceEvent) : data.frame
@@ -147,7 +147,7 @@ ndex.network.get.provenance <- function(ndexcon, networkId){
 ##        properties : list[[1]] : data.frame
 ##    properties : list[[1]] : data.frame
 #    
-#    event = ndex.create.provenance.event(    startedAtTime = '2017-03-23T09:00:00', 
+#    event = ndex_create_provenance_event(    startedAtTime = '2017-03-23T09:00:00', 
 #                                            endedAtTime = '2017-03-23T09:01:00', 
 #                                            eventType = 'File Upload', 
 #                                            property.name = c(    'user',
@@ -156,7 +156,7 @@ ndex.network.get.provenance <- function(ndexcon, networkId){
 #                                            property.value = c(    'Barry Manilow',
 #                                                                'barrymanilow',    
 #                                                                'Mandy Pathway.cx'))
-#    entity = ndex.create.provenance.entity(    uri='http://public.ndexbio.org/network/8c515a1c-633f-11e6-b0a6-06603eb7f303', 
+#    entity = ndex_create_provenance_entity(    uri='http://public.ndexbio.org/network/8c515a1c-633f-11e6-b0a6-06603eb7f303', 
 #                                            creationEvent = event,
 #                                            property.name = c(    'edge count',    
 #                                                                'node count',

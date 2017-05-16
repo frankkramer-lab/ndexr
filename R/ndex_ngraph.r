@@ -56,20 +56,20 @@
 #' 
 #' @return returns object of class ngraph if successfull, NULL otherwise
 #' 
-#' @seealso \code{\link{ngraph.toRCX}} \code{\link{rcx.fromJSON}} \code{\link{rcx.toJSON}} \code{\link{RCX}} \code{\link[igraph]{igraph}}   
+#' @seealso \code{\link{ngraph_toRCX}} \code{\link{rcx_fromJSON}} \code{\link{rcx_toJSON}} \code{\link{RCX}} \code{\link[igraph]{igraph}}   
 #' @aliases ngraph
 #' @examples 
 #' ## Establish a server connection
-#' ndexcon = ndex.connect()
+#' ndexcon = ndex_connect()
 #' ## Find one of your networks and get its UUID
-#' networks = ndex.find.networks(ndexcon)
+#' networks = ndex_find_networks(ndexcon)
 #' networkId = networks[1,"externalId"]
 #' ## Get the network data 
-#' rcx = ndex.get.network(ndexcon, networkId) 
+#' rcx = ndex_get_network(ndexcon, networkId) 
 #' ## Convert to nGraph
-#' ngraph = ngraph.fromRCX(rcx) 
+#' ngraph = ngraph_fromRCX(rcx) 
 #' @export
-ngraph.fromRCX <- function(rcx, verbose = FALSE){
+ngraph_fromRCX <- function(rcx, verbose = FALSE){
   
   if(!("RCX" %in% class(rcx))) {
     warning("RCX2ngraph: supplied parameter is not of class RCX! Returning null.")
@@ -79,7 +79,7 @@ ngraph.fromRCX <- function(rcx, verbose = FALSE){
   ##### create empty graph
   ngraph = igraph::make_empty_graph()
   # adding graph attributes is harmless
-  ngraph = ndex.internal_addAspects(ngraph, rcx, verbose)
+  ngraph = ndex_internal_addAspects(ngraph, rcx, verbose)
   
   ## sanity checks: no nodes defined
   if(is.null(rcx$nodes) || dim(rcx$nodes)[1] == 0) {
@@ -92,8 +92,8 @@ ngraph.fromRCX <- function(rcx, verbose = FALSE){
   if(!is.null(rcx$nodeAttributes) && dim(rcx$nodeAttributes)[1] > 0) {
     for(attrname in unique(rcx$nodeAttributes$n)) {
       sel = rcx$nodeAttributes$n == attrname
-      if(verbose){ cat('___________\nngraph:\n\tattrname:',attrname, '\n\tindex:',index=as.character(rcx$nodeAttributes$po[sel]),'\n\tvalue:', value=rcx$nodeAttributes$v[sel],'\n') }
-      ngraph = igraph::set_vertex_attr(ngraph,attrname, index=rcx$nodeAttributes$po[sel], value=as.list(rcx$nodeAttributes$v[sel]))
+      if(verbose){ message('___________\nngraph:\n\tattrname:',attrname, '\n\tindex:',index=as.character(rcx$nodeAttributes$po[sel]),'\n\tvalue:', value=rcx$nodeAttributes$v[sel],'\n') }
+      ngraph = igraph::set_vertex_attr(ngraph,attrname, index=match(rcx$nodeAttributes$po[sel],igraph::V(ngraph)$"@id"), value=as.list(rcx$nodeAttributes$v[sel]))
     }
   }
   
@@ -126,22 +126,22 @@ ngraph.fromRCX <- function(rcx, verbose = FALSE){
 #' 
 #' @return returns object of class ngraph if successfull, NULL otherwise
 #' 
-#' @note Wrapper function for \code{\link{ngraph.fromRCX}}
+#' @note Wrapper function for \code{\link{ngraph_fromRCX}}
 #' @examples 
 #' ## Establish a server connection
-#' ndexcon = ndex.connect()
+#' ndexcon = ndex_connect()
 #' ## Find one of your networks and get its UUID
-#' networks = ndex.find.networks(ndexcon)
+#' networks = ndex_find_networks(ndexcon)
 #' networkId = networks[1,"externalId"]
 #' ## Get the network data 
-#' rcx = ndex.get.network(ndexcon, networkId) 
+#' rcx = ndex_get_network(ndexcon, networkId) 
 #' ## Convert to nGraph
-#' ngraph = rcx.toNGraph(rcx) 
+#' ngraph = rcx_toNGraph(rcx) 
 #' @export
-rcx.toNGraph <- ngraph.fromRCX
+rcx_toNGraph <- ngraph_fromRCX
 
 
-#' ndex.internal_addAspects
+#' ndex_internal_addAspects
 #' 
 #' @param ngraph ngraph object
 #' @param rcx RCX object
@@ -149,7 +149,7 @@ rcx.toNGraph <- ngraph.fromRCX
 #' @return returns object of class ngraph
 #' @examples 
 #' NULL
-ndex.internal_addAspects <- function(ngraph, rcx, verbose = FALSE){
+ndex_internal_addAspects <- function(ngraph, rcx, verbose = FALSE){
   
   ### add all non-core aspects to the graph:
   for(i in names(rcx)) {
@@ -187,24 +187,24 @@ ndex.internal_addAspects <- function(ngraph, rcx, verbose = FALSE){
 #' @param ngraph ngraph object
 #' @param verbose logical; whether to print out extended feedback 
 #' @return returns object of class RCX if successfull, NULL otherwise
-#' @seealso \code{\link{ngraph}} \code{\link{ngraph.fromRCX}} \code{\link{rcx.fromJSON}} \code{\link{rcx.toJSON}}   
+#' @seealso \code{\link{ngraph}} \code{\link{ngraph_fromRCX}} \code{\link{rcx_fromJSON}} \code{\link{rcx_toJSON}}   
 #' @examples 
 #' ## Establish a server connection
-#' ndexcon = ndex.connect()
+#' ndexcon = ndex_connect()
 #' ## Find one of your networks and get its UUID
-#' networks = ndex.find.networks(ndexcon)
+#' networks = ndex_find_networks(ndexcon)
 #' networkId = networks[1,"externalId"]
 #' ## Get the network data 
-#' rcx = ndex.get.network(ndexcon, networkId) 
+#' rcx = ndex_get_network(ndexcon, networkId) 
 #' ## Convert to nGraph
-#' ngraph = ngraph.fromRCX(rcx) 
+#' ngraph = ngraph_fromRCX(rcx) 
 #' ## Convert it back to rcx
-#' rcx = ngraph.toRCX(ngraph)
+#' rcx = ngraph_toRCX(ngraph)
 #' @export
-ngraph.toRCX <- function(ngraph, verbose = FALSE){
+ngraph_toRCX <- function(ngraph, verbose = FALSE){
   
   if(is.null(ngraph) || !("igraph" %in% class(ngraph))) {
-    warning("ngraph.toRCX: parameter ngraph does not contain igraph object")
+    warning("ngraph_toRCX: parameter ngraph does not contain igraph object")
     return(NULL)
   }
   

@@ -4,24 +4,24 @@ install_github("frankkramer-lab/ndexr@develop")
 library(ndexr)
 
 ###connect anonymously
-#ndexcon1 = ndex.connect(verbose=T)
+#ndexcon1 = ndex_connect(verbose=T)
 ###connect as test user
-#ndexcon2 = ndex.connect(username="testacc", password="testacc", verbose=T)
+#ndexcon2 = ndex_connect(username="testacc", password="testacc", verbose=T)
 
-ndexcon1 = ndex.connect(username="testacc", password="testacc", host='http://dev.ndexbio.org/v2', verbose=T)
-ndexcon2 = ndex.connect(host='http://dev.ndexbio.org/v2', verbose=T)
+ndexcon1 = ndex_connect(username="testacc", password="testacc", host='http://dev.ndexbio.org/v2', verbose=T)
+ndexcon2 = ndex_connect(host='http://dev.ndexbio.org/v2', verbose=T)
 
 
 ###get network api
-apidata1 = ndex.get.network.api(ndexcon1)
-apidata2 = ndex.get.network.api(ndexcon2)
+apidata1 = ndex_get_network.api(ndexcon1)
+apidata2 = ndex_get_network.api(ndexcon2)
 
 ###find some networks containing p53
-pws1 = ndexr::ndex.find.networks(ndexcon1,"p53")
-pws2 = ndexr::ndex.find.networks(ndexcon2,"p53")
+pws1 = ndexr::ndex_find_networks(ndexcon1,"p53")
+pws2 = ndexr::ndex_find_networks(ndexcon2,"p53")
 ###dont find networks
-is.null(ndexr::ndex.find.networks(ndexcon1,"sdjlbelglserglersg"))
-is.null(ndexr::ndex.find.networks(ndexcon2,"sdjlbelglserglersg"))
+is.null(ndexr::ndex_find_networks(ndexcon1,"sdjlbelglserglersg"))
+is.null(ndexr::ndex_find_networks(ndexcon2,"sdjlbelglserglersg"))
 
 ###get complete network as RCX
 rcx1 = ndex.get.complete.network(ndexcon1,pws1[1,"externalId"])
@@ -45,7 +45,7 @@ for(i in names(rcx1)) {
 }
 
 ###save RCX object to ndex server. "ndex.RCXasNewNetwork" cleans up ndexStatus, provenanceHistory, status aspects
-uuid = ndex.create.network(ndexcon1, ndexr:::ndex.RCXasNewNetwork(rcx_back1))
+uuid = ndex_create_network(ndexcon1, ndexr:::ndex.RCXasNewNetwork(rcx_back1))
 
 
 

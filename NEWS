@@ -4,3 +4,22 @@ ndexr 0.99.0
 * Pushing version number to 0.99.0 according to Bioconductor checklist
 * Initial submission to Bioconductor
 
+ndexr 0.99.10
+===========
+
+**Breaking changes of the function names!**
+
+* Changed the naming of the functions: dots are replaced by underscores, so that the functions may not be confused with S3 methods. 
+	The naming convention itself doesn't change! 
+	E.g. the new name of the function "ndex.network.update.aspect" is now "ndex_network_update_aspect"
+* Moved packages httr, jsonlite, plyr and tidyr from "Depends" field to "Imports" (Import into NAMESPACE not necessary, because external package function names are always explicitly qualified) 
+* Fixed a bug in ngraph_fromRCX, which prevented the resulting ngraph object from node attributes to be set correctly. This also lead the following warnings: "Warning in vattrs[[name]][index] <- value :
+      number of items to replace is not a multiple of replacement length"
+* Changed functions from passing a quoted string (e.g. host = "ndexConf$connection$host") as default parameter to using the actual object (e.g. host = ndexConf$connection$host)
+* Made some minor changes to NDExConnection object; removed an undesired warning.
+* Implement a print method for the classes "NDExConnection" and "RCX" to provide the user with a useful summary of this complicated object
+* changed to the usage of message() rather than cat() for verbose outputs, where it wasn't already done
+* Specified a single 'Maintainer' representing the primary contact for maintenance issues related to this package.
+* Removed the .gitignore file from this directory
+* Changed installation instructions in the vignette to Bioconductor
+

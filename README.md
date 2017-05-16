@@ -30,12 +30,10 @@ The package is compatible with both NDEx versions 1.3 and 2.0.
 Installation
 ============
 
-Installation instructions (using
-[*devtools*](http://cran.r-project.org/web/packages/devtools/index.html)
-R package)
+Installation instructions (from Bioconductor)
 
-    require(devtools)
-    install_github("frankkramer-lab/ndexr")
+    source("https://bioconductor.org/biocLite.R")
+    biocLite("ndexr")
     library(ndexr)
 
 Quick Start
@@ -47,37 +45,37 @@ Some short overview of the most important functions
     library(ndexr)
 
     ## login to the NDEx server
-    ndexcon = ndex.connect("username", "password")
+    ndexcon = ndex_connect("username", "password")
 
     ## search the networks for "EGFR"
-    networks <- ndex.find.networks(ndexcon, "EGFR")
+    networks <- ndex_find_networks(ndexcon, "EGFR")
 
     ## UUID of the first search result
     networkId <- networks[1,'externalId']
 
     ## get summary of the network
-    networkSummary <- ndex.network.get.summary(ndexcon, networkId)
+    networkSummary <- ndex_network_get_summary(ndexcon, networkId)
 
     ## get the entire network as RCX object
-    rcx <- ndex.get.network(ndexcon, networkId)
+    rcx <- ndex_get_network(ndexcon, networkId)
 
     ## remove NDEx artefacts from network
-    rcx <- rcx.asNewNetwork(rcx)
+    rcx <- rcx_asNewNetwork(rcx)
 
     ## do some fancy stuff with the network, then
     ## update the meta-data
-    rcx <- rcx.updateMetaData(rcx)
+    rcx <- rcx_updateMetaData(rcx)
 
     ## upload network as a new network to the NDEx server
-    networkId <- ndex.create.network(ndexcon, rcx)
+    networkId <- ndex_create_network(ndexcon, rcx)
 
     ## do some other fancy stuff with the network, then
     ## update the network on the server
-    networkId <- ndex.update.network(ndexcon, rcx)
+    networkId <- ndex_update_network(ndexcon, rcx)
 
     ## realize, you did bad things to the poor network, so better 
     ## delete it on the server
-    ndex.delete.network(ndexcon, networkId)
+    ndex_delete_network(ndexcon, networkId)
 
 Connect to a server
 ===================
@@ -93,18 +91,18 @@ the host to your local installation.
     library(ndexr)
 
     ## connect anonymously
-    ndexcon = ndex.connect()
+    ndexcon = ndex_connect()
 
     ## log in with user name and password
-    ndexconUser = ndex.connect(username="username", password="password")
+    ndexconUser = ndex_connect(username="username", password="password")
 
     ## specify the server
-    ndexconLocal = ndex.connect(username="username",
+    ndexconLocal = ndex_connect(username="username",
                     password="password", 
                     host="localhost:8888/ndex/rest")
 
     ## manually change the api and connection configuration
-    ndexcon13 = ndex.connect(ndexConf=ndex.conf$Version_1.3)
+    ndexcon13 = ndex_connect(ndexConf=ndex_config$Version_1.3)
 
 This package is developed following the structure of the documented api
 structure. For complete description of the NDEx server api see
@@ -124,17 +122,17 @@ possible to restrict the networks to a specific search string (e.g.
 or limit the number of fetched networks.
 
     ## list networks on server
-    networks <- ndex.find.networks(ndexcon) 
+    networks <- ndex_find_networks(ndexcon) 
     ## same as previous
-    networks <- ndex.find.networks(ndexcon, start=0, size=5)
+    networks <- ndex_find_networks(ndexcon, start=0, size=5)
 
     ## search for "EGFR"
-    networksEgfr <- ndex.find.networks(ndexcon, searchString="EGFR")
+    networksEgfr <- ndex_find_networks(ndexcon, searchString="EGFR")
     ## same as previous
-    networksEgfr <- ndex.find.networks(ndexcon, "EGFR")
+    networksEgfr <- ndex_find_networks(ndexcon, "EGFR")
 
     ## same as previous
-    networksOfUser <- ndex.find.networks(ndexcon, accountName="ndextutorials")
+    networksOfUser <- ndex_find_networks(ndexcon, accountName="ndextutorials")
 
 As result you get a data.frame containing information of the networks.
 
@@ -187,7 +185,7 @@ summary is similar the structure of the network list
     networkId <- networks[1,'externalId']
 
     ## get network summary
-    networkSummary <- ndex.network.get.summary(ndexcon, networkId)
+    networkSummary <- ndex_network_get_summary(ndexcon, networkId)
 
     names(networkSummary)
 
@@ -208,7 +206,7 @@ summary is similar the structure of the network list
     ## [1] "7aed4dd0-14e4-11e6-a1f8-06603eb7f303"
 
     ## get the entire network as RCX object
-    rcx <- ndex.get.network(ndexcon, networkId)
+    rcx <- ndex_get_network(ndexcon, networkId)
 
 To send a network to an server, there are two possibilities. Either one
 wants to update an existing network on the server or create a new one.
@@ -218,19 +216,19 @@ UUID is extracted from the “externalId” property of the “ndexStatus”
 aspect, or can be set manually.
 
     ## create a new network on server
-    networkId <- ndex.create.network(ndexcon, rcx)
+    networkId <- ndex_create_network(ndexcon, rcx)
 
     ## update a network on server
-    networkId <- ndex.update.network(ndexcon, rcx)
+    networkId <- ndex_update_network(ndexcon, rcx)
 
     ## same as previous
-    networkId <- ndex.update.network(ndexcon, rcx, networkId)
+    networkId <- ndex_update_network(ndexcon, rcx, networkId)
 
 Besides creating, reading and updating, it is also possible to delete
 networks on the server. This operation cannot be undone, so be careful!
 
     ## deletes the network from the server
-    ndex.delete.network(ndexcon, networkId)
+    ndex_delete_network(ndexcon, networkId)
 
 RCX
 ===
@@ -347,33 +345,33 @@ objects, one can use NGraph objects. A lossless conversion between the
 two files can be done using the following functions:
 
     ## convert RCX to JSON
-    json <- rcx.toJSON(rcx)
+    json <- rcx_toJSON(rcx)
 
     ## ...and back
-    rcx <- rcx.fromJSON(json)
+    rcx <- rcx_fromJSON(json)
 
     ## convert RCX to NGraph
-    ngraph <- rcx.toNGraph(rcx)
+    ngraph <- rcx_toNGraph(rcx)
 
     ## ...and back
-    rcx <- ngraph.toRCX(ngraph)
+    rcx <- ngraph_toRCX(ngraph)
 
 It is possible to create blank RCX objects from scratch:
 
-    newRcx <- rcx.new()
+    newRcx <- rcx_new()
 
 After a RCX object is downloaded from an NDEx server, it will contain
 some aspects that are not present in a newly generated network, i.e.
 “ndexStatus”, “provenanceHistory” and “status”. Removing those aspects
 might be useful in some cases.
 
-    asNewRcx <- rcx.asNewNetwork(rcx)
+    asNewRcx <- rcx_asNewNetwork(rcx)
 
 After a RCX object underwent some changes (adding/removing
 nodes/edges/aspects/meta- data, etc.), it is advisable to check a RCX
 object for its integrity and update its meta-data.
 
-    rcx <- rcx.updateMetaData(rcx)
+    rcx <- rcx_updateMetaData(rcx)
 
 The meta-data is not only updated by the function, but also created, if
 not existent in the first place. It is necessary to mention, that the
@@ -393,7 +391,7 @@ to download the meta-data of a network at first to check the available
 aspects.
 
     ## get meta-data for a network
-    metadata = ndex.network.get.metadata(ndexcon, networkId)
+    metadata = ndex_network_get_metadata(ndexcon, networkId)
 
     names(metadata)
 
@@ -418,7 +416,7 @@ aspects.
 Afterwards, only the favored aspects can be downloaded individually.
 
     ## get aspect "nodeCitations" for the network
-    networkAttibutes = ndex.network.get.aspect(ndexcon, networkId, "networkAttributes")
+    networkAttibutes = ndex_network_get_aspect(ndexcon, networkId, "networkAttributes")
 
     networkAttibutes
 
@@ -437,8 +435,8 @@ NDEx Network properties
 Even after creation, it is possible to change the name, the description
 or version of a network.
 
-    ndex.network.update.profile(ndexcon, networkId, name="My network", version="1.3")
-    ndex.network.update.profile(ndexcon, networkId, description="Nothing to see here")
+    ndex_network_update_profile(ndexcon, networkId, name="My network", version="1.3")
+    ndex_network_update_profile(ndexcon, networkId, description="Nothing to see here")
 
 For collaborative work, it is necessary to share networks between
 several users and groups. Therefore there are specialized functions to
@@ -449,22 +447,22 @@ private networks, “WRITE” to be able modify, and “ADMIN” for the owner
 of the network.
 
     ## show all user who have permission to a network
-    permissions = ndex.network.get.permission(ndexcon, networkId, 'user')
+    permissions = ndex_network_get_permission(ndexcon, networkId, 'user')
 
     ## show all groups who have permission to a network
-    permissions = ndex.network.get.permission(ndexcon, networkId, 'group')
+    permissions = ndex_network_get_permission(ndexcon, networkId, 'group')
 
     ## show all users with write access to a network
-    permissions = ndex.network.get.permission(ndexcon, networkId, 'user', 'WRITE')
+    permissions = ndex_network_get_permission(ndexcon, networkId, 'user', 'WRITE')
 
     ## grant an user permission to a network
-    ndex.network.update.permission(ndexcon, networkId, user=someUserUuid, 'READ')
+    ndex_network_update_permission(ndexcon, networkId, user=someUserUuid, 'READ')
 
     ## change the permission of an user to the network
-    ndex.network.update.permission(ndexcon, networkId, user=someUserUuid, 'WRITE')
+    ndex_network_update_permission(ndexcon, networkId, user=someUserUuid, 'WRITE')
 
     ## withdraw the permission from an user
-    ndex.network.delete.permission(ndexcon, networkId, user=someUserUuid)
+    ndex_network_delete_permission(ndexcon, networkId, user=someUserUuid)
 
 Besides permission management on user and group level, it is also
 possible to set some system properties on a network that influence the
@@ -473,8 +471,8 @@ it is only visible to the owner and invited users and groups. If at some
 point one decides to make the network readable by anyone, it is possible
 to change the visibility of a network to “PUBLIC”.
 
-    ndex.network.set.systemProperties(ndexcon, networkId, visibility="PUBLIC")
-    ndex.network.set.systemProperties(ndexcon, networkId, visibility="PRIVATE")
+    ndex_network_set_systemProperties(ndexcon, networkId, visibility="PUBLIC")
+    ndex_network_set_systemProperties(ndexcon, networkId, visibility="PRIVATE")
 
 When a network has reached the point to be published, further edits
 should be prevented. While it would be possible to set the access
@@ -482,15 +480,15 @@ permissions of all users and groups to “READ”, this approach is very
 inconvenient. Therefore, a simpler way is to just set the network to
 read-only using the network system properties.
 
-    ndex.network.set.systemProperties(ndexcon, networkId, readOnly=TRUE)
+    ndex_network_set_systemProperties(ndexcon, networkId, readOnly=TRUE)
 
 One also has the option at the NDEx server to choose a selection of
 their favorite networks for display in his or her home page.
 
-    ndex.network.set.systemProperties(ndexcon, networkId, showcase=TRUE)
-    ndex.network.set.systemProperties(ndexcon, networkId, showcase=FALSE)
+    ndex_network_set_systemProperties(ndexcon, networkId, showcase=TRUE)
+    ndex_network_set_systemProperties(ndexcon, networkId, showcase=FALSE)
     # change more than one property simultaneously
-    ndex.network.set.systemProperties(ndexcon, networkId, readOnly=TRUE, visibility="PUBLIC", showcase=TRUE)
+    ndex_network_set_systemProperties(ndexcon, networkId, readOnly=TRUE, visibility="PUBLIC", showcase=TRUE)
 
 The provenance history aspect of an NDEx network is used to document the
 workflow of events and information sources that produced the current
@@ -499,7 +497,7 @@ network (for the official provenance documentation see
 ). There is a convenience function, that retrieves the provenance of the
 network.
 
-    provenance = ndex.network.get.provenance(ndexcon, networkId) 
+    provenance = ndex_network_get_provenance(ndexcon, networkId) 
 
 API Compatibility with NDEx versions
 ====================================
@@ -528,97 +526,97 @@ the corresponding version.
 <td align="left"></td>
 </tr>
 <tr class="odd">
-<td align="left">ndex.find.networks</td>
+<td align="left">ndex_find_networks</td>
 <td align="left">no</td>
 <td align="left">X</td>
 <td align="left">X</td>
 </tr>
 <tr class="even">
-<td align="left">ndex.network.get.summary</td>
+<td align="left">ndex_network_get_summary</td>
 <td align="left">no</td>
 <td align="left">X</td>
 <td align="left">X</td>
 </tr>
 <tr class="odd">
-<td align="left">ndex.get.network</td>
+<td align="left">ndex_get_network</td>
 <td align="left">no</td>
 <td align="left">X</td>
 <td align="left">X</td>
 </tr>
 <tr class="even">
-<td align="left">ndex.create.network</td>
+<td align="left">ndex_create_network</td>
 <td align="left">yes</td>
 <td align="left">X</td>
 <td align="left">X</td>
 </tr>
 <tr class="odd">
-<td align="left">ndex.update.network</td>
+<td align="left">ndex_update_network</td>
 <td align="left">yes</td>
 <td align="left">X</td>
 <td align="left">X</td>
 </tr>
 <tr class="even">
-<td align="left">ndex.delete.network</td>
+<td align="left">ndex_delete_network</td>
 <td align="left">yes</td>
 <td align="left">X</td>
 <td align="left">X</td>
 </tr>
 <tr class="odd">
-<td align="left">ndex.network.get.metadata</td>
+<td align="left">ndex_network_get_metadata</td>
 <td align="left">no</td>
 <td align="left">X</td>
 <td align="left">(x)</td>
 </tr>
 <tr class="even">
-<td align="left">ndex.network.aspect.get.metadata</td>
+<td align="left">ndex_network_aspect_get_metadata</td>
 <td align="left">no</td>
-<td align="left">(x)</td>
-<td align="left"></td>
-</tr>
-<tr class="odd">
-<td align="left">ndex.network.get.aspect</td>
-<td align="left">no</td>
-<td align="left">X</td>
-<td align="left">(x)</td>
-</tr>
-<tr class="even">
-<td align="left">ndex.network.update.aspect</td>
-<td align="left">yes</td>
 <td align="left">(x)</td>
 <td align="left"></td>
 </tr>
 <tr class="odd">
-<td align="left">ndex.network.get.permission</td>
+<td align="left">ndex_network_get_aspect</td>
+<td align="left">no</td>
+<td align="left">X</td>
+<td align="left">(x)</td>
+</tr>
+<tr class="even">
+<td align="left">ndex_network_update_aspect</td>
+<td align="left">yes</td>
+<td align="left">(x)</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">ndex_network_get_permission</td>
 <td align="left">yes</td>
 <td align="left">X</td>
 <td align="left">only for users, different response</td>
 </tr>
 <tr class="even">
-<td align="left">ndex.network.update.permission</td>
+<td align="left">ndex_network_update_permission</td>
 <td align="left">yes</td>
 <td align="left">X</td>
 <td align="left">(only for users)</td>
 </tr>
 <tr class="odd">
-<td align="left">ndex.network.delete.permission</td>
+<td align="left">ndex_network_delete_permission</td>
 <td align="left">yes</td>
 <td align="left">X</td>
 <td align="left">only for users</td>
 </tr>
 <tr class="even">
-<td align="left">ndex.network.set.systemProperties</td>
+<td align="left">ndex_network_set_systemProperties</td>
 <td align="left">yes</td>
 <td align="left">X</td>
 <td align="left">only readOnly</td>
 </tr>
 <tr class="odd">
-<td align="left">ndex.network.update.profile</td>
+<td align="left">ndex_network_update_profile</td>
 <td align="left">yes</td>
 <td align="left">X</td>
 <td align="left">X</td>
 </tr>
 <tr class="even">
-<td align="left">ndex.network.get.provenance</td>
+<td align="left">ndex_network_get_provenance</td>
 <td align="left">no</td>
 <td align="left">X</td>
 <td align="left">X</td>
@@ -630,97 +628,97 @@ the corresponding version.
 <td align="left"></td>
 </tr>
 <tr class="even">
-<td align="left">ndex.find.users</td>
+<td align="left">ndex_find_users</td>
 <td align="left">no</td>
 <td align="left">X</td>
 <td align="left">X</td>
 </tr>
 <tr class="odd">
-<td align="left">ndex.find.user.byName</td>
+<td align="left">ndex_find_user_byName</td>
 <td align="left">no</td>
 <td align="left">X</td>
 <td align="left"></td>
 </tr>
 <tr class="even">
-<td align="left">ndex.find.user.byId</td>
+<td align="left">ndex_find_user_byId</td>
 <td align="left">no</td>
 <td align="left">X</td>
 <td align="left"></td>
 </tr>
 <tr class="odd">
-<td align="left">ndex.create.user</td>
+<td align="left">ndex_create_user</td>
 <td align="left">yes</td>
 <td align="left">X</td>
 <td align="left"></td>
 </tr>
 <tr class="even">
-<td align="left">ndex.delete.user</td>
+<td align="left">ndex_delete_user</td>
 <td align="left">yes</td>
 <td align="left">X</td>
 <td align="left"></td>
 </tr>
 <tr class="odd">
-<td align="left">ndex.update.user</td>
+<td align="left">ndex_update_user</td>
 <td align="left">yes</td>
 <td align="left">X</td>
 <td align="left"></td>
 </tr>
 <tr class="even">
-<td align="left">ndex.verify.user</td>
+<td align="left">ndex_verify_user</td>
 <td align="left">no</td>
 <td align="left">X</td>
 <td align="left"></td>
 </tr>
 <tr class="odd">
-<td align="left">ndex.user.change.password</td>
+<td align="left">ndex_user_change_password</td>
 <td align="left">yes</td>
 <td align="left">X</td>
 <td align="left"></td>
 </tr>
 <tr class="even">
-<td align="left">ndex.user.mail.password</td>
+<td align="left">ndex_user_mail_password</td>
 <td align="left">no</td>
 <td align="left">X</td>
 <td align="left"></td>
 </tr>
 <tr class="odd">
-<td align="left">ndex.user.forgot.password</td>
+<td align="left">ndex_user_forgot_password</td>
 <td align="left">no</td>
 <td align="left">X</td>
 <td align="left"></td>
 </tr>
 <tr class="even">
-<td align="left">ndex.user.list.groups</td>
+<td align="left">ndex_user_list_groups</td>
 <td align="left">yes</td>
 <td align="left">X</td>
 <td align="left"></td>
 </tr>
 <tr class="odd">
-<td align="left">ndex.user.show.group</td>
+<td align="left">ndex_user_show_group</td>
 <td align="left">yes</td>
 <td align="left">X</td>
 <td align="left"></td>
 </tr>
 <tr class="even">
-<td align="left">ndex.user.list.permissions</td>
+<td align="left">ndex_user_list_permissions</td>
 <td align="left">yes</td>
 <td align="left">X</td>
 <td align="left"></td>
 </tr>
 <tr class="odd">
-<td align="left">ndex.user.show.permission</td>
+<td align="left">ndex_user_show_permission</td>
 <td align="left">yes</td>
 <td align="left">X</td>
 <td align="left"></td>
 </tr>
 <tr class="even">
-<td align="left">ndex.user.get.showcase</td>
+<td align="left">ndex_user_get_showcase</td>
 <td align="left">no</td>
 <td align="left">X</td>
 <td align="left"></td>
 </tr>
 <tr class="odd">
-<td align="left">ndex.user.get.networksummary</td>
+<td align="left">ndex_user_get_networksummary</td>
 <td align="left">yes</td>
 <td align="left">X</td>
 <td align="left"></td>
@@ -732,55 +730,55 @@ the corresponding version.
 <td align="left"></td>
 </tr>
 <tr class="odd">
-<td align="left">ndex.find.groups</td>
+<td align="left">ndex_find_groups</td>
 <td align="left">no</td>
 <td align="left">X</td>
 <td align="left">X</td>
 </tr>
 <tr class="even">
-<td align="left">ndex.get.group</td>
+<td align="left">ndex_get_group</td>
 <td align="left">no</td>
 <td align="left">X</td>
 <td align="left"></td>
 </tr>
 <tr class="odd">
-<td align="left">ndex.create.group</td>
+<td align="left">ndex_create_group</td>
 <td align="left">yes</td>
 <td align="left">X</td>
 <td align="left"></td>
 </tr>
 <tr class="even">
-<td align="left">ndex.delete.group</td>
+<td align="left">ndex_delete_group</td>
 <td align="left">yes</td>
 <td align="left">X</td>
 <td align="left"></td>
 </tr>
 <tr class="odd">
-<td align="left">ndex.update.group</td>
+<td align="left">ndex_update_group</td>
 <td align="left">yes</td>
 <td align="left">X</td>
 <td align="left"></td>
 </tr>
 <tr class="even">
-<td align="left">ndex.group.list.users</td>
+<td align="left">ndex_group_list_users</td>
 <td align="left">no</td>
 <td align="left">X</td>
 <td align="left"></td>
 </tr>
 <tr class="odd">
-<td align="left">ndex.group.set.membership</td>
+<td align="left">ndex_group_set_membership</td>
 <td align="left">yes</td>
 <td align="left">X</td>
 <td align="left"></td>
 </tr>
 <tr class="even">
-<td align="left">ndex.group.list.networks</td>
+<td align="left">ndex_group_list_networks</td>
 <td align="left">no</td>
 <td align="left">X</td>
 <td align="left"></td>
 </tr>
 <tr class="odd">
-<td align="left">ndex.group.network.get.permission</td>
+<td align="left">ndex_group_network_get_permission</td>
 <td align="left">no</td>
 <td align="left">X</td>
 <td align="left"></td>
@@ -793,13 +791,13 @@ Server REST API configuration
 
 In the section “Connect to a server”, briefly a method for manually
 changing the API version was introduced, with the API definition stored
-in ndex.conf.
+in ndex_config.
 
-    names(ndex.conf)
+    names(ndex_config)
 
     ## [1] "defaultVersion" "Version_2.0"    "Version_1.3"
 
-    str(ndex.conf, max.level = 3)
+    str(ndex_config, max.level = 3)
 
     ## List of 3
     ##  $ defaultVersion: chr "Version_2.0"
@@ -828,13 +826,13 @@ in ndex.conf.
     ##   .. ..$ search      :List of 3
 
 This object contains the api definition for several versions (currently
-version 1.3 and 2.0). By default, `ndex.connect()` uses the version
-defined in `ndex.conf$defaultVersion` ("Version\_2.0"). To use another,
+version 1.3 and 2.0). By default, `ndex_connect()` uses the version
+defined in `ndex_config$defaultVersion` ("Version\_2.0"). To use another,
 or even a customized version to establish a server connection, the
 ndexConf parameter can be used, like shown before. In the following, the
 structure of such a configuration is elaborated in more detail.
 
-    names(ndex.conf$Version_2.0)
+    names(ndex_config$Version_2.0)
 
     ## [1] "version"    "connection" "api"
 
@@ -855,8 +853,8 @@ sub-branches furthermore. At the end of an branch, the actual definition
 of an API can be found.
 
 To show, how such an API is defined and how to define one by themselves,
-let’s have a look at `ndex.conf$Version_2.0$api$user$password$mail`,
-which is used by `ndex.user.mail.password()`. Where to find the
+let’s have a look at `ndex_config$Version_2.0$api$user$password$mail`,
+which is used by `ndex_user_mail_password()`. Where to find the
 configuration of the function is shown in the “REST query” section of
 the function documentation. For a better readability, the yaml notation
 for this function configuration is used:
@@ -874,8 +872,8 @@ for this function configuration is used:
           tag: "forgot"
           default: "true"
 
-Note: To get the yaml notation for the whole `ndex.conf` simply use
-`yaml::as.yaml(ndex.conf)` (requires package `yaml` to be installed).
+Note: To get the yaml notation for the whole `ndex_config` simply use
+`yaml::as.yaml(ndex_config)` (requires package `yaml` to be installed).
 
 The single parameter definitions are given as list by the "params"
 parameter. Each parameter is defined by a method, and, if applicable, a
@@ -901,38 +899,38 @@ defining the method: replace, append or parameter.
 It is also possible to set parameter as optional (except for replace),
 or define default values. Values are assigned to the parameters using
 the parameter name in the ... parameter of the
-`ndex.helper.encodeParams()` function. Parameters, that are not defined
+`ndex_helper_encodeParams()` function. Parameters, that are not defined
 in the configuration are ignored.
 
 The easiest to write an own configuration is by simply copying an
 existing configuration and tailor it to the needs.
 
     # Copy an existing config
-    custom.ndex.conf = ndex.conf$Version_2.0
+    custom.ndex_config = ndex_config$Version_2.0
 
     # Change the host connection for a local NDEx server installation
-    custom.ndex.conf$connection$host ="localhost:8090"
+    custom.ndex_config$connection$host ="localhost:8090"
 
     # Custom path to the REST api
-    custom.ndex.conf$connection$api ="/api/rest"
+    custom.ndex_config$connection$api ="/api/rest"
 
-    # Change the REST path for the ndex.get.network function
-    custom.ndex.conf$api$network$get$url ="/custom/networks/#NETWORKID#"
+    # Change the REST path for the ndex_get_network function
+    custom.ndex_config$api$network$get$url ="/custom/networks/#NETWORKID#"
 
     # Add some (default) parameters to the function
-    custom.ndex.conf$api$network$get$params$newParam = list(method="parameter", tag="someTag", default="someValue")
+    custom.ndex_config$api$network$get$params$newParam = list(method="parameter", tag="someTag", default="someValue")
 
 It is also possible to write an own configuration in yaml (or convert
-`ndex.conf` to yaml, see above) and load it as object (`yaml::load` or
+`ndex_config` to yaml, see above) and load it as object (`yaml::load` or
 `yaml::load_file`) or to translate the configuration into R code using
 the function `ndexr:::yamlToRConfig()`
 
 Note: For package maintenance it is advised to add new versions as yaml
 definitions in `/R/ndex_api_config.yml` (for example as “Version\_3.0”)
 and update the R code in `/R/ndex_api_config.r`, which defines the
-`ndex.conf` object.
+`ndex_config` object.
 
-    yamlToRConfig = function(yamlFile='R/ndex_api_config.yml', rScriptFile='R/ndex_api_config.r', defaultHeader=ndex.conf.header){
+    yamlToRConfig = function(yamlFile='R/ndex_api_config.yml', rScriptFile='R/ndex_api_config.r', defaultHeader=ndex_conf_header){
       yamlObj = yaml::yaml.load_file(yamlFile)
       rCodeTxt = paste0(defaultHeader, listToRCode(yamlObj))
       outFile = file(rScriptFile)
