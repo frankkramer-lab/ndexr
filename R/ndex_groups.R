@@ -174,7 +174,7 @@ ndex_create_group <- function(ndexcon, groupName, image, website, description, p
 #' ## Find the user's groups and get one group id
 #' # groups = ndex_user_list_groups(ndexcon, userId)
 #' # groupId = groups[1,"externalId"]
-#' #ndexr.delete.group(ndexcon,groupId)
+#' #ndex_delete_group(ndexcon,groupId)
 #' NULL
 #' @export
 ndex_delete_group <- function(ndexcon, groupId) {

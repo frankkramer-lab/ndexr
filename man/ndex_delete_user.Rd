@@ -34,6 +34,6 @@ GET: ndex_config$api$user$delete
 # user = ndex_find_user_byName(ndexcon, 'SomeUserName')
 # userId = user$externalId
 ## Delete user
-# ndexr.delete.user(ndexcon, userId)
+# ndex_delete_user(ndexcon, userId)
 NULL
 }

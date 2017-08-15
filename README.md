@@ -38,7 +38,7 @@ Installation
     
 ## Installation via GitHub
 
-using [*devtools*](http://cran.r-project.org/web/packages/devtools/index.html) R package)
+using [*devtools*](http://cran.r-project.org/web/packages/devtools/index.html) R package
 
     require(devtools)
     install_github("frankkramer-lab/ndexr")
@@ -349,7 +349,7 @@ of this package for downloading network data from a NDEx server. But it
 might be useful to convert an RCX object from/to JSON manually, for
 example for down-/uploading a CX file from/to a NDEx server via the web
 interface. For handling the network information within R, besides RCX
-objects, one can use NGraph objects. A lossless conversion between the
+objects, one can use RCXgraph objects. A lossless conversion between the
 two files can be done using the following functions:
 
     ## convert RCX to JSON
@@ -358,11 +358,11 @@ two files can be done using the following functions:
     ## ...and back
     rcx <- rcx_fromJSON(json)
 
-    ## convert RCX to NGraph
-    ngraph <- rcx_toNGraph(rcx)
+    ## convert RCX to RCXgraph
+    rcxgraph <- rcx_toRCXgraph(rcx)
 
     ## ...and back
-    rcx <- ngraph_toRCX(ngraph)
+    rcx <- rcxgraph_toRCX(rcxgraph)
 
 It is possible to create blank RCX objects from scratch:
 

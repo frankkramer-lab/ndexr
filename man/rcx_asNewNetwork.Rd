@@ -20,20 +20,15 @@ After a RCX object is downloaded from an NDEx server, it will contain some aspec
 Removing those aspects might be useful in some cases.
 }
 \examples{
-## Establish a server connection
-ndexcon = ndex_connect()
-## Find a network and get its UUID
-networks = ndex_find_networks(ndexcon,"p53")
-networkId = networks[1,"externalId"]
-## Get the network data 
-rcx = ndex_get_network(ndexcon, networkId)
+## Create an RCX object
+rcx = rcx_new(c('@id'=1, n='Some Name', r='HGNC:Symbol'))
 ## Remove NDEx artefacts
 rcx = rcx_asNewNetwork(rcx)
 \dontrun{
 rcxjson = rcx_toJSON(rcx)
-ndex_create_network(ndexcon, rcxjson) 
+ndex_create_network(ndexcon, rcxjson)
 }
 }
 \seealso{
-\code{\link{rcx_fromJSON}} \code{\link{ndex_get_network}}
+\code{\link{rcx_fromJSON}}
 }

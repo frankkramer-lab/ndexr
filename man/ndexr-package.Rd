@@ -28,9 +28,9 @@ apidata1 = ndex_get_network.api(ndexcon1)
 pws1 = ndexr::ndex_find_networks(ndexcon1,"p53")
 ###get complete network as RCX
 rcx1 = ndex.get.complete.network(ndexcon1,pws1[1,"externalId"])
-###convert to ngraph and back
-ngraph1 = ndex.RCX2ngraph(rcx1)
-plot(ngraph1, vertex.label=V(ngraph1)$n, edge.label=E(ngraph1)$i)
+###convert to rcxgraph and back
+rcxgraph1 = rcx_toRCXgraph(rcx1)
+plot(rcxgraph1, vertex.label=V(rcxgraph1)$n, edge.label=E(rcxgraph1)$i)
 }
 }
 \author{

@@ -16,7 +16,7 @@ rcx_fromJSON(json, verbose = FALSE)
 returns object of class RCX if successfull, NULL otherwise
 }
 \description{
-This function creates an RCX object from a supplied JSON-encoded CX object. It is usually called from within \code{\link{ndex_get_network}}.
+This function creates an RCX object from a supplied JSON-encoded CX object.
 RCX objects store the CX data as a named list of data.frames containing metaData and all aspects of the network.
 }
 \details{
@@ -116,14 +116,13 @@ The data.frames representing nodes and edges could look like this:\cr
 }
 }
 \examples{
-## Establish a server connection
-ndexcon = ndex_connect()
-## Find a network and get its UUID
-networks = ndex_find_networks(ndexcon,"p53")
-networkId = networks[1,"externalId"]
-## Get the network data 
-rcx = ndex_get_network(ndexcon, networkId) 
+## Create an RCX object
+rcx = rcx_new(c('@id'=1, n='Some Name', r='HGNC:Symbol'))
+## Convert to JSON
+json = rcx_toJSON(rcx)
+## Convert it back from JSON
+rcx = rcx_fromJSON(json)
 }
 \seealso{
-\code{\link{ngraph_fromRCX}} \code{\link{ngraph_toRCX}} \code{\link{rcx_toJSON}}
+\code{\link{rcxgraph_fromRCX}} \code{\link{rcxgraph_toRCX}} \code{\link{rcx_toJSON}}
 }

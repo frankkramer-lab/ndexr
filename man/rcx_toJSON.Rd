@@ -20,16 +20,11 @@ json jsonlite json object if successfull, NULL otherwise
 Generate JSON data from RCX object
 }
 \examples{
-## Establish a server connection
-ndexcon = ndex_connect()
-## Find a network and get its UUID
-networks = ndex_find_networks(ndexcon,"p53")
-networkId = networks[1,"externalId"]
-## Get the network data 
-rcx = ndex_get_network(ndexcon, networkId)
-## Convert RCX to JSON
-rcxjson = rcx_toJSON(rcx)
+## Create an RCX object
+rcx = rcx_new(c('@id'=1, n='Some Name', r='HGNC:Symbol'))
+## Convert to JSON
+json = rcx_toJSON(rcx)
 }
 \seealso{
-\code{\link{ngraph_fromRCX}} \code{\link{ngraph_toRCX}} \code{\link{rcx_fromJSON}}
+\code{\link{rcxgraph_fromRCX}} \code{\link{rcxgraph_toRCX}} \code{\link{rcx_fromJSON}}
 }

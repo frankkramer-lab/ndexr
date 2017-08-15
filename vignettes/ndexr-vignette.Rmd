@@ -192,7 +192,7 @@ the structure of the network list
 
 ```{r}
 ## UUID of the first search result
-networkId <- networks[1,'externalId']
+networkId <- networksOfUser[1,'externalId']
 
 ## get network summary
 networkSummary <- ndex_network_get_summary(ndexcon, networkId)
@@ -255,7 +255,7 @@ networks_pid[1,]
 mynetwork = ndex_get_network(ndexcon, networks_pid[1,"externalId"])
 
 ## convert into R graph format
-mygraph = rcx_toNGraph(mynetwork)
+mygraph = rcx_toRCXgraph(mynetwork)
 
 ## show graph information
 mygraph
@@ -266,7 +266,7 @@ plot(mygraph)
 ```
 
 This code snippet starts with loading the ndexr library and connecting to the server anonymously.
-Afterwards `ndex_find_networks` retrieves a list of networks of user `nci-pid`, which contains the data of the Pathway Interaction Database. The function `ndex_get_network` downloads the network data and stores in the `RCX` format (explained in the next section) and is then converted into an igraph-based object via `rcx_toNGraph`.
+Afterwards `ndex_find_networks` retrieves a list of networks of user `nci-pid`, which contains the data of the Pathway Interaction Database. The function `ndex_get_network` downloads the network data and stores in the `RCX` format (explained in the next section) and is then converted into an igraph-based object via `rcx_toRCXgraph`.
 Here, the node IDs of the graph are set to readable names and the graph is plotted. Naturally, this graph can be annotated and beautified as required for the specific use cases.
 
 
@@ -301,21 +301,21 @@ of this package for downloading network data from a NDEx server. But it
 might be useful to convert an RCX object from/to JSON manually, for
 example for down-/uploading a CX file from/to a NDEx server via the web
 interface. For handling the network information within R, besides RCX
-objects, one can use NGraph objects. A lossless conversion between the
+objects, one can use RCXgraph objects. A lossless conversion between the
 two files can be done using the following functions:
 
-```{r, warning=FALSE}
+```{r, warning=FALSE, eval=FALSE}
 ## convert RCX to JSON
 json <- rcx_toJSON(rcx)
 
 ## ...and back
 rcx <- rcx_fromJSON(json)
 
-## convert RCX to NGraph
-ngraph <- rcx_toNGraph(rcx)
+## convert RCX to RCXgraph
+rcxgraph <- rcx_toRCXgraph(rcx)
 
 ## ...and back
-rcx <- ngraph_toRCX(ngraph)
+rcx <- rcxgraph_toRCX(rcxgraph)
 ```
 
 It is possible to create blank RCX objects from scratch:
