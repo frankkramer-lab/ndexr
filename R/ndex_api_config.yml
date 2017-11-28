@@ -1,4 +1,552 @@
 defaultVersion: "Version_2.0"
+Version_2.1:
+  version: "2.1"
+  connection:
+    description: "URL of the NDEx server"
+    host: "www.ndexbio.org"
+    api: "/v2"
+  api:
+    serverStatus:
+      description: "Get Server Status"
+      url: "/admin/status"
+      method: "GET"
+      params:
+        format:
+          method: "parameter"
+          tag: "format"
+          default: "standard"
+    user:
+      authenticate:
+        description: "Authenticate a User"
+        url: "/user"
+        method: "GET"
+        params:
+          valid:
+            method: "parameter"
+            tag: "valid"
+            default: "true"
+      create:
+        description: "Create a new user"
+        url: "/user"
+        method: "POST"
+      delete:
+        description: "Deletes the authenticated user, removing any other objects in the database that depend on the user"
+        url: "/user/#USERID#"
+        method: "DELETE"
+        params:
+          user: 
+            tag: "#USERID#"
+            method: "replace"
+      update:
+        description: "Updates the authenticated user based on the serialized user object in the PUT data"
+        url: "/user/#USERID#"
+        method: "PUT"
+        params:
+          user: 
+            tag: "#USERID#"
+            method: "replace"
+      get:
+        byName:
+          description: "Get User By userName"
+          url: "/user"
+          method: "GET"
+          params:
+            userName:
+              method: "parameter"
+              tag: "username"
+        byId:
+          description: "Get User By UUID"
+          url: "/user/#USERID#"
+          method: "GET"
+          params:
+            user:
+              method: "replace"
+              tag: "#USERID#"
+      password:
+        change:
+          description: "Changes the authenticated user's password to the new password"
+          url: "/user/#USERID#/password"
+          method: "PUT"
+          params:
+            user:
+              method: "replace"
+              tag: "#USERID#"
+        mail:
+          description: "Causes a new password to be generated for the given user account and then emailed to the user's emailAddress"
+          url: "/user/#USERID#/password"
+          method: "PUT"
+          params:
+            user:
+              method: "replace"
+              tag: "#USERID#"
+            forgot:
+              method: "parameter"
+              tag: "forgot"
+              default: "true"
+      verify:
+        description: "Verify a User with verificationCode"
+        url: "/user/#USERID#/verification"
+        method: "GET"
+        params:
+          user: 
+            tag: "#USERID#"
+            method: "replace"
+          code:
+              method: "parameter"
+              tag: "verificationCode"
+      group:
+        get:
+          description: "Get User's Permissions in Group"
+          url: "/user/#USERID#/membership"
+          method: "GET"
+          params:
+            user: 
+              tag: "#USERID#"
+              method: "replace"
+            group:
+                method: "parameter"
+                tag: "groupid"
+        list:
+          description: "List Groups for which a user has the specified permission types"
+          url: "/user/#USERID#/membership"
+          method: "GET"
+          params:
+            user: 
+              tag: "#USERID#"
+              method: "replace"
+            type:
+                method: "parameter"
+                tag: "type"
+                optional: true
+            start:
+                method: "parameter"
+                tag: "start"
+                optional: true
+            size:
+                method: "parameter"
+                tag: "size"
+                optional: true
+      permission:
+        get:
+          description: "Get User's Permission for Network"
+          url: "/user/#USERID#/permission"
+          method: "GET"
+          params:
+            user: 
+              tag: "#USERID#"
+              method: "replace"
+            network:
+                method: "parameter"
+                tag: "networkid"
+                optional: true
+            directonly:
+                method: "parameter"
+                tag: "directonly"
+                default: "false"
+        list:
+          description: "List User's Network Permissions"
+          url: "/user/#USERID#/permission"
+          method: "GET"
+          params:
+            user: 
+              tag: "#USERID#"
+              method: "replace"
+            permission:
+                method: "parameter"
+                tag: "permission"
+                optional: true
+            start:
+                method: "parameter"
+                tag: "start"
+                optional: true
+            size:
+                method: "parameter"
+                tag: "size"
+                optional: true
+            directonly:
+                method: "parameter"
+                tag: "directonly"
+                default: "false"
+      showcase:
+        description: "Get User's Showcase Networks"
+        url: "/user/#USERID#/showcase"
+        method: "GET"
+        params:
+          user: 
+            tag: "#USERID#"
+            method: "replace"
+      networksummary:
+        description: "Get User???s Account Page Networks"
+        url: "/user/#USERID#/networksummary"
+        method: "GET"
+        params:
+          user: 
+            tag: "#USERID#"
+            method: "replace"
+    group:
+      create:
+        description: "Create Group"
+        url: "/group"
+        method: "POST"
+      delete:
+        description: "Delete the group specified by groupId"
+        url: "/group/#GROUPID#"
+        method: "DELETE"
+        params:
+          group: 
+            tag: "#GROUPID#"
+            method: "replace"
+      update:
+        description: "Updates the authenticated user based on the serialized user object in the PUT data"
+        url: "/group/#GROUPID#"
+        method: "PUT"
+        params:
+          group: 
+            tag: "#GROUPID#"
+            method: "replace"
+      get:
+        description: "Get a Group"
+        url: "/group/#GROUPID#"
+        method: "GET"
+        params:
+          group:
+            method: "replace"
+            tag: "#GROUPID#"
+      user:
+        list:
+          description: "Get Members of a Group"
+          url: "/group/#GROUPID#/membership"
+          method: "GET"
+          params:
+            group: 
+              tag: "#GROUPID#"
+              method: "replace"
+            type:
+              method: "parameter"
+              tag: "type"
+              optional: true
+            start:
+              method: "parameter"
+              tag: "start"
+              optional: true
+            size:
+              method: "parameter"
+              tag: "size"
+              optional: true
+      network:
+        list:
+          description: "Get Network Permissions of a Group"
+          url: "/group/#GROUPID#/permission"
+          method: "GET"
+          params:
+            group: 
+              tag: "#GROUPID#"
+              method: "replace"
+            permission:
+              method: "parameter"
+              tag: "permission"
+              default: "READ"
+            start:
+              method: "parameter"
+              tag: "start"
+              optional: true
+            size:
+              method: "parameter"
+              tag: "size"
+              optional: true
+        get:
+          description: "Get Members of a Group"
+          url: "/group/#GROUPID#/permission"
+          method: "GET"
+          params:
+            group: 
+              tag: "#GROUPID#"
+              method: "replace"
+            network:
+              method: "parameter"
+              tag: "networkid"
+        update:
+          description: "Add or Update a Group Member"
+          url: "/group/#GROUPID#/membership"
+          method: "PUT"
+          params:
+            group: 
+              tag: "#GROUPID#"
+              method: "replace"
+            user:
+              method: "parameter"
+              tag: "userid"
+            type:
+              method: "parameter"
+              tag: "type"
+        delete:
+          description: "Delete the group specified by groupId"
+          url: "/group/#GROUPID#/membership"
+          method: "DELETE"
+          params:
+            group: 
+              tag: "#GROUPID#"
+              method: "replace"
+            user:
+              method: "parameter"
+              tag: "userid"
+    network:
+      create:
+        description: "Create a CX Network"
+        url: "/network"
+        method: "POST"
+      update:
+        description: "Update a Network"
+        url: "/network/#NETWORKID#"
+        method: "PUT"
+        params:
+          network: 
+            tag: "#NETWORKID#"
+            method: "replace"
+      delete:
+        description: "Delete a Network"
+        url: "/network/#NETWORKID#"
+        method: "DELETE"
+        params:
+          network: 
+            tag: "#NETWORKID#"
+            method: "replace"
+      get:
+        description: "Get Complete Network in CX format"
+        url: "/network/#NETWORKID#"
+        method: "GET"
+        params:
+          network: 
+            tag: "#NETWORKID#"
+            method: "replace"
+      summary:
+        get:
+          description: "Get Network Summary"
+          url: "/network/#NETWORKID#/summary"
+          method: "GET"
+          params:
+            network: 
+              tag: "#NETWORKID#"
+              method: "replace"
+      sample:
+        set:
+          description: "Get Network Summary"
+          url: "/network/#NETWORKID#/sample"
+          method: "PUT"
+          params:
+            network: 
+              tag: "#NETWORKID#"
+              method: "replace"
+        get:
+          description: "Set Network Sample"
+          url: "/network/#NETWORKID#/sample"
+          method: "GET"
+          params:
+            network: 
+              tag: "#NETWORKID#"
+              method: "replace"
+      aspect:
+        getMetaData:
+          description: "Get Network CX Metadata Collection"
+          url: "/network/#NETWORKID#/aspect"
+          method: "GET"
+          params:
+            network: 
+              tag: "#NETWORKID#"
+              method: "replace"
+        getMetaDataByName:
+          description: "Get Network Aspect Metadata"
+          url: "/network/#NETWORKID#/aspect/#ASPECT#/metadata"
+          method: "GET"
+          params:
+            network: 
+              tag: "#NETWORKID#"
+              method: "replace"
+            aspect: 
+              tag: "#ASPECT#"
+              method: "replace"
+        get:
+          description: "Get a Network Aspect As CX"
+          url: "/network/#NETWORKID#/aspect/#ASPECT#"
+          method: "GET"
+          params:
+            network: 
+              tag: "#NETWORKID#"
+              method: "replace"
+            aspect:  
+              tag: "#ASPECT#"
+              method: "replace"
+            size: 
+              tag: "size"
+              method: "parameter"
+              optional: true
+        update:
+          description: "Update an Aspect of a Network"
+          url: "/network/#NETWORKID#/aspect/#ASPECT#"
+          method: "PUT"
+          params:
+            network: 
+              tag: "#NETWORKID#"
+              method: "replace"
+            aspect: 
+              tag: "#ASPECT#"
+              method: "replace"
+      permission:
+        get:
+          description: "Get All Permissions on a Network"
+          url: "/network/#NETWORKID#/permission"
+          method: "GET"
+          params:
+            network: 
+              tag: "#NETWORKID#"
+              method: "replace"
+            type:
+              tag: "type"
+              method: "parameter"
+            permission:
+              tag: "permission"
+              method: "parameter"
+              optional: true
+            start: 
+              tag: "start"
+              method: "parameter"
+              optional: true
+            size: 
+              tag: "size"
+              method: "parameter"
+              optional: true
+        update:
+          description: "Update Network Permission"
+          url: "/network/#NETWORKID#/permission"
+          method: "PUT"
+          params:
+            network: 
+              tag: "#NETWORKID#"
+              method: "replace"
+            user:
+              tag: "userid"
+              method: "parameter"
+              optional: true
+            group:
+              tag: "groupid"
+              method: "parameter"
+              optional: true
+            permission:
+              tag: "permission"
+              method: "parameter"
+        delete:
+          description: "Delete Network Permission"
+          url: "/network/#NETWORKID#/permission"
+          method: "DELETE"
+          params:
+            network: 
+              tag: "#NETWORKID#"
+              method: "replace"
+            user:
+              tag: "userid"
+              method: "parameter"
+              optional: true
+            group:
+              tag: "groupid"
+              method: "parameter"
+              optional: true
+      profile:
+        update:
+          description: "Update Network Profile"
+          url: "/network/#NETWORKID#/profile"
+          method: "PUT"
+          params:
+            network: 
+              tag: "#NETWORKID#"
+              method: "replace"
+      systemproperties:
+        set:
+          description: "Set Network System Properties"
+          url: "/network/#NETWORKID#/systemproperty"
+          method: "PUT"
+          params:
+            network: 
+              tag: "#NETWORKID#"
+              method: "replace"
+      properties:
+        set:
+          description: "Set Network Properties"
+          url: "/network/#NETWORKID#/properties"
+          method: "PUT"
+          params:
+            network: 
+              tag: "#NETWORKID#"
+              method: "replace"
+      provenance:
+        set:
+          description: "Set Network Provenance"
+          url: "/network/#NETWORKID#/provenance"
+          method: "PUT"
+          params:
+            network: 
+              tag: "#NETWORKID#"
+              method: "replace"
+        get:
+          description: "Get Network Provenance"
+          url: "/network/#NETWORKID#/provenance"
+          method: "GET"
+          params:
+            network: 
+              tag: "#NETWORKID#"
+              method: "replace"
+    search:
+      user:
+        description: "Search users"
+        url: "/search/user"
+        method: "POST"
+        params:
+          start: 
+            tag: "start"
+            method: "parameter"
+            default: "0"
+          size: 
+            tag: "size"
+            method: "parameter"
+            default: "100"
+      group:
+        description: "Search groups"
+        url: "/search/group"
+        method: "POST"
+        params:
+          start: 
+            tag: "start"
+            method: "parameter"
+            default: "0"
+          size: 
+            tag: "size"
+            method: "parameter"
+            default: "100"
+      network:
+        search:
+          description: "Search network"
+          url: "/search/network"
+          method: "POST"
+          params:
+            start: 
+              tag: "start"
+              method: "parameter"
+              default: "0"
+            size: 
+              tag: "size"
+              method: "parameter"
+              default: "100"
+        neighborhood:
+          description: "Query Network As CX"
+          url: "/search/network/#NETWORKID#/query"
+          method: "POST"
+          params:
+            network: 
+              tag: "#NETWORKID#"
+              method: "replace"
+            size: 
+              tag: "size"
+              method: "parameter"
+              optional: true
 Version_2.0:
   version: "2.0"
   connection:

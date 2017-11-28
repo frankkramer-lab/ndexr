@@ -147,6 +147,9 @@ a function to retrieve a list of networks from the server.
 It is possible to restrict the networks to a specific search string (e.g. “EGFR”), 
 an account name (only networks of this account will be shown), or limit 
 the number of fetched networks.
+```{r, results = "hide", echo=FALSE}
+ndexcon = ndex_connect()
+```
 
 ```{r, results = "hide"}
 ## list networks on server
@@ -467,53 +470,53 @@ by this version, for different reasons no function could be implemented.
 Limitations of the single API functions are also given in the column of
 the corresponding version.
 
-  ----------------------------------- -------------------- ----------------- ------------------------------------
-  **Function name**                   **Authentication**   **Version 2.0**   **Version 1.3**
+  ----------------------------------- -------------------- ----------------- ----------------- -----------------
+  **Function name**                   **Authentication**   **Version 2.1**   **Version 2.0**   **Version 1.3**
   ***Networks***
-  ndex_find_networks                  no                   X                 X
-  ndex_network_get_summary            no                   X                 X
-  ndex_get_network                    no                   X                 X
-  ndex_create_network                 yes                  X                 X
-  ndex_update_network                 yes                  X                 X
-  ndex_delete_network                 yes                  X                 X
-  ndex_network_get_metadata           no                   X                 (x)
-  ndex_network_aspect_get_metadata    no                   (x)               
-  ndex_network_get_aspect             no                   X                 (x)
-  ndex_network_update_aspect          yes                  (x)               
-  ndex_network_get_permission         yes                  X                 only for users, different response
-  ndex_network_update_permission      yes                  X                 (only for users)
-  ndex_network_delete_permission      yes                  X                 only for users
-  ndex_network_set_systemProperties   yes                  X                 only readOnly
-  ndex_network_update_profile         yes                  X                 X
-  ndex_network_get_provenance         no                   X                 X
+  ndex_find_networks                  no                                     X                 X
+  ndex_network_get_summary            no                                     X                 X
+  ndex_get_network                    no                                     X                 X
+  ndex_create_network                 yes                                    X                 X
+  ndex_update_network                 yes                                    X                 X
+  ndex_delete_network                 yes                                    X                 X
+  ndex_network_get_metadata           no                                     X                 (x)
+  ndex_network_aspect_get_metadata    no                                     (x)               
+  ndex_network_get_aspect             no                                     X                 (x)
+  ndex_network_update_aspect          yes                                    (x)               
+  ndex_network_get_permission         yes                                    X                 only for users, different response
+  ndex_network_update_permission      yes                                    X                 (only for users)
+  ndex_network_delete_permission      yes                                    X                 only for users
+  ndex_network_set_systemProperties   yes                                    X                 only readOnly
+  ndex_network_update_profile         yes                                    X                 X
+  ndex_network_get_provenance         no                                     X                 X
   ***Users***
-  ndex_find_users                     no                   X                 X
-  ndex_find_user_byName               no                   X                 
-  ndex_find_user_byId                 no                   X                 
-  ndex_create_user                    yes                  X                 
-  ndex_delete_user                    yes                  X                 
-  ndex_update_user                    yes                  X                 
-  ndex_verify_user                    no                   X                 
-  ndex_user_change_password           yes                  X                 
-  ndex_user_mail_password             no                   X                 
-  ndex_user_forgot_password           no                   X                 
-  ndex_user_list_groups               yes                  X                 
-  ndex_user_show_group                yes                  X                 
-  ndex_user_list_permissions          yes                  X                 
-  ndex_user_show_permission           yes                  X                 
-  ndex_user_get_showcase              no                   X                 
-  ndex_user_get_networksummary        yes                  X                 
+  ndex_find_users                     no                                     X                 X
+  ndex_find_user_byName               no                                     X                 
+  ndex_find_user_byId                 no                                     X                 
+  ndex_create_user                    yes                                    X                 
+  ndex_delete_user                    yes                                    X                 
+  ndex_update_user                    yes                                    X                 
+  ndex_verify_user                    no                                     X                 
+  ndex_user_change_password           yes                                    X                 
+  ndex_user_mail_password             no                                     X                 
+  ndex_user_forgot_password           no                                     X                 
+  ndex_user_list_groups               yes                                    X                 
+  ndex_user_show_group                yes                                    X                 
+  ndex_user_list_permissions          yes                                    X                 
+  ndex_user_show_permission           yes                                    X                 
+  ndex_user_get_showcase              no                                     X                 
+  ndex_user_get_networksummary        yes                                    X                 
   ***Groups***
-  ndex_find_groups                    no                   X                 X
-  ndex_get_group                      no                   X                 
-  ndex_create_group                   yes                  X                 
-  ndex_delete_group                   yes                  X                 
-  ndex_update_group                   yes                  X                 
-  ndex_group_list_users               no                   X                 
-  ndex_group_set_membership           yes                  X                 
-  ndex_group_list_networks            no                   X                 
-  ndex_group_network_get_permission   no                   X                 
-  ----------------------------------- -------------------- ----------------- ------------------------------------
+  ndex_find_groups                    no                                     X                 X
+  ndex_get_group                      no                                     X                 
+  ndex_create_group                   yes                                    X                 
+  ndex_delete_group                   yes                                    X                 
+  ndex_update_group                   yes                                    X                 
+  ndex_group_list_users               no                                     X                 
+  ndex_group_set_membership           yes                                    X                 
+  ndex_group_list_networks            no                                     X                 
+  ndex_group_network_get_permission   no                                     X                 
+  ----------------------------------- -------------------- ----------------- ----------------- -----------------
 
 # Server REST API configuration
 

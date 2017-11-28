@@ -94,24 +94,24 @@ listToRCode = function(obj, indent='    ', indentShift=''){
 }
 
 
-##' Translates a YAML file to a R config script
-##' Run this manually if you want to update the ndex_config
-##' @note only for package maintenance!
-##'
-##' @param yamlFile character (default: 'R/ndex_api_config.yml'); input file in YAML format
-##' @param rScriptFile character (default: 'R/ndex_api_config.r'); output file for the R script
-##' @param defaultHeader character (optional) (default: ndex_conf_header); text that will be put in front of the R script
-##'
-##' @examples
-##' # yamlToRConfig('R/ndex_api_config.yml', 'R/ndex_api_config.r', ndex_conf_header)
-##' NULL
-#yamlToRConfig = function(yamlFile='R/ndex_api_config.yml', rScriptFile='R/ndex_api_config.r', defaultHeader=ndex_conf_header){
-#  yamlObj = yaml::yaml.load_file(yamlFile)
-#  rCodeTxt = paste0(defaultHeader, listToRCode(yamlObj))
-#  outFile = file(rScriptFile)
-#  writeLines(rCodeTxt, outFile)
-#  close(outFile)
-#}
+#' Translates a YAML file to a R config script
+#' Run this manually if you want to update the ndex_config
+#' @note only for package maintenance!
+#'
+#' @param yamlFile character (default: 'R/ndex_api_config.yml'); input file in YAML format
+#' @param rScriptFile character (default: 'R/ndex_api_config.r'); output file for the R script
+#' @param defaultHeader character (optional) (default: ndex_conf_header); text that will be put in front of the R script
+#'
+#' @examples
+#' # yamlToRConfig('R/ndex_api_config.yml', 'R/ndex_api_config.r', ndex_conf_header)
+#' NULL
+yamlToRConfig = function(yamlFile='R/ndex_api_config.yml', rScriptFile='R/ndex_api_config.r', defaultHeader=ndex_conf_header){
+ yamlObj = yaml::yaml.load_file(yamlFile)
+ rCodeTxt = paste0(defaultHeader, listToRCode(yamlObj))
+ outFile = file(rScriptFile)
+ writeLines(rCodeTxt, outFile)
+ close(outFile)
+}
 
 ####################################################
 ##   Unused stuff
