@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+<meta name="date" content="2017-05-16" />
+
+<title>NDExR - R implementaion for NDEx server API</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+
+
+<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">NDExR - R implementaion for NDEx server API</h1>
+<h4 class="author"><em>Florian J. Auer</em></h4>
+<address class="author_afil">
+University Medical Center Göttingen<br><a class="author_email" href="mailto:#"><a href="mailto:Florian.Auer@med.uni-goettingen.de">Florian.Auer@med.uni-goettingen.de</a></a>
+</address>
+<h4 class="author"><em>Zaynab Hammoud</em></h4>
+<address class="author_afil">
+University Medical Center Göttingen<br><a class="author_email" href="mailto:#"><a href="mailto:Zaynab.Hammoud@med.uni-goettingen.de">Zaynab.Hammoud@med.uni-goettingen.de</a></a>
+</address>
+<h4 class="author"><em>Frank Kramer</em></h4>
+<address class="author_afil">
+University Medical Center Göttingen<br><a class="author_email" href="mailto:#"><a href="mailto:Frank.Kramer@med.uni-goettingen.de">Frank.Kramer@med.uni-goettingen.de</a></a>
+</address>
+<h4 class="date"><em>2017-05-16</em></h4>
+
+
+
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>Networks are a powerful and flexible methodology for expressing biological knowledge for computation and communication. Albeit its benefits, the sharing of networks, the collaboration on network curation, keeping track of changes between different network versions, and detecting different versions itself, still is a major problem in network biology.</p>
+<p>The Network Data Exchange, or NDEx, is an open-source software framework to manipulate, store and exchange networks of various types and formats (Pratt et al., 2015, Cell Systems 1, 302-305, October 28, 2015 ©2015 Elsevier Inc. <a href="http://www.sciencedirect.com/science/article/pii/S2405471215001477">ScienceDirect</a>). NDEx can be used to upload, share and publicly distribute networks, while providing an output in formats, that can be used by plenty of other applications.</p>
+<p>The public NDEx server is a network data commons which provides pathway collections like the Pathway Interaction Database of the NCI (<a href="http://www.ndexbio.org/#/user/301a91c6-a37b-11e4-bda0-000c29202374" class="uri">http://www.ndexbio.org/#/user/301a91c6-a37b-11e4-bda0-000c29202374</a>) and the Cancer Cell Maps Initiative (<a href="http://www.ndexbio.org/#/user/b47268a6-8112-11e6-b0a6-06603eb7f303" class="uri">http://www.ndexbio.org/#/user/b47268a6-8112-11e6-b0a6-06603eb7f303</a>).</p>
+<p>This package provides an interface to query the public NDEx server, as well as private installations, in order to upload, download or modify biological networks.</p>
+<p>This document aims to help the user to install and benefit from the wide range of funtionality of this implementation. The package also provides classes to implement the Cytoscape Cyberinfrastructure (CX) Format and to extend the [iGraph Package] (<a href="http://igraph.org/r/" class="uri">http://igraph.org/r/</a>).</p>
+<p>The package is compatible with both NDEx versions 1.3 and 2.0.</p>
+</div>
+<div id="installation" class="section level1">
+<h1>Installation</h1>
+<p>Installation instructions (from Bioconductor)</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">source</span>(<span class="st">&quot;https://bioconductor.org/biocLite.R&quot;</span>)
+<span class="kw">biocLite</span>(<span class="st">&quot;ndexr&quot;</span>)
+<span class="kw">library</span>(ndexr)</code></pre></div>
+</div>
+<div id="quick-start" class="section level1">
+<h1>Quick Start</h1>
+<p>Some short overview of the most important functions</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## load the library!
+<span class="kw">library</span>(ndexr)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## login to the NDEx server
+ndexcon =<span class="st"> </span><span class="kw">ndex_connect</span>(<span class="st">&quot;username&quot;</span>, <span class="st">&quot;password&quot;</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## search the networks for &quot;EGFR&quot;
+networks &lt;-<span class="st"> </span><span class="kw">ndex_find_networks</span>(ndexcon, <span class="st">&quot;EGFR&quot;</span>)
+
+## UUID of the first search result
+networkId &lt;-<span class="st"> </span>networks[<span class="dv">1</span>,<span class="st">'externalId'</span>]
+
+## get summary of the network
+networkSummary &lt;-<span class="st"> </span><span class="kw">ndex_network_get_summary</span>(ndexcon, networkId)
+
+## get the entire network as RCX object
+rcx &lt;-<span class="st"> </span><span class="kw">ndex_get_network</span>(ndexcon, networkId)
+
+## remove NDEx artefacts from network
+rcx &lt;-<span class="st"> </span><span class="kw">rcx_asNewNetwork</span>(rcx)
+
+## do some fancy stuff with the network, then
+## update the meta-data
+rcx &lt;-<span class="st"> </span><span class="kw">rcx_updateMetaData</span>(rcx)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## upload network as a new network to the NDEx server
+networkId &lt;-<span class="st"> </span><span class="kw">ndex_create_network</span>(ndexcon, rcx)
+
+## do some other fancy stuff with the network, then
+## update the network on the server
+networkId &lt;-<span class="st"> </span><span class="kw">ndex_update_network</span>(ndexcon, rcx)
+
+## realize, you did bad things to the poor network, so better 
+## delete it on the server
+<span class="kw">ndex_delete_network</span>(ndexcon, networkId)</code></pre></div>
+</div>
+<div id="connect-to-a-server" class="section level1">
+<h1>Connect to a server</h1>
+<p>First, establish an connection to the NDEx server. This object is required for most of the other ndexr functions, because it stores options and authentication details. It is possible to connect to the server anonymously or provide a username and password to enable further functionality. If you have set up your own NDEx server, you might change the host to your local installation.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## load the library
+<span class="kw">library</span>(ndexr)
+
+## connect anonymously
+ndexcon =<span class="st"> </span><span class="kw">ndex_connect</span>()
+
+## log in with user name and password
+ndexconUser =<span class="st"> </span><span class="kw">ndex_connect</span>(<span class="dt">username=</span><span class="st">&quot;username&quot;</span>, <span class="dt">password=</span><span class="st">&quot;password&quot;</span>)
+
+## specify the server
+ndexconLocal =<span class="st"> </span><span class="kw">ndex_connect</span>(<span class="dt">username=</span><span class="st">&quot;username&quot;</span>,
+                <span class="dt">password=</span><span class="st">&quot;password&quot;</span>, 
+                <span class="dt">host=</span><span class="st">&quot;localhost:8888/ndex/rest&quot;</span>)
+
+## manually change the api and connection configuration
+ndexcon13 =<span class="st"> </span><span class="kw">ndex_connect</span>(<span class="dt">ndexConf=</span>ndex_config<span class="op">$</span>Version_<span class="fl">1.3</span>)</code></pre></div>
+<p>This package is developed following the structure of the documented api structure. For complete description of the NDEx server api see <a href="http://www.home.ndexbio.org/using-the-ndex-server-api/"><em>http://www.home.ndexbio.org/using-the-ndex-server-api/</em></a>. The R functions are named by the category, context and function they fullfil. In the following, the usage is described in detail, and hopefully gives a better understanding of logic behind the naming convention of this package.</p>
+</div>
+<div id="find-networks" class="section level1">
+<h1>Find Networks</h1>
+<p>To explore or search the networks on an NDEx server, this package offers a function to retrieve a list of networks from the server. It is possible to restrict the networks to a specific search string (e.g. “EGFR”), an account name (only networks of this account will be shown), or limit the number of fetched networks.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## list networks on server
+networks &lt;-<span class="st"> </span><span class="kw">ndex_find_networks</span>(ndexcon) 
+## same as previous
+networks &lt;-<span class="st"> </span><span class="kw">ndex_find_networks</span>(ndexcon, <span class="dt">start=</span><span class="dv">0</span>, <span class="dt">size=</span><span class="dv">5</span>)
+
+## search for &quot;EGFR&quot;
+networksEgfr &lt;-<span class="st"> </span><span class="kw">ndex_find_networks</span>(ndexcon, <span class="dt">searchString=</span><span class="st">&quot;EGFR&quot;</span>)
+## same as previous
+networksEgfr &lt;-<span class="st"> </span><span class="kw">ndex_find_networks</span>(ndexcon, <span class="st">&quot;EGFR&quot;</span>)
+
+## same as previous
+networksOfUser &lt;-<span class="st"> </span><span class="kw">ndex_find_networks</span>(ndexcon, <span class="dt">accountName=</span><span class="st">&quot;ndextutorials&quot;</span>)</code></pre></div>
+<p>As result you get a data.frame containing information of the networks.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(networks) </code></pre></div>
+<pre><code>##  [1] &quot;ownerUUID&quot;        &quot;isReadOnly&quot;       &quot;subnetworkIds&quot;   
+##  [4] &quot;errorMessage&quot;     &quot;isValid&quot;          &quot;warnings&quot;        
+##  [7] &quot;isShowcase&quot;       &quot;visibility&quot;       &quot;edgeCount&quot;       
+## [10] &quot;nodeCount&quot;        &quot;uri&quot;              &quot;version&quot;         
+## [13] &quot;owner&quot;            &quot;name&quot;             &quot;properties&quot;      
+## [16] &quot;description&quot;      &quot;externalId&quot;       &quot;isDeleted&quot;       
+## [19] &quot;modificationTime&quot; &quot;creationTime&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">networks[,<span class="kw">c</span>(<span class="st">'name'</span>,<span class="st">'externalId'</span>)]</code></pre></div>
+<pre><code>##                     name                           externalId
+## 1      The Heart Machine 85276abf-379f-11e7-8f50-0ac135e8bacf
+## 2   The Diabetes Machine 7aed4dd0-14e4-11e6-a1f8-06603eb7f303
+## 3        The RAS Machine 50e3dff7-133e-11e6-a039-06603eb7f303
+## 4 Cancer_HNexo0.02_37181 0a76ac0e-3922-11e7-8f50-0ac135e8bacf
+## 5              CoCaNet10 728369e2-0005-11e6-b550-06603eb7f303</code></pre>
+</div>
+<div id="simple-network-operations" class="section level1">
+<h1>Simple network operations</h1>
+<p>To both, users and networks stored on an NDEx server, a universally unique identifier (UUID) is assigned. Although both have the same format (i.e. “xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx”, where x is one of <code>[a-z0-9]</code>), it has to be distinguished between the user UUID and the network UUID, but the difference is obvious by the context. Within RCX objects and search results, the network UUID is also referred to as “externalId” (see previous section). This UUID can be used to access a network on the server and retrieve just a summary of the network (similar to the results of a network search) or even the entire network as RCX object (see next section).</p>
+<p>Since networks can contain many nodes and edges, and a huge amount of other attributes, it is typically advisable to first get a network summary, to check the node and edge counts for a network before retrieving the entire network. Thereby the structure of the network summary is similar the structure of the network list</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## UUID of the first search result
+networkId &lt;-<span class="st"> </span>networks[<span class="dv">1</span>,<span class="st">'externalId'</span>]
+
+## get network summary
+networkSummary &lt;-<span class="st"> </span><span class="kw">ndex_network_get_summary</span>(ndexcon, networkId)
+
+<span class="kw">names</span>(networkSummary)</code></pre></div>
+<pre><code>##  [1] &quot;ownerUUID&quot;        &quot;isReadOnly&quot;       &quot;subnetworkIds&quot;   
+##  [4] &quot;errorMessage&quot;     &quot;isValid&quot;          &quot;warnings&quot;        
+##  [7] &quot;isShowcase&quot;       &quot;visibility&quot;       &quot;edgeCount&quot;       
+## [10] &quot;nodeCount&quot;        &quot;uri&quot;              &quot;version&quot;         
+## [13] &quot;owner&quot;            &quot;name&quot;             &quot;properties&quot;      
+## [16] &quot;description&quot;      &quot;externalId&quot;       &quot;isDeleted&quot;       
+## [19] &quot;modificationTime&quot; &quot;creationTime&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">networkSummary[<span class="kw">c</span>(<span class="st">'name'</span>,<span class="st">'externalId'</span>)]</code></pre></div>
+<pre><code>## $name
+## [1] &quot;The Heart Machine&quot;
+## 
+## $externalId
+## [1] &quot;85276abf-379f-11e7-8f50-0ac135e8bacf&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## get the entire network as RCX object
+rcx &lt;-<span class="st"> </span><span class="kw">ndex_get_network</span>(ndexcon, networkId)</code></pre></div>
+<p>To send a network to an server, there are two possibilities. Either one wants to update an existing network on the server or create a new one. In both cases, a UUID is returned, either of the updated network or a newly generated one for the created network. For updating a network, the UUID is extracted from the “externalId” property of the “ndexStatus” aspect, or can be set manually.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## create a new network on server
+networkId &lt;-<span class="st"> </span><span class="kw">ndex_create_network</span>(ndexcon, rcx)
+
+## update a network on server
+networkId &lt;-<span class="st"> </span><span class="kw">ndex_update_network</span>(ndexcon, rcx)
+
+## same as previous
+networkId &lt;-<span class="st"> </span><span class="kw">ndex_update_network</span>(ndexcon, rcx, networkId)</code></pre></div>
+<p>Besides creating, reading and updating, it is also possible to delete networks on the server. This operation cannot be undone, so be careful!</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## deletes the network from the server
+<span class="kw">ndex_delete_network</span>(ndexcon, networkId)</code></pre></div>
+</div>
+<div id="example-workflow" class="section level1">
+<h1>Example Workflow</h1>
+<p>This example workflow shows how to connect to the public NDEx server, browse and retrieve the pathways of the Pathway Interaction Database of the NCI which are hosted there.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## load the library!
+<span class="kw">library</span>(ndexr)
+
+## login to the NDEx server
+ndexcon =<span class="st"> </span><span class="kw">ndex_connect</span>()
+
+## retrieve pathways of user &quot;nci-pid&quot;
+networks_pid &lt;-<span class="st"> </span><span class="kw">ndex_find_networks</span>(ndexcon, <span class="dt">accountName=</span><span class="st">&quot;nci-pid&quot;</span>)
+
+## list retrieved network information
+networks_pid[,<span class="st">&quot;name&quot;</span>]
+
+## show information on the first pathways listed
+networks_pid[<span class="dv">1</span>,]
+
+## retrieve network data
+mynetwork =<span class="st"> </span><span class="kw">ndex_get_network</span>(ndexcon, networks_pid[<span class="dv">1</span>,<span class="st">&quot;externalId&quot;</span>])
+
+## convert into R graph format
+mygraph =<span class="st"> </span><span class="kw">rcx_toNGraph</span>(mynetwork)
+
+## show graph information
+mygraph
+
+## use readable node names instead of IDs and plot the graph
+<span class="kw">V</span>(mygraph)[<span class="kw">as.character</span>(mynetwork<span class="op">$</span>nodes[,<span class="st">&quot;@id&quot;</span>])]<span class="op">$</span>name =<span class="st"> </span>mynetwork<span class="op">$</span>nodes[,<span class="st">&quot;n&quot;</span>]
+<span class="kw">plot</span>(mygraph)</code></pre></div>
+<p>This code snippet starts with loading the ndexr library and connecting to the server anonymously. Afterwards <code>ndex_find_networks</code> retrieves a list of networks of user <code>nci-pid</code>, which contains the data of the Pathway Interaction Database. The function <code>ndex_get_network</code> downloads the network data and stores in the <code>RCX</code> format (explained in the next section) and is then converted into an igraph-based object via <code>rcx_toNGraph</code>. Here, the node IDs of the graph are set to readable names and the graph is plotted. Naturally, this graph can be annotated and beautified as required for the specific use cases.</p>
+</div>
+<div id="rcx" class="section level1">
+<h1>RCX</h1>
+<p>For the exchange of network data, NDEx uses the Cytoscape Cyberinfrastructure Network Interchange Format, or just CX format (See <a href="http://www.home.ndexbio.org/data-model/"><em>http://www.home.ndexbio.org/data-model/</em></a>). CX is an Aspect-Oriented Network Interchange Format encoded in JSON, which is used as basis for the R implementation of the CX format, namely RCX.</p>
+<p>The RCX object is currently implemented within this package as a list of data.frames, containing meta-data and all aspects of the network. The structure of an RCX object, as shown via <code>str(rcx)</code> could be a list like this:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(rcx, <span class="dt">max.level =</span> <span class="dv">2</span>)</code></pre></div>
+<pre><code>## List of 13
+##  $ metaData          :'data.frame':  11 obs. of  7 variables:
+##   ..$ elementCount    : int [1:11] 1 1 641 1345 2031 1467 8836 852 766 3 ...
+##   ..$ lastUpdate      : num [1:11] 1.49e+12 1.49e+12 NA NA NA ...
+##   ..$ name            : chr [1:11] &quot;ndexStatus&quot; &quot;provenanceHistory&quot; &quot;nodes&quot; &quot;edges&quot; ...
+##   ..$ properties      :List of 11
+##   ..$ version         : chr [1:11] &quot;1.0&quot; &quot;1.0&quot; NA NA ...
+##   ..$ consistencyGroup: int [1:11] NA 1 NA NA NA NA NA NA NA NA ...
+##   ..$ idCounter       : int [1:11] NA NA 5484 5484 5484 5484 NA NA NA NA ...
+##  $ numberVerification:'data.frame':  1 obs. of  1 variable:
+##   ..$ longNumber: num 2.81e+14
+##  $ ndexStatus        :'data.frame':  1 obs. of  10 variables:
+##   ..$ externalId      : chr &quot;85276abf-379f-11e7-8f50-0ac135e8bacf&quot;
+##   ..$ creationTime    : num 1.49e+12
+##   ..$ modificationTime: num 1.49e+12
+##   ..$ visibility      : chr &quot;PUBLIC&quot;
+##   ..$ published       : logi FALSE
+##   ..$ nodeCount       : int 641
+##   ..$ edgeCount       : int 1345
+##   ..$ owner           : chr &quot;rasmachine&quot;
+##   ..$ ndexServerURI   : chr &quot;http://public.ndexbio.org&quot;
+##   ..$ readOnly        : logi FALSE
+##  $ nodes             :'data.frame':  641 obs. of  2 variables:
+##   ..$ @id: int [1:641] 0 1 8 9 14 15 20 21 27 35 ...
+##   ..$ n  : chr [1:641] &quot;NAA10&quot; &quot;HIF1A&quot; &quot;A1CF&quot; &quot;ATF4&quot; ...
+##  $ edges             :'data.frame':  1345 obs. of  4 variables:
+##   ..$ @id: int [1:1345] 2 4 6 10 16 22 28 36 41 51 ...
+##   ..$ s  : int [1:1345] 0 0 0 8 14 20 20 20 20 49 ...
+##   ..$ t  : int [1:1345] 1 1 1 9 15 21 27 35 40 50 ...
+##   ..$ i  : chr [1:1345] &quot;Acetylation&quot; &quot;Acetylation&quot; &quot;Acetylation&quot; &quot;Activation&quot; ...
+##  $ supports          :'data.frame':  2031 obs. of  4 variables:
+##   ..$ text      : chr [1:2031] &quot;ATF4 mRNA and protein levels were significantly up-regulated upon CoCl 2 stimulation and restored to baseline by ACF (XREF_FIG,&quot;| __truncated__ &quot;ATF4 targets were significantly induced by CoCl 2 and inhibited by ACF (XREF_FIG A).&quot; &quot;The major findings of the present study are that (i) TLR4 activated microglia exhibit de novo upregulation of Sur1-Trpm4 channe&quot;| __truncated__ &quot;Our present findings extend these previous observations, showing that in TLR4 mediated neuroinflammation, silencing Abcc8 or Tr&quot;| __truncated__ ...
+##   ..$ citation  : logi [1:2031] NA NA NA NA NA NA ...
+##   ..$ @id       : int [1:2031] 12 13 18 19 24 25 26 30 31 32 ...
+##   ..$ attributes:List of 2031
+##   .. .. [list output truncated]
+##  $ citations         :'data.frame':  1467 obs. of  7 variables:
+##   ..$ @id           : int [1:1467] 3 5 7 11 17 23 29 37 42 52 ...
+##   ..$ dc:title      : logi [1:1467] NA NA NA NA NA NA ...
+##   ..$ dc:contributor: logi [1:1467] NA NA NA NA NA NA ...
+##   ..$ dc:identifier : chr [1:1467] &quot;pmid:12464182&quot; &quot;pmid:12464182&quot; &quot;pmid:12464182&quot; &quot;pmid:27987431&quot; ...
+##   ..$ dc:type       : logi [1:1467] NA NA NA NA NA NA ...
+##   ..$ dc:description: logi [1:1467] NA NA NA NA NA NA ...
+##   ..$ attributes    :List of 1467
+##   .. .. [list output truncated]
+##  $ edgeAttributes    :'data.frame':  8836 obs. of  3 variables:
+##   ..$ po: int [1:8836] 2 2 2 2 2 2 4 4 4 4 ...
+##   ..$ n : chr [1:8836] &quot;INDRA statement&quot; &quot;INDRA json&quot; &quot;type&quot; &quot;polarity&quot; ...
+##   ..$ v : chr [1:8836] &quot;Acetylation(NAA10(), HIF1A(), K, 532)&quot; &quot;{\&quot;residue\&quot;: \&quot;K\&quot;, \&quot;sub\&quot;: {\&quot;db_refs\&quot;: {\&quot;UP\&quot;: \&quot;Q16665\&quot;, \&quot;HGNC\&quot;: \&quot;4910\&quot;}, \&quot;name\&quot;: \&quot;HIF1A\&quot;}, \&quot;evidence\&quot;: [{\&quot;s&quot;| __truncated__ &quot;Modification&quot; &quot;positive&quot; ...
+##  $ edgeCitations     :'data.frame':  852 obs. of  2 variables:
+##   ..$ po       :List of 852
+##   .. .. [list output truncated]
+##   ..$ citations:List of 852
+##   .. .. [list output truncated]
+##  $ edgeSupports      :'data.frame':  766 obs. of  2 variables:
+##   ..$ po      :List of 766
+##   .. .. [list output truncated]
+##   ..$ supports:List of 766
+##   .. .. [list output truncated]
+##  $ networkAttributes :'data.frame':  3 obs. of  2 variables:
+##   ..$ n: chr [1:3] &quot;name&quot; &quot;description&quot; &quot;version&quot;
+##   ..$ v: chr [1:3] &quot;The Heart Machine&quot; &quot;&lt;div class=\&quot;wrapLongLine rowWithOneLineTopPad\&quot; style=\&quot;color: rgb(51, 51, 51);background-color: rgb(255, 255, 255);\&quot;&gt;&lt;span c&quot;| __truncated__ &quot;3.3&quot;
+##  $ nodeAttributes    :'data.frame':  1823 obs. of  3 variables:
+##   ..$ po: int [1:1823] 0 0 0 1 1 1 8 8 8 9 ...
+##   ..$ n : chr [1:1823] &quot;type&quot; &quot;UniProt&quot; &quot;HGNC&quot; &quot;type&quot; ...
+##   ..$ v : chr [1:1823] &quot;protein&quot; &quot;http://identifiers.org/uniprot/P41227&quot; &quot;http://identifiers.org/hgnc/HGNC:18704&quot; &quot;protein&quot; ...
+##  $ status            :'data.frame':  1 obs. of  2 variables:
+##   ..$ error  : chr &quot;&quot;
+##   ..$ success: logi TRUE
+##  - attr(*, &quot;class&quot;)= chr [1:2] &quot;RCX&quot; &quot;list&quot;</code></pre>
+<p>The data.frames representing nodes and edges could look like this:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">rcx[[<span class="st">&quot;nodes&quot;</span>]][<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>,]</code></pre></div>
+<pre><code>##   @id     n
+## 1   0 NAA10
+## 2   1 HIF1A
+## 3   8  A1CF
+## 4   9  ATF4
+## 5  14 ABCC8</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">rcx[[<span class="st">&quot;edges&quot;</span>]][<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>,]</code></pre></div>
+<pre><code>##   @id  s  t           i
+## 1   2  0  1 Acetylation
+## 2   4  0  1 Acetylation
+## 3   6  0  1 Acetylation
+## 4  10  8  9  Activation
+## 5  16 14 15  Activation</code></pre>
+<p>Usually, and RCX object is automatically created by using the functions of this package for downloading network data from a NDEx server. But it might be useful to convert an RCX object from/to JSON manually, for example for down-/uploading a CX file from/to a NDEx server via the web interface. For handling the network information within R, besides RCX objects, one can use NGraph objects. A lossless conversion between the two files can be done using the following functions:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## convert RCX to JSON
+json &lt;-<span class="st"> </span><span class="kw">rcx_toJSON</span>(rcx)
+
+## ...and back
+rcx &lt;-<span class="st"> </span><span class="kw">rcx_fromJSON</span>(json)
+
+## convert RCX to NGraph
+ngraph &lt;-<span class="st"> </span><span class="kw">rcx_toNGraph</span>(rcx)
+
+## ...and back
+rcx &lt;-<span class="st"> </span><span class="kw">ngraph_toRCX</span>(ngraph)</code></pre></div>
+<p>It is possible to create blank RCX objects from scratch:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">newRcx &lt;-<span class="st"> </span><span class="kw">rcx_new</span>()</code></pre></div>
+<p>After a RCX object is downloaded from an NDEx server, it will contain some aspects that are not present in a newly generated network, i.e. “ndexStatus”, “provenanceHistory” and “status”. Removing those aspects might be useful in some cases.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">asNewRcx &lt;-<span class="st"> </span><span class="kw">rcx_asNewNetwork</span>(rcx)</code></pre></div>
+<p>After a RCX object underwent some changes (adding/removing nodes/edges/aspects/meta- data, etc.), it is advisable to check a RCX object for its integrity and update its meta-data.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">rcx &lt;-<span class="st"> </span><span class="kw">rcx_updateMetaData</span>(rcx)</code></pre></div>
+<p>The meta-data is not only updated by the function, but also created, if not existent in the first place. It is necessary to mention, that the function tries to check the format and content of most of the aspects and properties, but due to the dynamic structure of RCX and CX, it is advised to have a look at the CX data model specification for a deeper insight about the core structure, dependencies and limitations.</p>
+</div>
+<div id="aspects-and-metadata" class="section level1">
+<h1>Aspects and Metadata</h1>
+<p>In general it is not advisable to retrieve a complete RCX object from a server without knowing the number of aspects and its corresponding size, because this may cause unwanted or unnecessary network traffic and decline in performance. To avoid these problems, a possible workflow is to download the meta-data of a network at first to check the available aspects.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## get meta-data for a network
+metadata =<span class="st"> </span><span class="kw">ndex_network_get_metadata</span>(ndexcon, networkId)
+
+<span class="kw">names</span>(metadata)</code></pre></div>
+<pre><code>## [1] &quot;consistencyGroup&quot; &quot;elementCount&quot;     &quot;lastUpdate&quot;      
+## [4] &quot;name&quot;             &quot;properties&quot;       &quot;version&quot;         
+## [7] &quot;idCounter&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">metadata[<span class="kw">c</span>(<span class="st">'name'</span>,<span class="st">'elementCount'</span>)]</code></pre></div>
+<pre><code>##                 name elementCount
+## 1  provenanceHistory            1
+## 2              nodes          641
+## 3              edges         1345
+## 4           supports         2031
+## 5          citations         1467
+## 6     edgeAttributes         8836
+## 7      edgeCitations          852
+## 8       edgeSupports          766
+## 9  networkAttributes            3
+## 10    nodeAttributes         1823</code></pre>
+<p>Afterwards, only the favored aspects can be downloaded individually.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## get aspect &quot;nodeCitations&quot; for the network
+networkAttibutes =<span class="st"> </span><span class="kw">ndex_network_get_aspect</span>(ndexcon, networkId, <span class="st">&quot;networkAttributes&quot;</span>)
+
+networkAttibutes</code></pre></div>
+<pre><code>##             n
+## 1        name
+## 2 description
+## 3     version
+##                                                                                                                                                                                                                                                                                                                                                                     v
+## 1                                                                                                                                                                                                                                                                                                                                                   The Heart Machine
+## 2 &lt;div class=&quot;wrapLongLine rowWithOneLineTopPad&quot; style=&quot;color: rgb(51, 51, 51);background-color: rgb(255, 255, 255);&quot;&gt;&lt;span class=&quot;ng-binding&quot;&gt;&lt;/span&gt;&lt;div&gt;The Heart Machine reads new publications on the molecular mechanisms governing cardiac toxicity caused by cancer drugs &lt;span&gt;automatically and assembles a model from them using INDRA.&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
+## 3                                                                                                                                                                                                                                                                                                                                                                 3.3</code></pre>
+</div>
+<div id="ndex-network-properties" class="section level1">
+<h1>NDEx Network properties</h1>
+<p>Even after creation, it is possible to change the name, the description or version of a network.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ndex_network_update_profile</span>(ndexcon, networkId, <span class="dt">name=</span><span class="st">&quot;My network&quot;</span>, <span class="dt">version=</span><span class="st">&quot;1.3&quot;</span>)
+<span class="kw">ndex_network_update_profile</span>(ndexcon, networkId, <span class="dt">description=</span><span class="st">&quot;Nothing to see here&quot;</span>)</code></pre></div>
+<p>For collaborative work, it is necessary to share networks between several users and groups. Therefore there are specialized functions to grant access to a network, change the permissions and withdraw access permissions. It is possible to use those functions on single users or groups. Possible permissions are “READ” to have reading access to private networks, “WRITE” to be able modify, and “ADMIN” for the owner of the network.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## show all user who have permission to a network
+permissions =<span class="st"> </span><span class="kw">ndex_network_get_permission</span>(ndexcon, networkId, <span class="st">'user'</span>)
+
+## show all groups who have permission to a network
+permissions =<span class="st"> </span><span class="kw">ndex_network_get_permission</span>(ndexcon, networkId, <span class="st">'group'</span>)
+
+## show all users with write access to a network
+permissions =<span class="st"> </span><span class="kw">ndex_network_get_permission</span>(ndexcon, networkId, <span class="st">'user'</span>, <span class="st">'WRITE'</span>)
+
+## grant an user permission to a network
+<span class="kw">ndex_network_update_permission</span>(ndexcon, networkId, <span class="dt">user=</span>someUserUuid, <span class="st">'READ'</span>)
+
+## change the permission of an user to the network
+<span class="kw">ndex_network_update_permission</span>(ndexcon, networkId, <span class="dt">user=</span>someUserUuid, <span class="st">'WRITE'</span>)
+
+## withdraw the permission from an user
+<span class="kw">ndex_network_delete_permission</span>(ndexcon, networkId, <span class="dt">user=</span>someUserUuid)</code></pre></div>
+<p>Besides permission management on user and group level, it is also possible to set some system properties on a network that influence the accessibility further. By default a network is private, which means that it is only visible to the owner and invited users and groups. If at some point one decides to make the network readable by anyone, it is possible to change the visibility of a network to “PUBLIC”.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ndex_network_set_systemProperties</span>(ndexcon, networkId, <span class="dt">visibility=</span><span class="st">&quot;PUBLIC&quot;</span>)
+<span class="kw">ndex_network_set_systemProperties</span>(ndexcon, networkId, <span class="dt">visibility=</span><span class="st">&quot;PRIVATE&quot;</span>)</code></pre></div>
+<p>When a network has reached the point to be published, further edits should be prevented. While it would be possible to set the access permissions of all users and groups to “READ”, this approach is very inconvenient. Therefore, a simpler way is to just set the network to read-only using the network system properties.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ndex_network_set_systemProperties</span>(ndexcon, networkId, <span class="dt">readOnly=</span><span class="ot">TRUE</span>)</code></pre></div>
+<p>One also has the option at the NDEx server to choose a selection of their favorite networks for display in his or her home page.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ndex_network_set_systemProperties</span>(ndexcon, networkId, <span class="dt">showcase=</span><span class="ot">TRUE</span>)
+<span class="kw">ndex_network_set_systemProperties</span>(ndexcon, networkId, <span class="dt">showcase=</span><span class="ot">FALSE</span>)
+<span class="co"># change more than one property simultaneously</span>
+<span class="kw">ndex_network_set_systemProperties</span>(ndexcon, networkId, <span class="dt">readOnly=</span><span class="ot">TRUE</span>, <span class="dt">visibility=</span><span class="st">&quot;PUBLIC&quot;</span>, <span class="dt">showcase=</span><span class="ot">TRUE</span>)</code></pre></div>
+<p>The provenance history aspect of an NDEx network is used to document the workflow of events and information sources that produced the current network (for the official provenance documentation see <a href="http://www.home.ndexbio.org/network-provenance-history/"><em>http://www.home.ndexbio.org/network-provenance-history/</em></a> ). There is a convenience function, that retrieves the provenance of the network.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">provenance =<span class="st"> </span><span class="kw">ndex_network_get_provenance</span>(ndexcon, networkId) </code></pre></div>
+</div>
+<div id="api-compatibility-with-ndex-versions" class="section level1">
+<h1>API Compatibility with NDEx versions</h1>
+<p>In the following table all API functions are listed. The functions are grouped by the content they access, namely networks, users, or groups. For every function also is shown, if authentication is needed, and by which version it is supported (Version 2.0 or 1.3). A function marked with brackets indicates, that, although the function would be supported by this version, for different reasons no function could be implemented. Limitations of the single API functions are also given in the column of the corresponding version.</p>
+<table>
+<tbody>
+<tr class="odd">
+<td align="left"><strong>Function name</strong></td>
+<td align="left"><strong>Authentication</strong></td>
+<td align="left"><strong>Version 2.0</strong></td>
+<td align="left"><strong>Version 1.3</strong></td>
+</tr>
+<tr class="even">
+<td align="left"><strong><em>Networks</em></strong></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">ndex_find_networks</td>
+<td align="left">no</td>
+<td align="left">X</td>
+<td align="left">X</td>
+</tr>
+<tr class="even">
+<td align="left">ndex_network_get_summary</td>
+<td align="left">no</td>
+<td align="left">X</td>
+<td align="left">X</td>
+</tr>
+<tr class="odd">
+<td align="left">ndex_get_network</td>
+<td align="left">no</td>
+<td align="left">X</td>
+<td align="left">X</td>
+</tr>
+<tr class="even">
+<td align="left">ndex_create_network</td>
+<td align="left">yes</td>
+<td align="left">X</td>
+<td align="left">X</td>
+</tr>
+<tr class="odd">
+<td align="left">ndex_update_network</td>
+<td align="left">yes</td>
+<td align="left">X</td>
+<td align="left">X</td>
+</tr>
+<tr class="even">
+<td align="left">ndex_delete_network</td>
+<td align="left">yes</td>
+<td align="left">X</td>
+<td align="left">X</td>
+</tr>
+<tr class="odd">
+<td align="left">ndex_network_get_metadata</td>
+<td align="left">no</td>
+<td align="left">X</td>
+<td align="left">(x)</td>
+</tr>
+<tr class="even">
+<td align="left">ndex_network_aspect_get_metadata</td>
+<td align="left">no</td>
+<td align="left">(x)</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">ndex_network_get_aspect</td>
+<td align="left">no</td>
+<td align="left">X</td>
+<td align="left">(x)</td>
+</tr>
+<tr class="even">
+<td align="left">ndex_network_update_aspect</td>
+<td align="left">yes</td>
+<td align="left">(x)</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">ndex_network_get_permission</td>
+<td align="left">yes</td>
+<td align="left">X</td>
+<td align="left">only for users, different response</td>
+</tr>
+<tr class="even">
+<td align="left">ndex_network_update_permission</td>
+<td align="left">yes</td>
+<td align="left">X</td>
+<td align="left">(only for users)</td>
+</tr>
+<tr class="odd">
+<td align="left">ndex_network_delete_permission</td>
+<td align="left">yes</td>
+<td align="left">X</td>
+<td align="left">only for users</td>
+</tr>
+<tr class="even">
+<td align="left">ndex_network_set_systemProperties</td>
+<td align="left">yes</td>
+<td align="left">X</td>
+<td align="left">only readOnly</td>
+</tr>
+<tr class="odd">
+<td align="left">ndex_network_update_profile</td>
+<td align="left">yes</td>
+<td align="left">X</td>
+<td align="left">X</td>
+</tr>
+<tr class="even">
+<td align="left">ndex_network_get_provenance</td>
+<td align="left">no</td>
+<td align="left">X</td>
+<td align="left">X</td>
+</tr>
+<tr class="odd">
+<td align="left"><strong><em>Users</em></strong></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">ndex_find_users</td>
+<td align="left">no</td>
+<td align="left">X</td>
+<td align="left">X</td>
+</tr>
+<tr class="odd">
+<td align="left">ndex_find_user_byName</td>
+<td align="left">no</td>
+<td align="left">X</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">ndex_find_user_byId</td>
+<td align="left">no</td>
+<td align="left">X</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">ndex_create_user</td>
+<td align="left">yes</td>
+<td align="left">X</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">ndex_delete_user</td>
+<td align="left">yes</td>
+<td align="left">X</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">ndex_update_user</td>
+<td align="left">yes</td>
+<td align="left">X</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">ndex_verify_user</td>
+<td align="left">no</td>
+<td align="left">X</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">ndex_user_change_password</td>
+<td align="left">yes</td>
+<td align="left">X</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">ndex_user_mail_password</td>
+<td align="left">no</td>
+<td align="left">X</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">ndex_user_forgot_password</td>
+<td align="left">no</td>
+<td align="left">X</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">ndex_user_list_groups</td>
+<td align="left">yes</td>
+<td align="left">X</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">ndex_user_show_group</td>
+<td align="left">yes</td>
+<td align="left">X</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">ndex_user_list_permissions</td>
+<td align="left">yes</td>
+<td align="left">X</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">ndex_user_show_permission</td>
+<td align="left">yes</td>
+<td align="left">X</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">ndex_user_get_showcase</td>
+<td align="left">no</td>
+<td align="left">X</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">ndex_user_get_networksummary</td>
+<td align="left">yes</td>
+<td align="left">X</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left"><strong><em>Groups</em></strong></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">ndex_find_groups</td>
+<td align="left">no</td>
+<td align="left">X</td>
+<td align="left">X</td>
+</tr>
+<tr class="even">
+<td align="left">ndex_get_group</td>
+<td align="left">no</td>
+<td align="left">X</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">ndex_create_group</td>
+<td align="left">yes</td>
+<td align="left">X</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">ndex_delete_group</td>
+<td align="left">yes</td>
+<td align="left">X</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">ndex_update_group</td>
+<td align="left">yes</td>
+<td align="left">X</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">ndex_group_list_users</td>
+<td align="left">no</td>
+<td align="left">X</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">ndex_group_set_membership</td>
+<td align="left">yes</td>
+<td align="left">X</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">ndex_group_list_networks</td>
+<td align="left">no</td>
+<td align="left">X</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">ndex_group_network_get_permission</td>
+<td align="left">no</td>
+<td align="left">X</td>
+<td align="left"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="server-rest-api-configuration" class="section level1">
+<h1>Server REST API configuration</h1>
+<p>In the section “Connect to a server”, briefly a method for manually changing the API version was introduced, with the API definition stored in ndex_config.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(ndex_config)</code></pre></div>
+<pre><code>## [1] &quot;defaultVersion&quot; &quot;Version_2.0&quot;    &quot;Version_1.3&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(ndex_config, <span class="dt">max.level =</span> <span class="dv">3</span>)</code></pre></div>
+<pre><code>## List of 3
+##  $ defaultVersion: chr &quot;Version_2.0&quot;
+##  $ Version_2.0   :List of 3
+##   ..$ version   : chr &quot;2.0&quot;
+##   ..$ connection:List of 3
+##   .. ..$ description: chr &quot;URL of the NDEx server&quot;
+##   .. ..$ host       : chr &quot;www.ndexbio.org&quot;
+##   .. ..$ api        : chr &quot;/v2&quot;
+##   ..$ api       :List of 5
+##   .. ..$ serverStatus:List of 3
+##   .. ..$ user        :List of 11
+##   .. ..$ group       :List of 6
+##   .. ..$ network     :List of 12
+##   .. ..$ search      :List of 3
+##  $ Version_1.3   :List of 3
+##   ..$ version   : chr &quot;1.3&quot;
+##   ..$ connection:List of 3
+##   .. ..$ description: chr &quot;URL of the NDEx server&quot;
+##   .. ..$ host       : chr &quot;www.ndexbio.org&quot;
+##   .. ..$ api        : chr &quot;/rest&quot;
+##   ..$ api       :List of 4
+##   .. ..$ serverStatus:List of 3
+##   .. ..$ user        :List of 1
+##   .. ..$ network     :List of 11
+##   .. ..$ search      :List of 3</code></pre>
+<p>This object contains the api definition for several versions (currently version 1.3 and 2.0). By default, <code>ndex_connect()</code> uses the version defined in <code>ndex_config$defaultVersion</code> (“Version_2.0”). To use another, or even a customized version to establish a server connection, the ndexConf parameter can be used, like shown before. In the following, the structure of such a configuration is elaborated in more detail.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(ndex_config<span class="op">$</span>Version_<span class="fl">2.0</span>)</code></pre></div>
+<pre><code>## [1] &quot;version&quot;    &quot;connection&quot; &quot;api&quot;</code></pre>
+<p>The main structure of the configuration consists of three elements: The version is used to distinguish manually set configurations, which is used in some API functions to work differently for the single versions.</p>
+<p>The “connection” element holds information about the default connection to the server, namely the host (e.g. “<a href="http://www.ndexbio.org/"><em>http://www.ndexbio.org/</em></a>”) and the path to the api (e.g. “/v2” or “/rest”).</p>
+<p>The REST API itself is defined in the “api” element, and follows the scheme of the function names, or the scheme of url paths likewise. E.g. in the “user” branch the different functions for handling user data are defined. If required, the functions might be grouped together in sub-branches furthermore. At the end of an branch, the actual definition of an API can be found.</p>
+<p>To show, how such an API is defined and how to define one by themselves, let’s have a look at <code>ndex_config$Version_2.0$api$user$password$mail</code>, which is used by <code>ndex_user_mail_password()</code>. Where to find the configuration of the function is shown in the “REST query” section of the function documentation. For a better readability, the yaml notation for this function configuration is used:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mail<span class="op">:</span>
+<span class="st">  </span>description<span class="op">:</span><span class="st"> &quot;Causes a new password to be generated for ...&quot;</span>
+  url<span class="op">:</span><span class="st"> &quot;/user/#USERID#/password&quot;</span>
+  method<span class="op">:</span><span class="st"> &quot;PUT&quot;</span>
+  params<span class="op">:</span>
+<span class="st">    </span>user<span class="op">:</span>
+<span class="st">      </span>method<span class="op">:</span><span class="st"> &quot;replace&quot;</span>
+      tag<span class="op">:</span><span class="st"> &quot;#USERID#&quot;</span>
+    forgot<span class="op">:</span>
+<span class="st">      </span>method<span class="op">:</span><span class="st"> &quot;parameter&quot;</span>
+      tag<span class="op">:</span><span class="st"> &quot;forgot&quot;</span>
+      default<span class="op">:</span><span class="st"> &quot;true&quot;</span></code></pre></div>
+<p>Note: To get the yaml notation for the whole <code>ndex_config</code> simply use <code>yaml::as.yaml(ndex_config)</code> (requires package <code>yaml</code> to be installed).</p>
+<p>The single parameter definitions are given as list by the “params” parameter. Each parameter is defined by a method, and, if applicable, a tag, a default value and/or an optional flag. There are three keywords defining the method: replace, append or parameter.</p>
+<ul>
+<li><strong>replace:</strong> The String defined by “tag” can be found within the url and will be replaced by the given value of the parameter. E.g. the tag <code>#NETWORKID#</code> in the url <code>/network/#NETWORKID#/provenance</code> is replaced by a value (e.g. <code>aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee</code>) given as network id, which leads to the url <code>/network/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee/provenance</code>.</li>
+<li><strong>append:</strong> The given value of the parameter is appended to an url. Therefore the order of the parameters in the params definition is used. E.g. the url <code>/network/search</code> and the given values for <code>start = 0</code> and <code>size = 100</code> generates the following url: <code>/network/search/0/100</code></li>
+<li><strong>parameter:</strong> Encodes the given parameters as url parameter using the specified tag as parameter descriptor. E.g. a parameter with the tag <code>username</code> and the value <code>SomeName</code> is encoded in the url <code>/user</code> as follows: <code>/user?username=SomeName</code></li>
+</ul>
+<p>It is also possible to set parameter as optional (except for replace), or define default values. Values are assigned to the parameters using the parameter name in the … parameter of the <code>ndex_helper_encodeParams()</code> function. Parameters, that are not defined in the configuration are ignored.</p>
+<p>The easiest to write an own configuration is by simply copying an existing configuration and tailor it to the needs.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Copy an existing config</span>
+custom.ndex_config =<span class="st"> </span>ndex_config<span class="op">$</span>Version_<span class="fl">2.0</span>
+
+<span class="co"># Change the host connection for a local NDEx server installation</span>
+custom.ndex_config<span class="op">$</span>connection<span class="op">$</span>host =<span class="st">&quot;localhost:8090&quot;</span>
+
+<span class="co"># Custom path to the REST api</span>
+custom.ndex_config<span class="op">$</span>connection<span class="op">$</span>api =<span class="st">&quot;/api/rest&quot;</span>
+
+<span class="co"># Change the REST path for the ndex_get_network function</span>
+custom.ndex_config<span class="op">$</span>api<span class="op">$</span>network<span class="op">$</span>get<span class="op">$</span>url =<span class="st">&quot;/custom/networks/#NETWORKID#&quot;</span>
+
+<span class="co"># Add some (default) parameters to the function</span>
+custom.ndex_config<span class="op">$</span>api<span class="op">$</span>network<span class="op">$</span>get<span class="op">$</span>params<span class="op">$</span>newParam =<span class="st"> </span><span class="kw">list</span>(<span class="dt">method=</span><span class="st">&quot;parameter&quot;</span>, <span class="dt">tag=</span><span class="st">&quot;someTag&quot;</span>, <span class="dt">default=</span><span class="st">&quot;someValue&quot;</span>)</code></pre></div>
+<p>It is also possible to write an own configuration in yaml (or convert <code>ndex_config</code> to yaml, see above) and load it as object (<code>yaml::load</code> or <code>yaml::load_file</code>) or to translate the configuration into R code using the function <code>ndexr:::yamlToRConfig()</code></p>
+<p>Note: For package maintenance it is advised to add new versions as yaml definitions in <code>/R/ndex_api_config.yml</code> (for example as “Version_3.0”) and update the R code in <code>/R/ndex_api_config.r</code>, which defines the <code>ndex_config</code> object.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">yamlToRConfig =<span class="st"> </span><span class="cf">function</span>(<span class="dt">yamlFile=</span><span class="st">'R/ndex_api_config.yml'</span>, <span class="dt">rScriptFile=</span><span class="st">'R/ndex_api_config.r'</span>, <span class="dt">defaultHeader=</span>ndex_conf_header){
+  yamlObj =<span class="st"> </span>yaml<span class="op">::</span><span class="kw">yaml.load_file</span>(yamlFile)
+  rCodeTxt =<span class="st"> </span><span class="kw">paste0</span>(defaultHeader, <span class="kw">listToRCode</span>(yamlObj))
+  outFile =<span class="st"> </span><span class="kw">file</span>(rScriptFile)
+  <span class="kw">writeLines</span>(rCodeTxt, outFile)
+  <span class="kw">close</span>(outFile)
+}
+
+<span class="kw">yamlToRConfig</span>()</code></pre></div>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

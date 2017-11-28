@@ -169,13 +169,13 @@ rcx_fromJSON <- function(json, verbose = FALSE){
     warning(paste0("JSON2RCX: data contained ",length(sel), " parts of metaData. Must be 1 or 2. Returning NULL." ))
     return(NULL)
   }
-
+  
   ### remaining aspects must have same structure: rbind them
   for(i in names(jsonlist)) {
     if(i == "metaData") next
     aspectlist[[i]] = plyr::rbind.fill(jsonlist[[i]])
   }
-
+  
   #set class
   class(aspectlist) = c("RCX",class(aspectlist))
   return(aspectlist)
@@ -201,7 +201,7 @@ rcx_toJSON <- function(rcx, verbose = FALSE, pretty = FALSE){
   if(is.null(rcx) || !("RCX" %in% class(rcx))) {
     stop("rcx_toJSON: parameter rcx does not contain RCX object")
   }
-
+    
   ## numberVerification has to be 2^48 = 281,474,976,710,655
   rcx$numberVerification = data.frame(longNumber=281474976710655)
   jsonCol = c()
@@ -243,7 +243,6 @@ rcx_aspect_toJSON <- function(rcxAspect, verbose = FALSE, pretty = FALSE){
         tmpNoList = rcxAspect[!isListVector,]    # doesn't have to be wrapped
         tmpList$v = as.list(tmpList$v)              # forces toJSON to encode the elements as arrays
         jsonCol = c()
-
         ## don't add an empty aspect, if all v's are lists
         if(dim(tmpNoList)[1]!=0){
             tmpNoList$v <- unlist(tmpNoList$v)
@@ -260,7 +259,7 @@ rcx_aspect_toJSON <- function(rcxAspect, verbose = FALSE, pretty = FALSE){
             tmpTxt = substr(tmpTxt,2,nchar(tmpTxt)-1)
             jsonCol = c(jsonCol, tmpTxt)
         }
-
+        
         result = paste0('[',paste0(jsonCol, collapse=','),']')
     }else{
         tmpList = rcxAspect
@@ -366,7 +365,6 @@ rcx_updateMetaData = function(rcx, mandatoryAspects=c('nodes'), excludeAspects=c
     # check if mandatoryAspects are present in the RCX object
     if(any(!(mandatoryAspects %in% names(rcx)))) stop(paste0("rcx_updateMetaData: Mandatory aspects are missing in the RCX object: ", paste0(mandatoryAspects[!(mandatoryAspects %in% names(rcx))], collapse=', ')))
 
-
     # get meta data from RCX object
     # create it, if it doesn't exist (or if it is forced)
     metaData = rcx$metaData
@@ -375,7 +373,7 @@ rcx_updateMetaData = function(rcx, mandatoryAspects=c('nodes'), excludeAspects=c
         metaData = data.frame(consistencyGroup=1, elementCount=0, lastUpdate=1, name = sort(names(rcx)[!(names(rcx) %in% excludeAspects)]), version='1.0', idCounter=NA, stringsAsFactors = FALSE)
     }else{
         if(verbose) print('rcx_updateMetaData: Existing metaData will be updated')
-
+        
         if(!('consistencyGroup' %in% names(metaData))){
             metaData$consistencyGroup = 1
             if(verbose) warning('rcx_updateMetaData: No consistancy groups specified (Set by default to "1")!  Check manually for consistency!')
@@ -415,7 +413,6 @@ rcx_updateMetaData = function(rcx, mandatoryAspects=c('nodes'), excludeAspects=c
     if(verbose) print('rcx_updateMetaData: idCounter will be updated')
     # id exporting aspects are required to have specified an id counter (max id in the aspect)
     metaData$idCounter = sapply(metaData$name, function(x){return(ifelse('@id' %in% colnames(rcx[[x]]), max(rcx[[x]]$'@id'), NA))})
-
 
     if(verbose) print('rcx_updateMetaData: Consistency groups will be checked')
     # get the current consistency group(s)

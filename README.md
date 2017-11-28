@@ -37,7 +37,6 @@ Installation
     library(ndexr)
     
 ## Installation via GitHub
-
 using [*devtools*](http://cran.r-project.org/web/packages/devtools/index.html) R package
 
     require(devtools)
