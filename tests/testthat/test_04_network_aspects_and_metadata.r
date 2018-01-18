@@ -21,12 +21,10 @@ context('Aspects and meta-data')
 test_that('Get network meta-data (ndex_network_get_metadata)', {
     nms = names(ndex_config)
     apiVersions = nms[nms!='defaultVersion']
-    netColNames = c("consistencyGroup", "elementCount", "lastUpdate", "name", "properties", "version", "idCounter")
-  
-#   con = ndex_connect()
-  
-#   networks = ndex_find_networks(con, accountName = 'ndextutorials')  ## public ndex account networks
-#   uuid = networks[1,'externalId']
+    # netColNames = c("consistencyGroup", "elementCount", "lastUpdate", "name", "properties", "version", "idCounter")
+    ## no "properties" column anymore in metadata [2018.01.10]
+    netColNames = c("consistencyGroup", "elementCount", "lastUpdate", "name", "version", "idCounter")
+
     uuid = ndexTestConf$uuidPublicNetwork
     
     for(apiVersion in apiVersions){

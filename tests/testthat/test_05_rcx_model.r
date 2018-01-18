@@ -20,11 +20,15 @@ context('RCX data model')
 
 
 test_that('Check from and to JSON (rcx_fromJSON, rcx_toJSON)', {
+    netColNames = c("metaData", "numberVerification", "ndexStatus", "@context", "citations", "edgeCitations", "edges", "networkAttributes", "nodeAttributes", "nodes", "status")
+    
     con = ndex_connect()
-#    networks = ndex_find_networks(con, accountName = 'ndextutorials')  ## public ndex account networks
-#    uuid = networks[1,'externalId']
     uuid = ndexTestConf$uuidPublicNetwork
     rcx = ndex_get_network(con, uuid)
+    
+    ## only test for core aspects
+    rcx[!(names(rcx) %in% netColNames)]=NULL
+    
     rcx2json = rcx_toJSON(rcx)
     rcx2json2rcx = rcx_fromJSON(rcx2json)
     

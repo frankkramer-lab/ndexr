@@ -165,6 +165,22 @@ rcx_fromJSON <- function(json, verbose = FALSE){
       aspectlist[["metaData"]]$properties.y = NULL
     }
   }
+  ## correction for the "properties" element in "metaData"
+  ## since 2018.01.20 "properties" is optional, it casts to NULL instead of list
+  ## this leads to a conversion to an json object, which is wrong
+  ## this is done to prevent this behavor!
+  if("properties" %in% names(aspectlist$metaData)) {
+    propTmp = aspectlist[["metaData"]]$properties
+    aspectlist[["metaData"]]$properties = lapply(propTmp, function(x){
+      if(is.null(x)){
+        return(as.list(NULL))
+      }else{
+        return(x)
+      }
+    })
+  }
+  
+  ## more than 2 metaData elements in the json defined 
   if(!(length(sel) %in% c(1,2))) {
     warning(paste0("JSON2RCX: data contained ",length(sel), " parts of metaData. Must be 1 or 2. Returning NULL." ))
     return(NULL)
@@ -205,6 +221,16 @@ rcx_toJSON <- function(rcx, verbose = FALSE, pretty = FALSE){
   ## numberVerification has to be 2^48 = 281,474,976,710,655
   rcx$numberVerification = data.frame(longNumber=281474976710655)
   jsonCol = c()
+  
+  ## remove empty "properties" elements column in "metaData"
+  if("properties" %in% names(rcx$metaData)) {
+    propTmp = rcx$metaData$properties
+    if(! any(! sapply(propTmp, is.null))){
+      rcx$metaData$properties = NULL
+    }
+  }
+  
+  ## specify the order of the elemnets in the sent CX json
   ## numberVerifiction has to be first!!
   ## metaData has to be second!!
   rcxNames = names(rcx)
@@ -212,7 +238,7 @@ rcx_toJSON <- function(rcx, verbose = FALSE, pretty = FALSE){
   rcxNames = rcxNames[rcxNames!="metaData"]
   rcxNames = c("numberVerification", "metaData", rcxNames)
   for(aspect in rcxNames){
-      jsonCol = c(jsonCol,paste0('{"',aspect,'":',rcx_aspect_toJSON(rcx[[aspect]], verbose, pretty),'}'))
+    jsonCol = c(jsonCol,paste0('{"',aspect,'":',rcx_aspect_toJSON(rcx[[aspect]], verbose, pretty),'}'))
   }
   return(paste0('[',paste0(jsonCol, collapse=','),']'))
 }
