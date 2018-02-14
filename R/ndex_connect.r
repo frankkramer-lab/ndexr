@@ -184,10 +184,13 @@ print.NDExConnection <- function(x,...){
 #' }
 ndex_rest_GET <- function(ndexcon, route, raw = FALSE){
   url <- paste0(ndexcon$url, route)
+  header = httr::add_headers("User-Agent"=paste0(httr:::default_ua(),
+                                                 " ndexr/",
+                                                 packageVersion("ndexr")))
   auth <- NULL
   if(! ndexcon$anonymous) auth = httr::authenticate(ndexcon$username, ndexcon$password)
   
-  try(response <- httr::GET(url, auth))
+  try(response <- httr::GET(url, auth, header))
   ndex_helper_httpResponseHandler(response, paste("GET: [", url, "]"), ndexcon$verbose)
   content <- httr::content(response, as='text', encoding='UTF-8')
   
@@ -228,13 +231,16 @@ ndex_rest_GET <- function(ndexcon, route, raw = FALSE){
 #' }
 ndex_rest_POST <- function(ndexcon, route, data, multipart = FALSE, raw = FALSE){
   url <- paste0(ndexcon$url, route)
+  header = httr::add_headers("User-Agent"=paste0(httr:::default_ua(),
+                                                 " ndexr/",
+                                                 packageVersion("ndexr")))
   auth <- NULL
   if(! ndexcon$anonymous) auth <- httr::authenticate(ndexcon$username, ndexcon$password)
   encode <- ifelse(multipart, 'multipart', 'json')
   contenttype <- httr::content_type_json()
   if(multipart) contenttype <- httr::content_type('multipart/form-data')
   
-  try(response <- httr::POST(url, auth, contenttype, body = data, encode = encode))
+  try(response <- httr::POST(url, auth, header, contenttype, body = data, encode = encode))
   
   ndex_helper_httpResponseHandler(response, paste("POST: [", url, "]\ndata:\n",substring(data, 1, 300),'\n...'), ndexcon$verbose)
   content <- httr::content(response, as='text', encoding='UTF-8')
@@ -276,13 +282,16 @@ ndex_rest_POST <- function(ndexcon, route, data, multipart = FALSE, raw = FALSE)
 #' }
 ndex_rest_PUT <- function(ndexcon, route, data=NULL, multipart = FALSE, raw = FALSE){
     url <- paste0(ndexcon$url, route)
+    header = httr::add_headers("User-Agent"=paste0(httr:::default_ua(),
+                                                 " ndexr/",
+                                                 packageVersion("ndexr")))
     auth <- NULL
     if(! ndexcon$anonymous) auth <- httr::authenticate(ndexcon$username, ndexcon$password)
     encode <- ifelse(multipart, 'multipart', 'json')
     contenttype <- httr::content_type_json()
     if(multipart) contenttype <- httr::content_type('multipart/form-data')
     
-    try(response <- httr::PUT(url, auth, contenttype, body = data, encode = encode))
+    try(response <- httr::PUT(url, auth, header, contenttype, body = data, encode = encode))
     
     ndex_helper_httpResponseHandler(response, paste("PUT: [", url, "]\ndata:\n",substring(data, 1, 300),'\n...'), ndexcon$verbose)
     content <- content(response, as='text', encoding='UTF-8')
@@ -319,10 +328,13 @@ ndex_rest_PUT <- function(ndexcon, route, data=NULL, multipart = FALSE, raw = FA
 #' }
 ndex_rest_DELETE <- function(ndexcon, route, raw = FALSE){
   url <- paste0(ndexcon$url, route)
+  header = httr::add_headers("User-Agent"=paste0(httr:::default_ua(),
+                                                 " ndexr/",
+                                                 packageVersion("ndexr")))
   auth <- NULL
   if(! ndexcon$anonymous) auth = httr::authenticate(ndexcon$username, ndexcon$password)
   
-  try(response <- httr::DELETE(url, auth, encode = 'json'))
+  try(response <- httr::DELETE(url, auth, header, encode = 'json'))
   ndex_helper_httpResponseHandler(response, paste("DELETE: [", url, "]"), ndexcon$verbose)
   content <- httr::content(response, as='text', encoding='UTF-8')
   
