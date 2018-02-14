@@ -2,3 +2,8 @@
 .Rhistory
 .RData
 .Ruserdata
+.Rbuildignore
+.gitignore
+*.Rproj
+.directory
+..Rcheck
