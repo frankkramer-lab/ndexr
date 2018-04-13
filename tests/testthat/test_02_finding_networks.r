@@ -21,7 +21,32 @@ context('Finding networks')
 test_that('Get list of networks from a server (ndex_find_networks)', {
   nms = names(ndex_config)
   apiVersions = nms[nms!='defaultVersion']
-  netColNames = c("ownerUUID", "isReadOnly", "subnetworkIds", "errorMessage", "isValid", "warnings", "isShowcase", "visibility", "edgeCount", "nodeCount", "uri", "version", "owner", "description", "name", "properties", "externalId", "isDeleted", "modificationTime", "creationTime")
+  # netColNames = c("ownerUUID", "isReadOnly", "subnetworkIds", "errorMessage", "isValid", "warnings", "isShowcase", "visibility", "edgeCount", "nodeCount", "uri", "version", "owner", "description", "name", "properties", "externalId", "isDeleted", "modificationTime", "creationTime")
+  ## no "uri" and "errorMessage" column anymore in metadata, but new columns: 
+  ## "isCertified" "indexLevel"  "hasLayout"   "hasSample"   "completed" [2018.04.13]
+  netColNames = c("ownerUUID", 
+                  "isReadOnly", 
+                  "subnetworkIds", 
+                  "isValid", 
+                  "warnings", 
+                  "isShowcase", 
+                  "visibility", 
+                  "edgeCount", 
+                  "nodeCount", 
+                  "version", 
+                  "owner", 
+                  "description", 
+                  "name", 
+                  "properties", 
+                  "externalId", 
+                  "isDeleted", 
+                  "modificationTime", 
+                  "creationTime",
+                  "isCertified", 
+                  "indexLevel", 
+                  "hasLayout", 
+                  "hasSample", 
+                  "completed")
   
   expect_error(ndex_find_networks(), info='No connection provided')
   
@@ -47,7 +72,19 @@ test_that('Get list of networks from a server (ndex_find_networks)', {
     networks = ndex_find_networks(con, start=1, size=5)
     rownames(networks) = NULL
     rownames(forLater) = NULL
-    columnsToBeEqual = c("ownerUUID", "isReadOnly", "visibility", "edgeCount", "nodeCount", "uri", "owner", "name", "externalId","modificationTime", "creationTime")
+    # netColNames = c("ownerUUID", "isReadOnly", "subnetworkIds", "errorMessage", "isValid", "warnings", "isShowcase", "visibility", "edgeCount", "nodeCount", "uri", "version", "owner", "description", "name", "properties", "externalId", "isDeleted", "modificationTime", "creationTime")
+    ## no "uri" and "errorMessage" column anymore in network list, but new columns: 
+    ## "isCertified" "indexLevel"  "hasLayout"   "hasSample"   "completed" [2018.04.13]
+    columnsToBeEqual = c("ownerUUID", 
+                         "isReadOnly", 
+                         "visibility", 
+                         "edgeCount", 
+                         "nodeCount", 
+                         "owner", 
+                         "name", 
+                         "externalId",
+                         "modificationTime", 
+                         "creationTime")
 
     expect_is(networks, 'data.frame', info=paste0('Checking class of found network list (start=1, size=5) using api ', apiVersion))
     expect_object_conains_names(networks, netColNames, info=paste0('Checking column names of found network list (start=1, size=5) using api ', apiVersion))

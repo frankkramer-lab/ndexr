@@ -21,7 +21,17 @@ context('Simple network operations')
 test_that('Get a network from server (ndex_get_network)', {
     nms = names(ndex_config)
       apiVersions = nms[nms!='defaultVersion']
-      netColNames = c("metaData", "numberVerification", "ndexStatus", "@context", "citations", "edgeCitations", "edges", "networkAttributes", "nodeAttributes", "nodes", "status")
+      netColNames = c("metaData", 
+                      "numberVerification", 
+                      "ndexStatus", 
+                      "@context", 
+                      "citations", 
+                      "edgeCitations", 
+                      "edges", 
+                      "networkAttributes", 
+                      "nodeAttributes", 
+                      "nodes", 
+                      "status")
 
       con = ndex_connect()
       expect_error(ndex_get_network(), info='No connection provided')
@@ -53,7 +63,20 @@ test_that('Get a network from server (ndex_get_network)', {
 test_that('Get network summary from server (ndex_network_get_summary)', {
     nms = names(ndex_config)
     apiVersions = nms[nms!='defaultVersion']
-    netColNames = c("ownerUUID", "isReadOnly", "visibility", "edgeCount", "nodeCount", "uri", "version", "owner", "description", "name", "externalId","modificationTime", "creationTime")
+    # netColNames = c("ownerUUID", "isReadOnly", "visibility", "edgeCount", "nodeCount", "uri", "version", "owner", "description", "name", "externalId","modificationTime", "creationTime")
+    ## no "uri" column anymore in summary [2018.04.13]
+    netColNames = c("ownerUUID", 
+                    "isReadOnly", 
+                    "visibility", 
+                    "edgeCount", 
+                    "nodeCount",
+                    "version", 
+                    "owner", 
+                    "description", 
+                    "name", 
+                    "externalId",
+                    "modificationTime", 
+                    "creationTime")
     
     con = ndex_connect()
     expect_error(ndex_network_get_summary(), info='No connection provided')

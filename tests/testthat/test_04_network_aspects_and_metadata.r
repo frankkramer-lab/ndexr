@@ -23,7 +23,13 @@ test_that('Get network meta-data (ndex_network_get_metadata)', {
     apiVersions = nms[nms!='defaultVersion']
     # netColNames = c("consistencyGroup", "elementCount", "lastUpdate", "name", "properties", "version", "idCounter")
     ## no "properties" column anymore in metadata [2018.01.10]
-    netColNames = c("consistencyGroup", "elementCount", "lastUpdate", "name", "version", "idCounter")
+    # netColNames = c("consistencyGroup", "elementCount", "lastUpdate", "name", "version", "idCounter")
+    ## no "lastUpdate" column anymore in metadata, but the "properties" column returned! [2018.04.13]
+    netColNames = c("consistencyGroup", 
+                    "elementCount", 
+                    "name", 
+                    "version", 
+                    "idCounter")
 
     uuid = ndexTestConf$uuidPublicNetwork
     
@@ -83,7 +89,11 @@ test_that('Get network aspect as CX (ndex_network_get_aspect)', {
 #    uuid = networks[1,'externalId']
     uuid = ndexTestConf$uuidPublicNetwork
     metData  = ndex_network_get_metadata(con, uuid)
-    metDataNames = metData$metaData$name[metData$metaData$elementCount>0]
+    # metDataNames = metData$metaData$name[metData$metaData$elementCount>0]
+    ## meta data is now returned directly as data.frame, and not nested anymore [2018.04.12] 
+    metDataNames = metData$name[metData$elementCount>0]
+    
+    expect_is(metData, 'data.frame', info=paste0('Checking class of aspect (api ', apiVersion, ', aspect ', asp, ')'))
     
     for(apiVersion in apiVersions){
         api = ndex_config[[apiVersion]]
