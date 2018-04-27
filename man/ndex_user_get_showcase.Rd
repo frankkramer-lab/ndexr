@@ -36,8 +36,8 @@ userId = user$externalId
 ## get all network permissions of the user
 showcase = ndex_user_get_showcase(ndexcon, userId)
 names(showcase)
-## [1] "ownerUUID"        "isReadOnly"       "subnetworkIds"    "errorMessage"     "isValid"         
-## [6] "warnings"         "isShowcase"       "visibility"       "edgeCount"        "nodeCount"       
-##[11] "uri"              "version"          "owner"            "name"             "properties"      
-##[16] "description"      "externalId"       "isDeleted"        "modificationTime" "creationTime"
+## [1] "ownerUUID"    "isReadOnly"  "subnetworkIds"  "errorMessage"      "isValid"         
+## [6] "warnings"     "isShowcase"  "visibility"     "edgeCount"         "nodeCount"       
+##[11] "uri"          "version"     "owner"          "name"              "properties"      
+##[16] "description"  "externalId"  "isDeleted"      "modificationTime"  "creationTime"
 }

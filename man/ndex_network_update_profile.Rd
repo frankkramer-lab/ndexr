@@ -44,6 +44,7 @@ GET: ndex_config$api$network$profile$update
 # ndex_network_update_profile(ndexcon, networkId, name="Some fancy name for the network")
 # ndex_network_update_profile(ndexcon, networkId, description="Description of the network")
 # ndex_network_update_profile(ndexcon, networkId, version="1.2.3.4")
-# ndex_network_update_profile(ndexcon, networkId, name="Special test network", description="Nothing to see here", version="1.3")
+# ndex_network_update_profile(ndexcon, networkId, name="Special test network", 
+#                             description="Nothing to see here", version="1.3")
 NULL
 }

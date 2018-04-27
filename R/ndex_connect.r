@@ -31,12 +31,17 @@
 #' @return returns object of class NDExConnection which stores options, authentication and api configuration if successfull, NULL otherwise
 #' 
 #' @examples
-#' ndexcon = ndex_connect()   ## log in anonymously
-#' ndexcon = ndex_connect(verbose=TRUE)   ## same as above with extended feedback
+#' ## log in anonymously
+#' ndexcon = ndex_connect()
+#' ## same as above with extended feedback
+#' ndexcon = ndex_connect(verbose=TRUE)
 #' \dontrun{
-#' ndexcon = ndex_connect('user','password')   ## log in with credentials
-#' ndexcon = ndex_connect(host='localhost:8765')   ## running some NDEx server locally
-#' ndexcon = ndex_connect(ndexConf=ndex_config$Version_2.0)   ## manually change the api and connection configuration
+#' ## log in with credentials
+#' ndexcon = ndex_connect('user','password')
+#' ## running some NDEx server locally
+#' ndexcon = ndex_connect(host='localhost:8765')
+#' ## manually change the api and connection configuration
+#' ndexcon = ndex_connect(ndexConf=ndex_config$Version_2.0)   
 #' }
 #' @seealso  \code{\link{ndex_config}}
 #' @export
@@ -122,17 +127,21 @@ ndex_connect <- function(username, password, host = ndexConf$connection$host, ap
 #' 
 #' @return Just prints the NDExConnection object
 #' 
+#' @keywords internal
 #' @examples
 #' ndexcon = ndex_connect()   ## log in anonymously
 #' print(ndexcon)
 #' ndexcon = ndex_connect(verbose=TRUE)   ## same as above with extended feedback
 #' print(ndexcon)
 #' \dontrun{
-#' ndexcon = ndex_connect('user','password')   ## log in with credentials
+#' ## log in with credentials
+#' ndexcon = ndex_connect('user','password')
 #' print(ndexcon)
-#' ndexcon = ndex_connect(host='localhost:8765')   ## running some NDEx server locally
+#' ## running some NDEx server locally
+#' ndexcon = ndex_connect(host='localhost:8765')
 #' print(ndexcon)
-#' ndexcon = ndex_connect(ndexConf=ndex_config$Version_2.0)   ## manually change the api and connection configuration
+#' ## manually change the api and connection configuration
+#' ndexcon = ndex_connect(ndexConf=ndex_config$Version_2.0)
 #' print(ndexcon)
 #' }
 #' @seealso  \code{\link{ndex_connect}} and \code{\link{ndex_config}}
@@ -176,6 +185,7 @@ print.NDExConnection <- function(x,...){
 #' Making sure the route is well-formed is the job of calling function
 #' @seealso \code{\link{ndex_rest_GET}},  \code{\link{ndex_rest_POST}},  \code{\link{ndex_rest_PUT}} and \code{\link{ndex_rest_DELETE}}
 #' 
+#' @keywords internal
 #' @examples
 #' ## Establish a server connection
 #' ndexcon = ndex_connect()
@@ -221,6 +231,7 @@ ndex_rest_GET <- function(ndexcon, route, raw = FALSE){
 #' Making sure the data is well-formed is also the job of calling function
 #' @seealso \code{\link{ndex_rest_GET}},  \code{\link{ndex_rest_POST}},  \code{\link{ndex_rest_PUT}} and \code{\link{ndex_rest_DELETE}}
 #' 
+#' @keywords internal
 #' @examples
 #' ## Establish a server connection
 #' ndexcon = ndex_connect()
@@ -272,6 +283,7 @@ ndex_rest_POST <- function(ndexcon, route, data, multipart = FALSE, raw = FALSE)
 #' Making sure the data is well-formed is also the job of calling function
 #' @seealso \code{\link{ndex_rest_GET}},  \code{\link{ndex_rest_POST}},  \code{\link{ndex_rest_PUT}} and \code{\link{ndex_rest_DELETE}}
 #' 
+#' @keywords internal
 #' @examples
 #' ## Establish a server connection
 #' ndexcon = ndex_connect()
@@ -320,6 +332,7 @@ ndex_rest_PUT <- function(ndexcon, route, data=NULL, multipart = FALSE, raw = FA
 #' Making sure the route is well-formed is the job of calling function
 #' @seealso \code{\link{ndex_rest_GET}},  \code{\link{ndex_rest_POST}},  \code{\link{ndex_rest_PUT}} and \code{\link{ndex_rest_DELETE}}
 #' 
+#' @keywords internal
 #' @examples
 #' ## Establish a server connection
 #' ndexcon = ndex_connect()

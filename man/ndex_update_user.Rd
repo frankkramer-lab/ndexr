@@ -54,6 +54,8 @@ GET: ndex_config$api$user$update
 # userId = user$externalId
 ## Update user
 # ndex_update_user(ndexcon, userId, firstName = 'Homer Jay', lastName = 'Simpson')
-# ndex_update_user(ndexcon, userId, displayName = 'Max Power', image='https://upload.wikimedia.org/wikipedia/en/0/02/Homer_Simpson_2006.png', description='One of the most influential characters in the history of television')
+# ndex_update_user(ndexcon, userId, displayName = 'Max Power', 
+#                  image='https://upload.wikimedia.org/wikipedia/en/0/02/Homer_Simpson_2006.png', 
+#                  description='One of the most influential characters in the history of TV')
 NULL
 }

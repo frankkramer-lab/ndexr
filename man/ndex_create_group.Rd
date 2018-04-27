@@ -40,6 +40,9 @@ POST: ndex_config$api$group$create
 # ndexcon = ndex_connect('MyAccountName', 'MyPassword')
 # groupURL = ndex_create_group(ndexcon, 'SomeGroupName')
 ## [1] "http://public.ndexbio.org/v2/group/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
-# groupURL = ndex_create_group(ndexcon, 'SomeGroupName', image='http://bit.ly/1M3NoQZ', website='www.gidf.com', description='A very special group..')
+# groupURL = ndex_create_group(ndexcon, 'SomeGroupName', 
+#                              image='http://bit.ly/1M3NoQZ', 
+#                              website='www.gidf.com', 
+#                              description='A very special group..')
 NULL
 }

@@ -37,9 +37,9 @@ GET: ndex_config$api$user$networksummary
 ## get all network permissions of the user
 # networkSummary = ndex_user_get_networksummary(con, user$externalId)
 # names(networkSummary)
-## [1] "ownerUUID"        "isReadOnly"       "subnetworkIds"    "errorMessage"     "isValid"         
-## [6] "warnings"         "isShowcase"       "visibility"       "edgeCount"        "nodeCount"       
-##[11] "uri"              "version"          "owner"            "name"             "properties"      
-##[16] "description"      "externalId"       "isDeleted"        "modificationTime" "creationTime"
+## [1] "ownerUUID"    "isReadOnly"  "subnetworkIds"  "errorMessage"      "isValid"         
+## [6] "warnings"     "isShowcase"  "visibility"     "edgeCount"         "nodeCount"       
+##[11] "uri"          "version"     "owner"          "name"              "properties"      
+##[16] "description"  "externalId"  "isDeleted"      "modificationTime"  "creationTime"
 NULL
 }

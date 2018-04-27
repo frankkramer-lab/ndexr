@@ -37,5 +37,6 @@ networks = ndex_find_networks(ndexcon)
 networkId = networks[1,"externalId"]
 ## Get the aspect of a network
 aspect = ndex_network_get_aspect(ndexcon, networkId, 'nodeAttributes')
-aspect = ndex_network_get_aspect(ndexcon, networkId, 'nodeAttributes', 10)    # limit the returned elemets of the aspect to the first 10 elements
+# limit the returned elements of the aspect to the first 10 elements
+aspect = ndex_network_get_aspect(ndexcon, networkId, 'nodeAttributes', 10)
 }

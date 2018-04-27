@@ -20,4 +20,4 @@ only for package maintenance!
 \examples{
 NULL
 }
-\keyword{datasets}
+\keyword{internal}

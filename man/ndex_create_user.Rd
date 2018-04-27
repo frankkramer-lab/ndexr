@@ -58,6 +58,9 @@ GET: ndex_config$api$user$create
 ## Create a new user
 # userId = ndex_create_user(ndexcon, 'SomeUserName', 'SecretPassword', 'SomeUserName@ndex.org')
 ## [1] "uuuuuuuu-ssss-eeee-rrrr-123456789abc"
-# userId = ndex_create_user(ndexcon, 'ASpecialProject', 'SecretPassword', 'ASpecialProject@ndex.org', isIndividual=TRUE, displayName='Area51', firstName='John', lastName='Doe', website='www.gidf.com', description='Nothing to see here..')
+# userId = ndex_create_user(ndexcon, 'ASpecialProject', 'SecretPassword', 
+#                           'ASpecialProject@ndex.org', isIndividual=TRUE,
+#                           displayName='Area51', firstName='John', lastName='Doe', 
+#                           website='www.gidf.com', description='Nothing to see here..')
 NULL
 }

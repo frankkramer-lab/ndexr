@@ -28,3 +28,4 @@ rcxNodesJson = ndexr:::rcx_aspect_toJSON(rcx$nodes)
 \seealso{
 \code{\link{rcx_toJSON}} and \code{\link{rcx_fromJSON}}
 }
+\keyword{internal}

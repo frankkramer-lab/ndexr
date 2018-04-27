@@ -46,6 +46,7 @@ GET: ndex_config$api$network$systemproperties$set
 # ndex_network_set_systemProperties(ndexcon, networkId, readOnly=TRUE)
 # ndex_network_set_systemProperties(ndexcon, networkId, visibility="PUBLIC")
 # ndex_network_set_systemProperties(ndexcon, networkId, showcase=TRUE)
-# ndex_network_set_systemProperties(ndexcon, networkId, readOnly=FALSE, visibility="PRIVATE", showcase=FALSE)
+# ndex_network_set_systemProperties(ndexcon, networkId, 
+#                                   readOnly=FALSE, visibility="PRIVATE", showcase=FALSE)
 NULL
 }

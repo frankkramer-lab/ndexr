@@ -24,14 +24,18 @@ print(ndexcon)
 ndexcon = ndex_connect(verbose=TRUE)   ## same as above with extended feedback
 print(ndexcon)
 \dontrun{
-ndexcon = ndex_connect('user','password')   ## log in with credentials
+## log in with credentials
+ndexcon = ndex_connect('user','password')
 print(ndexcon)
-ndexcon = ndex_connect(host='localhost:8765')   ## running some NDEx server locally
+## running some NDEx server locally
+ndexcon = ndex_connect(host='localhost:8765')
 print(ndexcon)
-ndexcon = ndex_connect(ndexConf=ndex_config$Version_2.0)   ## manually change the api and connection configuration
+## manually change the api and connection configuration
+ndexcon = ndex_connect(ndexConf=ndex_config$Version_2.0)
 print(ndexcon)
 }
 }
 \seealso{
 \code{\link{ndex_connect}} and \code{\link{ndex_config}}
 }
+\keyword{internal}

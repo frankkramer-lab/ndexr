@@ -13,9 +13,11 @@
 ##   yaml
 #######################################################################################
 
+
 #' Default header for the ndex_api_config.r file
 #' @return character containing the header
 #' @note only for package maintenance!
+#' @keywords internal
 #' @examples
 #' NULL
 ndex_conf_header = paste0(    "################################################################################\n",
@@ -57,6 +59,7 @@ ndex_conf_header = paste0(    "#################################################
 #'
 #' @return character; R code for generating the nested list
 #'
+#' @keywords internal
 #' @examples
 #' test = list(bla='some text',blubb=list(a='more text', version='2.0'),justANumber=123456)
 #' #$bla
@@ -102,6 +105,7 @@ listToRCode = function(obj, indent='    ', indentShift=''){
 ##' @param rScriptFile character (default: 'R/ndex_api_config.r'); output file for the R script
 ##' @param defaultHeader character (optional) (default: ndex_conf_header); text that will be put in front of the R script
 ##'
+##' @keywords internal
 ##' @examples
 ##' # yamlToRConfig('R/ndex_api_config.yml', 'R/ndex_api_config.r', ndex_conf_header)
 ##' NULL
@@ -128,6 +132,7 @@ listToRCode = function(obj, indent='    ', indentShift=''){
 ##'
 ##' @return character; R code for generating the nested list
 ##'
+##' @keywords internal
 ##' @examples
 ##' \dontrun{test = list(bla='some text',blubb=list(a='more text', version='2.0'),justANumber=123456)
 ##' #$bla

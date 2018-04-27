@@ -42,7 +42,7 @@ values = c(network='aaaa-bb-cc-dddddd', bla='This is not used!')
 ndexr:::ndex_helper_encodeParams(url, params=params, values)
 ## "http://en.wikipedia.org/aaaa-bb-cc-dddddd/index.php"
 
-params = list(    network=list(    tag="#NETWORKID#", method="replace", default="xxxx-xx-xx-xxxxxx"))
+params = list( network=list( tag="#NETWORKID#", method="replace", default="xxxx-xx-xx-xxxxxx"))
 values = c(bla='This is not used!')
 ndexr:::ndex_helper_encodeParams(url, params=params, values)
 ## "http://en.wikipedia.org/xxxx-xx-xx-xxxxxx/index.php"
@@ -59,7 +59,7 @@ params = list(    network=list(    tag="network", method="parameter", optional=T
 ndexr:::ndex_helper_encodeParams(url, params=params, values)
 ## "http://en.wikipedia.org/w/index.php"
   
-params = list(    network=list(    tag="network", method="parameter", default="xxxx-xx-xx-xxxxxx"))
+params = list(  network=list(  tag="network", method="parameter", default="xxxx-xx-xx-xxxxxx"))
 ndexr:::ndex_helper_encodeParams(url, params=params, values)
 ## "http://en.wikipedia.org/w/index.php?network=xxxx-xx-xx-xxxxxx"
   
@@ -87,3 +87,4 @@ values = c(network='aaaa-bb-cc-dddddd', bla='This is not used!')
 ndexr:::ndex_helper_encodeParams(url, params=params, values)
 ## "http://en.wikipedia.org/w/index.php/aaaa-bb-cc-dddddd"
 }
+\keyword{internal}

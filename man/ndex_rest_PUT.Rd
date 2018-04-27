@@ -43,3 +43,4 @@ ndex_rest_PUT(ndexcon, "/networks/api", list(some=data, other=data2), multipart=
 \seealso{
 \code{\link{ndex_rest_GET}},  \code{\link{ndex_rest_POST}},  \code{\link{ndex_rest_PUT}} and \code{\link{ndex_rest_DELETE}}
 }
+\keyword{internal}

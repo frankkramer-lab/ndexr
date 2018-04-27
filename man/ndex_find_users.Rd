@@ -37,8 +37,8 @@ ndexcon = ndex_connect()
 ## Find a user
 users = ndex_find_users(ndexcon,"ndextutorials") 
 names(users)
-## [1] "properties"       "displayName"      "isIndividual"     "userName"         "password"        
-## [6] "isVerified"       "firstName"        "lastName"         "diskQuota"        "diskUsed"        
-##[11] "emailAddress"     "image"            "website"          "description"      "externalId"      
-##[16] "isDeleted"        "modificationTime" "creationTime"    
+## [1] "properties"    "displayName"       "isIndividual"  "userName"     "password"        
+## [6] "isVerified"    "firstName"         "lastName"      "diskQuota"    "diskUsed"        
+##[11] "emailAddress"  "image"             "website"       "description"  "externalId"
+##[16] "isDeleted"     "modificationTime"  "creationTime"    
 }

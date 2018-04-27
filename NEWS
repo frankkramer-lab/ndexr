@@ -1,13 +1,35 @@
-ndexr 0.99.0
+ndexr 1.1.7 (Bioconductor Release 3.7)
 ===========
 
-* Pushing version number to 0.99.0 according to Bioconductor checklist
-* Initial submission to Bioconductor
+* FIX: error in RCX => RCXgraph => RCX conversion
+* FIX: NDEx server update for return columns in network list, summary and metadata; metadata also not nested anymore
+* FIX: tests crashed because of missing network; updated used UUID to new version of the public one from ndextutorials
+* exclude ..Rcheck from git; added "ndexr" to user agent header
+* FIX: build error caused by 'metadata:properties' now being optional
+* UPDATE: minor bugfixes due to ndex server update. Added api for ndex server version 2.2
+
+ndexr 1.1.2
+===========
+
+**Breaking changes of the class and function names!**
+**NGraph** was renamed to **RCXgraph** to avoid naming Disambiguities!
+
+**Deprecated Functions:** 
+
+* *rcx_toRCXgraph*
+* *rcxgraph_fromRCX*
+* *rcxgraph_toRCX*
+* *rcx_fromRCXgraph*
+
+Therefore the new funtions are called: 
+* *rcx_toRCXgraph*
+* *rcxgraph_fromRCX*
+* *rcxgraph_toRCX* 
+* *rcx_fromRCXgraph*
+
 
 ndexr 0.99.10
 ===========
-
-**Breaking changes of the function names!**
 
 * Changed the naming of the functions: dots are replaced by underscores, so that the functions may not be confused with S3 methods. 
 	The naming convention itself doesn't change! 
@@ -23,3 +45,8 @@ ndexr 0.99.10
 * Removed the .gitignore file from this directory
 * Changed installation instructions in the vignette to Bioconductor
 
+ndexr 0.99.0
+===========
+
+* Pushing version number to 0.99.0 according to Bioconductor checklist
+* Initial submission to Bioconductor

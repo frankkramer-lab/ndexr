@@ -253,6 +253,7 @@ rcx_toJSON <- function(rcx, verbose = FALSE, pretty = FALSE){
 #' @return json object if successfull, empty string otherwise
 #' @seealso \code{\link{rcx_toJSON}} and \code{\link{rcx_fromJSON}}
 #'
+#' @keywords internal
 #' @examples
 #' ## Create an RCX object
 #' rcx = rcx_new(c('@id'=1, n='Some Name', r='HGNC:Symbol'))
@@ -344,8 +345,10 @@ rcx_asNewNetwork = function(rcx){
 #' rcx = rcx_new(data.frame('@id'=c(1), check.names=FALSE))     #same as one before
 #' rcx = rcx_new(c('@id'=1, n='Some Name'))
 #' rcx = rcx_new(c('@id'=1, n='Some Name', r='HGNC:Symbol'))
-#' rcx = rcx_new(data.frame('@id'=c(1),n=c('Some Name'), r=c('HGNC:Symbol'), check.names=FALSE))    #same as one before
-#' rcx = rcx_new(data.frame('@id'=c(1,2,3),n=c('Some Name','And another name',NA), r=c('HGNC:Symbol',NA,'UniProt:C3P0'), check.names=FALSE))
+#' #same as one before:
+#' rcx = rcx_new(data.frame('@id'=c(1),n=c('Some Name'), r=c('HGNC:Symbol'), check.names=FALSE))
+#' rcx = rcx_new(data.frame('@id'=c(1,2,3),n=c('Some Name','And another name',NA),
+#'                          r=c('HGNC:Symbol',NA,'UniProt:C3P0'), check.names=FALSE))
 #' @export
 rcx_new = function(nodes=c('@id'=1)){
 # TODO : add parameters for edges and other core aspects
@@ -383,7 +386,9 @@ rcx_new = function(nodes=c('@id'=1)){
 #' ## update meta-data
 #' rcx = rcx_updateMetaData(rcx)
 #' # or with explicitly set default values
-#' rcx = rcx_updateMetaData(rcx, mandatoryAspects=c('nodes'), excludeAspects=c("metaData", "numberVerification", "status"), force=FALSE, verbose=FALSE)
+#' rcx = rcx_updateMetaData(rcx, mandatoryAspects=c('nodes'), 
+#'                          excludeAspects=c("metaData", "numberVerification", "status"), 
+#'                          force=FALSE, verbose=FALSE)
 #' @export
 rcx_updateMetaData = function(rcx, mandatoryAspects=c('nodes'), excludeAspects=c("metaData", "numberVerification", "status"), force=FALSE, verbose=FALSE){
     if(missing(rcx) || is.null(rcx) || !("RCX" %in% class(rcx))) stop("rcx_updateMetaData: Parameter rcx does not contain RCX object")
@@ -481,8 +486,10 @@ rcx_updateMetaData = function(rcx, mandatoryAspects=c('nodes'), excludeAspects=c
 #'
 #' @return Just prints the RCX object
 #'
+#' @keywords internal
 #' @examples
-#' rcx = rcx_new(data.frame('@id'=c(1,2,3),n=c('Some Name','And another name',NA), r=c('HGNC:Symbol',NA,'UniProt:C3P0'), check.names=FALSE))
+#' rcx = rcx_new(data.frame('@id'=c(1,2,3),n=c('Some Name','And another name',NA), 
+#'                          r=c('HGNC:Symbol',NA,'UniProt:C3P0'), check.names=FALSE))
 #' print(rcx)
 #' @seealso  \code{\link{rcx_fromJSON}} and \code{\link{rcx_new}}
 #' @export

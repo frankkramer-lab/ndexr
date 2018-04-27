@@ -23,6 +23,8 @@ rcx = rcx_new(nodes=c('@id'=1))                          #same as one before
 rcx = rcx_new(data.frame('@id'=c(1), check.names=FALSE))     #same as one before
 rcx = rcx_new(c('@id'=1, n='Some Name'))
 rcx = rcx_new(c('@id'=1, n='Some Name', r='HGNC:Symbol'))
-rcx = rcx_new(data.frame('@id'=c(1),n=c('Some Name'), r=c('HGNC:Symbol'), check.names=FALSE))    #same as one before
-rcx = rcx_new(data.frame('@id'=c(1,2,3),n=c('Some Name','And another name',NA), r=c('HGNC:Symbol',NA,'UniProt:C3P0'), check.names=FALSE))
+#same as one before:
+rcx = rcx_new(data.frame('@id'=c(1),n=c('Some Name'), r=c('HGNC:Symbol'), check.names=FALSE))
+rcx = rcx_new(data.frame('@id'=c(1,2,3),n=c('Some Name','And another name',NA),
+                         r=c('HGNC:Symbol',NA,'UniProt:C3P0'), check.names=FALSE))
 }

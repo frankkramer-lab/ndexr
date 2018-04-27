@@ -28,3 +28,4 @@ ndexcon = ndex_connect()
 ## ndex_config[[ndex_config$defaultVersion]]$api$network$summary$get
 ndexr:::ndex_helper_getApi(ndexcon, 'network$summary$get')
 }
+\keyword{internal}

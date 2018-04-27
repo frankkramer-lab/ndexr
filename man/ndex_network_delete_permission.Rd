@@ -44,8 +44,10 @@ GET: ndex_config$api$network$permission$delete
 # someUserUuid = "uuuuuuuu-ssss-eeee-rrrr-111111111111"
 # someGroupUuid = "ggggggg-rrrr-oooo-uuuu-pppppppppppp"
 ## Delete the permissions
-#ndex_network_delete_permission(ndexcon, networkId, user=someUserUuid)    # returns 1
-#ndex_network_delete_permission(ndexcon, networkId, user=someUserUuid)    # returns 0, because user already lost permission on network
+#ndex_network_delete_permission(ndexcon, networkId, user=someUserUuid)
+# => returns 1
+#ndex_network_delete_permission(ndexcon, networkId, user=someUserUuid)
+# => returns 0, because user already lost permission on network
 #ndex_network_delete_permission(ndexcon, networkId, group=someGroupUuid)
 NULL
 }

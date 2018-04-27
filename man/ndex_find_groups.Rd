@@ -37,6 +37,6 @@ ndexcon = ndex_connect()
 ## Find a group
 groups = ndex_find_groups(ndexcon,"Ideker Lab")
 names(groups)
-## [1] "properties"       "groupName"        "image"            "website"          "description"     
-## [6] "externalId"       "isDeleted"        "modificationTime" "creationTime" 
+## [1] "properties"  "groupName"  "image"             "website"       "description"
+## [6] "externalId"  "isDeleted"  "modificationTime"  "creationTime" 
 }

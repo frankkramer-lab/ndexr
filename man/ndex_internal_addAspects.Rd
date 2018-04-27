@@ -22,3 +22,4 @@ ndex_internal_addAspects
 \examples{
 NULL
 }
+\keyword{internal}

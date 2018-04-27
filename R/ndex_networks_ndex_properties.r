@@ -170,8 +170,10 @@ ndex_network_update_permission <- function(ndexcon, networkId, user=NULL, group=
 #' # someUserUuid = "uuuuuuuu-ssss-eeee-rrrr-111111111111"
 #' # someGroupUuid = "ggggggg-rrrr-oooo-uuuu-pppppppppppp"
 #' ## Delete the permissions
-#' #ndex_network_delete_permission(ndexcon, networkId, user=someUserUuid)    # returns 1
-#' #ndex_network_delete_permission(ndexcon, networkId, user=someUserUuid)    # returns 0, because user already lost permission on network
+#' #ndex_network_delete_permission(ndexcon, networkId, user=someUserUuid)
+#' # => returns 1
+#' #ndex_network_delete_permission(ndexcon, networkId, user=someUserUuid)
+#' # => returns 0, because user already lost permission on network
 #' #ndex_network_delete_permission(ndexcon, networkId, group=someGroupUuid)
 #' NULL
 #' @export
@@ -220,7 +222,8 @@ ndex_network_delete_permission <- function(ndexcon, networkId, user=NULL, group=
 #' # ndex_network_set_systemProperties(ndexcon, networkId, readOnly=TRUE)
 #' # ndex_network_set_systemProperties(ndexcon, networkId, visibility="PUBLIC")
 #' # ndex_network_set_systemProperties(ndexcon, networkId, showcase=TRUE)
-#' # ndex_network_set_systemProperties(ndexcon, networkId, readOnly=FALSE, visibility="PRIVATE", showcase=FALSE)
+#' # ndex_network_set_systemProperties(ndexcon, networkId, 
+#' #                                   readOnly=FALSE, visibility="PRIVATE", showcase=FALSE)
 #' NULL
 #' @export
 ndex_network_set_systemProperties <- function(ndexcon, networkId, readOnly=NULL, visibility=NULL, showcase=NULL){
@@ -305,7 +308,8 @@ ndex_network_set_systemProperties <- function(ndexcon, networkId, readOnly=NULL,
 #' # ndex_network_update_profile(ndexcon, networkId, name="Some fancy name for the network")
 #' # ndex_network_update_profile(ndexcon, networkId, description="Description of the network")
 #' # ndex_network_update_profile(ndexcon, networkId, version="1.2.3.4")
-#' # ndex_network_update_profile(ndexcon, networkId, name="Special test network", description="Nothing to see here", version="1.3")
+#' # ndex_network_update_profile(ndexcon, networkId, name="Special test network", 
+#' #                             description="Nothing to see here", version="1.3")
 #' NULL
 #' @export
 ndex_network_update_profile <- function(ndexcon, networkId, name=NULL, description=NULL, version=NULL){    # TODO! : Implement!

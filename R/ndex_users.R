@@ -43,10 +43,10 @@
 #' ## Find a user
 #' users = ndex_find_users(ndexcon,"ndextutorials") 
 #' names(users)
-#' ## [1] "properties"       "displayName"      "isIndividual"     "userName"         "password"        
-#' ## [6] "isVerified"       "firstName"        "lastName"         "diskQuota"        "diskUsed"        
-#' ##[11] "emailAddress"     "image"            "website"          "description"      "externalId"      
-#' ##[16] "isDeleted"        "modificationTime" "creationTime"    
+#' ## [1] "properties"    "displayName"       "isIndividual"  "userName"     "password"        
+#' ## [6] "isVerified"    "firstName"         "lastName"      "diskQuota"    "diskUsed"        
+#' ##[11] "emailAddress"  "image"             "website"       "description"  "externalId"
+#' ##[16] "isDeleted"     "modificationTime"  "creationTime"    
 #' @export
 ndex_find_users <- function(ndexcon, searchString="", start, size){
     
@@ -163,7 +163,10 @@ ndex_find_user_byId <- function(ndexcon, userId) {
 #' ## Create a new user
 #' # userId = ndex_create_user(ndexcon, 'SomeUserName', 'SecretPassword', 'SomeUserName@ndex.org')
 #' ## [1] "uuuuuuuu-ssss-eeee-rrrr-123456789abc"
-#' # userId = ndex_create_user(ndexcon, 'ASpecialProject', 'SecretPassword', 'ASpecialProject@ndex.org', isIndividual=TRUE, displayName='Area51', firstName='John', lastName='Doe', website='www.gidf.com', description='Nothing to see here..')
+#' # userId = ndex_create_user(ndexcon, 'ASpecialProject', 'SecretPassword', 
+#' #                           'ASpecialProject@ndex.org', isIndividual=TRUE,
+#' #                           displayName='Area51', firstName='John', lastName='Doe', 
+#' #                           website='www.gidf.com', description='Nothing to see here..')
 #' NULL
 #' @export
 ndex_create_user <- function(ndexcon, userName, password, emailAddress, isIndividual=TRUE, displayName, firstName, lastName, image, website, description, verbose=FALSE) {
@@ -253,7 +256,9 @@ ndex_delete_user <- function(ndexcon, userId) {
 #' # userId = user$externalId
 #' ## Update user
 #' # ndex_update_user(ndexcon, userId, firstName = 'Homer Jay', lastName = 'Simpson')
-#' # ndex_update_user(ndexcon, userId, displayName = 'Max Power', image='https://upload.wikimedia.org/wikipedia/en/0/02/Homer_Simpson_2006.png', description='One of the most influential characters in the history of television')
+#' # ndex_update_user(ndexcon, userId, displayName = 'Max Power', 
+#' #                  image='https://upload.wikimedia.org/wikipedia/en/0/02/Homer_Simpson_2006.png', 
+#' #                  description='One of the most influential characters in the history of TV')
 #' NULL
 #' @export
 ndex_update_user <- function(ndexcon, userId, emailAddress, isIndividual, displayName, firstName, lastName, image, website, description, verbose=FALSE) {
@@ -624,10 +629,10 @@ ndex_user_list_permissions <- function(ndexcon, userId, type=NULL, directonly=FA
 #' ## get all network permissions of the user
 #' showcase = ndex_user_get_showcase(ndexcon, userId)
 #' names(showcase)
-#' ## [1] "ownerUUID"        "isReadOnly"       "subnetworkIds"    "errorMessage"     "isValid"         
-#' ## [6] "warnings"         "isShowcase"       "visibility"       "edgeCount"        "nodeCount"       
-#' ##[11] "uri"              "version"          "owner"            "name"             "properties"      
-#' ##[16] "description"      "externalId"       "isDeleted"        "modificationTime" "creationTime"
+#' ## [1] "ownerUUID"    "isReadOnly"  "subnetworkIds"  "errorMessage"      "isValid"         
+#' ## [6] "warnings"     "isShowcase"  "visibility"     "edgeCount"         "nodeCount"       
+#' ##[11] "uri"          "version"     "owner"          "name"              "properties"      
+#' ##[16] "description"  "externalId"  "isDeleted"      "modificationTime"  "creationTime"
 #' @export 
 ndex_user_get_showcase <- function(ndexcon, userId) {
     api = ndex_helper_getApi(ndexcon, 'user$showcase')
@@ -662,10 +667,10 @@ ndex_user_get_showcase <- function(ndexcon, userId) {
 #' ## get all network permissions of the user
 #' # networkSummary = ndex_user_get_networksummary(con, user$externalId)
 #' # names(networkSummary)
-#' ## [1] "ownerUUID"        "isReadOnly"       "subnetworkIds"    "errorMessage"     "isValid"         
-#' ## [6] "warnings"         "isShowcase"       "visibility"       "edgeCount"        "nodeCount"       
-#' ##[11] "uri"              "version"          "owner"            "name"             "properties"      
-#' ##[16] "description"      "externalId"       "isDeleted"        "modificationTime" "creationTime"
+#' ## [1] "ownerUUID"    "isReadOnly"  "subnetworkIds"  "errorMessage"      "isValid"         
+#' ## [6] "warnings"     "isShowcase"  "visibility"     "edgeCount"         "nodeCount"       
+#' ##[11] "uri"          "version"     "owner"          "name"              "properties"      
+#' ##[16] "description"  "externalId"  "isDeleted"      "modificationTime"  "creationTime"
 #' NULL
 #' @export 
 ndex_user_get_networksummary <- function(ndexcon, userId) {

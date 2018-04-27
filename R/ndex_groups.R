@@ -42,8 +42,8 @@
 #' ## Find a group
 #' groups = ndex_find_groups(ndexcon,"Ideker Lab")
 #' names(groups)
-#' ## [1] "properties"       "groupName"        "image"            "website"          "description"     
-#' ## [6] "externalId"       "isDeleted"        "modificationTime" "creationTime" 
+#' ## [1] "properties"  "groupName"  "image"             "website"       "description"
+#' ## [6] "externalId"  "isDeleted"  "modificationTime"  "creationTime" 
 #' @export
 ndex_find_groups <- function(ndexcon, searchString="", start, size){
     
@@ -125,7 +125,10 @@ ndex_get_group <- function(ndexcon, groupId) {
 #' # ndexcon = ndex_connect('MyAccountName', 'MyPassword')
 #' # groupURL = ndex_create_group(ndexcon, 'SomeGroupName')
 #' ## [1] "http://public.ndexbio.org/v2/group/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
-#' # groupURL = ndex_create_group(ndexcon, 'SomeGroupName', image='http://bit.ly/1M3NoQZ', website='www.gidf.com', description='A very special group..')
+#' # groupURL = ndex_create_group(ndexcon, 'SomeGroupName', 
+#' #                              image='http://bit.ly/1M3NoQZ', 
+#' #                              website='www.gidf.com', 
+#' #                              description='A very special group..')
 #' NULL
 #' @export
 ndex_create_group <- function(ndexcon, groupName, image, website, description, properties) {

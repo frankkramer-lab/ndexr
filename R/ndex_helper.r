@@ -33,6 +33,7 @@
 #' 
 #' @return URL with encoded parameters as character
 #' 
+#' @keywords internal
 #' @examples 
 #' ## replace
 #' url = "http://en.wikipedia.org/#NETWORKID#/index.php"
@@ -41,7 +42,7 @@
 #' ndexr:::ndex_helper_encodeParams(url, params=params, values)
 #' ## "http://en.wikipedia.org/aaaa-bb-cc-dddddd/index.php"
 #' 
-#' params = list(    network=list(    tag="#NETWORKID#", method="replace", default="xxxx-xx-xx-xxxxxx"))
+#' params = list( network=list( tag="#NETWORKID#", method="replace", default="xxxx-xx-xx-xxxxxx"))
 #' values = c(bla='This is not used!')
 #' ndexr:::ndex_helper_encodeParams(url, params=params, values)
 #' ## "http://en.wikipedia.org/xxxx-xx-xx-xxxxxx/index.php"
@@ -58,7 +59,7 @@
 #' ndexr:::ndex_helper_encodeParams(url, params=params, values)
 #' ## "http://en.wikipedia.org/w/index.php"
 #'   
-#' params = list(    network=list(    tag="network", method="parameter", default="xxxx-xx-xx-xxxxxx"))
+#' params = list(  network=list(  tag="network", method="parameter", default="xxxx-xx-xx-xxxxxx"))
 #' ndexr:::ndex_helper_encodeParams(url, params=params, values)
 #' ## "http://en.wikipedia.org/w/index.php?network=xxxx-xx-xx-xxxxxx"
 #'   
@@ -140,8 +141,10 @@ ndex_helper_encodeParams = function(url, params, ...){
 #' 
 #' @return returns the given respons, if it doesn't contain any HTTP error 
 #' 
+#' @keywords internal
 #' @examples
-#' ndexr:::ndex_helper_httpResponseHandler(httr::GET('http://www.ndexbio.org'), 'Tried to connect to NDEx server', TRUE)
+#' ndexr:::ndex_helper_httpResponseHandler(httr::GET('http://www.ndexbio.org'), 
+#'                                         'Tried to connect to NDEx server', TRUE)
 ndex_helper_httpResponseHandler <- function(response, description, verbose=FALSE){
     if(missing(response) || is.null(response)){
         stop(paste0('ndex_helper_httpResponseHandler: No server response',description))
@@ -190,6 +193,7 @@ ndex_helper_httpResponseHandler <- function(response, description, verbose=FALSE
 #' 
 #' @return configuration of the function
 #' 
+#' @keywords internal
 #' @examples
 #' ## Establish a server connection
 #' ndexcon = ndex_connect()

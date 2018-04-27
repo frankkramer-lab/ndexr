@@ -35,5 +35,7 @@ rcx = rcx_new(c('@id'=1, n='Some Name', r='HGNC:Symbol'))
 ## update meta-data
 rcx = rcx_updateMetaData(rcx)
 # or with explicitly set default values
-rcx = rcx_updateMetaData(rcx, mandatoryAspects=c('nodes'), excludeAspects=c("metaData", "numberVerification", "status"), force=FALSE, verbose=FALSE)
+rcx = rcx_updateMetaData(rcx, mandatoryAspects=c('nodes'), 
+                         excludeAspects=c("metaData", "numberVerification", "status"), 
+                         force=FALSE, verbose=FALSE)
 }

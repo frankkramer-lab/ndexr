@@ -18,9 +18,11 @@ Just prints the RCX object
 Print a RCX object
 }
 \examples{
-rcx = rcx_new(data.frame('@id'=c(1,2,3),n=c('Some Name','And another name',NA), r=c('HGNC:Symbol',NA,'UniProt:C3P0'), check.names=FALSE))
+rcx = rcx_new(data.frame('@id'=c(1,2,3),n=c('Some Name','And another name',NA), 
+                         r=c('HGNC:Symbol',NA,'UniProt:C3P0'), check.names=FALSE))
 print(rcx)
 }
 \seealso{
 \code{\link{rcx_fromJSON}} and \code{\link{rcx_new}}
 }
+\keyword{internal}

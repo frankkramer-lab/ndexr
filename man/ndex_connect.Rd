@@ -29,12 +29,17 @@ This function creates an NDExConnection which stores options and authentication 
 If username and password are missing an anonymous connection is created, which already offers most of the retrieval functionality.
 }
 \examples{
-ndexcon = ndex_connect()   ## log in anonymously
-ndexcon = ndex_connect(verbose=TRUE)   ## same as above with extended feedback
+## log in anonymously
+ndexcon = ndex_connect()
+## same as above with extended feedback
+ndexcon = ndex_connect(verbose=TRUE)
 \dontrun{
-ndexcon = ndex_connect('user','password')   ## log in with credentials
-ndexcon = ndex_connect(host='localhost:8765')   ## running some NDEx server locally
-ndexcon = ndex_connect(ndexConf=ndex_config$Version_2.0)   ## manually change the api and connection configuration
+## log in with credentials
+ndexcon = ndex_connect('user','password')
+## running some NDEx server locally
+ndexcon = ndex_connect(host='localhost:8765')
+## manually change the api and connection configuration
+ndexcon = ndex_connect(ndexConf=ndex_config$Version_2.0)   
 }
 }
 \seealso{
