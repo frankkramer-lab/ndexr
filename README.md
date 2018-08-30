@@ -32,8 +32,9 @@ Installation
 
 ## Installation via Bioconductor
 
-    source("https://bioconductor.org/biocLite.R")
-    biocLite("ndexr")
+    if (!requireNamespace("BiocManager", quietly=TRUE))
+        install.packages("BiocManager")
+    BiocManager::install("ndexr")
     library(ndexr)
     
 ## Installation via GitHub
