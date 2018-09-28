@@ -37,10 +37,8 @@ Installation
     library(ndexr)
     
 ## Installation via GitHub
-using [*devtools*](http://cran.r-project.org/web/packages/devtools/index.html) R package
 
-    require(devtools)
-    install_github("frankkramer-lab/ndexr")
+    source("https://install-github.me/frankkramer-lab/ndexr")
     library(ndexr)
 
 Quick Start
