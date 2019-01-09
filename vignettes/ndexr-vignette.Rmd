@@ -2,16 +2,16 @@
 title: "NDExR - R implementaion for NDEx server API"
 author: 
 - name: Florian J. Auer
-  email: Florian.Auer@med.uni-goettingen.de
-  affiliation: &id University Medical Center Göttingen
+  email: Florian.Auer@informatik.uni-augsburg.de
+  affiliation: &id University of Augsburg
 - name: Zaynab Hammoud
-  email: Zaynab.Hammoud@med.uni-goettingen.de
+  email: Zaynab.Hammoud@informatik.uni-augsburg.de
   affiliation: *id
 - name: Frank Kramer
-  email: Frank.Kramer@med.uni-goettingen.de
+  email: Frank.Kramer@informatik.uni-augsburg.de
   affiliation: *id
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output: BiocStyle::html_document
 vignette: >
   %\VignetteIndexEntry{NDExR Vignette}
   %\VignetteEngine{knitr::rmarkdown}
@@ -45,7 +45,7 @@ The package is compatible with both NDEx versions 1.3 and 2.0.
 
 # Installation
 
-## Installation via Bioconductor
+Installation instructions (from Bioconductor)
 ```{r, eval=FALSE}
 if (!requireNamespace("BiocManager", quietly=TRUE))
     install.packages("BiocManager")
@@ -53,8 +53,7 @@ BiocManager::install("ndexr")
 library(ndexr)
 ```
 
-## Installation via GitHub
-using [*devtools*](http://cran.r-project.org/web/packages/devtools/index.html) R package
+Installation via GitHub using [*devtools*](http://cran.r-project.org/web/packages/devtools/index.html) R package
 ```{r, eval=FALSE}
 require(devtools)
 install_github("frankkramer-lab/ndexr")
@@ -148,9 +147,6 @@ a function to retrieve a list of networks from the server.
 It is possible to restrict the networks to a specific search string (e.g. “EGFR”), 
 an account name (only networks of this account will be shown), or limit 
 the number of fetched networks.
-```{r, results = "hide", echo=FALSE}
-ndexcon = ndex_connect()
-```
 
 ```{r, results = "hide"}
 ## list networks on server
@@ -196,7 +192,7 @@ the structure of the network list
 
 ```{r}
 ## UUID of the first search result
-networkId <- networksOfUser[1,'externalId']
+networkId <- networks[1,'externalId']
 
 ## get network summary
 networkSummary <- ndex_network_get_summary(ndexcon, networkId)
@@ -308,7 +304,7 @@ interface. For handling the network information within R, besides RCX
 objects, one can use RCXgraph objects. A lossless conversion between the
 two files can be done using the following functions:
 
-```{r, warning=FALSE, eval=FALSE}
+```{r, warning=FALSE}
 ## convert RCX to JSON
 json <- rcx_toJSON(rcx)
 
@@ -474,49 +470,49 @@ the corresponding version.
   ----------------------------------- -------------------- ----------------- ----------------- -----------------
   **Function name**                   **Authentication**   **Version 2.1**   **Version 2.0**   **Version 1.3**
   ***Networks***
-  ndex_find_networks                  no                                     X                 X
-  ndex_network_get_summary            no                                     X                 X
-  ndex_get_network                    no                                     X                 X
-  ndex_create_network                 yes                                    X                 X
-  ndex_update_network                 yes                                    X                 X
-  ndex_delete_network                 yes                                    X                 X
-  ndex_network_get_metadata           no                                     X                 (x)
-  ndex_network_aspect_get_metadata    no                                     (x)               
-  ndex_network_get_aspect             no                                     X                 (x)
-  ndex_network_update_aspect          yes                                    (x)               
-  ndex_network_get_permission         yes                                    X                 only for users, different response
-  ndex_network_update_permission      yes                                    X                 (only for users)
-  ndex_network_delete_permission      yes                                    X                 only for users
-  ndex_network_set_systemProperties   yes                                    X                 only readOnly
-  ndex_network_update_profile         yes                                    X                 X
-  ndex_network_get_provenance         no                                     X                 X
+  ndex_find_networks                  no                   X                 X                 X
+  ndex_network_get_summary            no                   X                 X                 X
+  ndex_get_network                    no                   X                 X                 X
+  ndex_create_network                 yes                  X                 X                 X
+  ndex_update_network                 yes                  X                 X                 X
+  ndex_delete_network                 yes                  X                 X                 X
+  ndex_network_get_metadata           no                   X                 X                 (x)
+  ndex_network_aspect_get_metadata    no                   (x)               (x)               
+  ndex_network_get_aspect             no                   X                 X                 (x)
+  ndex_network_update_aspect          yes                  (x)               (x)               
+  ndex_network_get_permission         yes                  X                 X                 only for users, different response
+  ndex_network_update_permission      yes                  X                 X                 (only for users)
+  ndex_network_delete_permission      yes                  X                 X                 only for users
+  ndex_network_set_systemProperties   yes                  X                 X                 only readOnly
+  ndex_network_update_profile         yes                  X                 X                 X
+  ndex_network_get_provenance         no                   X                 X                 X
   ***Users***
-  ndex_find_users                     no                                     X                 X
-  ndex_find_user_byName               no                                     X                 
-  ndex_find_user_byId                 no                                     X                 
-  ndex_create_user                    yes                                    X                 
-  ndex_delete_user                    yes                                    X                 
-  ndex_update_user                    yes                                    X                 
-  ndex_verify_user                    no                                     X                 
-  ndex_user_change_password           yes                                    X                 
-  ndex_user_mail_password             no                                     X                 
-  ndex_user_forgot_password           no                                     X                 
-  ndex_user_list_groups               yes                                    X                 
-  ndex_user_show_group                yes                                    X                 
-  ndex_user_list_permissions          yes                                    X                 
-  ndex_user_show_permission           yes                                    X                 
-  ndex_user_get_showcase              no                                     X                 
-  ndex_user_get_networksummary        yes                                    X                 
+  ndex_find_users                     no                   X                 X                 X
+  ndex_find_user_byName               no                   X                 X                 
+  ndex_find_user_byId                 no                   X                 X                 
+  ndex_create_user                    yes                  X                 X                 
+  ndex_delete_user                    yes                  X                 X                 
+  ndex_update_user                    yes                  X                 X                 
+  ndex_verify_user                    no                   X                 X                 
+  ndex_user_change_password           yes                  X                 X                 
+  ndex_user_mail_password             no                   X                 X                 
+  ndex_user_forgot_password           no                   X                 X                 
+  ndex_user_list_groups               yes                  X                 X                 
+  ndex_user_show_group                yes                  X                 X                 
+  ndex_user_list_permissions          yes                  X                 X                 
+  ndex_user_show_permission           yes                  X                 X                 
+  ndex_user_get_showcase              no                   X                 X                 
+  ndex_user_get_networksummary        yes                  X                 X                 
   ***Groups***
-  ndex_find_groups                    no                                     X                 X
-  ndex_get_group                      no                                     X                 
-  ndex_create_group                   yes                                    X                 
-  ndex_delete_group                   yes                                    X                 
-  ndex_update_group                   yes                                    X                 
-  ndex_group_list_users               no                                     X                 
-  ndex_group_set_membership           yes                                    X                 
-  ndex_group_list_networks            no                                     X                 
-  ndex_group_network_get_permission   no                                     X                 
+  ndex_find_groups                    no                   X                 X                 X
+  ndex_get_group                      no                   X                 X                 
+  ndex_create_group                   yes                  X                 X                 
+  ndex_delete_group                   yes                  X                 X                 
+  ndex_update_group                   yes                  X                 X                 
+  ndex_group_list_users               no                   X                 X                 
+  ndex_group_set_membership           yes                  X                 X                 
+  ndex_group_list_networks            no                   X                 X                 
+  ndex_group_network_get_permission   no                   X                 X                 
   ----------------------------------- -------------------- ----------------- ----------------- -----------------
 
 # Server REST API configuration
@@ -531,7 +527,7 @@ str(ndex_config, max.level = 3)
 ```
 
 This object contains the api definition for several versions (currently
-version 1.3 and 2.0). By default, `ndex_connect()` uses the version defined
+version 1.3, 2.0 and 2.1). By default, `ndex_connect()` uses the version defined
 in `ndex_config$defaultVersion` ("Version\_2.0"). To use another, or even a
 customized version to establish a server connection, the ndexConf
 parameter can be used, like shown before. In the following, the
@@ -647,4 +643,10 @@ yamlToRConfig = function(yamlFile='R/ndex_api_config.yml', rScriptFile='R/ndex_a
 }
 
 yamlToRConfig()
+```
+
+#Session info
+Here is the output of sessionInfo() on the system on which this document was compiled:
+```{r}
+sessionInfo()
 ```

@@ -31,7 +31,7 @@
 #' 
 #' @section REST query:
 #' GET: ndex_config$api$network$aspect$getMetaData
-#' @note Compatible to NDEx server version 1.3 and 2.0, but doesn't work for version 1.3
+#' @note Compatible to NDEx server version 1.3 and 2.0; Was removed for version 1.3 on public server at some point.
 #' 
 #' @examples 
 #' ## Establish a server connection

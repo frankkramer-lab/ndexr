@@ -4,8 +4,8 @@
 \alias{ndex_group_list_networks}
 \title{Get Network Permissions of a Group}
 \usage{
-ndex_group_list_networks(ndexcon, groupId, permission = NULL, start = NULL,
-  size = NULL)
+ndex_group_list_networks(ndexcon, groupId, permission = NULL,
+  start = NULL, size = NULL)
 }
 \arguments{
 \item{ndexcon}{object of class NDExConnection link{ndex_connect}}

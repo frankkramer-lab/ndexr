@@ -4,8 +4,8 @@
 \alias{ndex_user_list_permissions}
 \title{Get User's Network Permissions}
 \usage{
-ndex_user_list_permissions(ndexcon, userId, type = NULL, directonly = FALSE,
-  start = NULL, size = NULL)
+ndex_user_list_permissions(ndexcon, userId, type = NULL,
+  directonly = FALSE, start = NULL, size = NULL)
 }
 \arguments{
 \item{ndexcon}{object of class NDExConnection link{ndex_connect}}

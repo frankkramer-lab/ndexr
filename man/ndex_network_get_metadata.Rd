@@ -18,7 +18,7 @@ metadata as list: consistencyGroup, elementCount, lastUpdate, name, properties, 
 This function retrieves the (aspect) meta-data of the network identified by the supplied network UUID string.
 }
 \note{
-Compatible to NDEx server version 1.3 and 2.0, but doesn't work for version 1.3
+Compatible to NDEx server version 1.3 and 2.0; Was removed for version 1.3 on public server at some point.
 }
 \section{REST query}{
 

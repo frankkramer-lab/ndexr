@@ -1,21 +1,27 @@
-## ---- eval=FALSE---------------------------------------------------------
-#  source("https://bioconductor.org/biocLite.R")
-#  biocLite("ndexr")
+## ---- eval=FALSE-----------------------------------------------------------
+#  if (!requireNamespace("BiocManager", quietly=TRUE))
+#      install.packages("BiocManager")
+#  BiocManager::install("ndexr")
 #  library(ndexr)
 
-## ---- results='hide', warning=FALSE, message=FALSE-----------------------
+## ---- eval=FALSE-----------------------------------------------------------
+#  require(devtools)
+#  install_github("frankkramer-lab/ndexr")
+#  library(ndexr)
+
+## ---- results='hide', warning=FALSE, message=FALSE-------------------------
 ## load the library!
 library(ndexr)
 
-## ---- eval=FALSE---------------------------------------------------------
+## ---- eval=FALSE-----------------------------------------------------------
 #  ## login to the NDEx server
 #  ndexcon = ndex_connect("username", "password")
 
-## ---- echo=FALSE, results='hide', message=FALSE--------------------------
+## ---- echo=FALSE, results='hide', message=FALSE----------------------------
 ## login to the NDEx server
 ndexcon = ndex_connect()
 
-## ------------------------------------------------------------------------
+## --------------------------------------------------------------------------
 ## search the networks for "EGFR"
 networks <- ndex_find_networks(ndexcon, "EGFR")
 
@@ -35,7 +41,7 @@ rcx <- rcx_asNewNetwork(rcx)
 ## update the meta-data
 rcx <- rcx_updateMetaData(rcx)
 
-## ---- eval=FALSE---------------------------------------------------------
+## ---- eval=FALSE-----------------------------------------------------------
 #  ## upload network as a new network to the NDEx server
 #  networkId <- ndex_create_network(ndexcon, rcx)
 #  
@@ -47,7 +53,7 @@ rcx <- rcx_updateMetaData(rcx)
 #  ## delete it on the server
 #  ndex_delete_network(ndexcon, networkId)
 
-## ---- eval=FALSE---------------------------------------------------------
+## ---- eval=FALSE-----------------------------------------------------------
 #  ## load the library
 #  library(ndexr)
 #  
@@ -59,13 +65,13 @@ rcx <- rcx_updateMetaData(rcx)
 #  
 #  ## specify the server
 #  ndexconLocal = ndex_connect(username="username",
-#                  password="password",
-#                  host="localhost:8888/ndex/rest")
+#  				password="password",
+#  				host="localhost:8888/ndex/rest")
 #  
 #  ## manually change the api and connection configuration
 #  ndexcon13 = ndex_connect(ndexConf=ndex_config$Version_1.3)
 
-## ---- results = "hide"---------------------------------------------------
+## ---- results = "hide"-----------------------------------------------------
 ## list networks on server
 networks <- ndex_find_networks(ndexcon) 
 ## same as previous
@@ -79,12 +85,12 @@ networksEgfr <- ndex_find_networks(ndexcon, "EGFR")
 ## same as previous
 networksOfUser <- ndex_find_networks(ndexcon, accountName="ndextutorials")
 
-## ------------------------------------------------------------------------
+## --------------------------------------------------------------------------
 names(networks) 
 
 networks[,c('name','externalId')]
 
-## ------------------------------------------------------------------------
+## --------------------------------------------------------------------------
 ## UUID of the first search result
 networkId <- networks[1,'externalId']
 
@@ -98,7 +104,7 @@ networkSummary[c('name','externalId')]
 ## get the entire network as RCX object
 rcx <- ndex_get_network(ndexcon, networkId)
 
-## ---- eval=FALSE---------------------------------------------------------
+## ---- eval=FALSE-----------------------------------------------------------
 #  ## create a new network on server
 #  networkId <- ndex_create_network(ndexcon, rcx)
 #  
@@ -108,11 +114,11 @@ rcx <- ndex_get_network(ndexcon, networkId)
 #  ## same as previous
 #  networkId <- ndex_update_network(ndexcon, rcx, networkId)
 
-## ---- eval=FALSE---------------------------------------------------------
+## ---- eval=FALSE-----------------------------------------------------------
 #  ## deletes the network from the server
 #  ndex_delete_network(ndexcon, networkId)
 
-## ---- eval=FALSE---------------------------------------------------------
+## ---- eval=FALSE-----------------------------------------------------------
 #  ## load the library!
 #  library(ndexr)
 #  
@@ -132,7 +138,7 @@ rcx <- ndex_get_network(ndexcon, networkId)
 #  mynetwork = ndex_get_network(ndexcon, networks_pid[1,"externalId"])
 #  
 #  ## convert into R graph format
-#  mygraph = rcx_torcxgraph(mynetwork)
+#  mygraph = rcx_toRCXgraph(mynetwork)
 #  
 #  ## show graph information
 #  mygraph
@@ -141,37 +147,37 @@ rcx <- ndex_get_network(ndexcon, networkId)
 #  V(mygraph)[as.character(mynetwork$nodes[,"@id"])]$name = mynetwork$nodes[,"n"]
 #  plot(mygraph)
 
-## ------------------------------------------------------------------------
+## --------------------------------------------------------------------------
 str(rcx, max.level = 2)
 
-## ------------------------------------------------------------------------
+## --------------------------------------------------------------------------
 rcx[["nodes"]][1:5,]
 
 rcx[["edges"]][1:5,]
 
-## ---- warning=FALSE------------------------------------------------------
+## ---- warning=FALSE--------------------------------------------------------
 ## convert RCX to JSON
 json <- rcx_toJSON(rcx)
 
 ## ...and back
 rcx <- rcx_fromJSON(json)
 
-## convert RCX to rcxgraph
-rcxgraph <- rcx_torcxgraph(rcx)
+## convert RCX to RCXgraph
+rcxgraph <- rcx_toRCXgraph(rcx)
 
 ## ...and back
 rcx <- rcxgraph_toRCX(rcxgraph)
 
-## ------------------------------------------------------------------------
+## --------------------------------------------------------------------------
 newRcx <- rcx_new()
 
-## ------------------------------------------------------------------------
+## --------------------------------------------------------------------------
 asNewRcx <- rcx_asNewNetwork(rcx)
 
-## ------------------------------------------------------------------------
+## --------------------------------------------------------------------------
 rcx <- rcx_updateMetaData(rcx)
 
-## ------------------------------------------------------------------------
+## --------------------------------------------------------------------------
 ## get meta-data for a network
 metadata = ndex_network_get_metadata(ndexcon, networkId)
 
@@ -179,17 +185,17 @@ names(metadata)
 
 metadata[c('name','elementCount')]
 
-## ------------------------------------------------------------------------
+## --------------------------------------------------------------------------
 ## get aspect "nodeCitations" for the network
 networkAttibutes = ndex_network_get_aspect(ndexcon, networkId, "networkAttributes")
 
 networkAttibutes
 
-## ---- eval=FALSE---------------------------------------------------------
+## ---- eval=FALSE-----------------------------------------------------------
 #  ndex_network_update_profile(ndexcon, networkId, name="My network", version="1.3")
 #  ndex_network_update_profile(ndexcon, networkId, description="Nothing to see here")
 
-## ---- eval=FALSE---------------------------------------------------------
+## ---- eval=FALSE-----------------------------------------------------------
 #  ## show all user who have permission to a network
 #  permissions = ndex_network_get_permission(ndexcon, networkId, 'user')
 #  
@@ -208,30 +214,30 @@ networkAttibutes
 #  ## withdraw the permission from an user
 #  ndex_network_delete_permission(ndexcon, networkId, user=someUserUuid)
 
-## ---- eval=FALSE---------------------------------------------------------
+## ---- eval=FALSE-----------------------------------------------------------
 #  ndex_network_set_systemProperties(ndexcon, networkId, visibility="PUBLIC")
 #  ndex_network_set_systemProperties(ndexcon, networkId, visibility="PRIVATE")
 
-## ---- eval=FALSE---------------------------------------------------------
+## ---- eval=FALSE-----------------------------------------------------------
 #  ndex_network_set_systemProperties(ndexcon, networkId, readOnly=TRUE)
 
-## ---- eval=FALSE---------------------------------------------------------
+## ---- eval=FALSE-----------------------------------------------------------
 #  ndex_network_set_systemProperties(ndexcon, networkId, showcase=TRUE)
 #  ndex_network_set_systemProperties(ndexcon, networkId, showcase=FALSE)
 #  # change more than one property simultaneously
 #  ndex_network_set_systemProperties(ndexcon, networkId, readOnly=TRUE, visibility="PUBLIC", showcase=TRUE)
 
-## ------------------------------------------------------------------------
+## --------------------------------------------------------------------------
 provenance = ndex_network_get_provenance(ndexcon, networkId) 
 
-## ------------------------------------------------------------------------
+## --------------------------------------------------------------------------
 names(ndex_config)
 str(ndex_config, max.level = 3)
 
-## ------------------------------------------------------------------------
+## --------------------------------------------------------------------------
 names(ndex_config$Version_2.0)
 
-## ---- eval=FALSE---------------------------------------------------------
+## ---- eval=FALSE-----------------------------------------------------------
 #  mail:
 #    description: "Causes a new password to be generated for ..."
 #    url: "/user/#USERID#/password"
@@ -245,23 +251,23 @@ names(ndex_config$Version_2.0)
 #        tag: "forgot"
 #        default: "true"
 
-## ------------------------------------------------------------------------
+## --------------------------------------------------------------------------
 # Copy an existing config
-custom.ndex_config = ndex_config$Version_2.0
+custom_ndex_config = ndex_config$Version_2.0
 
 # Change the host connection for a local NDEx server installation
-custom.ndex_config$connection$host ="localhost:8090"
+custom_ndex_config$connection$host ="localhost:8090"
 
 # Custom path to the REST api
-custom.ndex_config$connection$api ="/api/rest"
+custom_ndex_config$connection$api ="/api/rest"
 
 # Change the REST path for the ndex_get_network function
-custom.ndex_config$api$network$get$url ="/custom/networks/#NETWORKID#"
+custom_ndex_config$api$network$get$url ="/custom/networks/#NETWORKID#"
 
 # Add some (default) parameters to the function
-custom.ndex_config$api$network$get$params$newParam = list(method="parameter", tag="someTag", default="someValue")
+custom_ndex_config$api$network$get$params$newParam = list(method="parameter", tag="someTag", default="someValue")
 
-## ---- eval=FALSE---------------------------------------------------------
+## ---- eval=FALSE-----------------------------------------------------------
 #  yamlToRConfig = function(yamlFile='R/ndex_api_config.yml', rScriptFile='R/ndex_api_config.r', defaultHeader=ndex_conf_header){
 #    yamlObj = yaml::yaml.load_file(yamlFile)
 #    rCodeTxt = paste0(defaultHeader, listToRCode(yamlObj))
@@ -271,4 +277,7 @@ custom.ndex_config$api$network$get$params$newParam = list(method="parameter", ta
 #  }
 #  
 #  yamlToRConfig()
+
+## --------------------------------------------------------------------------
+sessionInfo()
 

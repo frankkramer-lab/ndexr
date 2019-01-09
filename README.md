@@ -25,7 +25,7 @@ package also provides classes to implement the Cytoscape
 Cyberinfrastructure (CX) Format and to extend the \[iGraph Package\]
 (<http://igraph.org/r/>).
 
-The package is compatible with both NDEx versions 1.3 and 2.0.
+The package is compatible with both NDEx versions 1.3, 2.0 and 2.1.
 
 Installation
 ============
