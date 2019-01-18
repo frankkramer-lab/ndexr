@@ -36,10 +36,13 @@ test_that('Get network meta-data (ndex_network_get_metadata)', {
     for(apiVersion in apiVersions){
         api = ndex_config[[apiVersion]]
         con = ndex_connect(ndexConf = api)
-        rcx = ndex_network_get_metadata(con, uuid)
         if(con$ndexConf$version == '1.3'){
-            expect_null(rcx, info=paste0('Aspect meta-data should work, but for some reason for api 1.3 only returns NULL!'))
+            ## 2018-01-08: was removed from public ndex server for some reason! 
+            ## GET: [ www.ndexbio.org/rest/network/c9243cce-2d32-11e8-b939-0ac135e8bacf/metadata ]
+            ## Some internal server error occurred (500)
+            ## expect_null(rcx, info=paste0('Aspect meta-data should work, but for some reason for api 1.3 only returns NULL!'))
         }else{
+            rcx = ndex_network_get_metadata(con, uuid)
             expect_is(rcx, 'data.frame', info=paste0('Checking class of aspect meta-data (api ', apiVersion, ')'))
             expect_object_conains_names(rcx, netColNames, info=paste0('Checking meta-data column names (api ', apiVersion, ')'))        
         }

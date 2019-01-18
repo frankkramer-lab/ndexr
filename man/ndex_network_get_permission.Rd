@@ -4,7 +4,8 @@
 \alias{ndex_network_get_permission}
 \title{Get All Permissions on a Network}
 \usage{
-ndex_network_get_permission(ndexcon, networkId, type, permission, start, size)
+ndex_network_get_permission(ndexcon, networkId, type, permission, start,
+  size)
 }
 \arguments{
 \item{ndexcon}{object of class NDExConnection link{ndex_connect}}

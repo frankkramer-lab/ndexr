@@ -1,9 +1,9 @@
 Package: ndexr
 Type: Package
 Title: NDEx R client library
-Version: 1.5.0
+Version: 1.5.1
 Date: 2018-04-27
-Author: Frank Kramer <frank.kramer@informatik.uni-augsburg.de>, Florian Auer <florian.auer@informatik.uni-augsburg.de>, Alex Ishkin <aleksandr.ishkin@thomsonreuters.com>, Dexter Pratt <depratt@ucsc.edu>
+Author: Florian Auer <florian.auer@informatik.uni-augsburg.de>, Frank Kramer <frank.kramer@informatik.uni-augsburg.de>, Alex Ishkin <aleksandr.ishkin@thomsonreuters.com>, Dexter Pratt <depratt@ucsc.edu>
 Maintainer: Florian Auer <florian.auer@informatik.uni-augsburg.de>
 Description: This package offers an interface to NDEx servers, e.g. the public server at http://ndexbio.org/. It can retrieve and save networks via the API. Networks are offered as RCX object and as igraph representation. 
 License: BSD
@@ -15,6 +15,7 @@ Imports:
     plyr,
     tidyr
 RoxygenNote: 6.1.1
+Encoding: UTF-8
 biocViews: Pathways, DataImport, Network
 Suggests: BiocStyle,
     testthat,
