@@ -3,7 +3,7 @@ Version_2.1:
   version: "2.1"
   connection:
     description: "URL of the NDEx server"
-    host: "www.ndexbio.org"
+    host: "http://www.ndexbio.org"
     api: "/v2"
   api:
     serverStatus:
@@ -551,7 +551,7 @@ Version_2.0:
   version: "2.0"
   connection:
     description: "URL of the NDEx server"
-    host: "www.ndexbio.org"
+    host: "http://www.ndexbio.org"
     api: "/v2"
   api:
     serverStatus:
@@ -1094,7 +1094,7 @@ Version_1.3:
   version: "1.3"
   connection:
     description: "URL of the NDEx server"
-    host: "www.ndexbio.org"
+    host: "http://www.ndexbio.org"
     api: "/rest"
   api:
     serverStatus:
