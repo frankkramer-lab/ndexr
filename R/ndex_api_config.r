@@ -31,7 +31,7 @@ ndex_config = list(
         version="2.1",
         connection=list(
             description="URL of the NDEx server",
-            host="www.ndexbio.org",
+            host="http://www.ndexbio.org",
             api="/v2"
         ),
         api=list(
@@ -778,7 +778,7 @@ ndex_config = list(
         version="2.0",
         connection=list(
             description="URL of the NDEx server",
-            host="www.ndexbio.org",
+            host="http://www.ndexbio.org",
             api="/v2"
         ),
         api=list(
@@ -1518,7 +1518,7 @@ ndex_config = list(
         version="1.3",
         connection=list(
             description="URL of the NDEx server",
-            host="www.ndexbio.org",
+            host="http://www.ndexbio.org",
             api="/rest"
         ),
         api=list(
