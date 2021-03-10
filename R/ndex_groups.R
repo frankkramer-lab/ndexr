@@ -1,6 +1,6 @@
 ################################################################################
 ## Authors:
-##   Florian Auer [florian.auer@med.uni-goettingen.de]
+##   Florian Auer [florian.auer@informatik.uni-augsburg.de]
 ##
 ## History:
 ##   Created on 24.03.2017 by Auer

@@ -1,6 +1,6 @@
 #######################################################################################
 ## Authors:
-##   Florian Auer [florian.auer@med.uni-goettingen.de]
+##   Florian Auer [florian.auer@informatik.uni-augsburg.de]
 ##
 ## History:
 ##   Created on 02 February 2017 by Auer
@@ -22,7 +22,7 @@
 #' NULL
 ndex_conf_header = paste0(    "################################################################################\n",
                                 "## Authors:\n",
-                                "##   Florian Auer [florian.auer@med.uni-goettingen.de]\n",
+                                "##   Florian Auer [florian.auer@informatik.uni-augsburg.de]\n",
                                 "##\n",
                                 "## History:\n",
                                 "##   Created on 28 November 2016 by Auer\n",

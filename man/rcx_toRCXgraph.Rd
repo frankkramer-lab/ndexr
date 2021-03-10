@@ -6,11 +6,19 @@
 \alias{rcxgraph_fromRCX}
 \title{Create RCXgraph object from RCX object}
 \usage{
-rcx_toRCXgraph(rcx, idAsVertexName = FALSE, idAsEdgeName = FALSE,
-  verbose = FALSE)
+rcx_toRCXgraph(
+  rcx,
+  idAsVertexName = FALSE,
+  idAsEdgeName = FALSE,
+  verbose = FALSE
+)
 
-rcxgraph_fromRCX(rcx, idAsVertexName = FALSE, idAsEdgeName = FALSE,
-  verbose = FALSE)
+rcxgraph_fromRCX(
+  rcx,
+  idAsVertexName = FALSE,
+  idAsEdgeName = FALSE,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{rcx}{\code{\link{RCX}} object}

@@ -1,8 +1,8 @@
 ################################################################################
 ## Authors:
-##   Frank Kramer [frank.kramer@med.uni-goettingen.de]
-##   Florian Auer [florian.auer@med.uni-goettingen.de]
-##   Zaynab Hammoud [zaynab.hammoud@med.uni-goettingen.de]
+##   Frank Kramer [frank.kramer@informatik.uni-augsburg.de]
+##   Florian Auer [florian.auer@informatik.uni-augsburg.de]
+##   Zaynab Hammoud [zaynab.hammoud@informatik.uni-augsburg.de]
 ##
 ## History:
 ##   Created on 20 September 2016 by Kramer

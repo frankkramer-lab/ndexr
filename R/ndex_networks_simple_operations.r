@@ -2,8 +2,8 @@
 ## Authors:
 ##   Alex Ishkin [aleksandr.ishkin@thomsonreuters.com]
 ##   Dexter Pratt [depratt@ucsd.edu]
-##   Frank Kramer [frank.kramer@med.uni-goettingen.de]
-##   Florian Auer [florian.auer@med.uni-goettingen.de]
+##   Frank Kramer [frank.kramer@informatik.uni-augsburg.de]
+##   Florian Auer [florian.auer@informatik.uni-augsburg.de]
 ##
 ## History:
 ##   Split from ndex_networks on 25 January 2017 by Auer
@@ -36,7 +36,7 @@
 #' ## Establish a server connection
 #' ndexcon = ndex_connect()
 #' ## Find a network and get its UUID
-#' networks = ndex_find_networks(ndexcon,"p53")
+#' networks = ndex_find_networks(ndexcon,"p53", "nci-pid")
 #' networkId = networks[1,"externalId"]
 #' ## Get the network summary
 #' summary = ndex_network_get_summary(ndexcon, networkId)
@@ -72,7 +72,7 @@ ndex_network_get_summary <- function(ndexcon, networkId){
 #' ## Establish a server connection
 #' ndexcon = ndex_connect()
 #' ## Find a network and get its UUID
-#' networks = ndex_find_networks(ndexcon,"p53")
+#' networks = ndex_find_networks(ndexcon,"p53", "nci-pid")
 #' networkId = networks[1,"externalId"]
 #' ## Get the network data 
 #' rcx = ndex_get_network(ndexcon, networkId) 
@@ -106,7 +106,7 @@ ndex_get_network <- function(ndexcon, networkId){
 #' ## Establish a server connection with credentials 
 #' # ndexcon = ndex_connect('MyAccountName', 'MyPassword')
 #' ## Find a network and get its UUID
-#' # networks = ndex_find_networks(ndexcon,"p53")
+#' # networks = ndex_find_networks(ndexcon,"p53", "nci-pid")
 #' # networkId = networks[1,"externalId"]
 #' ## Get the network data 
 #' # rcx = ndex_get_network(ndexcon, networkId) 
@@ -198,7 +198,7 @@ ndex_update_network <- function(ndexcon, rcx, networkId){
 #' ## Establish a server connections with credentials 
 #' # ndexcon = ndex_connect('MyAccountName', 'MyPassword')
 #' ## Find a network and get its UUID
-#' # networks = ndex_find_networks(ndexcon,"p53")
+#' # networks = ndex_find_networks(ndexcon,"p53", "nci-pid")
 #' # networkId = networks[1,"externalId"] 
 #' ## Delete the network
 #' # ndex_delete_network(ndexcon, networkId)

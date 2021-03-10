@@ -1,6 +1,6 @@
 ################################################################################
 ## Authors:
-##   Florian Auer [florian.auer@med.uni-goettingen.de]
+##   Florian Auer [florian.auer@informatik.uni-augsburg.de]
 ##
 ## History:
 ##   Split from ndex_networks_ndex_properties on 23.03.2017 by Auer
@@ -32,7 +32,7 @@
 #' ## Establish a server connection
 #' ndexcon = ndex_connect()
 #' ## Find a network and get its UUID
-#' networks = ndex_find_networks(ndexcon,"p53")
+#' networks = ndex_find_networks(ndexcon,"p53", "nci-pid")
 #' networkId = networks[1,"externalId"]
 #' ## Get the network provenace
 #' provenance = ndex_network_get_provenance(ndexcon, networkId) 

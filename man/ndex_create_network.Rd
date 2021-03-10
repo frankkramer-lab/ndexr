@@ -32,7 +32,7 @@ data: CXNetworkStream = data
 ## Establish a server connection with credentials 
 # ndexcon = ndex_connect('MyAccountName', 'MyPassword')
 ## Find a network and get its UUID
-# networks = ndex_find_networks(ndexcon,"p53")
+# networks = ndex_find_networks(ndexcon,"p53", "nci-pid")
 # networkId = networks[1,"externalId"]
 ## Get the network data 
 # rcx = ndex_get_network(ndexcon, networkId) 

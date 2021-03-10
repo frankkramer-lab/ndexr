@@ -4,8 +4,7 @@
 \alias{ndex_network_delete_permission}
 \title{Delete Network Permission}
 \usage{
-ndex_network_delete_permission(ndexcon, networkId, user = NULL,
-  group = NULL)
+ndex_network_delete_permission(ndexcon, networkId, user = NULL, group = NULL)
 }
 \arguments{
 \item{ndexcon}{object of class NDExConnection link{ndex_connect}}

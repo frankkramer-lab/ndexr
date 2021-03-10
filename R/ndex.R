@@ -8,8 +8,8 @@
 #' License: \tab TBD\cr
 #' }
 #'
-#' @author Frank Kramer \email{frank.kramer@med.uni-goettingen.de}
-#' @author Florian Auer \email{florian.auer@med.uni-goettingen.de}
+#' @author Frank Kramer \email{frank.kramer@informatik.uni-augsburg.de}
+#' @author Florian Auer \email{florian.auer@informatik.uni-augsburg.de}
 #' @author Alex Ishkin \email{aleksandr.ishkin@thomsonreuters.com}
 #' @author Dexter Pratt \email{depratt@ucsc.edu}
 #' @name ndexr-package

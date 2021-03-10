@@ -4,9 +4,20 @@
 \alias{ndex_create_user}
 \title{Create a user}
 \usage{
-ndex_create_user(ndexcon, userName, password, emailAddress,
-  isIndividual = TRUE, displayName, firstName, lastName, image, website,
-  description, verbose = FALSE)
+ndex_create_user(
+  ndexcon,
+  userName,
+  password,
+  emailAddress,
+  isIndividual = TRUE,
+  displayName,
+  firstName,
+  lastName,
+  image,
+  website,
+  description,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{ndexcon}{object of class NDExConnection link{ndex_connect}}

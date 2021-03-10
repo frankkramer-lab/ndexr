@@ -14,7 +14,7 @@ Imports:
     jsonlite,
     plyr,
     tidyr
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.1
 Encoding: UTF-8
 biocViews: Pathways, DataImport, Network
 Suggests: BiocStyle,

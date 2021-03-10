@@ -4,7 +4,9 @@
 \name{ndex_conf_header}
 \alias{ndex_conf_header}
 \title{Default header for the ndex_api_config.r file}
-\format{An object of class \code{character} of length 1.}
+\format{
+An object of class \code{character} of length 1.
+}
 \usage{
 ndex_conf_header
 }

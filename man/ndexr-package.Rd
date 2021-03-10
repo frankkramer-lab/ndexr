@@ -34,9 +34,9 @@ plot(rcxgraph1, vertex.label=V(rcxgraph1)$n, edge.label=E(rcxgraph1)$i)
 }
 }
 \author{
-Frank Kramer \email{frank.kramer@med.uni-goettingen.de}
+Frank Kramer \email{frank.kramer@informatik.uni-augsburg.de}
 
-Florian Auer \email{florian.auer@med.uni-goettingen.de}
+Florian Auer \email{florian.auer@informatik.uni-augsburg.de}
 
 Alex Ishkin \email{aleksandr.ishkin@thomsonreuters.com}
 

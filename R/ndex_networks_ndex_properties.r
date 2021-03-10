@@ -2,8 +2,8 @@
 ## Authors:
 ##   Alex Ishkin [aleksandr.ishkin@thomsonreuters.com]
 ##   Dexter Pratt [depratt@ucsd.edu]
-##   Frank Kramer [frank.kramer@med.uni-goettingen.de]
-##   Florian Auer [florian.auer@med.uni-goettingen.de]
+##   Frank Kramer [frank.kramer@informatik.uni-augsburg.de]
+##   Florian Auer [florian.auer@informatik.uni-augsburg.de]
 ##
 ## History:
 ##   Split from ndex_networks on 25 January 2017 by Auer

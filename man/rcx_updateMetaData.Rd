@@ -4,9 +4,13 @@
 \alias{rcx_updateMetaData}
 \title{Updating the meta-data of an RCX object}
 \usage{
-rcx_updateMetaData(rcx, mandatoryAspects = c("nodes"),
+rcx_updateMetaData(
+  rcx,
+  mandatoryAspects = c("nodes"),
   excludeAspects = c("metaData", "numberVerification", "status"),
-  force = FALSE, verbose = FALSE)
+  force = FALSE,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{rcx}{RCX object}

@@ -4,8 +4,13 @@
 \alias{ndex_network_set_systemProperties}
 \title{Set Network System Properties}
 \usage{
-ndex_network_set_systemProperties(ndexcon, networkId, readOnly = NULL,
-  visibility = NULL, showcase = NULL)
+ndex_network_set_systemProperties(
+  ndexcon,
+  networkId,
+  readOnly = NULL,
+  visibility = NULL,
+  showcase = NULL
+)
 }
 \arguments{
 \item{ndexcon}{object of class NDExConnection link{ndex_connect}}
