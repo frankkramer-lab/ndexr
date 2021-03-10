@@ -4,8 +4,13 @@
 \alias{ndex_network_update_profile}
 \title{Update Network Profile}
 \usage{
-ndex_network_update_profile(ndexcon, networkId, name = NULL,
-  description = NULL, version = NULL)
+ndex_network_update_profile(
+  ndexcon,
+  networkId,
+  name = NULL,
+  description = NULL,
+  version = NULL
+)
 }
 \arguments{
 \item{ndexcon}{object of class NDExConnection link{ndex_connect}}

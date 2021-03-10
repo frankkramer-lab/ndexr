@@ -32,7 +32,7 @@
 #' ## Establish a server connection
 #' ndexcon = ndex_connect()
 #' ## Find a network and get its UUID
-#' networks = ndex_find_networks(ndexcon,"p53")
+#' networks = ndex_find_networks(ndexcon,"p53", "nci-pid")
 #' networkId = networks[1,"externalId"]
 #' ## Get the network provenace
 #' provenance = ndex_network_get_provenance(ndexcon, networkId) 
@@ -69,7 +69,7 @@ ndex_network_get_provenance <- function(ndexcon, networkId){
 ## @examples 
 ## \dontrun{
 ## ndexcon = ndex_connect('MyAccountName', 'MyPassword', verbose=T)
-## networks = ndex_find_networks(ndexcon,"p53")
+## networks = ndex_find_networks(ndexcon,"p53", "nci-pid")
 ## networkId = networks[1,"externalId"]
 ## provenance = ndex_network_set_provenance(ndexcon, networkId, provenance) 
 ## }

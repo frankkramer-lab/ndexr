@@ -4,7 +4,9 @@
 \name{ndex_config}
 \alias{ndex_config}
 \title{NDEx server api configuration}
-\format{An object of class \code{list} of length 4.}
+\format{
+An object of class \code{list} of length 4.
+}
 \usage{
 ndex_config
 }

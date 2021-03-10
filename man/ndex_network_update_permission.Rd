@@ -4,8 +4,13 @@
 \alias{ndex_network_update_permission}
 \title{Update Network Permission}
 \usage{
-ndex_network_update_permission(ndexcon, networkId, user = NULL,
-  group = NULL, permission)
+ndex_network_update_permission(
+  ndexcon,
+  networkId,
+  user = NULL,
+  group = NULL,
+  permission
+)
 }
 \arguments{
 \item{ndexcon}{object of class NDExConnection link{ndex_connect}}

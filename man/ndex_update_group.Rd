@@ -4,8 +4,15 @@
 \alias{ndex_update_group}
 \title{Update Group}
 \usage{
-ndex_update_group(ndexcon, groupId, groupName, image, website, description,
-  properties)
+ndex_update_group(
+  ndexcon,
+  groupId,
+  groupName,
+  image,
+  website,
+  description,
+  properties
+)
 }
 \arguments{
 \item{ndexcon}{object of class NDExConnection link{ndex_connect}}

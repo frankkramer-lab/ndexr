@@ -37,7 +37,7 @@
 #' ## Establish a server connection
 #' ndexcon = ndex_connect()
 #' ## Find a network and get its UUID
-#' networks = ndex_find_networks(ndexcon,"p53")
+#' networks = ndex_find_networks(ndexcon,"p53", "nci-pid")
 #' networkId = networks[1,"externalId"]
 #' ## Get the network meta-data
 #' ndex_network_get_metadata(ndexcon, networkId) 
@@ -70,7 +70,7 @@ ndex_network_get_metadata <- function(ndexcon, networkId){
 #' ## Establish a server connection
 #' ndexcon = ndex_connect()
 #' ## Find a network and get its UUID
-#' networks = ndex_find_networks(ndexcon,"p53")
+#' networks = ndex_find_networks(ndexcon,"p53", "nci-pid")
 #' networkId = networks[1,"externalId"]
 #' ## Get the meta-data of an aspect of a network
 #' ndex_network_aspect_get_metadata(ndexcon, networkId, 'nodeAttributes') 
@@ -102,7 +102,7 @@ ndex_network_aspect_get_metadata <- function(ndexcon, networkId, aspect){
 #' ## Establish a server connection
 #' ndexcon = ndex_connect()
 #' ## Find a network and get its UUID
-#' networks = ndex_find_networks(ndexcon)
+#' networks = ndex_find_networks(ndexcon,"p53", "nci-pid")
 #' networkId = networks[1,"externalId"]
 #' ## Get the aspect of a network
 #' aspect = ndex_network_get_aspect(ndexcon, networkId, 'nodeAttributes')

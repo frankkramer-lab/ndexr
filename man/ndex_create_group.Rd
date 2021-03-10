@@ -4,8 +4,7 @@
 \alias{ndex_create_group}
 \title{Create Group}
 \usage{
-ndex_create_group(ndexcon, groupName, image, website, description,
-  properties)
+ndex_create_group(ndexcon, groupName, image, website, description, properties)
 }
 \arguments{
 \item{ndexcon}{object of class NDExConnection link{ndex_connect}}

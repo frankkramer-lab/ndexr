@@ -4,8 +4,7 @@
 \alias{ndex_user_list_groups}
 \title{Get User's Group Memberships}
 \usage{
-ndex_user_list_groups(ndexcon, userId, type = NULL, start = NULL,
-  size = NULL)
+ndex_user_list_groups(ndexcon, userId, type = NULL, start = NULL, size = NULL)
 }
 \arguments{
 \item{ndexcon}{object of class NDExConnection link{ndex_connect}}

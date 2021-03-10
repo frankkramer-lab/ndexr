@@ -7,3 +7,4 @@
 *.Rproj
 .directory
 ..Rcheck
+.Rd2pdf*

@@ -4,8 +4,19 @@
 \alias{ndex_update_user}
 \title{Update User}
 \usage{
-ndex_update_user(ndexcon, userId, emailAddress, isIndividual, displayName,
-  firstName, lastName, image, website, description, verbose = FALSE)
+ndex_update_user(
+  ndexcon,
+  userId,
+  emailAddress,
+  isIndividual,
+  displayName,
+  firstName,
+  lastName,
+  image,
+  website,
+  description,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{ndexcon}{object of class NDExConnection link{ndex_connect}}
