@@ -21,10 +21,11 @@ context('Simple network operations')
 test_that('Get a network from server (ndex_get_network)', {
     nms = names(ndex_config)
       apiVersions = nms[nms!='defaultVersion']
+      ## no deprecated "ndexStatus" and "@context" aspects anymore [2021.07.27]
       netColNames = c("metaData", 
                       "numberVerification", 
-                      "ndexStatus", 
-                      "@context", 
+                      #"ndexStatus", 
+                      #"@context", 
                       "citations", 
                       "edgeCitations", 
                       "edges", 
