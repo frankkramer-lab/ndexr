@@ -1,7 +1,7 @@
 Package: ndexr
 Type: Package
 Title: NDEx R client library
-Version: 1.13.2
+Version: 1.15.1
 Date: 2018-04-27
 Author: Florian Auer <florian.auer@informatik.uni-augsburg.de>, Frank Kramer <frank.kramer@informatik.uni-augsburg.de>, Alex Ishkin <aleksandr.ishkin@thomsonreuters.com>, Dexter Pratt <depratt@ucsc.edu>
 Maintainer: Florian Auer <florian.auer@informatik.uni-augsburg.de>
