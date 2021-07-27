@@ -82,7 +82,8 @@ ndex_get_network <- function(ndexcon, networkId){
     route <- ndex_helper_encodeParams(api$url, api$params, network=networkId)
   
     response = ndex_rest_GET(ndexcon, route, raw=TRUE)
-    rcx = rcx_fromJSON(response)
+    rcx = rcx_fromJSON(response) 
+    #rcx = RCX::fromCX(response)
     return(rcx)
 }
 
@@ -121,6 +122,7 @@ ndex_create_network <- function(ndexcon, rcx){
   
     tmpFile = tempfile()
     writeLines(rcx_toJSON(rcx), tmpFile)
+    #writeLines(RCX::toCX(rcx), tmpFile)
     data <- list(CXNetworkStream = httr::upload_file(tmpFile, type = 'application/json'))
     response = ndex_rest_POST(ndexcon, route, data, multipart=TRUE, raw=TRUE)
     ## response is the url of the network: "http://public.ndexbio.org/v2/network/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"

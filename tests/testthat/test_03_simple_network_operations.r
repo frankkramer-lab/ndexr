@@ -23,8 +23,8 @@ test_that('Get a network from server (ndex_get_network)', {
       apiVersions = nms[nms!='defaultVersion']
       netColNames = c("metaData", 
                       "numberVerification", 
-                      "ndexStatus", 
-                      "@context", 
+                      #"ndexStatus", 
+                      #"@context", 
                       "citations", 
                       "edgeCitations", 
                       "edges", 

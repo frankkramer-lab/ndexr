@@ -25,8 +25,8 @@ test_that('Get network meta-data (ndex_network_get_metadata)', {
     ## no "properties" column anymore in metadata [2018.01.10]
     # netColNames = c("consistencyGroup", "elementCount", "lastUpdate", "name", "version", "idCounter")
     ## no "lastUpdate" column anymore in metadata, but the "properties" column returned! [2018.04.13]
-    netColNames = c("consistencyGroup", 
-                    "elementCount", 
+    ## no "consistencyGroup" column anymore in metadata, optional now [2021.07.27]
+    netColNames = c("elementCount", 
                     "name", 
                     "version", 
                     "idCounter")

@@ -306,7 +306,7 @@ ndex_rest_PUT <- function(ndexcon, route, data=NULL, multipart = FALSE, raw = FA
     try(response <- httr::PUT(url, auth, header, contenttype, body = data, encode = encode))
     
     ndex_helper_httpResponseHandler(response, paste("PUT: [", url, "]\ndata:\n",substring(data, 1, 300),'\n...'), ndexcon$verbose)
-    content <- content(response, as='text', encoding='UTF-8')
+    content <- httr::content(response, as='text', encoding='UTF-8')
     
     if(ndexcon$verbose) message('Response:', substring(content, 1, 300), '...', sep = '\n')
     if(raw) return(content)
