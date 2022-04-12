@@ -11,13 +11,21 @@
 #' expect_object_conains_names(list(fist='something', second='bla'), c('fist', 'second'))
 #' }
 expect_object_conains_names = function(object, expected, info = NULL) {
-  comp = all(expected %in% names(object))
-  mesg = ifelse(comp, paste0('objectect does not contain all names: ["', paste(object[!(expected %in% names(object))], collapse = '", "'), '"]\n',
-                             'expected names: ["', paste(expected, collapse = '", "'), '"]\n',
-                             'found names: ["', paste(names(object), collapse = '", "'), '"]\n'),
-                '')
-  expect( comp,
-          mesg,
-          info = info)
-  invisible(object)
+    if("data.frame" %in% class(object)) {
+        sel = expected %in% colnames(object)
+    }else{
+        sel = expected %in% names(object)
+    }
+    comp = all(sel)
+    info = paste0(info,
+                  'objectect does not contain all names: ["', paste(expected[!sel], collapse = '", "'), '"]\n',
+                  'expected names: ["', paste(expected, collapse = '", "'), '"]\n',
+                  'found names: ["', paste(names(object), collapse = '", "'), '"]\n')
+    expect( comp,
+            "",
+            info = info)
+    invisible(object)
 }
+
+
+

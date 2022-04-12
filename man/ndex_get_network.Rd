@@ -12,10 +12,14 @@ ndex_get_network(ndexcon, networkId)
 \item{networkId}{unique ID of the network}
 }
 \value{
-\code{\link{RCX}} object
+\code{\link[RCX]{RCX-object}} object
 }
 \description{
-Returns the specified network as CX. 
+Returns the specified network as \link[RCX]{RCX-object}.
+}
+\details{
+\strong{Note: In future `ndexr` uses the \link[RCX]{RCX-object} from the corresponding package to handle the networks!}
+
 This is performed as a monolithic operation, so it is typically advisable for applications to first use the getNetworkSummary method to check the node and edge counts for a network before retrieving the network.
 Uses getEdges (this procedure will return complete network with all elements)
 Nodes use primary ID of the base term ('represents' element)

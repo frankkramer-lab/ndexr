@@ -11,79 +11,114 @@ network biology.
 The Network Data Exchange, or NDEx, is an open-source software framework
 to manipulate, store and exchange networks of various types and formats
 (Pratt et al., 2015, Cell Systems 1, 302-305, October 28, 2015 ©2015
-Elsevier Inc.
-[ScienceDirect](http://www.sciencedirect.com/science/article/pii/S2405471215001477)).
+Elsevier
+Inc. [ScienceDirect](http://www.sciencedirect.com/science/article/pii/S2405471215001477)).
 NDEx can be used to upload, share and publicly distribute networks,
 while providing an output in formats, that can be used by plenty of
 other applications.
 
+The public NDEx server is a network data commons which provides pathway
+collections like the Pathway Interaction Database of the NCI
+(<a href="http://www.ndexbio.org/#/user/301a91c6-a37b-11e4-bda0-000c29202374" class="uri">http://www.ndexbio.org/#/user/301a91c6-a37b-11e4-bda0-000c29202374</a>)
+and the Cancer Cell Maps Initiative
+(<a href="http://www.ndexbio.org/#/user/b47268a6-8112-11e6-b0a6-06603eb7f303" class="uri">http://www.ndexbio.org/#/user/b47268a6-8112-11e6-b0a6-06603eb7f303</a>).
+
 This package provides an interface to query the public NDEx server, as
 well as private installations, in order to upload, download or modify
-biological networks. This document aims to help the user to install and
-benefit from the wide range of funtionality of this implementation. The
-package also provides classes to implement the Cytoscape
-Cyberinfrastructure (CX) Format and to extend the \[iGraph Package\]
-(<http://igraph.org/r/>).
+biological networks.
+
+This document aims to help the user to install and benefit from the wide
+range of funtionality of this implementation. The package also provides
+classes to implement the Cytoscape Cyberinfrastructure (CX) Format and
+to extend the \[iGraph Package\]
+(<a href="http://igraph.org/r/" class="uri">http://igraph.org/r/</a>).
 
 The package is compatible with both NDEx versions 1.3 and 2.0.
 
 Installation
 ============
 
-## Installation via Bioconductor
+Installation via Bioconductor
+-----------------------------
 
-    if (!requireNamespace("BiocManager", quietly=TRUE))
-        install.packages("BiocManager")
-    BiocManager::install("ndexr")
-    library(ndexr)
-    
-## Installation via GitHub
-using [*devtools*](http://cran.r-project.org/web/packages/devtools/index.html) R package
+``` r
+if (!requireNamespace("BiocManager", quietly=TRUE))
+    install.packages("BiocManager")
+BiocManager::install("ndexr")
+library(ndexr)
+```
 
-    require(devtools)
-    install_github("frankkramer-lab/ndexr")
-    library(ndexr)
+Installation via GitHub
+-----------------------
+
+using
+[*devtools*](http://cran.r-project.org/web/packages/devtools/index.html)
+R package
+
+``` r
+require(devtools)
+install_github("frankkramer-lab/ndexr")
+library(ndexr)
+```
 
 Quick Start
 ===========
 
 Some short overview of the most important functions
 
-    ## load the library!
-    library(ndexr)
+``` r
+## load the library!
+library(ndexr)
+```
 
-    ## login to the NDEx server
-    ndexcon = ndex_connect("username", "password")
+``` r
+## login to the NDEx server
+ndexcon = ndex_connect("username", "password")
+```
 
-    ## search the networks for "EGFR"
-    networks <- ndex_find_networks(ndexcon, "EGFR")
+``` r
+## search the networks for "EGFR"
+networks <- ndex_find_networks(ndexcon, "EGFR")
 
-    ## UUID of the first search result
-    networkId <- networks[1,'externalId']
+## UUID of the first search result
+networkId <- networks[1,'externalId']
 
-    ## get summary of the network
-    networkSummary <- ndex_network_get_summary(ndexcon, networkId)
+## get summary of the network
+networkSummary <- ndex_network_get_summary(ndexcon, networkId)
 
-    ## get the entire network as RCX object
-    rcx <- ndex_get_network(ndexcon, networkId)
+## get the entire network as RCX object
+rcx <- ndex_get_network(ndexcon, networkId)
 
-    ## remove NDEx artefacts from network
-    rcx <- rcx_asNewNetwork(rcx)
+## remove NDEx artefacts from network
+rcx <- rcx_asNewNetwork(rcx)
+```
 
-    ## do some fancy stuff with the network, then
-    ## update the meta-data
-    rcx <- rcx_updateMetaData(rcx)
+    ## Warning: 'rcx_asNewNetwork' is deprecated.
+    ## Use 'RCX::createRCX()' instead.
+    ## See help("Deprecated")
 
-    ## upload network as a new network to the NDEx server
-    networkId <- ndex_create_network(ndexcon, rcx)
+``` r
+## do some fancy stuff with the network, then
+## update the meta-data
+rcx <- rcx_updateMetaData(rcx)
+```
 
-    ## do some other fancy stuff with the network, then
-    ## update the network on the server
-    networkId <- ndex_update_network(ndexcon, rcx)
+    ## Warning: 'rcx_updateMetaData' is deprecated.
+    ## Use 'RCX::updateMetaData()' instead.
+    ## See help("Deprecated")
 
-    ## realize, you did bad things to the poor network, so better 
-    ## delete it on the server
-    ndex_delete_network(ndexcon, networkId)
+``` r
+## upload network as a new network to the NDEx server
+networkId <- ndex_create_network(ndexcon, rcx)
+
+## do some other fancy stuff with the network, then
+## update the network on the server
+networkId <- ndex_update_network(ndexcon, rcx)
+
+## realize, you did bad things to the poor network, so better 
+## delete it on the server
+ndex_delete_network(ndexcon, networkId)
+```
 
 Connect to a server
 ===================
@@ -95,22 +130,24 @@ server anonymously or provide a username and password to enable further
 functionality. If you have set up your own NDEx server, you might change
 the host to your local installation.
 
-    ## load the library
-    library(ndexr)
+``` r
+## load the library
+library(ndexr)
 
-    ## connect anonymously
-    ndexcon = ndex_connect()
+## connect anonymously
+ndexcon = ndex_connect()
 
-    ## log in with user name and password
-    ndexconUser = ndex_connect(username="username", password="password")
+## log in with user name and password
+ndexconUser = ndex_connect(username="username", password="password")
 
-    ## specify the server
-    ndexconLocal = ndex_connect(username="username",
-                    password="password", 
-                    host="localhost:8888/ndex/rest")
+## specify the server
+ndexconLocal = ndex_connect(username="username",
+                password="password", 
+                host="localhost:8888/ndex/rest")
 
-    ## manually change the api and connection configuration
-    ndexcon13 = ndex_connect(ndexConf=ndex_config$Version_1.3)
+## manually change the api and connection configuration
+ndexcon13 = ndex_connect(ndexConf=ndex_config$Version_1.3)
+```
 
 This package is developed following the structure of the documented api
 structure. For complete description of the NDEx server api see
@@ -125,56 +162,54 @@ Find Networks
 
 To explore or search the networks on an NDEx server, this package offers
 a function to retrieve a list of networks from the server. It is
-possible to restrict the networks to a specific search string (e.g.
-“EGFR”), an account name (only networks of this account will be shown),
-or limit the number of fetched networks.
+possible to restrict the networks to a specific search string
+(e.g. “EGFR”), an account name (only networks of this account will be
+shown), or limit the number of fetched networks.
 
-    ## list networks on server
-    networks <- ndex_find_networks(ndexcon) 
-    ## same as previous
-    networks <- ndex_find_networks(ndexcon, start=0, size=5)
+``` r
+## list networks on server
+networks <- ndex_find_networks(ndexcon) 
+## same as previous
+networks <- ndex_find_networks(ndexcon, start=0, size=5)
 
-    ## search for "EGFR"
-    networksEgfr <- ndex_find_networks(ndexcon, searchString="EGFR")
-    ## same as previous
-    networksEgfr <- ndex_find_networks(ndexcon, "EGFR")
+## search for "EGFR"
+networksEgfr <- ndex_find_networks(ndexcon, searchString="EGFR")
+## same as previous
+networksEgfr <- ndex_find_networks(ndexcon, "EGFR")
 
-    ## same as previous
-    networksOfUser <- ndex_find_networks(ndexcon, accountName="ndextutorials")
+## same as previous
+networksOfUser <- ndex_find_networks(ndexcon, accountName="ndextutorials")
+```
 
 As result you get a data.frame containing information of the networks.
 
-    names(networks) 
+``` r
+names(networks) 
+```
 
-    ##  [1] "ownerUUID"        "isReadOnly"       "subnetworkIds"   
-    ##  [4] "errorMessage"     "isValid"          "warnings"        
-    ##  [7] "isShowcase"       "visibility"       "edgeCount"       
-    ## [10] "nodeCount"        "owner"            "uri"             
-    ## [13] "version"          "description"      "name"            
-    ## [16] "properties"       "externalId"       "isDeleted"       
-    ## [19] "modificationTime" "creationTime"
+    ##  [1] "ownerUUID"        "isReadOnly"       "subnetworkIds"    "isValid"          "warnings"        
+    ##  [6] "isShowcase"       "isCertified"      "indexLevel"       "hasLayout"        "hasSample"       
+    ## [11] "cxFileSize"       "cx2FileSize"      "visibility"       "nodeCount"        "edgeCount"       
+    ## [16] "completed"        "owner"            "description"      "name"             "properties"      
+    ## [21] "externalId"       "isDeleted"        "modificationTime" "creationTime"     "version"
 
-    networks[,c('name','externalId')]
+``` r
+networks[,c('name','externalId')]
+```
 
-    ##                                                 name
-    ## 1                               The Diabetes Machine
-    ## 2                                    The RAS Machine
-    ## 3                          conSCOM S. cerevisiae 152
-    ## 4 Ravasi et al., CELL (2010) - Mouse TF interactions
-    ## 5               Fanconi Anemia Gene Ontology (FangO)
-    ##                             externalId
-    ## 1 7aed4dd0-14e4-11e6-a1f8-06603eb7f303
-    ## 2 50e3dff7-133e-11e6-a039-06603eb7f303
-    ## 3 9a9d523b-f532-11e6-ab6b-0ac135e8bacf
-    ## 4 4a5bc352-9243-11e5-b435-06603eb7f303
-    ## 5 ab9bb6de-081a-11e7-aba2-0ac135e8bacf
+    ##          name                           externalId
+    ## 1     covid19 a8c0decc-6bbb-11ea-bfdc-0ac135e8bacf
+    ## 2  rasmachine cdba5bd5-5195-11e9-9f06-0ac135e8bacf
+    ## 3 painmachine e1e5963a-eb0e-11e9-bb65-0ac135e8bacf
+    ## 4        prad caa8c3f6-f6a3-11e8-aaa6-0ac135e8bacf
+    ## 5        brca a16b5ca0-f6a3-11e8-aaa6-0ac135e8bacf
 
 Simple network operations
 =========================
 
 To both, users and networks stored on an NDEx server, a universally
 unique identifier (UUID) is assigned. Although both have the same format
-(i.e. “xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx”, where x is one of
+(i.e. “xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx”, where x is one of
 `[a-z0-9]`), it has to be distinguished between the user UUID and the
 network UUID, but the difference is obvious by the context. Within RCX
 objects and search results, the network UUID is also referred to as
@@ -189,32 +224,36 @@ summary, to check the node and edge counts for a network before
 retrieving the entire network. Thereby the structure of the network
 summary is similar the structure of the network list
 
-    ## UUID of the first search result
-    networkId <- networks[1,'externalId']
+``` r
+## UUID of the first search result
+networkId <- networksOfUser[1,'externalId']
 
-    ## get network summary
-    networkSummary <- ndex_network_get_summary(ndexcon, networkId)
+## get network summary
+networkSummary <- ndex_network_get_summary(ndexcon, networkId)
 
-    names(networkSummary)
+names(networkSummary)
+```
 
-    ##  [1] "ownerUUID"        "isReadOnly"       "subnetworkIds"   
-    ##  [4] "errorMessage"     "isValid"          "warnings"        
-    ##  [7] "isShowcase"       "visibility"       "edgeCount"       
-    ## [10] "nodeCount"        "owner"            "uri"             
-    ## [13] "version"          "description"      "name"            
-    ## [16] "properties"       "externalId"       "isDeleted"       
-    ## [19] "modificationTime" "creationTime"
+    ##  [1] "ownerUUID"        "isReadOnly"       "subnetworkIds"    "isValid"          "warnings"        
+    ##  [6] "isShowcase"       "isCertified"      "indexLevel"       "hasLayout"        "hasSample"       
+    ## [11] "cxFileSize"       "cx2FileSize"      "visibility"       "nodeCount"        "edgeCount"       
+    ## [16] "completed"        "version"          "owner"            "description"      "name"            
+    ## [21] "properties"       "externalId"       "isDeleted"        "modificationTime" "creationTime"
 
-    networkSummary[c('name','externalId')]
+``` r
+networkSummary[c('name','externalId')]
+```
 
     ## $name
-    ## [1] "The Diabetes Machine"
+    ## [1] "BNFO 286 (SP22) - WNT Signaling Pathway"
     ## 
     ## $externalId
-    ## [1] "7aed4dd0-14e4-11e6-a1f8-06603eb7f303"
+    ## [1] "ff9c05f4-b502-11ec-b3be-0ac135e8bacf"
 
-    ## get the entire network as RCX object
-    rcx <- ndex_get_network(ndexcon, networkId)
+``` r
+## get the entire network as RCX object
+rcx <- ndex_get_network(ndexcon, networkId)
+```
 
 To send a network to an server, there are two possibilities. Either one
 wants to update an existing network on the server or create a new one.
@@ -223,20 +262,71 @@ newly generated one for the created network. For updating a network, the
 UUID is extracted from the “externalId” property of the “ndexStatus”
 aspect, or can be set manually.
 
-    ## create a new network on server
-    networkId <- ndex_create_network(ndexcon, rcx)
+``` r
+## create a new network on server
+networkId <- ndex_create_network(ndexcon, rcx)
 
-    ## update a network on server
-    networkId <- ndex_update_network(ndexcon, rcx)
+## update a network on server
+networkId <- ndex_update_network(ndexcon, rcx)
 
-    ## same as previous
-    networkId <- ndex_update_network(ndexcon, rcx, networkId)
+## same as previous
+networkId <- ndex_update_network(ndexcon, rcx, networkId)
+```
 
 Besides creating, reading and updating, it is also possible to delete
 networks on the server. This operation cannot be undone, so be careful!
 
-    ## deletes the network from the server
-    ndex_delete_network(ndexcon, networkId)
+``` r
+## deletes the network from the server
+ndex_delete_network(ndexcon, networkId)
+```
+
+Example Workflow
+================
+
+This example workflow shows how to connect to the public NDEx server,
+browse and retrieve the pathways of the Pathway Interaction Database of
+the NCI which are hosted there.
+
+``` r
+## load the library!
+library(ndexr)
+
+## login to the NDEx server
+ndexcon = ndex_connect()
+
+## retrieve pathways of user "nci-pid"
+networks_pid <- ndex_find_networks(ndexcon, accountName="nci-pid")
+
+## list retrieved network information
+networks_pid[,"name"]
+
+## show information on the first pathways listed
+networks_pid[1,]
+
+## retrieve network data
+mynetwork = ndex_get_network(ndexcon, networks_pid[1,"externalId"])
+
+## convert into R graph format
+mygraph = rcx_toRCXgraph(mynetwork)
+
+## show graph information
+mygraph
+
+## use readable node names instead of IDs and plot the graph
+V(mygraph)[as.character(mynetwork$nodes[,"@id"])]$name = mynetwork$nodes[,"n"]
+plot(mygraph)
+```
+
+This code snippet starts with loading the ndexr library and connecting
+to the server anonymously. Afterwards `ndex_find_networks` retrieves a
+list of networks of user `nci-pid`, which contains the data of the
+Pathway Interaction Database. The function `ndex_get_network` downloads
+the network data and stores in the `RCX` format (explained in the next
+section) and is then converted into an igraph-based object via
+`rcx_toRCXgraph`. Here, the node IDs of the graph are set to readable
+names and the graph is plotted. Naturally, this graph can be annotated
+and beautified as required for the specific use cases.
 
 RCX
 ===
@@ -248,101 +338,102 @@ CX is an Aspect-Oriented Network Interchange Format encoded in JSON,
 which is used as basis for the R implementation of the CX format, namely
 RCX.
 
+**Note: In future `ndexr` uses the `RCX` data model from the
+corresponding package
+(<a href="https://bioconductor.org/packages/RCX" class="uri">https://bioconductor.org/packages/RCX</a>)
+to handle the networks!**
+
 The RCX object is currently implemented within this package as a list of
 data.frames, containing meta-data and all aspects of the network. The
 structure of an RCX object, as shown via `str(rcx)` could be a list like
 this:
 
-    str(rcx, max.level = 2)
+``` r
+str(rcx, max.level = 2)
+```
 
-    ## List of 13
-    ##  $ metaData          :'data.frame':  11 obs. of  7 variables:
-    ##   ..$ elementCount    : int [1:11] 1 1 395 667 328 299 3434 160 99 3 ...
-    ##   ..$ lastUpdate      : num [1:11] 1.49e+12 1.49e+12 NA NA NA ...
-    ##   ..$ name            : chr [1:11] "ndexStatus" "provenanceHistory" "nodes" "edges" ...
-    ##   ..$ properties      :List of 11
-    ##   ..$ version         : chr [1:11] "1.0" "1.0" NA NA ...
-    ##   ..$ consistencyGroup: int [1:11] NA 1 NA NA NA NA NA NA NA NA ...
-    ##   ..$ idCounter       : int [1:11] NA NA 1689 1689 1689 1689 NA NA NA NA ...
-    ##  $ numberVerification:'data.frame':  1 obs. of  1 variable:
-    ##   ..$ longNumber: num 2.81e+14
-    ##  $ ndexStatus        :'data.frame':  1 obs. of  10 variables:
-    ##   ..$ externalId      : chr "7aed4dd0-14e4-11e6-a1f8-06603eb7f303"
-    ##   ..$ creationTime    : num 1.46e+12
-    ##   ..$ modificationTime: num 1.49e+12
-    ##   ..$ visibility      : chr "PUBLIC"
-    ##   ..$ published       : logi FALSE
-    ##   ..$ nodeCount       : int 395
-    ##   ..$ edgeCount       : int 667
-    ##   ..$ owner           : chr "rasmachine"
-    ##   ..$ ndexServerURI   : chr "http://public.ndexbio.org"
-    ##   ..$ readOnly        : logi FALSE
-    ##  $ nodes             :'data.frame':  395 obs. of  2 variables:
-    ##   ..$ @id: int [1:395] 0 1 5 10 11 20 27 28 32 33 ...
-    ##   ..$ n  : chr [1:395] "ABCC8" "ATP" "CHI" "ADCY1" ...
-    ##  $ edges             :'data.frame':  667 obs. of  4 variables:
-    ##   ..$ @id: int [1:667] 2 6 12 21 29 34 38 43 53 58 ...
-    ##   ..$ s  : int [1:667] 0 0 10 20 27 32 1 11 52 52 ...
-    ##   ..$ t  : int [1:667] 1 5 11 11 28 33 10 42 10 57 ...
-    ##   ..$ i  : chr [1:667] "Activation" "Activation" "Activation" "Activation" ...
-    ##  $ supports          :'data.frame':  328 obs. of  4 variables:
-    ##   ..$ text      : chr [1:328] "This validation of the model gives us confidence that robust predictions can be made for the role of gap junction coupling upon"| __truncated__ "Although treatment of CHI is primarily based on the use of diazoxide, CHI caused by recessive inactivating mutations in the ABC"| __truncated__ "Therefore, we report this case of CHI caused by a novel mutation of ABCC8 in a half-Korean newborn infant with diazoxide-unresp"| __truncated__ "Intracellular cAMP is synthesized by AC and can be degraded by phosphodiesterases (PDEs)." ...
-    ##   ..$ citation  : logi [1:328] NA NA NA NA NA NA ...
-    ##   ..$ @id       : int [1:328] 4 8 9 15 16 17 18 19 24 25 ...
-    ##   ..$ attributes:List of 328
-    ##   .. .. [list output truncated]
-    ##  $ citations         :'data.frame':  299 obs. of  7 variables:
-    ##   ..$ @id           : int [1:299] 3 7 13 14 22 23 30 35 39 44 ...
-    ##   ..$ dc:title      : logi [1:299] NA NA NA NA NA NA ...
-    ##   ..$ dc:contributor: logi [1:299] NA NA NA NA NA NA ...
-    ##   ..$ dc:identifier : chr [1:299] "pmid:27681078" "pmid:28018462" "pmid:28261091" "pmid:27138453" ...
-    ##   ..$ dc:type       : logi [1:299] NA NA NA NA NA NA ...
-    ##   ..$ dc:description: logi [1:299] NA NA NA NA NA NA ...
-    ##   ..$ attributes    :List of 299
-    ##   .. .. [list output truncated]
-    ##  $ edgeAttributes    :'data.frame':  3434 obs. of  3 variables:
-    ##   ..$ po: int [1:3434] 2 2 2 2 2 2 6 6 6 6 ...
-    ##   ..$ n : chr [1:3434] "INDRA statement" "type" "polarity" "Belief score" ...
-    ##   ..$ v : chr [1:3434] "Activation(ABCC8(), ATP())" "Activation" "positive" "0.88" ...
-    ##  $ edgeCitations     :'data.frame':  160 obs. of  2 variables:
-    ##   ..$ po       :List of 160
-    ##   .. .. [list output truncated]
-    ##   ..$ citations:List of 160
-    ##   .. .. [list output truncated]
-    ##  $ edgeSupports      :'data.frame':  99 obs. of  2 variables:
-    ##   ..$ po      :List of 99
-    ##   ..$ supports:List of 99
-    ##  $ networkAttributes :'data.frame':  3 obs. of  2 variables:
-    ##   ..$ n: chr [1:3] "name" "description" "version"
-    ##   ..$ v: chr [1:3] "The Diabetes Machine" "<div>The Diabetes Machine reads new publications on the molecular mechanisms behind drugs affecting insulin secretion in pancre"| __truncated__ "3.120"
-    ##  $ nodeAttributes    :'data.frame':  1165 obs. of  3 variables:
-    ##   ..$ po: int [1:1165] 0 0 0 1 1 1 1 5 5 10 ...
-    ##   ..$ n : chr [1:1165] "type" "UniProt" "HGNC" "type" ...
-    ##   ..$ v : chr [1:1165] "protein" "http://identifiers.org/uniprot/Q09428" "http://identifiers.org/hgnc/HGNC:59" "chemical" ...
-    ##  $ status            :'data.frame':  1 obs. of  2 variables:
-    ##   ..$ error  : chr ""
-    ##   ..$ success: logi TRUE
+    ## List of 10
+    ##  $ nodes             :Classes 'NodesAspect' and 'data.frame':    31 obs. of  3 variables:
+    ##   ..$ id        : int [1:31] 30 29 28 27 26 25 24 23 22 21 ...
+    ##   ..$ name      : chr [1:31] "ROCK1" "CSNK1A1" "DKK1" "CTNNB1" ...
+    ##   ..$ represents: chr [1:31] "uniprot:Q13464" "uniprot:P48729" "uniprot:O94907" "uniprot:P35222" ...
+    ##  $ metaData          :Classes 'MetaDataAspect' and 'data.frame': 9 obs. of  5 variables:
+    ##   ..$ name            : chr [1:9] "nodes" "edges" "nodeAttributes" "edgeAttributes" ...
+    ##   ..$ version         : chr [1:9] "1.0" "1.0" "1.0" "1.0" ...
+    ##   ..$ idCounter       : int [1:9] 30 71 NA NA NA NA NA NA NA
+    ##   ..$ elementCount    : int [1:9] 31 72 62 603 4 31 3 3 35
+    ##   ..$ consistencyGroup: num [1:9] 1 1 1 1 1 1 1 1 1
+    ##  $ edges             :Classes 'EdgesAspect' and 'data.frame':    72 obs. of  4 variables:
+    ##   ..$ id         : int [1:72] 68 53 36 32 31 30 27 71 70 33 ...
+    ##   ..$ source     : int [1:72] 30 29 28 27 27 27 27 26 26 26 ...
+    ##   ..$ target     : int [1:72] 26 27 3 7 7 7 8 5 5 3 ...
+    ##   ..$ interaction: chr [1:72] "up-regulates activity" "down-regulates" "down-regulates" "up-regulates activity" ...
+    ##  $ nodeAttributes    :Classes 'NodeAttributesAspect' and 'data.frame':   62 obs. of  5 variables:
+    ##   ..$ propertyOf: int [1:62] 30 30 29 29 28 28 27 27 26 26 ...
+    ##   ..$ name      : chr [1:62] "location" "type" "location" "type" ...
+    ##   ..$ value     :List of 62
+    ##   ..$ dataType  : chr [1:62] "string" "string" "string" "string" ...
+    ##   ..$ isList    : logi [1:62] FALSE FALSE FALSE FALSE FALSE FALSE ...
+    ##  $ edgeAttributes    :Classes 'EdgeAttributesAspect' and 'data.frame':   603 obs. of  5 variables:
+    ##   ..$ propertyOf: int [1:603] 68 68 68 68 68 68 68 68 53 53 ...
+    ##   ..$ name      : chr [1:603] "sentence" "cell_data" "citation" "tissue_data" ...
+    ##   ..$ value     :List of 603
+    ##   ..$ dataType  : chr [1:603] "string" "string" "string" "string" ...
+    ##   ..$ isList    : logi [1:603] FALSE TRUE TRUE TRUE FALSE FALSE ...
+    ##  $ networkAttributes :Classes 'NetworkAttributesAspect' and 'data.frame':    4 obs. of  4 variables:
+    ##   ..$ name    : chr [1:4] "name" "description" "version" "@context"
+    ##   ..$ value   :List of 4
+    ##   ..$ dataType: chr [1:4] "string" "string" "string" "string"
+    ##   ..$ isList  : logi [1:4] FALSE FALSE FALSE FALSE
+    ##  $ cartesianLayout   :Classes 'CartesianLayoutAspect' and 'data.frame':  31 obs. of  3 variables:
+    ##   ..$ node: int [1:31] 8 16 24 1 9 17 25 2 10 18 ...
+    ##   ..$ x   : num [1:31] 419 -181 -181 219 419 ...
+    ##   ..$ y   : num [1:31] 195.1 395.1 -4.9 595.1 595.1 ...
+    ##  $ cyVisualProperties:List of 3
+    ##   ..$ network     :List of 5
+    ##   .. ..- attr(*, "class")= chr [1:2] "CyVisualProperty" "list"
+    ##   ..$ defaultNodes:List of 5
+    ##   .. ..- attr(*, "class")= chr [1:2] "CyVisualProperty" "list"
+    ##   ..$ defaultEdges:List of 5
+    ##   .. ..- attr(*, "class")= chr [1:2] "CyVisualProperty" "list"
+    ##   ..- attr(*, "class")= chr [1:2] "CyVisualPropertiesAspect" "list"
+    ##  $ cyHiddenAttributes:Classes 'CyHiddenAttributesAspect' and 'data.frame':   3 obs. of  4 variables:
+    ##   ..$ name    : chr [1:3] "NDEx UUID" "layoutAlgorithm" "NDEx Modification Timestamp"
+    ##   ..$ value   :List of 3
+    ##   ..$ dataType: chr [1:3] "string" "string" "string"
+    ##   ..$ isList  : logi [1:3] FALSE FALSE FALSE
+    ##  $ cyTableColumn     :Classes 'CyTableColumnAspect' and 'data.frame':    35 obs. of  4 variables:
+    ##   ..$ appliesTo: chr [1:35] "nodes" "nodes" "nodes" "nodes" ...
+    ##   ..$ name     : chr [1:35] "shared name" "name" "type" "location" ...
+    ##   ..$ dataType : chr [1:35] "string" "string" "string" "string" ...
+    ##   ..$ isList   : logi [1:35] FALSE FALSE FALSE FALSE TRUE FALSE ...
     ##  - attr(*, "class")= chr [1:2] "RCX" "list"
 
 The data.frames representing nodes and edges could look like this:
 
-    rcx[["nodes"]][1:5,]
+``` r
+rcx[["nodes"]][1:5,]
+```
 
-    ##   @id     n
-    ## 1   0 ABCC8
-    ## 2   1   ATP
-    ## 3   5   CHI
-    ## 4  10 ADCY1
-    ## 5  11  CAMP
+    ## Nodes:
+    ##   id    name     represents
+    ## 1 30   ROCK1 uniprot:Q13464
+    ## 2 29 CSNK1A1 uniprot:P48729
+    ## 3 28    DKK1 uniprot:O94907
+    ## 4 27  CTNNB1 uniprot:P35222
+    ## 5 26   MAPK8 uniprot:P45983
 
-    rcx[["edges"]][1:5,]
+``` r
+rcx[["edges"]][1:5,]
+```
 
-    ##   @id  s  t          i
-    ## 1   2  0  1 Activation
-    ## 2   6  0  5 Activation
-    ## 3  12 10 11 Activation
-    ## 4  21 20 11 Activation
-    ## 5  29 27 28 Activation
+    ## Edges:
+    ##   id source target           interaction
+    ## 1 68     30     26 up-regulates activity
+    ## 2 53     29     27        down-regulates
+    ## 3 36     28      3        down-regulates
+    ## 4 32     27      7 up-regulates activity
+    ## 5 31     27      7 up-regulates activity
 
 Usually, and RCX object is automatically created by using the functions
 of this package for downloading network data from a NDEx server. But it
@@ -352,34 +443,38 @@ interface. For handling the network information within R, besides RCX
 objects, one can use RCXgraph objects. A lossless conversion between the
 two files can be done using the following functions:
 
-    ## convert RCX to JSON
-    json <- rcx_toJSON(rcx)
+``` r
+## convert RCX to JSON
+json <- RCX::toCX(rcx)
 
-    ## ...and back
-    rcx <- rcx_fromJSON(json)
+## ...and back
+rcx <- RCX::parseJSON(json)
 
-    ## convert RCX to RCXgraph
-    rcxgraph <- rcx_toRCXgraph(rcx)
+## convert RCX to RCXgraph
+rcxgraph <- RCX::toIgraph(rcx)
 
-    ## ...and back
-    rcx <- rcxgraph_toRCX(rcxgraph)
+## ...and back
+rcx <- RCX::fromIgraph(rcxgraph)
+```
 
 It is possible to create blank RCX objects from scratch:
 
-    newRcx <- rcx_new()
+``` r
+newRcx <- RCX::createRCX(RCX::createNodes())
+```
 
 After a RCX object is downloaded from an NDEx server, it will contain
 some aspects that are not present in a newly generated network, i.e.
-“ndexStatus”, “provenanceHistory” and “status”. Removing those aspects
-might be useful in some cases.
-
-    asNewRcx <- rcx_asNewNetwork(rcx)
+“ndexStatus”, “provenanceHistory” and “status”. Those aspects are
+removed automatically by the package.
 
 After a RCX object underwent some changes (adding/removing
 nodes/edges/aspects/meta- data, etc.), it is advisable to check a RCX
 object for its integrity and update its meta-data.
 
-    rcx <- rcx_updateMetaData(rcx)
+``` r
+rcx <- RCX::updateMetaData(rcx)
+```
 
 The meta-data is not only updated by the function, but also created, if
 not existent in the first place. It is necessary to mention, that the
@@ -398,44 +493,55 @@ decline in performance. To avoid these problems, a possible workflow is
 to download the meta-data of a network at first to check the available
 aspects.
 
-    ## get meta-data for a network
-    metadata = ndex_network_get_metadata(ndexcon, networkId)
+``` r
+## get meta-data for a network
+metadata = ndex_network_get_metadata(ndexcon, networkId)
 
-    names(metadata)
+names(metadata)
+```
 
-    ## [1] "consistencyGroup" "elementCount"     "lastUpdate"      
-    ## [4] "name"             "properties"       "version"         
-    ## [7] "idCounter"
+    ## [1] "name"         "elementCount" "version"      "idCounter"
 
-    metadata[c('name','elementCount')]
+``` r
+metadata[c('name','elementCount')]
+```
 
     ##                 name elementCount
-    ## 1  provenanceHistory            1
-    ## 2              nodes          395
-    ## 3              edges          667
-    ## 4           supports          328
-    ## 5          citations          299
-    ## 6     edgeAttributes         3434
-    ## 7      edgeCitations          160
-    ## 8       edgeSupports           99
-    ## 9  networkAttributes            3
-    ## 10    nodeAttributes         1165
+    ## 1     nodeAttributes           62
+    ## 2      cyTableColumn           35
+    ## 3              edges           72
+    ## 4 cyVisualProperties            3
+    ## 5 cyHiddenAttributes            3
+    ## 6              nodes           31
+    ## 7  networkAttributes            4
+    ## 8    cartesianLayout           31
+    ## 9     edgeAttributes          603
 
 Afterwards, only the favored aspects can be downloaded individually.
 
-    ## get aspect "nodeCitations" for the network
-    networkAttibutes = ndex_network_get_aspect(ndexcon, networkId, "networkAttributes")
+``` r
+## get aspect "nodeCitations" for the network
+networkAttibutes = ndex_network_get_aspect(ndexcon, networkId, "networkAttributes")
 
-    networkAttibutes
+networkAttibutes
+```
 
-    ##             n
+    ## Network attributes:
+    ##          name
     ## 1        name
     ## 2 description
     ## 3     version
-    ##                                                                                                                                                                                                                      v
-    ## 1                                                                                                                                                                                                 The Diabetes Machine
-    ## 2 <div>The Diabetes Machine reads new publications on the molecular mechanisms behind drugs affecting insulin secretion in pancreatic beta cells automatically and assembles a model from them using INDRA.<br/></div>
-    ## 3                                                                                                                                                                                                                3.120
+    ## 4    @context
+    ##                                                                                                                                                                                                                                                                                                                                                                                                              value
+    ## 1                                                                                                                                                                                                                                                                                                                                                                          BNFO 286 (SP22) - WNT Signaling Pathway
+    ## 2                                                                                                                                                                                                                                                                                                                                                                                 Demo network for BNFO 286 (SP22)
+    ## 3                                                                                                                                                                                                                                                                                                                                                                                                  BNFO 286 - SP22
+    ## 4 {"signor": "http://signor.uniroma2.it/relation_result.php?id=", "BTO": "http://identifiers.org/bto/BTO:", "uniprot": "http://identifiers.org/uniprot/", "pubmed": "http://identifiers.org/pubmed/", "CID": "http://identifiers.org/pubchem.compound/", "SID": "http://identifiers.org/pubchem.substance/", "chebi": "http://identifiers.org/chebi/CHEBI:", "hgnc.symbol": "http://identifiers.org/hgnc.symbol/"}
+    ##   dataType isList
+    ## 1   string  FALSE
+    ## 2   string  FALSE
+    ## 3   string  FALSE
+    ## 4   string  FALSE
 
 NDEx Network properties
 =======================
@@ -443,8 +549,10 @@ NDEx Network properties
 Even after creation, it is possible to change the name, the description
 or version of a network.
 
-    ndex_network_update_profile(ndexcon, networkId, name="My network", version="1.3")
-    ndex_network_update_profile(ndexcon, networkId, description="Nothing to see here")
+``` r
+ndex_network_update_profile(ndexcon, networkId, name="My network", version="1.3")
+ndex_network_update_profile(ndexcon, networkId, description="Nothing to see here")
+```
 
 For collaborative work, it is necessary to share networks between
 several users and groups. Therefore there are specialized functions to
@@ -454,23 +562,25 @@ groups. Possible permissions are “READ” to have reading access to
 private networks, “WRITE” to be able modify, and “ADMIN” for the owner
 of the network.
 
-    ## show all user who have permission to a network
-    permissions = ndex_network_get_permission(ndexcon, networkId, 'user')
+``` r
+## show all user who have permission to a network
+permissions = ndex_network_get_permission(ndexcon, networkId, 'user')
 
-    ## show all groups who have permission to a network
-    permissions = ndex_network_get_permission(ndexcon, networkId, 'group')
+## show all groups who have permission to a network
+permissions = ndex_network_get_permission(ndexcon, networkId, 'group')
 
-    ## show all users with write access to a network
-    permissions = ndex_network_get_permission(ndexcon, networkId, 'user', 'WRITE')
+## show all users with write access to a network
+permissions = ndex_network_get_permission(ndexcon, networkId, 'user', 'WRITE')
 
-    ## grant an user permission to a network
-    ndex_network_update_permission(ndexcon, networkId, user=someUserUuid, 'READ')
+## grant an user permission to a network
+ndex_network_update_permission(ndexcon, networkId, user=someUserUuid, 'READ')
 
-    ## change the permission of an user to the network
-    ndex_network_update_permission(ndexcon, networkId, user=someUserUuid, 'WRITE')
+## change the permission of an user to the network
+ndex_network_update_permission(ndexcon, networkId, user=someUserUuid, 'WRITE')
 
-    ## withdraw the permission from an user
-    ndex_network_delete_permission(ndexcon, networkId, user=someUserUuid)
+## withdraw the permission from an user
+ndex_network_delete_permission(ndexcon, networkId, user=someUserUuid)
+```
 
 Besides permission management on user and group level, it is also
 possible to set some system properties on a network that influence the
@@ -479,8 +589,10 @@ it is only visible to the owner and invited users and groups. If at some
 point one decides to make the network readable by anyone, it is possible
 to change the visibility of a network to “PUBLIC”.
 
-    ndex_network_set_systemProperties(ndexcon, networkId, visibility="PUBLIC")
-    ndex_network_set_systemProperties(ndexcon, networkId, visibility="PRIVATE")
+``` r
+ndex_network_set_systemProperties(ndexcon, networkId, visibility="PUBLIC")
+ndex_network_set_systemProperties(ndexcon, networkId, visibility="PRIVATE")
+```
 
 When a network has reached the point to be published, further edits
 should be prevented. While it would be possible to set the access
@@ -488,15 +600,19 @@ permissions of all users and groups to “READ”, this approach is very
 inconvenient. Therefore, a simpler way is to just set the network to
 read-only using the network system properties.
 
-    ndex_network_set_systemProperties(ndexcon, networkId, readOnly=TRUE)
+``` r
+ndex_network_set_systemProperties(ndexcon, networkId, readOnly=TRUE)
+```
 
 One also has the option at the NDEx server to choose a selection of
 their favorite networks for display in his or her home page.
 
-    ndex_network_set_systemProperties(ndexcon, networkId, showcase=TRUE)
-    ndex_network_set_systemProperties(ndexcon, networkId, showcase=FALSE)
-    # change more than one property simultaneously
-    ndex_network_set_systemProperties(ndexcon, networkId, readOnly=TRUE, visibility="PUBLIC", showcase=TRUE)
+``` r
+ndex_network_set_systemProperties(ndexcon, networkId, showcase=TRUE)
+ndex_network_set_systemProperties(ndexcon, networkId, showcase=FALSE)
+# change more than one property simultaneously
+ndex_network_set_systemProperties(ndexcon, networkId, readOnly=TRUE, visibility="PUBLIC", showcase=TRUE)
+```
 
 The provenance history aspect of an NDEx network is used to document the
 workflow of events and information sources that produced the current
@@ -505,7 +621,9 @@ network (for the official provenance documentation see
 ). There is a convenience function, that retrieves the provenance of the
 network.
 
-    provenance = ndex_network_get_provenance(ndexcon, networkId) 
+``` r
+provenance = ndex_network_get_provenance(ndexcon, networkId) 
+```
 
 API Compatibility with NDEx versions
 ====================================
@@ -519,301 +637,90 @@ by this version, for different reasons no function could be implemented.
 Limitations of the single API functions are also given in the column of
 the corresponding version.
 
-<table>
-<tbody>
-<tr class="odd">
-<td align="left"><strong>Function name</strong></td>
-<td align="left"><strong>Authentication</strong></td>
-<td align="left"><strong>Version 2.0</strong></td>
-<td align="left"><strong>Version 1.3</strong></td>
-</tr>
-<tr class="even">
-<td align="left"><strong><em>Networks</em></strong></td>
-<td align="left"></td>
-<td align="left"></td>
-<td align="left"></td>
-</tr>
-<tr class="odd">
-<td align="left">ndex_find_networks</td>
-<td align="left">no</td>
-<td align="left">X</td>
-<td align="left">X</td>
-</tr>
-<tr class="even">
-<td align="left">ndex_network_get_summary</td>
-<td align="left">no</td>
-<td align="left">X</td>
-<td align="left">X</td>
-</tr>
-<tr class="odd">
-<td align="left">ndex_get_network</td>
-<td align="left">no</td>
-<td align="left">X</td>
-<td align="left">X</td>
-</tr>
-<tr class="even">
-<td align="left">ndex_create_network</td>
-<td align="left">yes</td>
-<td align="left">X</td>
-<td align="left">X</td>
-</tr>
-<tr class="odd">
-<td align="left">ndex_update_network</td>
-<td align="left">yes</td>
-<td align="left">X</td>
-<td align="left">X</td>
-</tr>
-<tr class="even">
-<td align="left">ndex_delete_network</td>
-<td align="left">yes</td>
-<td align="left">X</td>
-<td align="left">X</td>
-</tr>
-<tr class="odd">
-<td align="left">ndex_network_get_metadata</td>
-<td align="left">no</td>
-<td align="left">X</td>
-<td align="left">(x)</td>
-</tr>
-<tr class="even">
-<td align="left">ndex_network_aspect_get_metadata</td>
-<td align="left">no</td>
-<td align="left">(x)</td>
-<td align="left"></td>
-</tr>
-<tr class="odd">
-<td align="left">ndex_network_get_aspect</td>
-<td align="left">no</td>
-<td align="left">X</td>
-<td align="left">(x)</td>
-</tr>
-<tr class="even">
-<td align="left">ndex_network_update_aspect</td>
-<td align="left">yes</td>
-<td align="left">(x)</td>
-<td align="left"></td>
-</tr>
-<tr class="odd">
-<td align="left">ndex_network_get_permission</td>
-<td align="left">yes</td>
-<td align="left">X</td>
-<td align="left">only for users, different response</td>
-</tr>
-<tr class="even">
-<td align="left">ndex_network_update_permission</td>
-<td align="left">yes</td>
-<td align="left">X</td>
-<td align="left">(only for users)</td>
-</tr>
-<tr class="odd">
-<td align="left">ndex_network_delete_permission</td>
-<td align="left">yes</td>
-<td align="left">X</td>
-<td align="left">only for users</td>
-</tr>
-<tr class="even">
-<td align="left">ndex_network_set_systemProperties</td>
-<td align="left">yes</td>
-<td align="left">X</td>
-<td align="left">only readOnly</td>
-</tr>
-<tr class="odd">
-<td align="left">ndex_network_update_profile</td>
-<td align="left">yes</td>
-<td align="left">X</td>
-<td align="left">X</td>
-</tr>
-<tr class="even">
-<td align="left">ndex_network_get_provenance</td>
-<td align="left">no</td>
-<td align="left">X</td>
-<td align="left">X</td>
-</tr>
-<tr class="odd">
-<td align="left"><strong><em>Users</em></strong></td>
-<td align="left"></td>
-<td align="left"></td>
-<td align="left"></td>
-</tr>
-<tr class="even">
-<td align="left">ndex_find_users</td>
-<td align="left">no</td>
-<td align="left">X</td>
-<td align="left">X</td>
-</tr>
-<tr class="odd">
-<td align="left">ndex_find_user_byName</td>
-<td align="left">no</td>
-<td align="left">X</td>
-<td align="left"></td>
-</tr>
-<tr class="even">
-<td align="left">ndex_find_user_byId</td>
-<td align="left">no</td>
-<td align="left">X</td>
-<td align="left"></td>
-</tr>
-<tr class="odd">
-<td align="left">ndex_create_user</td>
-<td align="left">yes</td>
-<td align="left">X</td>
-<td align="left"></td>
-</tr>
-<tr class="even">
-<td align="left">ndex_delete_user</td>
-<td align="left">yes</td>
-<td align="left">X</td>
-<td align="left"></td>
-</tr>
-<tr class="odd">
-<td align="left">ndex_update_user</td>
-<td align="left">yes</td>
-<td align="left">X</td>
-<td align="left"></td>
-</tr>
-<tr class="even">
-<td align="left">ndex_verify_user</td>
-<td align="left">no</td>
-<td align="left">X</td>
-<td align="left"></td>
-</tr>
-<tr class="odd">
-<td align="left">ndex_user_change_password</td>
-<td align="left">yes</td>
-<td align="left">X</td>
-<td align="left"></td>
-</tr>
-<tr class="even">
-<td align="left">ndex_user_mail_password</td>
-<td align="left">no</td>
-<td align="left">X</td>
-<td align="left"></td>
-</tr>
-<tr class="odd">
-<td align="left">ndex_user_forgot_password</td>
-<td align="left">no</td>
-<td align="left">X</td>
-<td align="left"></td>
-</tr>
-<tr class="even">
-<td align="left">ndex_user_list_groups</td>
-<td align="left">yes</td>
-<td align="left">X</td>
-<td align="left"></td>
-</tr>
-<tr class="odd">
-<td align="left">ndex_user_show_group</td>
-<td align="left">yes</td>
-<td align="left">X</td>
-<td align="left"></td>
-</tr>
-<tr class="even">
-<td align="left">ndex_user_list_permissions</td>
-<td align="left">yes</td>
-<td align="left">X</td>
-<td align="left"></td>
-</tr>
-<tr class="odd">
-<td align="left">ndex_user_show_permission</td>
-<td align="left">yes</td>
-<td align="left">X</td>
-<td align="left"></td>
-</tr>
-<tr class="even">
-<td align="left">ndex_user_get_showcase</td>
-<td align="left">no</td>
-<td align="left">X</td>
-<td align="left"></td>
-</tr>
-<tr class="odd">
-<td align="left">ndex_user_get_networksummary</td>
-<td align="left">yes</td>
-<td align="left">X</td>
-<td align="left"></td>
-</tr>
-<tr class="even">
-<td align="left"><strong><em>Groups</em></strong></td>
-<td align="left"></td>
-<td align="left"></td>
-<td align="left"></td>
-</tr>
-<tr class="odd">
-<td align="left">ndex_find_groups</td>
-<td align="left">no</td>
-<td align="left">X</td>
-<td align="left">X</td>
-</tr>
-<tr class="even">
-<td align="left">ndex_get_group</td>
-<td align="left">no</td>
-<td align="left">X</td>
-<td align="left"></td>
-</tr>
-<tr class="odd">
-<td align="left">ndex_create_group</td>
-<td align="left">yes</td>
-<td align="left">X</td>
-<td align="left"></td>
-</tr>
-<tr class="even">
-<td align="left">ndex_delete_group</td>
-<td align="left">yes</td>
-<td align="left">X</td>
-<td align="left"></td>
-</tr>
-<tr class="odd">
-<td align="left">ndex_update_group</td>
-<td align="left">yes</td>
-<td align="left">X</td>
-<td align="left"></td>
-</tr>
-<tr class="even">
-<td align="left">ndex_group_list_users</td>
-<td align="left">no</td>
-<td align="left">X</td>
-<td align="left"></td>
-</tr>
-<tr class="odd">
-<td align="left">ndex_group_set_membership</td>
-<td align="left">yes</td>
-<td align="left">X</td>
-<td align="left"></td>
-</tr>
-<tr class="even">
-<td align="left">ndex_group_list_networks</td>
-<td align="left">no</td>
-<td align="left">X</td>
-<td align="left"></td>
-</tr>
-<tr class="odd">
-<td align="left">ndex_group_network_get_permission</td>
-<td align="left">no</td>
-<td align="left">X</td>
-<td align="left"></td>
-</tr>
-</tbody>
-</table>
+|                                       |                    |                 |                 |                                    |
+|:--------------------------------------|:-------------------|:----------------|:----------------|:-----------------------------------|
+| **Function name**                     | **Authentication** | **Version 2.1** | **Version 2.0** | **Version 1.3**                    |
+| ***Networks***                        |                    |                 |                 |                                    |
+| ndex\_find\_networks                  | no                 |                 | X               | X                                  |
+| ndex\_network\_get\_summary           | no                 |                 | X               | X                                  |
+| ndex\_get\_network                    | no                 |                 | X               | X                                  |
+| ndex\_create\_network                 | yes                |                 | X               | X                                  |
+| ndex\_update\_network                 | yes                |                 | X               | X                                  |
+| ndex\_delete\_network                 | yes                |                 | X               | X                                  |
+| ndex\_network\_get\_metadata          | no                 |                 | X               | (x)                                |
+| ndex\_network\_aspect\_get\_metadata  | no                 |                 | (x)             |                                    |
+| ndex\_network\_get\_aspect            | no                 |                 | X               | (x)                                |
+| ndex\_network\_update\_aspect         | yes                |                 | (x)             |                                    |
+| ndex\_network\_get\_permission        | yes                |                 | X               | only for users, different response |
+| ndex\_network\_update\_permission     | yes                |                 | X               | (only for users)                   |
+| ndex\_network\_delete\_permission     | yes                |                 | X               | only for users                     |
+| ndex\_network\_set\_systemProperties  | yes                |                 | X               | only readOnly                      |
+| ndex\_network\_update\_profile        | yes                |                 | X               | X                                  |
+| ndex\_network\_get\_provenance        | no                 |                 | X               | X                                  |
+| ***Users***                           |                    |                 |                 |                                    |
+| ndex\_find\_users                     | no                 |                 | X               | X                                  |
+| ndex\_find\_user\_byName              | no                 |                 | X               |                                    |
+| ndex\_find\_user\_byId                | no                 |                 | X               |                                    |
+| ndex\_create\_user                    | yes                |                 | X               |                                    |
+| ndex\_delete\_user                    | yes                |                 | X               |                                    |
+| ndex\_update\_user                    | yes                |                 | X               |                                    |
+| ndex\_verify\_user                    | no                 |                 | X               |                                    |
+| ndex\_user\_change\_password          | yes                |                 | X               |                                    |
+| ndex\_user\_mail\_password            | no                 |                 | X               |                                    |
+| ndex\_user\_forgot\_password          | no                 |                 | X               |                                    |
+| ndex\_user\_list\_groups              | yes                |                 | X               |                                    |
+| ndex\_user\_show\_group               | yes                |                 | X               |                                    |
+| ndex\_user\_list\_permissions         | yes                |                 | X               |                                    |
+| ndex\_user\_show\_permission          | yes                |                 | X               |                                    |
+| ndex\_user\_get\_showcase             | no                 |                 | X               |                                    |
+| ndex\_user\_get\_networksummary       | yes                |                 | X               |                                    |
+| ***Groups***                          |                    |                 |                 |                                    |
+| ndex\_find\_groups                    | no                 |                 | X               | X                                  |
+| ndex\_get\_group                      | no                 |                 | X               |                                    |
+| ndex\_create\_group                   | yes                |                 | X               |                                    |
+| ndex\_delete\_group                   | yes                |                 | X               |                                    |
+| ndex\_update\_group                   | yes                |                 | X               |                                    |
+| ndex\_group\_list\_users              | no                 |                 | X               |                                    |
+| ndex\_group\_set\_membership          | yes                |                 | X               |                                    |
+| ndex\_group\_list\_networks           | no                 |                 | X               |                                    |
+| ndex\_group\_network\_get\_permission | no                 |                 | X               |                                    |
 
 Server REST API configuration
 =============================
 
 In the section “Connect to a server”, briefly a method for manually
 changing the API version was introduced, with the API definition stored
-in ndex_config.
+in ndex\_config.
 
-    names(ndex_config)
+``` r
+names(ndex_config)
+```
 
-    ## [1] "defaultVersion" "Version_2.0"    "Version_1.3"
+    ## [1] "defaultVersion" "Version_2.1"    "Version_2.0"    "Version_1.3"
 
-    str(ndex_config, max.level = 3)
+``` r
+str(ndex_config, max.level = 3)
+```
 
-    ## List of 3
-    ##  $ defaultVersion: chr "Version_2.0"
+    ## List of 4
+    ##  $ defaultVersion: chr "Version_2.1"
+    ##  $ Version_2.1   :List of 3
+    ##   ..$ version   : chr "2.1"
+    ##   ..$ connection:List of 3
+    ##   .. ..$ description: chr "URL of the NDEx server"
+    ##   .. ..$ host       : chr "http://www.ndexbio.org"
+    ##   .. ..$ api        : chr "/v2"
+    ##   ..$ api       :List of 5
+    ##   .. ..$ serverStatus:List of 4
+    ##   .. ..$ user        :List of 11
+    ##   .. ..$ group       :List of 6
+    ##   .. ..$ network     :List of 12
+    ##   .. ..$ search      :List of 3
     ##  $ Version_2.0   :List of 3
     ##   ..$ version   : chr "2.0"
     ##   ..$ connection:List of 3
     ##   .. ..$ description: chr "URL of the NDEx server"
-    ##   .. ..$ host       : chr "www.ndexbio.org"
+    ##   .. ..$ host       : chr "http://www.ndexbio.org"
     ##   .. ..$ api        : chr "/v2"
     ##   ..$ api       :List of 5
     ##   .. ..$ serverStatus:List of 3
@@ -825,7 +732,7 @@ in ndex_config.
     ##   ..$ version   : chr "1.3"
     ##   ..$ connection:List of 3
     ##   .. ..$ description: chr "URL of the NDEx server"
-    ##   .. ..$ host       : chr "www.ndexbio.org"
+    ##   .. ..$ host       : chr "http://www.ndexbio.org"
     ##   .. ..$ api        : chr "/rest"
     ##   ..$ api       :List of 4
     ##   .. ..$ serverStatus:List of 3
@@ -835,12 +742,14 @@ in ndex_config.
 
 This object contains the api definition for several versions (currently
 version 1.3 and 2.0). By default, `ndex_connect()` uses the version
-defined in `ndex_config$defaultVersion` ("Version\_2.0"). To use another,
-or even a customized version to establish a server connection, the
-ndexConf parameter can be used, like shown before. In the following, the
-structure of such a configuration is elaborated in more detail.
+defined in `ndex_config$defaultVersion` (“Version\_2.0”). To use
+another, or even a customized version to establish a server connection,
+the ndexConf parameter can be used, like shown before. In the following,
+the structure of such a configuration is elaborated in more detail.
 
-    names(ndex_config$Version_2.0)
+``` r
+names(ndex_config$Version_2.0)
+```
 
     ## [1] "version"    "connection" "api"
 
@@ -851,7 +760,7 @@ used in some API functions to work differently for the single versions.
 The “connection” element holds information about the default connection
 to the server, namely the host (e.g.
 “[*http://www.ndexbio.org/*](http://www.ndexbio.org/)”) and the path to
-the api (e.g. “/v2” or “/rest”).
+the api (e.g. “/v2” or “/rest”).
 
 The REST API itself is defined in the “api” element, and follows the
 scheme of the function names, or the scheme of url paths likewise. E.g.
@@ -867,31 +776,33 @@ configuration of the function is shown in the “REST query” section of
 the function documentation. For a better readability, the yaml notation
 for this function configuration is used:
 
-    mail:
-      description: "Causes a new password to be generated for ..."
-      url: "/user/#USERID#/password"
-      method: "PUT"
-      params:
-        user:
-          method: "replace"
-          tag: "#USERID#"
-        forgot:
-          method: "parameter"
-          tag: "forgot"
-          default: "true"
+``` r
+mail:
+  description: "Causes a new password to be generated for ..."
+  url: "/user/#USERID#/password"
+  method: "PUT"
+  params:
+    user:
+      method: "replace"
+      tag: "#USERID#"
+    forgot:
+      method: "parameter"
+      tag: "forgot"
+      default: "true"
+```
 
 Note: To get the yaml notation for the whole `ndex_config` simply use
 `yaml::as.yaml(ndex_config)` (requires package `yaml` to be installed).
 
-The single parameter definitions are given as list by the "params"
+The single parameter definitions are given as list by the “params”
 parameter. Each parameter is defined by a method, and, if applicable, a
 tag, a default value and/or an optional flag. There are three keywords
 defining the method: replace, append or parameter.
 
--   **replace:** The String defined by "tag" can be found within the url
+-   **replace:** The String defined by “tag” can be found within the url
     and will be replaced by the given value of the parameter. E.g. the
     tag `#NETWORKID#` in the url `/network/#NETWORKID#/provenance` is
-    replaced by a value (e.g. `aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee`)
+    replaced by a value (e.g. `aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee`)
     given as network id, which leads to the url
     `/network/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee/provenance`.
 -   **append:** The given value of the parameter is appended to an url.
@@ -906,27 +817,29 @@ defining the method: replace, append or parameter.
 
 It is also possible to set parameter as optional (except for replace),
 or define default values. Values are assigned to the parameters using
-the parameter name in the ... parameter of the
+the parameter name in the … parameter of the
 `ndex_helper_encodeParams()` function. Parameters, that are not defined
 in the configuration are ignored.
 
 The easiest to write an own configuration is by simply copying an
 existing configuration and tailor it to the needs.
 
-    # Copy an existing config
-    custom_ndex_config = ndex_config$Version_2.0
+``` r
+# Copy an existing config
+custom_ndex_config = ndex_config$Version_2.0
 
-    # Change the host connection for a local NDEx server installation
-    custom_ndex_config$connection$host ="localhost:8090"
+# Change the host connection for a local NDEx server installation
+custom_ndex_config$connection$host ="localhost:8090"
 
-    # Custom path to the REST api
-    custom_ndex_config$connection$api ="/api/rest"
+# Custom path to the REST api
+custom_ndex_config$connection$api ="/api/rest"
 
-    # Change the REST path for the ndex_get_network function
-    custom_ndex_config$api$network$get$url ="/custom/networks/#NETWORKID#"
+# Change the REST path for the ndex_get_network function
+custom_ndex_config$api$network$get$url ="/custom/networks/#NETWORKID#"
 
-    # Add some (default) parameters to the function
-    custom_ndex_config$api$network$get$params$newParam = list(method="parameter", tag="someTag", default="someValue")
+# Add some (default) parameters to the function
+custom_ndex_config$api$network$get$params$newParam = list(method="parameter", tag="someTag", default="someValue")
+```
 
 It is also possible to write an own configuration in yaml (or convert
 `ndex_config` to yaml, see above) and load it as object (`yaml::load` or
@@ -934,16 +847,18 @@ It is also possible to write an own configuration in yaml (or convert
 the function `ndexr:::yamlToRConfig()`
 
 Note: For package maintenance it is advised to add new versions as yaml
-definitions in `/R/ndex_api_config.yml` (for example as “Version\_3.0”)
+definitions in `/R/ndex_api_config.yml` (for example as "Version\_3.0")
 and update the R code in `/R/ndex_api_config.r`, which defines the
 `ndex_config` object.
 
-    yamlToRConfig = function(yamlFile='R/ndex_api_config.yml', rScriptFile='R/ndex_api_config.r', defaultHeader=ndex_conf_header){
-      yamlObj = yaml::yaml.load_file(yamlFile)
-      rCodeTxt = paste0(defaultHeader, listToRCode(yamlObj))
-      outFile = file(rScriptFile)
-      writeLines(rCodeTxt, outFile)
-      close(outFile)
-    }
+``` r
+yamlToRConfig = function(yamlFile='R/ndex_api_config.yml', rScriptFile='R/ndex_api_config.r', defaultHeader=ndex_conf_header){
+  yamlObj = yaml::yaml.load_file(yamlFile)
+  rCodeTxt = paste0(defaultHeader, listToRCode(yamlObj))
+  outFile = file(rScriptFile)
+  writeLines(rCodeTxt, outFile)
+  close(outFile)
+}
 
-    yamlToRConfig()
+yamlToRConfig()
+```

@@ -1,3 +1,19 @@
+ndexr 1.17.0 (Bioconductor Release 3.15)
+===========
+**UPDATE: Using the RCX package for working with networks.**
+
+**Deprecated Functions:**
+* *rcx_fromJSON:* `RCX::readJSON()`
+* *rcx_toJSON:* `RCX::toCX()`
+* *rcx_aspect_toJSON:* `rcx_aspect_toJSON`
+* *rcx_new:* `RCX::createRCX()`
+* *rcx_asNewNetwork:* `RCX::createRCX()`
+* *rcx_updateMetaData:* `RCX::updateMetaData()`
+* *print.RCX:* `RCX::print.RCX()`
+* *rcx_toRCXgraph:* `RCX::toIgraph()`
+* *rcxgraph_toRCX* `RCX::fromIgraph()`
+
+
 ndexr 1.1.7 (Bioconductor Release 3.7)
 ===========
 

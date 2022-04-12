@@ -17,13 +17,16 @@ rcx_aspect_toJSON(rcxAspect, verbose = FALSE, pretty = FALSE)
 json object if successfull, empty string otherwise
 }
 \description{
-Generate JSON data for a single aspect of a RCX object
+\strong{Note: In future `ndexr` uses the \link[RCX]{RCX-object} from the corresponding package to handle the networks!}
+\strong{For a replacement of this function see \link[RCX]{rcxToJson}, \link[RCX]{writeCX} and \link[RCX]{toCX}!}
 }
 \examples{
+\dontrun{
 ## Create an RCX object
 rcx = rcx_new(c('@id'=1, n='Some Name', r='HGNC:Symbol'))
 ## Convert RCX aspect to JSON
 rcxNodesJson = ndexr:::rcx_aspect_toJSON(rcx$nodes)
+}
 }
 \seealso{
 \code{\link{rcx_toJSON}} and \code{\link{rcx_fromJSON}}

@@ -22,17 +22,14 @@ test_that('Get a network from server (ndex_get_network)', {
     nms = names(ndex_config)
       apiVersions = nms[nms!='defaultVersion']
       ## no deprecated "ndexStatus" and "@context" aspects anymore [2021.07.27]
+      ## using RCX package [2022.04.11]
       netColNames = c("metaData", 
-                      "numberVerification", 
-                      #"ndexStatus", 
-                      #"@context", 
-                      "citations", 
-                      "edgeCitations", 
-                      "edges", 
-                      "networkAttributes", 
-                      "nodeAttributes", 
                       "nodes", 
-                      "status")
+                      "edges", 
+                      "nodeAttributes", 
+                      "edgeAttributes",
+                      "networkAttributes", 
+                      "cartesianLayout")
 
       con = ndex_connect()
       expect_error(ndex_get_network(), info='No connection provided')

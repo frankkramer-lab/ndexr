@@ -134,9 +134,9 @@ ngraph$metaData
 }
 \examples{
 ## Create an RCX object
+\dontrun{
 rcx = rcx_new(c('@id'=1, n='Some Name', r='HGNC:Symbol'))
 
-\dontrun{
 ## Convert to ngraph (deprecated)
 ngraph = ngraph_fromRCX(rcx)
 ## or (deprecated)

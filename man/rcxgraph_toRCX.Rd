@@ -3,7 +3,10 @@
 \name{rcxgraph_toRCX}
 \alias{rcxgraph_toRCX}
 \alias{rcx_fromRCXgraph}
-\title{Create RCX object from RCXgraph object}
+\title{Create RCX object from RCXgraph object
+
+\strong{Note: In future `ndexr` uses the \link[RCX]{RCX-object} from the corresponding package to handle the networks!}
+\strong{For a replacement of this function see \link[RCX]{toIgraph} and \link[RCX]{fromIgraph}!}}
 \usage{
 rcxgraph_toRCX(rcxgraph, verbose = FALSE)
 
@@ -115,6 +118,7 @@ rcxgraph$metaData
 }
 }
 \examples{
+\dontrun{
 ## Create an RCX object
 rcx = rcx_new(c('@id'=1, n='Some Name', r='HGNC:Symbol'))
 
@@ -127,6 +131,7 @@ rcxgraph = rcx_toRCXgraph(rcx)
 rcx = rcx_fromRCXgraph(rcxgraph)
 ## or 
 rcx = rcxgraph_toRCX(rcxgraph)
+}
 }
 \seealso{
 \code{\link{rcxgraph_fromRCX}} \code{\link{rcx_toRCXgraph}} \code{\link{rcx_fromJSON}} \code{\link{rcx_toJSON}} \code{\link{RCX}} \code{\link[igraph]{igraph}}

@@ -17,6 +17,10 @@ metadata as list: consistencyGroup, elementCount, lastUpdate, name, properties, 
 \description{
 This function retrieves the (aspect) meta-data of the network identified by the supplied network UUID string.
 }
+\details{
+\strong{Note: In future `ndexr` uses the \link[RCX]{RCX-object} from the corresponding package to handle the networks!}
+\strong{See also \link[RCX]{Meta-data} for more information.}
+}
 \note{
 Compatible to NDEx server version 1.3 and 2.0, but doesn't work for version 1.3
 }

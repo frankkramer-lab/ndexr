@@ -26,10 +26,10 @@ test_that('Get network meta-data (ndex_network_get_metadata)', {
     # netColNames = c("consistencyGroup", "elementCount", "lastUpdate", "name", "version", "idCounter")
     ## no "lastUpdate" column anymore in metadata, but the "properties" column returned! [2018.04.13]
     ## no "consistencyGroup" column anymore in metadata, optional now [2021.07.27]
-    netColNames = c("elementCount", 
-                    "name", 
-                    "version", 
-                    "idCounter")
+    netColNames = c("name", 
+                    "elementCount",
+                    "idCounter",
+                    "version")
 
     uuid = ndexTestConf$uuidPublicNetwork
     
@@ -42,9 +42,9 @@ test_that('Get network meta-data (ndex_network_get_metadata)', {
             ## Some internal server error occurred (500)
             ## expect_null(rcx, info=paste0('Aspect meta-data should work, but for some reason for api 1.3 only returns NULL!'))
         }else{
-            rcx = ndex_network_get_metadata(con, uuid)
-            expect_is(rcx, 'data.frame', info=paste0('Checking class of aspect meta-data (api ', apiVersion, ')'))
-            expect_object_conains_names(rcx, netColNames, info=paste0('Checking meta-data column names (api ', apiVersion, ')'))        
+            md = ndex_network_get_metadata(con, uuid)
+            expect_is(md, 'data.frame', info=paste0('Checking class of aspect meta-data (api ', apiVersion, ')'))
+            expect_object_conains_names(md, netColNames, info=paste0('Checking meta-data column names (api ', apiVersion, ')'))        
         }
     }
 })
@@ -88,6 +88,18 @@ test_that('Get network aspect as CX (ndex_network_get_aspect)', {
     apiVersions = nms[nms!='defaultVersion']
     con = ndex_connect()
     
+    classes = c(nodeAttributes ="data.frame",
+                cyHiddenAttributes ="data.frame",
+                nodes ="data.frame",
+                networkAttributes ="data.frame",
+                cyTableColumn ="data.frame",
+                cartesianLayout ="data.frame",
+                edgeAttributes ="data.frame",
+                edges ="data.frame",
+                cyVisualProperties ="list",
+                citations ="data.frame",
+                edgeCitations ="data.frame")
+    
 #    networks = ndex_find_networks(con, accountName = 'ndextutorials')  ## public ndex account networks
 #    uuid = networks[1,'externalId']
     uuid = ndexTestConf$uuidPublicNetwork
@@ -104,7 +116,7 @@ test_that('Get network aspect as CX (ndex_network_get_aspect)', {
         if(con$ndexConf$version != '1.3'){
             for(asp in metDataNames){
                 rcx = ndex_network_get_aspect(con, uuid, asp)
-                expect_is(rcx, 'data.frame', info=paste0('Checking class of aspect (api ', apiVersion, ', aspect ', asp, ')'))
+                expect_is(rcx, classes[asp], info=paste0('Checking class of aspect (api ', apiVersion, ', aspect ', asp, ')'))
             }
         }
     }

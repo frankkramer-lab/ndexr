@@ -2,13 +2,13 @@
 title: "NDExR - R implementaion for NDEx server API"
 author: 
 - name: Florian J. Auer
-  email: Florian.Auer@med.uni-goettingen.de
-  affiliation: &id University Medical Center Göttingen
+  email: Florian.Auer@informatik.uni-augsburg.de
+  affiliation: &id University of Augsburg
 - name: Zaynab Hammoud
-  email: Zaynab.Hammoud@med.uni-goettingen.de
+  email: Zaynab.Hammoud@informatik.uni-augsburg.de
   affiliation: *id
 - name: Frank Kramer
-  email: Frank.Kramer@med.uni-goettingen.de
+  email: Frank.Kramer@informatik.uni-augsburg.de
   affiliation: *id
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -283,6 +283,8 @@ CX is an Aspect-Oriented Network Interchange Format encoded in JSON,
 which is used as basis for the R implementation of the CX format, namely
 RCX.
 
+**Note: In future `ndexr` uses the `RCX` data model from the corresponding package (https://bioconductor.org/packages/RCX) to handle the networks!**
+
 The RCX object is currently implemented within this package as a list of
 data.frames, containing meta-data and all aspects of the network. The
 structure of an RCX object, as shown via `str(rcx)` could be a list like
@@ -310,39 +312,35 @@ two files can be done using the following functions:
 
 ```{r, warning=FALSE, eval=FALSE}
 ## convert RCX to JSON
-json <- rcx_toJSON(rcx)
+json <- RCX::toCX(rcx)
 
 ## ...and back
-rcx <- rcx_fromJSON(json)
+rcx <- RCX::parseJSON(json)
 
 ## convert RCX to RCXgraph
-rcxgraph <- rcx_toRCXgraph(rcx)
+rcxgraph <- RCX::toIgraph(rcx)
 
 ## ...and back
-rcx <- rcxgraph_toRCX(rcxgraph)
+rcx <- RCX::fromIgraph(rcxgraph)
 ```
 
 It is possible to create blank RCX objects from scratch:
 
 ```{r}
-newRcx <- rcx_new()
+newRcx <- RCX::createRCX(RCX::createNodes())
 ```
 
 After a RCX object is downloaded from an NDEx server, it will contain
 some aspects that are not present in a newly generated network, i.e.
-“ndexStatus”, “provenanceHistory” and “status”. Removing those aspects
-might be useful in some cases.
-
-```{r}
-asNewRcx <- rcx_asNewNetwork(rcx)
-```
+“ndexStatus”, “provenanceHistory” and “status”. 
+Those aspects are removed automatically by the \link[RCX]{RCX-object} package.
 
 After a RCX object underwent some changes (adding/removing
 nodes/edges/aspects/meta- data, etc.), it is advisable to check a RCX
 object for its integrity and update its meta-data.
 
 ```{r}
-rcx <- rcx_updateMetaData(rcx)
+rcx <- RCX::updateMetaData(rcx)
 ```
 
 The meta-data is not only updated by the function, but also created, if

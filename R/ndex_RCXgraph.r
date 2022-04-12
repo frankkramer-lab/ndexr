@@ -21,6 +21,9 @@
 
 
 #' @title Create RCXgraph object from RCX object 
+#' 
+#' \strong{Note: In future `ndexr` uses the \link[RCX]{RCX-object} from the corresponding package to handle the networks!}
+#' \strong{For a replacement of this function see \link[RCX]{toIgraph} and \link[RCX]{fromIgraph}!}
 #'
 #' @param rcx \code{\link{RCX}} object
 #' @param idAsVertexName logical; whether the ndex node id ("@id") should be used as name for the igraph node (i.e. vertex). By default the "n"ame property is used
@@ -37,6 +40,7 @@
 #' @example man-roxygen-examples/RCXconversionRCXgraph.R
 #' @export rcx_toRCXgraph rcxgraph_fromRCX
 rcx_toRCXgraph <- function(rcx, idAsVertexName = FALSE, idAsEdgeName = FALSE, verbose = FALSE){
+  .Deprecated("RCX::toIgraph()")
 
   if(!("RCX" %in% class(rcx))) {
     warning("RCX2RCXgraph: supplied parameter is not of class RCX! Returning null.")
@@ -212,6 +216,9 @@ ngraph_fromRCX <- function(rcx, verbose = FALSE) {
 
 
 #' @title Create RCX object from RCXgraph object
+#' 
+#' \strong{Note: In future `ndexr` uses the \link[RCX]{RCX-object} from the corresponding package to handle the networks!}
+#' \strong{For a replacement of this function see \link[RCX]{toIgraph} and \link[RCX]{fromIgraph}!}
 #'
 #' @param rcxgraph \code{\link{RCX}} object
 #' @param verbose logical; whether to print out extended feedback
@@ -226,6 +233,7 @@ ngraph_fromRCX <- function(rcx, verbose = FALSE) {
 #' @example man-roxygen-examples/RCXconversionRCXgraph.R
 #' @export rcxgraph_toRCX rcx_fromRCXgraph
 rcxgraph_toRCX <- function(rcxgraph, verbose = FALSE){
+  .Deprecated("RCX::fromIgraph()")
 
   if(is.null(rcxgraph) || !("igraph" %in% class(rcxgraph))) {
     warning("rcxgraph_toRCX: parameter rcxgraph does not contain igraph object")

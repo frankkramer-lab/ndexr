@@ -21,6 +21,9 @@ data.frame of the aspect data (the same as rcx[[aspectName]])
 \description{
 This function retrieves the provided aspect as CX. The result is the same as accessing an aspect of a RCX object.
 }
+\details{
+\strong{Note: In future `ndexr` uses the \link[RCX]{RCX-object} from the corresponding package to handle the networks!}
+}
 \note{
 Compatible to NDEx server version 1.3 and 2.0, but doesn't work for version 1.3
 }

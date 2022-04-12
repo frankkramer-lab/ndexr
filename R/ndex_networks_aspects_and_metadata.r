@@ -24,6 +24,9 @@
 #' 
 #' This function retrieves the (aspect) meta-data of the network identified by the supplied network UUID string.
 #' 
+#' \strong{Note: In future `ndexr` uses the \link[RCX]{RCX-object} from the corresponding package to handle the networks!}
+#' \strong{See also \link[RCX]{Meta-data} for more information.}
+#' 
 #' @param ndexcon object of class NDExConnection link{ndex_connect}
 #' @param networkId character; unique ID (UUID) of the network
 #' 
@@ -47,6 +50,7 @@ ndex_network_get_metadata <- function(ndexcon, networkId){
     route <- ndex_helper_encodeParams(api$url, api$params, network=networkId)
     
     response = ndex_rest_GET(ndexcon, route)
+    class(response) = c("MetaDataAspect", class(response))
     return(response$metaData)
 }
 
@@ -87,6 +91,8 @@ ndex_network_aspect_get_metadata <- function(ndexcon, networkId, aspect){
 #' 
 #' This function retrieves the provided aspect as CX. The result is the same as accessing an aspect of a RCX object.
 #' 
+#' \strong{Note: In future `ndexr` uses the \link[RCX]{RCX-object} from the corresponding package to handle the networks!}
+#' 
 #' @param ndexcon object of class NDExConnection link{ndex_connect}
 #' @param networkId character; unique ID of the network
 #' @param aspect character; name of the aspect
@@ -115,7 +121,33 @@ ndex_network_get_aspect <- function(ndexcon, networkId, aspect, size){
     api = ndex_helper_getApi(ndexcon, 'network$aspect$get')
     route <- ndex_helper_encodeParams(api$url, api$params, network=networkId, aspect=aspect, size=size)
     
-    response = ndex_rest_GET(ndexcon, route)
+    official_aspects = c(
+        "nodes",
+        "edges",
+        "nodeAttributes",
+        "edgeAttributes",
+        "networkAttributes",
+        "cartesianLayout",
+        "cyGroups",
+        "cyVisualProperties",
+        "cyHiddenAttributes",
+        "cyNetworkRelations",
+        "cySubNetworks",
+        "cyTableColumn"
+    )
+    
+    if(aspect == "metaData"){
+        response = ndex_network_get_metadata(ndexcon, networkId)
+    }else if(aspect %in% official_aspects){
+        raw_json = ndex_rest_GET(ndexcon, route, raw=TRUE)
+        json = list()
+        json[[aspect]] = jsonlite::fromJSON(raw_json, simplifyVector = FALSE)
+        class(json) = c(aspect, class(json))
+        response = RCX::jsonToRCX(json, verbose=FALSE)
+    }else{
+        response = ndex_rest_GET(ndexcon, route)
+    }
+    
     return(response)
 }
 
@@ -127,6 +159,7 @@ ndex_network_get_aspect <- function(ndexcon, networkId, aspect, size){
 #' @param networkId unique ID of the network
 #' @param aspectName name of the aspect
 #' @param aspectAsRCX rcx data for the aspect (rcx[[aspectName]])
+#' @param isJson logical if aspectAsRCX is already JSON
 #' 
 #' @return networkId unique ID of the modified network
 #' @note Requires an authorized user! (ndex_connect with credentials)
@@ -149,13 +182,20 @@ ndex_network_get_aspect <- function(ndexcon, networkId, aspect, size){
 #' # ndex_network_update_aspect(ndexcon,pws[1,"externalId"], 'nodeAttributes', aspectModified)
 #' NULL
 #' @export
-ndex_network_update_aspect <- function(ndexcon, networkId, aspectName, aspectAsRCX){
+ndex_network_update_aspect <- function(ndexcon, networkId, aspectName, aspectAsRCX, isJson=FALSE){
 # TODO!! : Error on server!
     api = ndex_helper_getApi(ndexcon, 'network$aspect$update')
-    route <- ndex_helper_encodeParams(api$url, api$params, network=networkId, aspect=aspectName)
+    route <- ndex_helper_encodeParams(api$url, api$params, network=networkId)
     
     tmpFile = tempfile()
-    writeLines(paste0('[{"',aspectName,'":[',rcx_aspect_toJSON(aspectAsRCX),']}]'), tmpFile)
+    if(isJson){
+        # writeLines(paste0('[{"',aspectName,'":[',rcx_aspect_toJSON(aspectAsRCX),']}]'), tmpFile)
+        writeLines(aspectAsRCX, tmpFile)
+    }else{
+        # writeLines(paste0('[',RCX::rcxToJson(aspectAsRCX, verbose=ndexcon$verbose),']'), tmpFile)
+        writeLines(RCX::toCX(aspectAsRCX, verbose=ndexcon$verbose), tmpFile)
+    }
+    
     data <- list(CXNetworkStream = httr::upload_file(tmpFile, type = 'application/json'))
     response = ndex_rest_PUT(ndexcon, route, data, multipart=TRUE, raw=TRUE)
     file.remove(tmpFile)

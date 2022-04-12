@@ -15,12 +15,15 @@
 Just prints the RCX object
 }
 \description{
-Print a RCX object
+\strong{Note: In future `ndexr` uses the \link[RCX]{RCX-object} from the corresponding package to handle the networks!}
+\strong{For a replacement of this function see \link[RCX]{print.RCX}!}
 }
 \examples{
+\dontrun{
 rcx = rcx_new(data.frame('@id'=c(1,2,3),n=c('Some Name','And another name',NA), 
                          r=c('HGNC:Symbol',NA,'UniProt:C3P0'), check.names=FALSE))
 print(rcx)
+}
 }
 \seealso{
 \code{\link{rcx_fromJSON}} and \code{\link{rcx_new}}

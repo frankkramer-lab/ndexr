@@ -17,13 +17,16 @@ rcx_toJSON(rcx, verbose = FALSE, pretty = FALSE)
 json jsonlite json object if successfull, NULL otherwise
 }
 \description{
-Generate JSON data from RCX object
+\strong{Note: In future `ndexr` uses the \link[RCX]{RCX-object} from the corresponding package to handle the networks!}
+\strong{For a replacement of this function see \link[RCX]{writeCX}, \link[RCX]{toCX} and \link[RCX]{jsonToRCX}!}
 }
 \examples{
+\dontrun{
 ## Create an RCX object
 rcx = rcx_new(c('@id'=1, n='Some Name', r='HGNC:Symbol'))
 ## Convert to JSON
 json = rcx_toJSON(rcx)
+}
 }
 \seealso{
 \code{\link{rcxgraph_fromRCX}} \code{\link{rcxgraph_toRCX}} \code{\link{rcx_fromJSON}}

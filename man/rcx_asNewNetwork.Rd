@@ -13,18 +13,18 @@ rcx_asNewNetwork(rcx)
 \code{\link{RCX}} object
 }
 \description{
-Remove all interfering NDEx artefacts from RCX object
+\strong{Note: In future `ndexr` uses the \link[RCX]{RCX-object} from the corresponding package to handle the networks!}
 }
 \details{
 After a RCX object is downloaded from an NDEx server, it will contain some aspects that are not present in a newly generated network, i.e. ndexStatus', provenanceHistory' and 'status'.
 Removing those aspects might be useful in some cases.
 }
 \examples{
+\dontrun{
 ## Create an RCX object
 rcx = rcx_new(c('@id'=1, n='Some Name', r='HGNC:Symbol'))
 ## Remove NDEx artefacts
 rcx = rcx_asNewNetwork(rcx)
-\dontrun{
 rcxjson = rcx_toJSON(rcx)
 ndex_create_network(ndexcon, rcxjson)
 }

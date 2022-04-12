@@ -4,7 +4,13 @@
 \alias{ndex_network_update_aspect}
 \title{Update an Aspect of a Network}
 \usage{
-ndex_network_update_aspect(ndexcon, networkId, aspectName, aspectAsRCX)
+ndex_network_update_aspect(
+  ndexcon,
+  networkId,
+  aspectName,
+  aspectAsRCX,
+  isJson = FALSE
+)
 }
 \arguments{
 \item{ndexcon}{object of class NDExConnection link{ndex_connect}}
@@ -14,6 +20,8 @@ ndex_network_update_aspect(ndexcon, networkId, aspectName, aspectAsRCX)
 \item{aspectName}{name of the aspect}
 
 \item{aspectAsRCX}{rcx data for the aspect (rcx[[aspectName]])}
+
+\item{isJson}{logical if aspectAsRCX is already JSON}
 }
 \value{
 networkId unique ID of the modified network

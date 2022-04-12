@@ -8,13 +8,14 @@ Maintainer: Florian Auer <florian.auer@informatik.uni-augsburg.de>
 Description: This package offers an interface to NDEx servers, e.g. the public server at http://ndexbio.org/. It can retrieve and save networks via the API. Networks are offered as RCX object and as igraph representation. 
 License: BSD
 Depends:
-    igraph
+    igraph,
+    RCX
 Imports:
     httr,
     jsonlite,
     plyr,
     tidyr
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Encoding: UTF-8
 biocViews: Pathways, DataImport, Network
 Suggests: BiocStyle,

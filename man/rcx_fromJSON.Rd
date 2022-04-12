@@ -20,6 +20,9 @@ This function creates an RCX object from a supplied JSON-encoded CX object.
 RCX objects store the CX data as a named list of data.frames containing metaData and all aspects of the network.
 }
 \details{
+\strong{Note: In future `ndexr` uses the \link[RCX]{RCX-object} from the corresponding package to handle the networks!}
+\strong{For a replacement of this function see \link[RCX]{readJSON}, \link[RCX]{readCX} and \link[RCX]{rcxToJson}!}
+
 The structure of an RCX object, as shown via str(rcx) could be a list like this:\cr
 \preformatted{
 > str(rcx)
@@ -116,12 +119,14 @@ The data.frames representing nodes and edges could look like this:\cr
 }
 }
 \examples{
+\dontrun{
 ## Create an RCX object
 rcx = rcx_new(c('@id'=1, n='Some Name', r='HGNC:Symbol'))
 ## Convert to JSON
 json = rcx_toJSON(rcx)
 ## Convert it back from JSON
 rcx = rcx_fromJSON(json)
+}
 }
 \seealso{
 \code{\link{rcxgraph_fromRCX}} \code{\link{rcxgraph_toRCX}} \code{\link{rcx_toJSON}}

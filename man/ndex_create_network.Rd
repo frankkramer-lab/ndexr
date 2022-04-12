@@ -9,13 +9,16 @@ ndex_create_network(ndexcon, rcx)
 \arguments{
 \item{ndexcon}{object of class NDExConnection link{ndex_connect}}
 
-\item{rcx}{\code{\link{RCX}} object}
+\item{rcx}{\code{\link[RCX]{RCX-object}} object}
 }
 \value{
 UUID of the newly created network
 }
 \description{
 This method creates a new network on the NDEx server from the given RCX object
+}
+\details{
+\strong{Note: In future `ndexr` uses the \link[RCX]{RCX-object} from the corresponding package to handle the networks!}
 }
 \note{
 Requires an authorized user! (ndex_connect with credentials)

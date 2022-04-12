@@ -52,7 +52,10 @@ ndex_network_get_summary <- function(ndexcon, networkId){
 
 #' Get complete network
 #' 
-#' Returns the specified network as CX. 
+#' Returns the specified network as \link[RCX]{RCX-object}.
+#' 
+#' \strong{Note: In future `ndexr` uses the \link[RCX]{RCX-object} from the corresponding package to handle the networks!}
+#' 
 #' This is performed as a monolithic operation, so it is typically advisable for applications to first use the getNetworkSummary method to check the node and edge counts for a network before retrieving the network.
 #' Uses getEdges (this procedure will return complete network with all elements)
 #' Nodes use primary ID of the base term ('represents' element)
@@ -62,7 +65,7 @@ ndex_network_get_summary <- function(ndexcon, networkId){
 #' @param ndexcon object of class NDExConnection link{ndex_connect}
 #' @param networkId unique ID of the network
 #' 
-#' @return \code{\link{RCX}} object
+#' @return \code{\link[RCX]{RCX-object}} object
 #' 
 #' @section REST query:
 #' GET: ndex_config$api$network$get
@@ -82,7 +85,7 @@ ndex_get_network <- function(ndexcon, networkId){
     route <- ndex_helper_encodeParams(api$url, api$params, network=networkId)
   
     response = ndex_rest_GET(ndexcon, route, raw=TRUE)
-    rcx = rcx_fromJSON(response)
+    rcx = RCX::processCX(RCX::parseJSON(response))
     return(rcx)
 }
 
@@ -91,8 +94,10 @@ ndex_get_network <- function(ndexcon, networkId){
 #' 
 #' This method creates a new network on the NDEx server from the given RCX object
 #' 
+#' \strong{Note: In future `ndexr` uses the \link[RCX]{RCX-object} from the corresponding package to handle the networks!}
+#' 
 #' @param ndexcon object of class NDExConnection link{ndex_connect}
-#' @param rcx \code{\link{RCX}} object
+#' @param rcx \code{\link[RCX]{RCX-object}} object
 #' 
 #' @return UUID of the newly created network
 #' @note Requires an authorized user! (ndex_connect with credentials)
@@ -120,7 +125,7 @@ ndex_create_network <- function(ndexcon, rcx){
     route <- ndex_helper_encodeParams(api$url, api$params)
   
     tmpFile = tempfile()
-    writeLines(rcx_toJSON(rcx), tmpFile)
+    RCX::writeCX(rcx, tmpFile)
     data <- list(CXNetworkStream = httr::upload_file(tmpFile, type = 'application/json'))
     response = ndex_rest_POST(ndexcon, route, data, multipart=TRUE, raw=TRUE)
     ## response is the url of the network: "http://public.ndexbio.org/v2/network/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
@@ -133,11 +138,13 @@ ndex_create_network <- function(ndexcon, rcx){
 
 #' Update an Entire Network as CX
 #' 
+#' \strong{Note: In future `ndexr` uses the \link[RCX]{RCX-object} from the corresponding package to handle the networks!}
+#' 
 #' This method updates/replaces a existing network on the NDEx server with new content from the given RCX object.
 #' The UUID can either be specified manually or it will be extracted from the RCX object (i.e. from rcx$ndexStatus$externalId).
 #' 
 #' @param ndexcon object of class NDExConnection link{ndex_connect}
-#' @param rcx \code{\link{RCX}} object
+#' @param rcx \code{\link[RCX]{RCX-object}} object
 #' @param networkId (optional); unique ID of the network
 #' 
 #' @return UUID of the updated network
@@ -174,7 +181,7 @@ ndex_update_network <- function(ndexcon, rcx, networkId){
     route <- ndex_helper_encodeParams(api$url, api$params, network=networkId)
     
     tmpFile = tempfile()
-    writeLines(rcx_toJSON(rcx), tmpFile)
+    RCX::writeCX(rcx, tmpFile)
     data <- list(CXNetworkStream = httr::upload_file(tmpFile, type = 'application/json'))
     response = ndex_rest_PUT(ndexcon, route, data, multipart=TRUE, raw=TRUE)
     file.remove(tmpFile)

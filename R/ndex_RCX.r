@@ -21,6 +21,9 @@
 #'
 #' This function creates an RCX object from a supplied JSON-encoded CX object.
 #' RCX objects store the CX data as a named list of data.frames containing metaData and all aspects of the network.
+#' 
+#' \strong{Note: In future `ndexr` uses the \link[RCX]{RCX-object} from the corresponding package to handle the networks!}
+#' \strong{For a replacement of this function see \link[RCX]{readJSON}, \link[RCX]{readCX} and \link[RCX]{rcxToJson}!}
 #'
 #' The structure of an RCX object, as shown via str(rcx) could be a list like this:\cr
 #' \preformatted{
@@ -127,14 +130,17 @@
 #' @aliases RCX
 #'
 #' @examples
+#' \dontrun{
 #' ## Create an RCX object
 #' rcx = rcx_new(c('@id'=1, n='Some Name', r='HGNC:Symbol'))
 #' ## Convert to JSON
 #' json = rcx_toJSON(rcx)
 #' ## Convert it back from JSON
 #' rcx = rcx_fromJSON(json)
+#' }
 #' @export
 rcx_fromJSON <- function(json, verbose = FALSE){
+  .Deprecated("RCX::readJSON()")
   #!TODO: add a better way for datatype columns ("d") of properties and nodeAttributes, edgeAttributes, etc.
   if(!jsonlite::validate(json)) {
     stop("rcx_fromJSON: parameter json does not contain valid JSON")
@@ -199,6 +205,10 @@ rcx_fromJSON <- function(json, verbose = FALSE){
 
 
 #' Generate JSON data from RCX object
+#' 
+#' \strong{Note: In future `ndexr` uses the \link[RCX]{RCX-object} from the corresponding package to handle the networks!}
+#' \strong{For a replacement of this function see \link[RCX]{writeCX}, \link[RCX]{toCX} and \link[RCX]{jsonToRCX}!}
+#'
 #'
 #' @param rcx RCX object
 #' @param verbose logical; whether to print out extended feedback
@@ -208,12 +218,16 @@ rcx_fromJSON <- function(json, verbose = FALSE){
 #' @seealso \code{\link{rcxgraph_fromRCX}} \code{\link{rcxgraph_toRCX}} \code{\link{rcx_fromJSON}}
 #'
 #' @examples
+#' \dontrun{
 #' ## Create an RCX object
 #' rcx = rcx_new(c('@id'=1, n='Some Name', r='HGNC:Symbol'))
 #' ## Convert to JSON
 #' json = rcx_toJSON(rcx)
+#' }
 #' @export
 rcx_toJSON <- function(rcx, verbose = FALSE, pretty = FALSE){
+  .Deprecated("RCX::toCX()")
+  
   if(is.null(rcx) || !("RCX" %in% class(rcx))) {
     stop("rcx_toJSON: parameter rcx does not contain RCX object")
   }
@@ -245,6 +259,9 @@ rcx_toJSON <- function(rcx, verbose = FALSE, pretty = FALSE){
 
 
 #' Generate JSON data for a single aspect of a RCX object
+#' 
+#' \strong{Note: In future `ndexr` uses the \link[RCX]{RCX-object} from the corresponding package to handle the networks!}
+#' \strong{For a replacement of this function see \link[RCX]{rcxToJson}, \link[RCX]{writeCX} and \link[RCX]{toCX}!}
 #'
 #' @param rcxAspect aspect in RCX object (rcx[[aspectName]])
 #' @param verbose logical; whether to print out extended feedback
@@ -255,11 +272,15 @@ rcx_toJSON <- function(rcx, verbose = FALSE, pretty = FALSE){
 #'
 #' @keywords internal
 #' @examples
+#' \dontrun{
 #' ## Create an RCX object
 #' rcx = rcx_new(c('@id'=1, n='Some Name', r='HGNC:Symbol'))
 #' ## Convert RCX aspect to JSON
 #' rcxNodesJson = ndexr:::rcx_aspect_toJSON(rcx$nodes)
+#' }
 rcx_aspect_toJSON <- function(rcxAspect, verbose = FALSE, pretty = FALSE){
+    .Deprecated("RCX::rcxToJson()")
+    
     result = ''
     ## if any of the aspects has a datatype ('d') property, at least one of the datatypes is not of 'string' (default datatype).
     ## this means, the corresponding values ('v') have to be wrapped in arrays, if they are defined as kind of list (e.g. 'list_of_string', 'list_of_integer',...)
@@ -303,6 +324,8 @@ rcx_aspect_toJSON <- function(rcxAspect, verbose = FALSE, pretty = FALSE){
 
 
 #' Remove all interfering NDEx artefacts from RCX object
+#' 
+#' \strong{Note: In future `ndexr` uses the \link[RCX]{RCX-object} from the corresponding package to handle the networks!}
 #'
 #' @param rcx RCX object
 #'
@@ -313,16 +336,18 @@ rcx_aspect_toJSON <- function(rcxAspect, verbose = FALSE, pretty = FALSE){
 #' Removing those aspects might be useful in some cases.
 #'
 #' @examples
+#' \dontrun{
 #' ## Create an RCX object
 #' rcx = rcx_new(c('@id'=1, n='Some Name', r='HGNC:Symbol'))
 #' ## Remove NDEx artefacts
 #' rcx = rcx_asNewNetwork(rcx)
-#' \dontrun{
 #' rcxjson = rcx_toJSON(rcx)
 #' ndex_create_network(ndexcon, rcxjson)
 #' }
 #' @export
 rcx_asNewNetwork = function(rcx){
+  .Deprecated("RCX::createRCX()")
+  
   rcx['ndexStatus'] = NULL          # a newly created network doesn't have an ndex-status yet
   rcx['provenanceHistory'] = NULL   # ... also not an provenance history
   rcx['status'] = NULL              # fragment from retrieving the network from the server
@@ -330,6 +355,8 @@ rcx_asNewNetwork = function(rcx){
 }
 
 #' Create a blank rcx object
+#' 
+#' \strong{Note: In future `ndexr` uses the \link[RCX]{RCX-object} from the corresponding package to handle the networks!}
 #'
 #' This function generates a (blank) RCX object. For a valid RCX, at least one node has to be specified. Optional attributes are 'n' for names and 'r' for represents.
 #' Ids have to be unique (in nodes) and may not contain 'NA' values. For names and represents attributes, 'NA' values are allowed.
@@ -339,6 +366,7 @@ rcx_asNewNetwork = function(rcx){
 #' @return RCX object
 #'
 #' @examples
+#' \dontrun{
 #' rcx = rcx_new()
 #' rcx = rcx_new(c('@id'=1))                                #same as one before
 #' rcx = rcx_new(nodes=c('@id'=1))                          #same as one before
@@ -349,10 +377,13 @@ rcx_asNewNetwork = function(rcx){
 #' rcx = rcx_new(data.frame('@id'=c(1),n=c('Some Name'), r=c('HGNC:Symbol'), check.names=FALSE))
 #' rcx = rcx_new(data.frame('@id'=c(1,2,3),n=c('Some Name','And another name',NA),
 #'                          r=c('HGNC:Symbol',NA,'UniProt:C3P0'), check.names=FALSE))
+#' }
 #' @export
 rcx_new = function(nodes=c('@id'=1)){
-# TODO : add parameters for edges and other core aspects
-# rcx_new = function(nodes=c('@id'=1), edges, nodeAttributes, edgeAttributes, networkAttributes){
+    .Deprecated("RCX::createRCX()")
+  
+    # TODO : add parameters for edges and other core aspects
+    # rcx_new = function(nodes=c('@id'=1), edges, nodeAttributes, edgeAttributes, networkAttributes){
     if(is.null(nodes)) stop('rcx_new: At least one node is necessary!')
     if(!'@id' %in% names(nodes)) stop('rcx_new: No "@id" column in nodes!')
     ids = as.character(nodes[['@id']])
@@ -368,6 +399,9 @@ rcx_new = function(nodes=c('@id'=1)){
 
 
 #' Updating the meta-data of an RCX object
+#' 
+#' \strong{Note: In future `ndexr` uses the \link[RCX]{RCX-object} from the corresponding package to handle the networks!}
+#' \strong{For a replacement of this function see \link[RCX]{updateMetaData}!}
 #'
 #' @param rcx RCX object
 #' @param mandatoryAspects character vector; Aspects, that are mandatory for a valid RCX object (by default: "nodes")
@@ -381,6 +415,7 @@ rcx_new = function(nodes=c('@id'=1)){
 #' If mandatory aspects (specified in mandatoryAspects parameter) are missing in the RCX object, an error is thrown.
 #'
 #' @examples
+#' \dontrun{
 #' ## Create an RCX object
 #' rcx = rcx_new(c('@id'=1, n='Some Name', r='HGNC:Symbol'))
 #' ## update meta-data
@@ -389,8 +424,11 @@ rcx_new = function(nodes=c('@id'=1)){
 #' rcx = rcx_updateMetaData(rcx, mandatoryAspects=c('nodes'), 
 #'                          excludeAspects=c("metaData", "numberVerification", "status"), 
 #'                          force=FALSE, verbose=FALSE)
+#' }
 #' @export
 rcx_updateMetaData = function(rcx, mandatoryAspects=c('nodes'), excludeAspects=c("metaData", "numberVerification", "status"), force=FALSE, verbose=FALSE){
+    .Deprecated("RCX::updateMetaData()")
+  
     if(missing(rcx) || is.null(rcx) || !("RCX" %in% class(rcx))) stop("rcx_updateMetaData: Parameter rcx does not contain RCX object")
 
     # check if mandatoryAspects are present in the RCX object
@@ -480,6 +518,9 @@ rcx_updateMetaData = function(rcx, mandatoryAspects=c('nodes'), excludeAspects=c
 ####################################################
 
 #' Print a RCX object
+#' 
+#' \strong{Note: In future `ndexr` uses the \link[RCX]{RCX-object} from the corresponding package to handle the networks!}
+#' \strong{For a replacement of this function see \link[RCX]{print.RCX}!}
 #'
 #' @param x RCX object; stores the CX data as a named list of data.frames containing metaData and all aspects of the network.
 #' @param ... further arguments passed to or from other methods.
@@ -488,12 +529,16 @@ rcx_updateMetaData = function(rcx, mandatoryAspects=c('nodes'), excludeAspects=c
 #'
 #' @keywords internal
 #' @examples
+#' \dontrun{
 #' rcx = rcx_new(data.frame('@id'=c(1,2,3),n=c('Some Name','And another name',NA), 
 #'                          r=c('HGNC:Symbol',NA,'UniProt:C3P0'), check.names=FALSE))
 #' print(rcx)
+#' }
 #' @seealso  \code{\link{rcx_fromJSON}} and \code{\link{rcx_new}}
 #' @export
 print.RCX <- function(x,...){
+    .Deprecated("RCX::print.RCX()")
+  
     cat('RCX object containing the following aspects:\n')
     tmpColNames = colnames(x$metaData)
     tmpColNames = tmpColNames[order(tmpColNames)]

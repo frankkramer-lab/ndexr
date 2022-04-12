@@ -26,7 +26,7 @@
 #' names(ndex_config$Version_2.0) 
 #' @export
 ndex_config = list(
-    defaultVersion="Version_2.0",
+    defaultVersion="Version_2.1",
     Version_2.1=list(
         version="2.1",
         connection=list(
@@ -545,15 +545,11 @@ ndex_config = list(
                     ),
                     update=list(
                         description="Update an Aspect of a Network",
-                        url="/network/#NETWORKID#/aspect/#ASPECT#",
+                        url="/network/#NETWORKID#/aspects",
                         method="PUT",
                         params=list(
                             network=list(
                                 tag="#NETWORKID#",
-                                method="replace"
-                            ),
-                            aspect=list(
-                                tag="#ASPECT#",
                                 method="replace"
                             )
                         )

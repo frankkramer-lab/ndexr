@@ -27,13 +27,15 @@ rcx_updateMetaData(
 \code{\link{RCX}} object
 }
 \description{
-Updating the meta-data of an RCX object
+\strong{Note: In future `ndexr` uses the \link[RCX]{RCX-object} from the corresponding package to handle the networks!}
+\strong{For a replacement of this function see \link[RCX]{updateMetaData}!}
 }
 \details{
 For a given RCX object the meta-data is updated, i.e. the counted elements and id counter are updated. If an aspect was added/removed, it will also added/removed from the meta-data.
 If mandatory aspects (specified in mandatoryAspects parameter) are missing in the RCX object, an error is thrown.
 }
 \examples{
+\dontrun{
 ## Create an RCX object
 rcx = rcx_new(c('@id'=1, n='Some Name', r='HGNC:Symbol'))
 ## update meta-data
@@ -42,4 +44,5 @@ rcx = rcx_updateMetaData(rcx)
 rcx = rcx_updateMetaData(rcx, mandatoryAspects=c('nodes'), 
                          excludeAspects=c("metaData", "numberVerification", "status"), 
                          force=FALSE, verbose=FALSE)
+}
 }

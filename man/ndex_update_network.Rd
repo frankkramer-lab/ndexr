@@ -9,7 +9,7 @@ ndex_update_network(ndexcon, rcx, networkId)
 \arguments{
 \item{ndexcon}{object of class NDExConnection link{ndex_connect}}
 
-\item{rcx}{\code{\link{RCX}} object}
+\item{rcx}{\code{\link[RCX]{RCX-object}} object}
 
 \item{networkId}{(optional); unique ID of the network}
 }
@@ -17,6 +17,9 @@ ndex_update_network(ndexcon, rcx, networkId)
 UUID of the updated network
 }
 \description{
+\strong{Note: In future `ndexr` uses the \link[RCX]{RCX-object} from the corresponding package to handle the networks!}
+}
+\details{
 This method updates/replaces a existing network on the NDEx server with new content from the given RCX object.
 The UUID can either be specified manually or it will be extracted from the RCX object (i.e. from rcx$ndexStatus$externalId).
 }
