@@ -40,7 +40,7 @@
 #' @example man-roxygen-examples/RCXconversionRCXgraph.R
 #' @export rcx_toRCXgraph rcxgraph_fromRCX
 rcx_toRCXgraph <- function(rcx, idAsVertexName = FALSE, idAsEdgeName = FALSE, verbose = FALSE){
-  .Deprecated("RCX::toIgraph()")
+  .Defunct("RCX::toIgraph()")
 
   if(!("RCX" %in% class(rcx))) {
     warning("RCX2RCXgraph: supplied parameter is not of class RCX! Returning null.")
@@ -197,13 +197,13 @@ ndex_internal_addAspects <- function(rcxgraph, rcx, verbose = FALSE){
 #' @example man-roxygen-examples/RCXconversionNGraph.R 
 #' @export ngraph_fromRCX rcx_toNGraph
 rcx_toNGraph <- function(rcx, verbose = FALSE) {
-    .Deprecated("rcx_toRCXgraph")
+    .Defunct("rcx_toRCXgraph")
     rcx_toRCXgraph(rcx, verbose)
 }
 
 #' @rdname rcx_toNGraph
 ngraph_fromRCX <- function(rcx, verbose = FALSE) {
-    .Deprecated("rcxgraph_fromRCX")
+    .Defunct("rcxgraph_fromRCX")
     rcx_toRCXgraph(rcx, verbose)
 }
 
@@ -233,7 +233,7 @@ ngraph_fromRCX <- function(rcx, verbose = FALSE) {
 #' @example man-roxygen-examples/RCXconversionRCXgraph.R
 #' @export rcxgraph_toRCX rcx_fromRCXgraph
 rcxgraph_toRCX <- function(rcxgraph, verbose = FALSE){
-  .Deprecated("RCX::fromIgraph()")
+  .Defunct("RCX::fromIgraph()")
 
   if(is.null(rcxgraph) || !("igraph" %in% class(rcxgraph))) {
     warning("rcxgraph_toRCX: parameter rcxgraph does not contain igraph object")
@@ -343,13 +343,13 @@ rcx_fromRCXgraph <- rcxgraph_toRCX
 #' @example man-roxygen-examples/RCXconversionNGraph.R
 #' @export
 ngraph_toRCX <- function(ngraph, verbose = FALSE) {
-    .Deprecated("rcxgraph_toRCX")
+    .Defunct("rcxgraph_toRCX")
     rcxgraph_toRCX(ngraph, verbose)
 }
 
 #' @rdname ngraph_toRCX
 rcx_fromNGraph <- function(ngraph, verbose = FALSE) {
-    .Deprecated("rcx_fromRCXgraph")
+    .Defunct("rcx_fromRCXgraph")
     rcxgraph_toRCX(ngraph, verbose)
 }
 

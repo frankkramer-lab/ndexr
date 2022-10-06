@@ -140,7 +140,7 @@
 #' }
 #' @export
 rcx_fromJSON <- function(json, verbose = FALSE){
-  .Deprecated("RCX::readJSON()")
+  .Defunct("RCX::readJSON()")
   #!TODO: add a better way for datatype columns ("d") of properties and nodeAttributes, edgeAttributes, etc.
   if(!jsonlite::validate(json)) {
     stop("rcx_fromJSON: parameter json does not contain valid JSON")
@@ -226,7 +226,7 @@ rcx_fromJSON <- function(json, verbose = FALSE){
 #' }
 #' @export
 rcx_toJSON <- function(rcx, verbose = FALSE, pretty = FALSE){
-  .Deprecated("RCX::toCX()")
+  .Defunct("RCX::toCX()")
   
   if(is.null(rcx) || !("RCX" %in% class(rcx))) {
     stop("rcx_toJSON: parameter rcx does not contain RCX object")
@@ -279,7 +279,7 @@ rcx_toJSON <- function(rcx, verbose = FALSE, pretty = FALSE){
 #' rcxNodesJson = ndexr:::rcx_aspect_toJSON(rcx$nodes)
 #' }
 rcx_aspect_toJSON <- function(rcxAspect, verbose = FALSE, pretty = FALSE){
-    .Deprecated("RCX::rcxToJson()")
+    .Defunct("RCX::rcxToJson()")
     
     result = ''
     ## if any of the aspects has a datatype ('d') property, at least one of the datatypes is not of 'string' (default datatype).
@@ -346,7 +346,7 @@ rcx_aspect_toJSON <- function(rcxAspect, verbose = FALSE, pretty = FALSE){
 #' }
 #' @export
 rcx_asNewNetwork = function(rcx){
-  .Deprecated("RCX::createRCX()")
+  .Defunct("RCX::createRCX()")
   
   rcx['ndexStatus'] = NULL          # a newly created network doesn't have an ndex-status yet
   rcx['provenanceHistory'] = NULL   # ... also not an provenance history
@@ -380,7 +380,7 @@ rcx_asNewNetwork = function(rcx){
 #' }
 #' @export
 rcx_new = function(nodes=c('@id'=1)){
-    .Deprecated("RCX::createRCX()")
+    .Defunct("RCX::createRCX()")
   
     # TODO : add parameters for edges and other core aspects
     # rcx_new = function(nodes=c('@id'=1), edges, nodeAttributes, edgeAttributes, networkAttributes){
@@ -427,7 +427,7 @@ rcx_new = function(nodes=c('@id'=1)){
 #' }
 #' @export
 rcx_updateMetaData = function(rcx, mandatoryAspects=c('nodes'), excludeAspects=c("metaData", "numberVerification", "status"), force=FALSE, verbose=FALSE){
-    .Deprecated("RCX::updateMetaData()")
+    .Defunct("RCX::updateMetaData()")
   
     if(missing(rcx) || is.null(rcx) || !("RCX" %in% class(rcx))) stop("rcx_updateMetaData: Parameter rcx does not contain RCX object")
 
@@ -537,7 +537,7 @@ rcx_updateMetaData = function(rcx, mandatoryAspects=c('nodes'), excludeAspects=c
 #' @seealso  \code{\link{rcx_fromJSON}} and \code{\link{rcx_new}}
 #' @export
 print.RCX <- function(x,...){
-    .Deprecated("RCX::print.RCX()")
+    .Defunct("RCX::print.RCX()")
   
     cat('RCX object containing the following aspects:\n')
     tmpColNames = colnames(x$metaData)
