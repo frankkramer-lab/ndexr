@@ -42,7 +42,7 @@ The package is compatible with all NDEx API versions 1.3 and 2.x.
 Installation
 ============
 
-Installation form Bioconductor
+Installation from Bioconductor
 ------------------------------
 
 ``` r
@@ -53,7 +53,7 @@ BiocManager::install("ndexr")
 library(ndexr)
 ```
 
-Installation form GitHub
+Installation from GitHub
 ------------------------
 
 using

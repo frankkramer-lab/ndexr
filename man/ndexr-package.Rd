@@ -14,7 +14,7 @@ Package: \tab ndexr\cr
 Type: \tab Package\cr
 Version: \tab 1.19.2\cr
 Date: \tab 2016-12-02\cr
-License: \tab BSD 3\cr
+License: \tab BSD_3_clause\cr
 }
 }
 \examples{
