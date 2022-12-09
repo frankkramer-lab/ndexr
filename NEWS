@@ -1,3 +1,9 @@
+ndexr 1.21.1 (Bioconductor Development 3.17)
+===========
+**UPDATE: Using the RCX package for working with networks.**
+* all function of the old RCX implementation are removed from this package
+
+
 ndexr 1.19.1 (Bioconductor Release 3.16)
 ===========
 **UPDATE: Using the RCX package for working with networks.**
