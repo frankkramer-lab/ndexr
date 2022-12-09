@@ -537,20 +537,6 @@ rcx_updateMetaData = function(rcx, mandatoryAspects=c('nodes'), excludeAspects=c
 #' @seealso  \code{\link{rcx_fromJSON}} and \code{\link{rcx_new}}
 #' @export
 print.RCX <- function(x,...){
-    .Defunct("RCX::print.RCX()")
-  
-    cat('RCX object containing the following aspects:\n')
-    tmpColNames = colnames(x$metaData)
-    tmpColNames = tmpColNames[order(tmpColNames)]
-    tmpColNames = c('name',tmpColNames[tmpColNames!='name'])
-    print(x$metaData[tmpColNames])
-    tmpNames = names(x)
-    tmpAspects = x$metaData$name
-    metaAspects = tmpNames[!tmpNames %in% tmpAspects]
-    if(length(metaAspects)!=0){
-        cat('\nAdditionally the following aspects contain meta-data:\n')
-        print(metaAspects)
-    }
-    invisible(x)
+    RCX:::print.RCX(rcx)
 }
 

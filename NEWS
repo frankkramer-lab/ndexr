@@ -1,3 +1,7 @@
+ndexr 1.20.1 (Bioconductor Release 3.16)
+===========
+* FIX: change the print.RCX function to use the RCX package implementation
+
 ndexr 1.19.1 (Bioconductor Release 3.16)
 ===========
 **UPDATE: Using the RCX package for working with networks.**
