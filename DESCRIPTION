@@ -9,13 +9,13 @@ Author@R: c(
          email = "florian.auer@informatik.uni-augsburg.de",
          comment = c(ORCID = "0000-0002-5320-8900")),
   person(given = "Frank", family = "Kramer", 
-         role = c("cbt"), 
+         role = c("ctb"), 
          email = "frank.kramer@informatik.uni-augsburg.de"),
   person(given = "Alex", family = "Ishkin", 
-         role = c("cbt"), 
+         role = c("ctb"), 
          email = "aleksandr.ishkin@thomsonreuters.com"),
   person(given = "Dexter", family = "Pratt", 
-         role = c("cbt"), 
+         role = c("ctb"), 
          email = "depratt@ucsc.edu"))
 Description: This package offers an interface to NDEx servers, e.g. the public server at http://ndexbio.org/. It can retrieve and save networks via the API. Networks are offered as RCX object and as igraph representation. 
 License: BSD_3_clause
