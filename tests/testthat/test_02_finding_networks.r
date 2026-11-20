@@ -24,6 +24,7 @@ test_that('Get list of networks from a server (ndex_find_networks)', {
   # netColNames = c("ownerUUID", "isReadOnly", "subnetworkIds", "errorMessage", "isValid", "warnings", "isShowcase", "visibility", "edgeCount", "nodeCount", "uri", "version", "owner", "description", "name", "properties", "externalId", "isDeleted", "modificationTime", "creationTime")
   ## no "uri" and "errorMessage" column anymore in metadata, but new columns: 
   ## "isCertified" "indexLevel"  "hasLayout"   "hasSample"   "completed" [2018.04.13]
+  ## no "version" and "description" column anymore in metadata [2026.11.20]
   netColNames = c("ownerUUID", 
                   "isReadOnly", 
                   "subnetworkIds", 
@@ -33,9 +34,9 @@ test_that('Get list of networks from a server (ndex_find_networks)', {
                   "visibility", 
                   "edgeCount", 
                   "nodeCount", 
-                  "version", 
+                  #"version", 
                   "owner", 
-                  "description", 
+                  #"description", 
                   "name", 
                   "properties", 
                   "externalId", 
